@@ -32,12 +32,10 @@
                   <Component id="jLabel1" alignment="2" min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" max="-2" attributes="0">
                       <Component id="bLogout" alignment="0" max="32767" attributes="0"/>
-                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                          <Component id="bComplaintFC" alignment="0" max="32767" attributes="0"/>
-                          <Component id="bCheckPoint" alignment="0" max="32767" attributes="0"/>
-                          <Component id="bOrderHistory" alignment="0" max="32767" attributes="0"/>
-                          <Component id="bOrder" alignment="0" max="32767" attributes="0"/>
-                      </Group>
+                      <Component id="bComplaintFC" alignment="0" max="32767" attributes="0"/>
+                      <Component id="bCheckPoint" alignment="0" max="32767" attributes="0"/>
+                      <Component id="bOrderHistory" alignment="0" max="32767" attributes="0"/>
+                      <Component id="bOrder" alignment="0" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace pref="196" max="32767" attributes="0"/>
@@ -100,6 +98,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Order"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bOrderActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="bOrderHistory">
       <Properties>

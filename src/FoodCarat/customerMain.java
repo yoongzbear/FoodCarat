@@ -4,6 +4,8 @@
  */
 package FoodCarat;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author ASUS
@@ -46,6 +48,11 @@ public class customerMain extends javax.swing.JFrame {
         jLabel3.setText("Home Page");
 
         bOrder.setText("Order");
+        bOrder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bOrderActionPerformed(evt);
+            }
+        });
 
         bOrderHistory.setText("Order History");
 
@@ -73,11 +80,10 @@ public class customerMain extends javax.swing.JFrame {
                     .addComponent(jLabel1)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(bLogout, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(bComplaintFC, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(bCheckPoint, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(bOrderHistory, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(bOrder, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addComponent(bComplaintFC, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(bCheckPoint, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(bOrderHistory, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(bOrder, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap(196, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -113,6 +119,20 @@ public class customerMain extends javax.swing.JFrame {
         userLogin frame = new userLogin();
         frame.setVisible(true);
     }//GEN-LAST:event_bLogoutActionPerformed
+
+    private void bOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bOrderActionPerformed
+        String[] orderType = {"Dine-in", "Delivery", "Take away"};
+        var choice = JOptionPane.showOptionDialog(null, "Please select: ", "Start Order! ", 0, 3, null, orderType, orderType[0]);
+        if (choice == 0){
+            
+        } 
+        if (choice == 1){
+            System.out.println("1");
+        } 
+        if (choice == 2){
+            System.out.println("2");
+        }
+    }//GEN-LAST:event_bOrderActionPerformed
 
     /**
      * @param args the command line arguments
