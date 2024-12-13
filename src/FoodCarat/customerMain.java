@@ -145,7 +145,7 @@ public class customerMain extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bLogoutActionPerformed
-        dispose();
+        this.dispose();
         userLogin frame = new userLogin();
         frame.setVisible(true);
     }//GEN-LAST:event_bLogoutActionPerformed
