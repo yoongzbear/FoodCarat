@@ -66,9 +66,9 @@ public class adminMain extends javax.swing.JFrame {
                 .addGap(34, 34, 34)
                 .addComponent(jButton1)
                 .addGap(18, 18, 18)
-                .addComponent(jButton2)
-                .addGap(18, 18, 18)
                 .addComponent(jButton3)
+                .addGap(18, 18, 18)
+                .addComponent(jButton2)
                 .addContainerGap(112, Short.MAX_VALUE))
         );
 
