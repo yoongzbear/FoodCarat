@@ -4,6 +4,7 @@
  */
 package FoodCarat;
 
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -21,6 +22,7 @@ public class customerMain extends javax.swing.JFrame {
      */
     public customerMain() {
         initComponents();
+        getContentPane().setBackground(Color.blue);
     }
 
     /**
@@ -44,6 +46,7 @@ public class customerMain extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(153, 204, 255));
 
         jLabel1.setFont(new java.awt.Font("Cooper Black", 0, 36)); // NOI18N
         jLabel1.setText("FoodCarat Food Court");
