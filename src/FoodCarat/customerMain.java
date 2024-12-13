@@ -4,6 +4,10 @@
  */
 package FoodCarat;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import javax.swing.JOptionPane;
 
 /**
@@ -29,23 +33,23 @@ public class customerMain extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        lnotif = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         bOrder = new javax.swing.JButton();
         bOrderHistory = new javax.swing.JButton();
         bCheckPoint = new javax.swing.JButton();
         bComplaintFC = new javax.swing.JButton();
         bLogout = new javax.swing.JButton();
+        bNotif = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Cooper Black", 0, 36)); // NOI18N
         jLabel1.setText("FoodCarat Food Court");
 
-        lnotif.setText("Notif");
-
         jLabel3.setFont(new java.awt.Font("Cooper Black", 0, 24)); // NOI18N
-        jLabel3.setText("Home Page");
+        jLabel3.setText("Hello,");
 
         bOrder.setText("Order");
         bOrder.addActionListener(new java.awt.event.ActionListener() {
@@ -67,48 +71,71 @@ public class customerMain extends javax.swing.JFrame {
             }
         });
 
+        bNotif.setText("Notification");
+
+        jLabel2.setFont(new java.awt.Font("Cooper Black", 0, 24)); // NOI18N
+        jLabel2.setText("username");
+
+        jLabel4.setText("ANY PICTURE");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(lnotif, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(119, 119, 119)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel1)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(bLogout, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(bComplaintFC, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(bCheckPoint, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(bOrderHistory, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(bOrder, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(196, Short.MAX_VALUE))
+                .addGap(32, 32, 32)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(bNotif, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(bOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 140, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(106, 106, 106)
+                                .addComponent(jLabel3)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel2)))
+                        .addGap(123, 123, 123))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(bCheckPoint)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel4)
+                        .addGap(293, 293, 293))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(bComplaintFC, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(bOrderHistory, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(bLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(42, 42, 42)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1))
+                        .addComponent(bNotif, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(bOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(17, 17, 17)
-                        .addComponent(lnotif)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3)
-                .addGap(41, 41, 41)
-                .addComponent(bOrder)
-                .addGap(30, 30, 30)
-                .addComponent(bOrderHistory)
-                .addGap(29, 29, 29)
-                .addComponent(bCheckPoint)
-                .addGap(29, 29, 29)
-                .addComponent(bComplaintFC)
-                .addGap(34, 34, 34)
-                .addComponent(bLogout)
-                .addContainerGap(71, Short.MAX_VALUE))
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel2))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(bOrderHistory, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(bCheckPoint, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(bComplaintFC, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(bLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(51, Short.MAX_VALUE))
         );
 
         pack();
@@ -121,17 +148,51 @@ public class customerMain extends javax.swing.JFrame {
     }//GEN-LAST:event_bLogoutActionPerformed
 
     private void bOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bOrderActionPerformed
-        String[] orderType = {"Dine-in", "Delivery", "Take away"};
-        var choice = JOptionPane.showOptionDialog(null, "Please select: ", "Start Order! ", 0, 3, null, orderType, orderType[0]);
-        if (choice == 0){
-            
-        } 
-        if (choice == 1){
-            System.out.println("1");
-        } 
-        if (choice == 2){
-            System.out.println("2");
+        //initialOrder()        
+        String[] orderTypeArr = {"Dine-in", "Delivery", "Take away"};
+        String orderType;
+        var choice = JOptionPane.showOptionDialog(null, "Please select: ", "Start Order! ", 0, 3, null, orderTypeArr, orderTypeArr[0]);
+
+        switch (choice){
+            case 0: orderType = "Dine-in"; break;
+            case 1: orderType = "Take away"; break;
+            case 2: orderType = "Delivery"; break;
+            default: orderType = "none"; break;
         }
+        
+        int lastOrder = 1;
+        //Write order.txt based on orderType
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("customerOrder.txt"));
+            String line;
+            while((line=br.readLine()) != null){
+                String[] record = line.split(",");
+                lastOrder = Integer.parseInt(record[0]);
+            }
+            lastOrder = lastOrder + 1;
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+        
+        String newLine = lastOrder + "," + orderType + ",Ordered," + "userEmail" + ",,";
+        try {
+            String filename = "customerOrder.txt";
+            FileWriter fw = new FileWriter(filename, true); //true is use for appending data in new line
+            fw.write(newLine + "\n");
+            fw.close();
+            JOptionPane.showMessageDialog(null, "Order placed successfully! Please wait for Vendor and Runner to accept.");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+        
+        if ("Delivery".equals(orderType)){
+            JOptionPane.showMessageDialog(null, "Please take note that additional charges will be imposed as delivery fee.");
+        }
+        
+        //Direct user to view menu page
+        this.dispose();
+        customerViewMenu frame = new customerViewMenu();
     }//GEN-LAST:event_bOrderActionPerformed
 
     /**
@@ -173,10 +234,12 @@ public class customerMain extends javax.swing.JFrame {
     private javax.swing.JButton bCheckPoint;
     private javax.swing.JButton bComplaintFC;
     private javax.swing.JButton bLogout;
+    private javax.swing.JButton bNotif;
     private javax.swing.JButton bOrder;
     private javax.swing.JButton bOrderHistory;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel lnotif;
+    private javax.swing.JLabel jLabel4;
     // End of variables declaration//GEN-END:variables
 }
