@@ -160,7 +160,7 @@
                   <Component id="jScrollPane1" min="-2" pref="116" max="-2" attributes="0"/>
                   <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="46" max="32767" attributes="0"/>
+              <EmptySpace pref="44" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="1" max="-2" attributes="0">
                   <Component id="bClear" alignment="0" max="32767" attributes="0"/>
                   <Component id="bBack" alignment="0" max="32767" attributes="0"/>
@@ -294,6 +294,9 @@
     </Component>
     <Component class="javax.swing.JLabel" name="Lshop">
       <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Constantia" size="18" style="1"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Shop name: "/>
       </Properties>
     </Component>
