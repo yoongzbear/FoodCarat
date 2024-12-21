@@ -359,6 +359,11 @@ private void performDelete() {
         bBack.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
         bBack.setText("Back");
         bBack.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        bBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bBackActionPerformed(evt);
+            }
+        });
 
         gendercbx.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
         gendercbx.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Male", "Female" }));
@@ -377,7 +382,7 @@ private void performDelete() {
                         .addComponent(bUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(126, 126, 126)
                         .addComponent(bDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(118, 118, 118)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(bBack, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(81, 81, 81)
@@ -515,6 +520,11 @@ private void performDelete() {
     private void bSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSearchActionPerformed
         performSearch();
     }//GEN-LAST:event_bSearchActionPerformed
+
+    private void bBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bBackActionPerformed
+        this.dispose();
+        new adminMain().setVisible(true);
+    }//GEN-LAST:event_bBackActionPerformed
 
     /**
      * @param args the command line arguments
