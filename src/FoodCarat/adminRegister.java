@@ -436,14 +436,17 @@ PlaceholderManager.addPlaceholder(passwordtxt, "At least 6 character including 1
     String password = String.valueOf(passwordtxt.getPassword()).trim();
     if (password.isEmpty()) {
         JOptionPane.showMessageDialog(null, "Password cannot be empty.");
+        passwordtxt.requestFocus();
         return;
     }
     if (password.length() < 6) {
         JOptionPane.showMessageDialog(null, "Password must be at least 6 characters.");
+        passwordtxt.requestFocus();
         return;
     }
     if (!password.matches("^(?=.*[!@#$%^&*]).{6,}$")) {
         JOptionPane.showMessageDialog(null, "Password must include at least one special character (!@#$%^&*).");
+        passwordtxt.requestFocus();
         return;
     }
 
