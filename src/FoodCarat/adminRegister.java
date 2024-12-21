@@ -71,7 +71,7 @@ public class PlaceholderManager {
             public void focusGained(FocusEvent evt) {
                 if (textField.getText().equals(placeholder)) {
                     textField.setText("");
-                    textField.setForeground(Color.BLACK); // Normal color
+                    textField.setForeground(Color.BLACK);
                 }
             }
 
@@ -79,7 +79,7 @@ public class PlaceholderManager {
             public void focusLost(FocusEvent evt) {
                 if (textField.getText().isEmpty()) {
                     textField.setText(placeholder);
-                    textField.setForeground(new Color(204, 204, 204)); // Gray color
+                    textField.setForeground(new Color(204, 204, 204));
                 }
             }
         });
@@ -88,14 +88,14 @@ public class PlaceholderManager {
     public static void addPlaceholder(JPasswordField passwordField, String placeholder) {
         passwordField.setEchoChar((char) 0); // Disable hiding characters
         passwordField.setText(placeholder);
-        passwordField.setForeground(new Color(204, 204, 204)); // Gray color
+        passwordField.setForeground(new Color(204, 204, 204));
 
         passwordField.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent evt) {
                 if (String.valueOf(passwordField.getPassword()).equals(placeholder)) {
                     passwordField.setText("");
-                    passwordField.setForeground(Color.BLACK); // Normal color
+                    passwordField.setForeground(Color.BLACK);
                     passwordField.setEchoChar('•'); // Enable hiding characters
                 }
             }
@@ -105,7 +105,7 @@ public class PlaceholderManager {
                 if (String.valueOf(passwordField.getPassword()).isEmpty()) {
                     passwordField.setEchoChar((char) 0); // Disable hiding characters
                     passwordField.setText(placeholder);
-                    passwordField.setForeground(new Color(204, 204, 204)); // Gray color
+                    passwordField.setForeground(new Color(204, 204, 204));
                 }
             }
         });
@@ -481,7 +481,6 @@ private boolean isEmailRegistered(String email) {
             String filename = role + ".txt";
             File file = new File(filename);
 
-            // Read the file to find the maximum number
             if (file.exists()) {
                 try (BufferedReader br = new BufferedReader(new FileReader(file))) {
                     String lastLine = null, currentLine;
@@ -494,7 +493,7 @@ private boolean isEmailRegistered(String email) {
                 }
             }
             
-            FileWriter fw = new FileWriter(filename,true); //true- able to add the data as append instead of replace
+            FileWriter fw = new FileWriter(filename,true);
             StringBuilder info = new StringBuilder();
             info.append(emailtxt.getText()).append(";")
                 .append(nametxt.getText()).append(";")
