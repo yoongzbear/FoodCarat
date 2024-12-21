@@ -4,19 +4,122 @@
  */
 package FoodCarat;
 
+import java.awt.Color;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
 /**
  *
  * @author mastu
  */
 public class adminRegister extends javax.swing.JFrame {
-
+    private String role;
     /**
      * Creates new form adminRegister
      */
     public adminRegister() {
+        this("customer");  // Default to "customer" role
+    }
+    public adminRegister(String role) {
+        this.role=role;
         initComponents();
+        addPlaceholders();
+        customizeForm();
+        Lrole.setText(role);
     }
 
+private void customizeForm() {
+    javax.swing.JComponent[] customerComponents = {
+        Laddress, addresstxta, jScrollPane1, LotherInfo
+    };
+
+    javax.swing.JComponent[] vendorComponents = {
+        Lshop, shoptxt
+    };
+
+    javax.swing.JComponent[] runnerComponents = {
+        Lplatnum, platnumtxt, Lcartype, cartypecbx, LotherInfo
+    };
+
+
+    admin.customizeForm(role, customerComponents, vendorComponents, runnerComponents);
+}
+
+private void clearFields() {
+    admin.clearFields(
+        emailtxt, nametxt, agetxt, phonetxt, passwordtxt, platnumtxt, addresstxta, shoptxt
+    );
+    admin.clearComboBoxes(gendercbx);
+}
+
+    
+public class PlaceholderManager {
+    public static void addPlaceholder(JTextField textField, String placeholder) {
+        textField.setText(placeholder);
+        textField.setForeground(new Color(204, 204, 204)); // Gray color
+
+        textField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent evt) {
+                if (textField.getText().equals(placeholder)) {
+                    textField.setText("");
+                    textField.setForeground(Color.BLACK); // Normal color
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent evt) {
+                if (textField.getText().isEmpty()) {
+                    textField.setText(placeholder);
+                    textField.setForeground(new Color(204, 204, 204)); // Gray color
+                }
+            }
+        });
+    }
+
+    public static void addPlaceholder(JPasswordField passwordField, String placeholder) {
+        passwordField.setEchoChar((char) 0); // Disable hiding characters
+        passwordField.setText(placeholder);
+        passwordField.setForeground(new Color(204, 204, 204)); // Gray color
+
+        passwordField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent evt) {
+                if (String.valueOf(passwordField.getPassword()).equals(placeholder)) {
+                    passwordField.setText("");
+                    passwordField.setForeground(Color.BLACK); // Normal color
+                    passwordField.setEchoChar('•'); // Enable hiding characters
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent evt) {
+                if (String.valueOf(passwordField.getPassword()).isEmpty()) {
+                    passwordField.setEchoChar((char) 0); // Disable hiding characters
+                    passwordField.setText(placeholder);
+                    passwordField.setForeground(new Color(204, 204, 204)); // Gray color
+                }
+            }
+        });
+    }
+}
+
+private void addPlaceholders() {
+PlaceholderManager.addPlaceholder(nametxt, "Enter your full name");
+PlaceholderManager.addPlaceholder(emailtxt, "Enter a valid email address");
+PlaceholderManager.addPlaceholder(phonetxt, "XXX-XXXXXXX");
+PlaceholderManager.addPlaceholder(shoptxt, "Enter your shop name");
+PlaceholderManager.addPlaceholder(platnumtxt, "eg. 0110051 UiOVqjEe");
+PlaceholderManager.addPlaceholder(passwordtxt, "At least 6 character including 1 special character"); // this use password text field
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -45,18 +148,19 @@ public class adminRegister extends javax.swing.JFrame {
         Lplatnum = new javax.swing.JLabel();
         platnumtxt = new javax.swing.JTextField();
         cartypecbx = new javax.swing.JComboBox<>();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
+        Lcartype = new javax.swing.JLabel();
+        Laddress = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        addresstxta = new javax.swing.JTextArea();
         bRegister = new javax.swing.JButton();
         bClear = new javax.swing.JButton();
         bBack = new javax.swing.JButton();
+        Lrole = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Cooper Black", 0, 36)); // NOI18N
-        jLabel1.setText("Registration");
+        jLabel1.setText("Registration -");
 
         jLabel3.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
         jLabel3.setText("Gender:");
@@ -134,16 +238,16 @@ public class adminRegister extends javax.swing.JFrame {
             }
         });
 
-        jLabel11.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
-        jLabel11.setText("Vehicle Type:");
+        Lcartype.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        Lcartype.setText("Vehicle Type:");
 
-        jLabel8.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
-        jLabel8.setText("Address: ");
+        Laddress.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        Laddress.setText("Address: ");
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        addresstxta.setColumns(20);
+        addresstxta.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        addresstxta.setRows(5);
+        jScrollPane1.setViewportView(addresstxta);
 
         bRegister.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
         bRegister.setText("Register");
@@ -155,6 +259,11 @@ public class adminRegister extends javax.swing.JFrame {
 
         bClear.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
         bClear.setText("Clear");
+        bClear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bClearActionPerformed(evt);
+            }
+        });
 
         bBack.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
         bBack.setText("Back");
@@ -163,6 +272,9 @@ public class adminRegister extends javax.swing.JFrame {
                 bBackActionPerformed(evt);
             }
         });
+
+        Lrole.setFont(new java.awt.Font("Cooper Black", 0, 36)); // NOI18N
+        Lrole.setText("xxxx");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -176,13 +288,13 @@ public class adminRegister extends javax.swing.JFrame {
                     .addComponent(jLabel3)
                     .addComponent(Lshop)
                     .addComponent(Lplatnum)
-                    .addComponent(jLabel8))
+                    .addComponent(Laddress))
                 .addGap(36, 36, 36)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(platnumtxt, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel11)
+                        .addComponent(Lcartype)
                         .addGap(108, 108, 108)
                         .addComponent(cartypecbx, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(182, 182, 182))
@@ -217,22 +329,27 @@ public class adminRegister extends javax.swing.JFrame {
                         .addComponent(LotherInfo)
                         .addGap(364, 364, 364))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(453, 453, 453))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(bRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(62, 62, 62)
                         .addComponent(bClear, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(61, 61, 61)
                         .addComponent(bBack, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(301, 301, 301))))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(360, 360, 360)
+                .addComponent(jLabel1)
+                .addGap(59, 59, 59)
+                .addComponent(Lrole)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(34, 34, 34)
-                .addComponent(jLabel1)
-                .addGap(32, 32, 32)
+                .addGap(33, 33, 33)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(Lrole))
+                .addGap(33, 33, 33)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(agetxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -269,11 +386,11 @@ public class adminRegister extends javax.swing.JFrame {
                     .addComponent(Lplatnum)
                     .addComponent(platnumtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cartypecbx, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel11))
+                    .addComponent(Lcartype))
                 .addGap(31, 31, 31)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel8))
+                    .addComponent(Laddress))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(bClear, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -310,12 +427,78 @@ public class adminRegister extends javax.swing.JFrame {
     }//GEN-LAST:event_cartypecbxActionPerformed
 
     private void bRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRegisterActionPerformed
-        // TODO add your handling code here:
+    if (!admin.validateInputs(
+            role, emailtxt, nametxt, agetxt, phonetxt, platnumtxt, shoptxt, addresstxta)) {
+        return; // Exit if validation fails
+    }
+    
+    String placeholder = "At least 6 character including 1 special character";
+    String password = String.valueOf(passwordtxt.getPassword()).trim();
+    if (password.isEmpty()) {
+        JOptionPane.showMessageDialog(null, "Password cannot be empty.");
+        return;
+    }
+    if (password.length() < 6) {
+        JOptionPane.showMessageDialog(null, "Password must be at least 6 characters.");
+        return;
+    }
+    if (!password.matches("^(?=.*[!@#$%^&*]).{6,}$")) {
+        JOptionPane.showMessageDialog(null, "Password must include at least one special character (!@#$%^&*).");
+        return;
+    }
+
+        try{
+            String filename = role + ".txt";
+            File file = new File(filename);
+
+            // Read the file to find the maximum number
+            if (file.exists()) {
+                try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+                    String lastLine = null, currentLine;
+                    while ((currentLine = br.readLine()) != null) {
+                        lastLine = currentLine;
+                    }
+                    if (lastLine != null) {
+                        String[] parts = lastLine.split(";");
+                    }
+                }
+            }
+            
+            FileWriter fw = new FileWriter(filename,true); //true- able to add the data as append instead of replace
+            StringBuilder info = new StringBuilder();
+            info.append(emailtxt.getText()).append(";")
+                .append(nametxt.getText()).append(";")
+                .append(gendercbx.getSelectedItem()).append(";")
+                .append(agetxt.getText()).append(";")
+                .append(phonetxt.getText()).append(";")
+                .append(new String(passwordtxt.getPassword())).append(";");
+            
+            if("customer".equals(role)){
+                info.append(addresstxta.getText()).append(";");
+            }else if("vendor".equals(role)) {
+                info.append(shoptxt.getText()).append(";");
+            } else if ("runner".equals(role)) {
+                info.append(platnumtxt.getText()).append(";")
+                    .append(cartypecbx.getSelectedItem()).append(";");
+            }
+            
+            fw.write(info.append("\n").toString());
+            fw.close();
+            
+            JOptionPane.showMessageDialog(null, "Successfully registered as " + role + "!");
+            clearFields();
+            }catch(IOException e){
+                JOptionPane.showMessageDialog(null, "Error:" + e.getMessage());
+            }
     }//GEN-LAST:event_bRegisterActionPerformed
 
     private void bBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bBackActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_bBackActionPerformed
+
+    private void bClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bClearActionPerformed
+        clearFields();
+    }//GEN-LAST:event_bClearActionPerformed
 
     /**
      * @param args the command line arguments
@@ -353,9 +536,13 @@ public class adminRegister extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel Laddress;
+    private javax.swing.JLabel Lcartype;
     private javax.swing.JLabel LotherInfo;
     private javax.swing.JLabel Lplatnum;
+    private javax.swing.JLabel Lrole;
     private javax.swing.JLabel Lshop;
+    private javax.swing.JTextArea addresstxta;
     private javax.swing.JTextField agetxt;
     private javax.swing.JButton bBack;
     private javax.swing.JButton bClear;
@@ -364,16 +551,13 @@ public class adminRegister extends javax.swing.JFrame {
     private javax.swing.JTextField emailtxt;
     private javax.swing.JComboBox<String> gendercbx;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField nametxt;
     private javax.swing.JPasswordField passwordtxt;
     private javax.swing.JTextField phonetxt;
