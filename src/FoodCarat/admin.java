@@ -32,21 +32,19 @@ public static void customizeForm(String role,
     }
     // Adjust visibility based on the role
     switch (role) {
-        case "runner":
-            for (javax.swing.JComponent component : runnerComponents) {
-                component.setVisible(true); // Show runner-specific components
-            }
-            break;
-
         case "customer":
             for (javax.swing.JComponent component : customerComponents) {
                 component.setVisible(true); 
             }
             break;
-
         case "vendor":
             for (javax.swing.JComponent component : vendorComponents) {
                 component.setVisible(true); 
+            }
+            break;
+        case "runner":
+            for (javax.swing.JComponent component : runnerComponents) {
+                component.setVisible(true); // Show runner-specific components
             }
             break;
     }
