@@ -23,9 +23,9 @@ public admin(String adminName, String adminID) {
 
 //used in registration and update user informaition
 public static void customizeForm(String role, 
-                                 javax.swing.JComponent[] runnerComponents, 
                                  javax.swing.JComponent[] customerComponents, 
-                                 javax.swing.JComponent[] vendorComponents) {
+                                 javax.swing.JComponent[] vendorComponents, 
+                                 javax.swing.JComponent[] runnerComponents) {
     // Hide all components initially
     for (javax.swing.JComponent component : concatArrays(customerComponents, vendorComponents,runnerComponents)) {
         component.setVisible(false);
