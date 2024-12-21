@@ -120,6 +120,27 @@ PlaceholderManager.addPlaceholder(shoptxt, "Enter your shop name");
 PlaceholderManager.addPlaceholder(platnumtxt, "eg. 0110051 UiOVqjEe");
 PlaceholderManager.addPlaceholder(passwordtxt, "At least 6 character including 1 special character"); // this use password text field
 }
+
+// Method to check if the email is already registered
+private boolean isEmailRegistered(String email) {
+    String filename = role + ".txt";
+    File file = new File(filename);
+    if (file.exists()) {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(";");
+                String existingEmail = parts[0];
+                if (existingEmail.equals(email)) {
+                    return true; // Email already exists
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error checking email: " + e.getMessage());
+        }
+    }
+    return false; // Email is not registered
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -427,11 +448,17 @@ PlaceholderManager.addPlaceholder(passwordtxt, "At least 6 character including 1
     }//GEN-LAST:event_cartypecbxActionPerformed
 
     private void bRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRegisterActionPerformed
+   // Check if the email is already registered
+    if (isEmailRegistered(emailtxt.getText().trim())) {
+        JOptionPane.showMessageDialog(null, "This email is already registered.");
+        emailtxt.requestFocus();
+        admin.clearFields(emailtxt);
+        return;
+    }
     if (!admin.validateInputs(
             role, emailtxt, nametxt, agetxt, phonetxt, platnumtxt, shoptxt, addresstxta)) {
         return; // Exit if validation fails
     }
-    
     String placeholder = "At least 6 character including 1 special character";
     String password = String.valueOf(passwordtxt.getPassword()).trim();
     if (password.isEmpty()) {
@@ -496,7 +523,8 @@ PlaceholderManager.addPlaceholder(passwordtxt, "At least 6 character including 1
     }//GEN-LAST:event_bRegisterActionPerformed
 
     private void bBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bBackActionPerformed
-        // TODO add your handling code here:
+        this.dispose();
+        new adminMain().setVisible(true);
     }//GEN-LAST:event_bBackActionPerformed
 
     private void bClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bClearActionPerformed
