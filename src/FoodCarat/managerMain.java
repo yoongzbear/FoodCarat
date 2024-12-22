@@ -49,20 +49,21 @@ public class managerMain extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(257, 257, 257)
+                .addGap(260, 260, 260)
                 .addComponent(jLabel1)
-                .addContainerGap(283, Short.MAX_VALUE))
+                .addContainerGap(280, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(25, 25, 25)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(31, Short.MAX_VALUE)
                 .addComponent(jLabel1)
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addGap(27, 27, 27))
         );
 
         jPanel2.setBackground(new java.awt.Color(252, 204, 196));
 
+        bvenperformance.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
         bvenperformance.setText("Vendor Performance");
         bvenperformance.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -70,14 +71,19 @@ public class managerMain extends javax.swing.JFrame {
             }
         });
 
+        brunperformance.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
         brunperformance.setText("Runner Performance");
 
+        bcomplaints.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
         bcomplaints.setText("Customer Complaints");
 
+        bdiscardItem.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
         bdiscardItem.setText("Discard Vendor Item");
 
+        bnotification.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
         bnotification.setText("Notification");
 
+        blogout.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
         blogout.setText("Logout");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
