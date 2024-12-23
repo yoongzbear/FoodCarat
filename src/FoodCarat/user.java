@@ -9,5 +9,11 @@ package FoodCarat;
  * @author mastu
  */
 public class user {
+    protected String adminEmail;
+    protected String adminPassword;
     
+    public user(String adminEmail, String adminPassword) {
+        this.adminEmail = adminEmail;
+        this.adminPassword = adminPassword;
+    }
 }
