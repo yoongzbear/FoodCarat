@@ -10,16 +10,12 @@ import javax.swing.JOptionPane;
  *
  * @author User
  */
-public class admin {
-    private String adminName;
-    private String adminID;
-    private String password;
+public class admin extends user{
     
-public admin(String adminName, String adminID) {
-        this.adminName = adminName;
-        this.adminID = adminID;
+public admin(String adminEmail, String adminPassword) {
+    super(adminEmail, adminPassword);
         //can use this when they wanna perform some action like top up need them to enter the password
-    }
+   }
 
 //used in registration and update user informaition
 public static void customizeForm(String role, 
