@@ -183,23 +183,23 @@ private boolean isEmailRegistered(String email) {
         jLabel1.setFont(new java.awt.Font("Cooper Black", 0, 36)); // NOI18N
         jLabel1.setText("Registration -");
 
-        jLabel3.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel3.setText("Gender:");
 
-        jLabel4.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel4.setText("Email:");
 
-        jLabel5.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel5.setText("Password:");
 
-        emailtxt.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        emailtxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         emailtxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 emailtxtActionPerformed(evt);
             }
         });
 
-        passwordtxt.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        passwordtxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         passwordtxt.setText("jPasswordField1");
         passwordtxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -207,51 +207,53 @@ private boolean isEmailRegistered(String email) {
             }
         });
 
-        jLabel2.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel2.setText("Name: ");
 
-        nametxt.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        nametxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         nametxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nametxtActionPerformed(evt);
             }
         });
 
-        gendercbx.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        gendercbx.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         gendercbx.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Male", "Female" }));
 
-        jLabel6.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel6.setText("Age:");
 
-        agetxt.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        agetxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         agetxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 agetxtActionPerformed(evt);
             }
         });
 
-        jLabel7.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel7.setText("Phone Number:");
 
-        phonetxt.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        phonetxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
 
-        Lshop.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        Lshop.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         Lshop.setText("Shop name: ");
+
+        shoptxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
 
         LotherInfo.setFont(new java.awt.Font("Cooper Black", 0, 36)); // NOI18N
         LotherInfo.setText("Other information");
 
-        Lplatnum.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        Lplatnum.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         Lplatnum.setText("Plate Number:");
 
-        platnumtxt.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        platnumtxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         platnumtxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 platnumtxtActionPerformed(evt);
             }
         });
 
-        cartypecbx.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        cartypecbx.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         cartypecbx.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Car", "Motor" }));
         cartypecbx.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -259,14 +261,14 @@ private boolean isEmailRegistered(String email) {
             }
         });
 
-        Lcartype.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        Lcartype.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         Lcartype.setText("Vehicle Type:");
 
-        Laddress.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        Laddress.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         Laddress.setText("Address: ");
 
         addresstxta.setColumns(20);
-        addresstxta.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        addresstxta.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         addresstxta.setRows(5);
         jScrollPane1.setViewportView(addresstxta);
 
@@ -342,7 +344,7 @@ private boolean isEmailRegistered(String email) {
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(agetxt, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(passwordtxt, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                        .addContainerGap(92, Short.MAX_VALUE))))
+                        .addContainerGap(76, Short.MAX_VALUE))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -412,7 +414,7 @@ private boolean isEmailRegistered(String email) {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Laddress))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(bClear, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(bBack, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
