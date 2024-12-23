@@ -47,40 +47,40 @@ public class adminTopupCredit extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Cooper Black", 0, 36)); // NOI18N
         jLabel1.setText("TopUp Credit");
 
-        jLabel2.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel2.setText("Search:");
 
-        jLabel3.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel3.setText("Email:");
 
-        jTextField1.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        jTextField1.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
 
-        jTextField2.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        jTextField2.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jTextField2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField2ActionPerformed(evt);
             }
         });
 
-        jLabel4.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel4.setText("Customer Name:");
 
-        jTextField3.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        jTextField3.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
 
-        jLabel5.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel5.setText("Current Amount: ");
 
-        jLabel6.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel6.setText("Topup Amount:");
 
-        jLabel7.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel7.setText("Amount after topup: ");
 
-        jTextField4.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        jTextField4.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
 
-        jTextField5.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        jTextField5.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
 
-        jTextField6.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        jTextField6.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jTextField6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField6ActionPerformed(evt);
@@ -122,7 +122,7 @@ public class adminTopupCredit extends javax.swing.JFrame {
                             .addComponent(jTextField6)
                             .addComponent(jTextField4)
                             .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 491, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(55, Short.MAX_VALUE))
+                .addContainerGap(38, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -150,7 +150,7 @@ public class adminTopupCredit extends javax.swing.JFrame {
                     .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
                     .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 80, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
