@@ -266,69 +266,70 @@ private void performDelete() {
         jLabel1.setFont(new java.awt.Font("Cooper Black", 0, 36)); // NOI18N
         jLabel1.setText("Update User Information -");
 
-        Lsearch.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        Lsearch.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         Lsearch.setText("Search:");
 
-        searchtxt.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        searchtxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         searchtxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 searchtxtActionPerformed(evt);
             }
         });
 
-        Lemail.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        Lemail.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         Lemail.setText("Email:");
 
-        Lname.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        Lname.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         Lname.setText("Name:");
 
-        Lgender.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        Lgender.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         Lgender.setText("Gender:");
 
-        Lage.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        Lage.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         Lage.setText("Age:");
 
-        Lphone.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        Lphone.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         Lphone.setText("Phone Number:");
 
-        Lshop.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        Lshop.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         Lshop.setText("Shop Name:");
 
         LotherInfo.setFont(new java.awt.Font("Cooper Black", 0, 24)); // NOI18N
         LotherInfo.setText("Other Information");
 
-        Lplatnum.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        Lplatnum.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         Lplatnum.setText("Plate number: ");
 
-        Lcartype.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        Lcartype.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         Lcartype.setText("Vehicle Type:");
 
         platnumtxt.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
 
-        cartypecbx.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        cartypecbx.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         cartypecbx.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Car", "Motor" }));
 
-        Laddress.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        Laddress.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         Laddress.setText("Address:");
 
         addresstxta.setColumns(20);
+        addresstxta.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         addresstxta.setRows(5);
         jScrollPane1.setViewportView(addresstxta);
 
-        emailtxt.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        emailtxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
 
-        nametxt.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        nametxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         nametxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nametxtActionPerformed(evt);
             }
         });
 
-        agetxt.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        agetxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
 
-        phonetxt.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        phonetxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
 
-        shoptxt.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        shoptxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
 
         bSearch.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
         bSearch.setText("Search");
@@ -365,7 +366,7 @@ private void performDelete() {
             }
         });
 
-        gendercbx.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        gendercbx.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         gendercbx.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Male", "Female" }));
 
         Lrole.setFont(new java.awt.Font("Cooper Black", 0, 24)); // NOI18N
@@ -380,9 +381,9 @@ private void performDelete() {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(261, 261, 261)
                         .addComponent(bUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(126, 126, 126)
+                        .addGap(88, 88, 88)
                         .addComponent(bDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(87, 87, 87)
                         .addComponent(bBack, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(81, 81, 81)
@@ -431,7 +432,7 @@ private void performDelete() {
                         .addComponent(jLabel1)
                         .addGap(36, 36, 36)
                         .addComponent(Lrole)))
-                .addContainerGap(110, Short.MAX_VALUE))
+                .addContainerGap(97, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -440,7 +441,7 @@ private void performDelete() {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(Lrole))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Lsearch)
                     .addComponent(searchtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
