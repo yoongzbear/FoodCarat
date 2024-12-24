@@ -2,6 +2,8 @@ package FoodCarat;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -23,21 +25,27 @@ public class Order {
     private int itemID;
     private int orderQuantity;
     private String orderStatus;
+    private String orderFeedback;
     private String customerEmail;
     private int runnerID;
     private int reasonID;
     
-    public Order(){
-        System.out.println(orderID);
+    public Order(){ //for deleteIncompleteOrder()
+        System.out.println(orderID); //for checking                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
     }
     
-    public Order(String choice){
+    public Order(String choice){ //for initialOrder()
         this.orderType = choice;
         //this.customerEmail = UserSession.getCustomerEmail();
     }
     
-    public Order(int orderID, String feedback){
-        
+    public Order(int orderID){ //for getting customer order feedback
+        this.orderID = orderID;
+    }
+    
+    public Order(int orderID, String feedback){ //to save customer order feedback
+        this.orderID = orderID;
+        this.orderFeedback = feedback;
     }
 
     public int getOrderID() {
@@ -171,6 +179,42 @@ public class Order {
             JOptionPane.showMessageDialog(null, "Order deleted successfully!");
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Error while deleting order: " + e.getMessage());
+        }
+    }
+    
+    public String getOrderFeedback() throws FileNotFoundException, IOException{
+        try (BufferedReader reader = new BufferedReader(new FileReader("customerOrder.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts[0].equals(String.valueOf(orderID))) {
+                    return parts[4];
+                }
+            }
+        }
+        return "";
+    }
+    
+    public void saveOrderFeedback(){
+        try{
+            BufferedReader br = new BufferedReader(new FileReader("customerOrder.txt"));
+            StringBuilder stringBuilder = new StringBuilder(); // Change to StringBuilder
+            String line;
+            while ((line = br.readLine()) != null) {
+                String record[] = line.split(",");
+                int checkBookingID = Integer.parseInt(record[0]);
+                if (checkBookingID == orderID) {
+                    record[4] = orderFeedback;
+                    line = String.join(",", record);
+                }
+                stringBuilder.append(line).append("\n"); 
+            }
+            br.close();
+            BufferedWriter bw = new BufferedWriter(new FileWriter("customerOrder.txt"));
+            bw.write(stringBuilder.toString()); 
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
