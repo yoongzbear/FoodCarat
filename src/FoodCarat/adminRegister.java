@@ -50,14 +50,14 @@ private void customizeForm() {
     };
 
 
-    admin.customizeForm(role, customerComponents, vendorComponents, runnerComponents);
+    Admin.customizeForm(role, customerComponents, vendorComponents, runnerComponents);
 }
 
 private void clearFields() {
-    admin.clearFields(
+    Admin.clearFields(
         emailtxt, nametxt, agetxt, phonetxt, passwordtxt, platnumtxt, addresstxta, shoptxt
     );
-    admin.clearComboBoxes(gendercbx);
+    Admin.clearComboBoxes(gendercbx);
 }
 
     
@@ -454,10 +454,10 @@ private boolean isEmailRegistered(String email) {
     if (isEmailRegistered(emailtxt.getText().trim())) {
         JOptionPane.showMessageDialog(null, "This email is already registered.");
         emailtxt.requestFocus();
-        admin.clearFields(emailtxt);
+        Admin.clearFields(emailtxt);
         return;
     }
-    if (!admin.validateInputs(
+    if (!Admin.validateInputs(
             role, emailtxt, nametxt, agetxt, phonetxt, platnumtxt, shoptxt, addresstxta)) {
         return; // Exit if validation fails
     }
