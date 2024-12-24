@@ -9,5 +9,11 @@ package FoodCarat;
  * @author mastu
  */
 public class Vendor {
-    //hi otw
+    //constructor
+    
+    //setters
+    
+    //getters
+    
+    //methods
 }
