@@ -1,2 +1,4 @@
-1,Take away,Ordered,userEmail,,
-2,Take away,Ordered,userEmail,,
+1,Take away,[Hello;1;10|Hi;3;4],Ordered,test,customerEmail,NULL,NULL
+2,Delivery,[Pizza;2;15|Burger;1;8],Completed,Good,customerEmail,NULL,NULL
+3,Take away,[Sushi;1;25|Ramen;2;12],Cancelled,?,customerEmail,NULL,NULL
+4,Delivery,[Pasta;3;9|Salad;1;5],Ordered,hello,customerEmail,NULL,NULL
