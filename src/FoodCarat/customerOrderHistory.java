@@ -472,6 +472,8 @@ public class customerOrderHistory extends javax.swing.JFrame {
 
                     Order order = new Order(orderID, feedback);
                     order.saveOrderFeedback();
+                    taFeedback.setEditable(false);
+                    bFeedback.setVisible(false);
                 } else {
                     JOptionPane.showMessageDialog(null, "No order selected.");
                 }
