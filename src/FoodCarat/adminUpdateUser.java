@@ -42,14 +42,14 @@ private void customizeForm() {
         Lplatnum, platnumtxt, Lcartype, cartypecbx,LotherInfo
     };
 
-    admin.customizeForm(role, customerComponents, vendorComponents, runnerComponents);
+    Admin.customizeForm(role, customerComponents, vendorComponents, runnerComponents);
 }
 
 private void clearFields() {
-    admin.clearFields(
+    Admin.clearFields(
         emailtxt, nametxt, agetxt, phonetxt, platnumtxt, addresstxta, shoptxt
     );
-    admin.clearComboBoxes(gendercbx);
+    Admin.clearComboBoxes(gendercbx);
 }
    
 private void performSearch() {
@@ -507,7 +507,7 @@ private void performDelete() {
     }//GEN-LAST:event_nametxtActionPerformed
 
     private void bUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bUpdateActionPerformed
-        if (!admin.validateInputs(
+        if (!Admin.validateInputs(
                 role, emailtxt, nametxt, agetxt, phonetxt, platnumtxt, shoptxt, addresstxta)) {
             return; // Exit if validation fails
         }
