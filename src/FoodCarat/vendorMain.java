@@ -16,6 +16,8 @@ public class vendorMain extends javax.swing.JFrame {
     public vendorMain() {
         initComponents();
         getContentPane().setBackground(new java.awt.Color(186,85,211)); //setting background color of frame
+        
+        //display user's name in salutationTxt based on session's name
     }
 
     /**
@@ -34,7 +36,7 @@ public class vendorMain extends javax.swing.JFrame {
         reviewBtn = new javax.swing.JButton();
         revenueBtn = new javax.swing.JButton();
         logoutBtn = new javax.swing.JButton();
-        pastOrderBtn = new javax.swing.JButton();
+        orderHistoryBtn = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         salutationTxt = new javax.swing.JLabel();
         vendorLogo = new javax.swing.JLabel();
@@ -47,6 +49,14 @@ public class vendorMain extends javax.swing.JFrame {
         editBtn = new javax.swing.JButton();
         saveBtn = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel = new javax.swing.JLabel();
+        dineInBox = new javax.swing.JCheckBox();
+        takeawayBox = new javax.swing.JCheckBox();
+        deliveryBox = new javax.swing.JCheckBox();
+        updateMethodBtn = new javax.swing.JButton();
+        openAllBtn = new javax.swing.JButton();
+        closeAllBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(204, 102, 255));
@@ -96,16 +106,14 @@ public class vendorMain extends javax.swing.JFrame {
             }
         });
 
-        pastOrderBtn.setText("Past Orders");
-        pastOrderBtn.addActionListener(new java.awt.event.ActionListener() {
+        orderHistoryBtn.setText("Order History");
+        orderHistoryBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pastOrderBtnActionPerformed(evt);
+                orderHistoryBtnActionPerformed(evt);
             }
         });
 
-        jPanel1.setBackground(new java.awt.Color(228, 204, 255));
-
-        salutationTxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        salutationTxt.setFont(new java.awt.Font("Cooper Black", 0, 24)); // NOI18N
         salutationTxt.setText("Welcome, Vendor");
 
         vendorLogo.setText("Profile Pic");
@@ -120,8 +128,18 @@ public class vendorMain extends javax.swing.JFrame {
         jLabel5.setText("Vendor Cuisine:");
 
         editBtn.setText("Edit Profile");
+        editBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editBtnActionPerformed(evt);
+            }
+        });
 
         saveBtn.setText("Save Profile");
+        saveBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveBtnActionPerformed(evt);
+            }
+        });
 
         jLabel6.setText("add image for upload image");
 
@@ -138,7 +156,6 @@ public class vendorMain extends javax.swing.JFrame {
                                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(cuisineTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(salutationTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
@@ -146,17 +163,19 @@ public class vendorMain extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(nameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(nameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(salutationTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap(172, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(editBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(saveBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(25, 25, 25))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(vendorLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel6)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(editBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(saveBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(vendorLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel6)))
                         .addGap(26, 26, 26))))
         );
         jPanel1Layout.setVerticalGroup(
@@ -180,21 +199,111 @@ public class vendorMain extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(cuisineTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(editBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(saveBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel2.setForeground(new java.awt.Color(228, 204, 255));
+
+        jLabel.setFont(new java.awt.Font("Cooper Black", 0, 24)); // NOI18N
+        jLabel.setText("Order Method Availability");
+
+        dineInBox.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        dineInBox.setText("Dine In");
+        dineInBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dineInBoxActionPerformed(evt);
+            }
+        });
+
+        takeawayBox.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        takeawayBox.setText("Take Away");
+        takeawayBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                takeawayBoxActionPerformed(evt);
+            }
+        });
+
+        deliveryBox.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        deliveryBox.setText("Delivery");
+        deliveryBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deliveryBoxActionPerformed(evt);
+            }
+        });
+
+        updateMethodBtn.setText("Update Methods");
+        updateMethodBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateMethodBtnActionPerformed(evt);
+            }
+        });
+
+        openAllBtn.setText("Open All Methods");
+        openAllBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openAllBtnActionPerformed(evt);
+            }
+        });
+
+        closeAllBtn.setText("Close All Methods");
+        closeAllBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                closeAllBtnActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap(17, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(deliveryBox)
+                            .addComponent(takeawayBox)
+                            .addComponent(dineInBox))
+                        .addGap(220, 220, 220))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(closeAllBtn)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addComponent(updateMethodBtn)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(openAllBtn))
+                                .addComponent(jLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(15, 15, 15))))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addComponent(jLabel)
+                .addGap(27, 27, 27)
+                .addComponent(dineInBox)
+                .addGap(18, 18, 18)
+                .addComponent(takeawayBox)
+                .addGap(18, 18, 18)
+                .addComponent(deliveryBox)
+                .addGap(29, 29, 29)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(updateMethodBtn)
+                    .addComponent(openAllBtn))
+                .addGap(28, 28, 28)
+                .addComponent(closeAllBtn)
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(228, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(224, 224, 224))
             .addGroup(layout.createSequentialGroup()
                 .addGap(22, 22, 22)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -202,19 +311,25 @@ public class vendorMain extends javax.swing.JFrame {
                     .addComponent(revenueBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(logoutBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(currentOrderBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pastOrderBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(orderHistoryBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(itemBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(notificationBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(37, 37, 37)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(22, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(343, 343, 343))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(12, 12, 12)
+                .addContainerGap()
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(itemBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -223,14 +338,17 @@ public class vendorMain extends javax.swing.JFrame {
                         .addGap(20, 20, 20)
                         .addComponent(currentOrderBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(pastOrderBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(orderHistoryBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                         .addComponent(reviewBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(revenueBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(logoutBtn))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(20, 20, 20))
         );
 
@@ -240,32 +358,73 @@ public class vendorMain extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void itemBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemBtnActionPerformed
-        // TODO add your handling code here:
+        new vendorMenu().setVisible(true);
+        dispose();        
     }//GEN-LAST:event_itemBtnActionPerformed
 
     private void notificationBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_notificationBtnActionPerformed
-        // TODO add your handling code here:
+        //new vendorNotification().setVisible(true);
+        dispose();  
     }//GEN-LAST:event_notificationBtnActionPerformed
 
     private void currentOrderBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_currentOrderBtnActionPerformed
-        // TODO add your handling code here:
+        //new vendorCurrentOrder().setVisible(true);
+        dispose();  
     }//GEN-LAST:event_currentOrderBtnActionPerformed
 
     private void reviewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reviewBtnActionPerformed
-        // TODO add your handling code here:
+        //new vendorReview().setVisible(true);
+        dispose();  
     }//GEN-LAST:event_reviewBtnActionPerformed
 
     private void revenueBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_revenueBtnActionPerformed
-        // TODO add your handling code here:
+        //new vendorRevenue().setVisible(true);
+        dispose();  
     }//GEN-LAST:event_revenueBtnActionPerformed
 
     private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
-        // TODO add your handling code here:
+        //User.logout();
+        dispose();
     }//GEN-LAST:event_logoutBtnActionPerformed
 
-    private void pastOrderBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pastOrderBtnActionPerformed
+    private void orderHistoryBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_orderHistoryBtnActionPerformed
+        //new vendorOrderHistory().setVisible(true);
+        dispose(); 
+    }//GEN-LAST:event_orderHistoryBtnActionPerformed
+
+    private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
+        //when clicked, enable the save profile button, disable edit button, enable text fields to fill in except email
+    }//GEN-LAST:event_editBtnActionPerformed
+
+    private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
+        //save the text field info into text file 
+        //if vendor name is edited, rewrite user file
+        //if change cuisine, rewrite vendor file
+    }//GEN-LAST:event_saveBtnActionPerformed
+
+    private void dineInBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dineInBoxActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_pastOrderBtnActionPerformed
+    }//GEN-LAST:event_dineInBoxActionPerformed
+
+    private void takeawayBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_takeawayBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_takeawayBoxActionPerformed
+
+    private void deliveryBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deliveryBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_deliveryBoxActionPerformed
+
+    private void updateMethodBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateMethodBtnActionPerformed
+        //see which is ticked, rewrite in the text file for the available methods, save as array
+    }//GEN-LAST:event_updateMethodBtnActionPerformed
+
+    private void openAllBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openAllBtnActionPerformed
+        //terus rewrite all methods into the vendor file
+    }//GEN-LAST:event_openAllBtnActionPerformed
+
+    private void closeAllBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeAllBtnActionPerformed
+        //terus write [] for availability in the vendor file
+    }//GEN-LAST:event_closeAllBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -303,25 +462,33 @@ public class vendorMain extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton closeAllBtn;
     private javax.swing.JTextField cuisineTxt;
     private javax.swing.JButton currentOrderBtn;
+    private javax.swing.JCheckBox deliveryBox;
+    private javax.swing.JCheckBox dineInBox;
     private javax.swing.JButton editBtn;
     private javax.swing.JTextField emailTxt;
     private javax.swing.JButton itemBtn;
+    private javax.swing.JLabel jLabel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JButton logoutBtn;
     private javax.swing.JTextField nameTxt;
     private javax.swing.JButton notificationBtn;
-    private javax.swing.JButton pastOrderBtn;
+    private javax.swing.JButton openAllBtn;
+    private javax.swing.JButton orderHistoryBtn;
     private javax.swing.JButton revenueBtn;
     private javax.swing.JButton reviewBtn;
     private javax.swing.JLabel salutationTxt;
     private javax.swing.JButton saveBtn;
+    private javax.swing.JCheckBox takeawayBox;
+    private javax.swing.JButton updateMethodBtn;
     private javax.swing.JLabel vendorLogo;
     // End of variables declaration//GEN-END:variables
 }

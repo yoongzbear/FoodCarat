@@ -9,7 +9,9 @@ package FoodCarat;
  * @author mastu
  */
 public class Vendor {
+    //CHAGEE;chagee@gmail.com;Beverage;/FoodCarat/images/vendor/ChageeLogo.png;
     //constructor
+    
     
     //setters
     
