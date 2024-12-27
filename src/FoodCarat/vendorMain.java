@@ -368,12 +368,12 @@ public class vendorMain extends javax.swing.JFrame {
     }//GEN-LAST:event_notificationBtnActionPerformed
 
     private void currentOrderBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_currentOrderBtnActionPerformed
-        //new vendorCurrentOrder().setVisible(true);
+        new vendorCurrentOrder().setVisible(true);
         dispose();  
     }//GEN-LAST:event_currentOrderBtnActionPerformed
 
     private void reviewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reviewBtnActionPerformed
-        //new vendorReview().setVisible(true);
+        new vendorReview().setVisible(true);
         dispose();  
     }//GEN-LAST:event_reviewBtnActionPerformed
 
@@ -388,7 +388,7 @@ public class vendorMain extends javax.swing.JFrame {
     }//GEN-LAST:event_logoutBtnActionPerformed
 
     private void orderHistoryBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_orderHistoryBtnActionPerformed
-        //new vendorOrderHistory().setVisible(true);
+        new vendorOrderHistory().setVisible(true);
         dispose(); 
     }//GEN-LAST:event_orderHistoryBtnActionPerformed
 

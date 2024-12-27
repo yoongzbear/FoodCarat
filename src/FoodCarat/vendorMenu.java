@@ -280,7 +280,7 @@ public class vendorMenu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
-        //new vendorAddItem().setVisible(true);
+        new vendorAddItem().setVisible(true);
         dispose();
     }//GEN-LAST:event_addBtnActionPerformed
 
