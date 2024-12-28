@@ -1,0 +1,5 @@
+alya@mail.com, Alya, alya123, vendor
+paola@mail.com, Paola, paola123, customer
+wendy@mail.com, Boss Wendy, wendy123, manager
+wendyy@mail.com, Wendy, wendy123, admin
+yuna@mail.com, Yuna, yuna123, runner
