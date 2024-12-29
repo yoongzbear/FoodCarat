@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 public class Admin extends user{
     public Admin(String adminEmail, String adminPassword) {
     super(adminEmail, adminPassword);
-        //can use this when they wanna perform some action like top up need them to enter the password..
+        //can use this when they wanna perform some action like top up need them to enter the password....
    }
     
     public static void customizeForm(String role, 
