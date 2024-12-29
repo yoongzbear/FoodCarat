@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.security.SecureRandom;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -31,98 +32,18 @@ public class adminRegister extends javax.swing.JFrame {
     public adminRegister(String role) {
         this.role=role;
         initComponents();
-        addPlaceholders();
-        customizeForm();
         Lrole.setText(role);
     }
 
-private void customizeForm() {
-    javax.swing.JComponent[] customerComponents = {
-        Laddress, addresstxta, jScrollPane1, LotherInfo
-    };
-
-    javax.swing.JComponent[] vendorComponents = {
-        Lshop, shoptxt
-    };
-
-    javax.swing.JComponent[] runnerComponents = {
-        Lplatnum, platnumtxt, Lcartype, cartypecbx, LotherInfo
-    };
-
-
-    Admin.customizeForm(role, customerComponents, vendorComponents, runnerComponents);
-}
-
 private void clearFields() {
-    Admin.clearFields(emailtxt, usernametxt, agetxt, phonetxt, passwordtxt, platnumtxt, addresstxta, shoptxt
+    Admin.clearFields(
+        emailtxt,
+        usernametxt
     );
-    Admin.clearComboBoxes(gendercbx);
 }
-
-    
-public class PlaceholderManager {
-    public static void addPlaceholder(JTextField textField, String placeholder) {
-        textField.setText(placeholder);
-        textField.setForeground(new Color(204, 204, 204)); // Gray color
-
-        textField.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent evt) {
-                if (textField.getText().equals(placeholder)) {
-                    textField.setText("");
-                    textField.setForeground(Color.BLACK);
-                }
-            }
-
-            @Override
-            public void focusLost(FocusEvent evt) {
-                if (textField.getText().isEmpty()) {
-                    textField.setText(placeholder);
-                    textField.setForeground(new Color(204, 204, 204));
-                }
-            }
-        });
-    }
-
-    public static void addPlaceholder(JPasswordField passwordField, String placeholder) {
-        passwordField.setEchoChar((char) 0); // Disable hiding characters
-        passwordField.setText(placeholder);
-        passwordField.setForeground(new Color(204, 204, 204));
-
-        passwordField.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent evt) {
-                if (String.valueOf(passwordField.getPassword()).equals(placeholder)) {
-                    passwordField.setText("");
-                    passwordField.setForeground(Color.BLACK);
-                    passwordField.setEchoChar('•'); // Enable hiding characters
-                }
-            }
-
-            @Override
-            public void focusLost(FocusEvent evt) {
-                if (String.valueOf(passwordField.getPassword()).isEmpty()) {
-                    passwordField.setEchoChar((char) 0); // Disable hiding characters
-                    passwordField.setText(placeholder);
-                    passwordField.setForeground(new Color(204, 204, 204));
-                }
-            }
-        });
-    }
-}
-
-private void addPlaceholders() {
-PlaceholderManager.addPlaceholder(usernametxt, "Enter your full name");
-PlaceholderManager.addPlaceholder(emailtxt, "Enter a valid email address");
-PlaceholderManager.addPlaceholder(phonetxt, "XXX-XXXXXXX");
-PlaceholderManager.addPlaceholder(shoptxt, "Enter your shop name");
-PlaceholderManager.addPlaceholder(platnumtxt, "eg. 0110051 UiOVqjEe");
-PlaceholderManager.addPlaceholder(passwordtxt, "At least 6 character including 1 special character"); // this use password text field
-}
-
 // Method to check if the email is already registered
 private boolean isEmailRegistered(String email) {
-    String filename = role + ".txt";
+    String filename = "user.txt";
     File file = new File(filename);
     if (file.exists()) {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
@@ -139,6 +60,26 @@ private boolean isEmailRegistered(String email) {
         }
     }
     return false; // Email is not registered
+}
+
+//Generate sample password
+private String generateSamplePassword(String email) {
+    final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%";
+    SecureRandom random = new SecureRandom();
+    StringBuilder password = new StringBuilder();
+
+    // Extract the part of the email before '@'
+    String usernamePart = email.split("@")[0]; // Split at '@' and take the first part
+
+    // Add the username part to the password
+    password.append(usernamePart);
+
+    // Append 3 random characters
+    for (int i = 0; i < 3; i++) {
+        password.append(characters.charAt(random.nextInt(characters.length())));
+    }
+
+    return password.toString();
 }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -264,76 +205,63 @@ private boolean isEmailRegistered(String email) {
     }//GEN-LAST:event_usernametxtActionPerformed
 
     private void bRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRegisterActionPerformed
-   // Check if the email is already registered
+    String email = emailtxt.getText().trim();
+    String username = usernametxt.getText().trim();
+    
+    //Validation for email and name
     if (isEmailRegistered(emailtxt.getText().trim())) {
         JOptionPane.showMessageDialog(null, "This email is already registered.");
         emailtxt.requestFocus();
         Admin.clearFields(emailtxt);
         return;
     }
-    if (!Admin.validateInputs(role, emailtxt, usernametxt, agetxt, phonetxt, platnumtxt, shoptxt, addresstxta)) {
-        return; // Exit if validation fails
-    }
-    String placeholder = "At least 6 character including 1 special character";
-    String password = String.valueOf(passwordtxt.getPassword()).trim();
-    if (password.isEmpty()) {
-        JOptionPane.showMessageDialog(null, "Password cannot be empty.");
-        passwordtxt.requestFocus();
+    if (email.isEmpty() || !email.contains("@")) {
+        JOptionPane.showMessageDialog(null, "Please enter a valid email.");
+        emailtxt.requestFocus();
         return;
     }
-    if (password.length() < 6) {
-        JOptionPane.showMessageDialog(null, "Password must be at least 6 characters.");
-        passwordtxt.requestFocus();
+    if (username.isEmpty()) {
+        JOptionPane.showMessageDialog(null, "Name cannot be empty.");
+        usernametxt.requestFocus();
         return;
     }
-    if (!password.matches("^(?=.*[!@#$%^&*]).{6,}$")) {
-        JOptionPane.showMessageDialog(null, "Password must include at least one special character (!@#$%^&*).");
-        passwordtxt.requestFocus();
-        return;
-    }
+    // Generate a sample password
+    String samplePassword = generateSamplePassword(email);
 
-        try{
-            String filename = role + ".txt";
-            File file = new File(filename);
+    try {
+        // Write user information to user.txt
+        String userFileName = "user.txt";
+        File userFile = new File(userFileName);
 
-            if (file.exists()) {
-                try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-                    String lastLine = null, currentLine;
-                    while ((currentLine = br.readLine()) != null) {
-                        lastLine = currentLine;
-                    }
-                    if (lastLine != null) {
-                        String[] parts = lastLine.split(";");
-                    }
-                }
-            }
-            
-            FileWriter fw = new FileWriter(filename,true);
-            StringBuilder info = new StringBuilder();
-            info.append(emailtxt.getText()).append(";")
-                .append(usernametxt.getText()).append(";")
-                .append(gendercbx.getSelectedItem()).append(";")
-                .append(agetxt.getText()).append(";")
-                .append(phonetxt.getText()).append(";")
-                .append(new String(passwordtxt.getPassword())).append(";");
-            
-            if("customer".equals(role)){
-                info.append(addresstxta.getText()).append(";");
-            }else if("vendor".equals(role)) {
-                info.append(shoptxt.getText()).append(";");
-            } else if ("runner".equals(role)) {
-                info.append(platnumtxt.getText()).append(";")
-                    .append(cartypecbx.getSelectedItem()).append(";");
-            }
-            
-            fw.write(info.append("\n").toString());
-            fw.close();
-            
-            JOptionPane.showMessageDialog(null, "Successfully registered as " + role + "!");
-            clearFields();
-            }catch(IOException e){
-                JOptionPane.showMessageDialog(null, "Error:" + e.getMessage());
-            }
+        try (FileWriter userWriter = new FileWriter(userFile, true)) {
+            StringBuilder userInfo = new StringBuilder();
+            userInfo.append(email).append(";")
+                    .append(username).append(";")
+                    .append(samplePassword).append(";")
+                    .append(role).append(";;") // to use for update after login such as userBirth and conctNum
+                    .append("\n");
+
+            userWriter.write(userInfo.toString());
+        }
+
+        // Handle role-specific file creation
+        String roleFileName = role + ".txt";
+        File roleFile = new File(roleFileName);
+
+        if (!roleFile.exists()) {
+            roleFile.createNewFile();
+        }
+
+        try (FileWriter roleWriter = new FileWriter(roleFile, true)) {
+            roleWriter.write(email + ";;\n");
+        }
+
+        JOptionPane.showMessageDialog(null, "Successfully registered as " + role + "!\nYour sample password is: " + samplePassword);
+        clearFields(); // Clear input fields after successful registration
+
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+    }
     }//GEN-LAST:event_bRegisterActionPerformed
 
     private void bBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bBackActionPerformed
