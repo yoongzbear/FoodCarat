@@ -5,13 +5,14 @@
 package FoodCarat;
 
 import javax.swing.JOptionPane;
-
 /**
  *
  * @author User
  */
-public class Admin {
-    super(adminEmail, adminPassword);
+public class Admin extends user{
+    public Admin(String adminEmail, String adminPassword) {
+        super(adminEmail, adminPassword);
+    }
 }
 
 public static void customizeForm(String role, 
@@ -70,70 +71,71 @@ public static boolean validateInputs(
     javax.swing.JTextArea addresstxta
 ) {
 
-// Common validation logic
-if (emailtxt.getText().trim().isEmpty() || !emailtxt.getText().contains("@")) {
-    JOptionPane.showMessageDialog(null, "Please enter a valid email.");
-    emailtxt.requestFocus();
-    return false;
-}
-if (nametxt.getText().trim().isEmpty() || nametxt.getText().equals("Enter your full name")) {
-    JOptionPane.showMessageDialog(null, "Name cannot be empty.");
-    nametxt.requestFocus();
-    return false;
-}
-if (agetxt.getText().trim().isEmpty()) {
-    JOptionPane.showMessageDialog(null, "Age cannot be empty.");
-    agetxt.requestFocus();
-    return false;
-}
-try {
-    int age = Integer.parseInt(agetxt.getText().trim());
-    if (age <= 0) {
-        JOptionPane.showMessageDialog(null, "Age must be a positive number.");
+    // Common validation logic
+    if (emailtxt.getText().trim().isEmpty() || !emailtxt.getText().contains("@")) {
+        JOptionPane.showMessageDialog(null, "Please enter a valid email.");
+        emailtxt.requestFocus();
+        return false;
+    }
+    if (nametxt.getText().trim().isEmpty() || nametxt.getText().equals("Enter your full name")) {
+        JOptionPane.showMessageDialog(null, "Name cannot be empty.");
+        nametxt.requestFocus();
+        return false;
+    }
+    if (agetxt.getText().trim().isEmpty()) {
+        JOptionPane.showMessageDialog(null, "Age cannot be empty.");
         agetxt.requestFocus();
         return false;
     }
-} catch (NumberFormatException e) {
-    JOptionPane.showMessageDialog(null, "Age must be a valid number.");
-    agetxt.requestFocus();
-    return false;
-}
-if (phonetxt.getText().trim().isEmpty() || phonetxt.getText().equals("XXX-XXXXXXX")) {
-    JOptionPane.showMessageDialog(null, "Phone number cannot be empty.");
-    phonetxt.requestFocus();
-    return false;
-}
+    try {
+        int age = Integer.parseInt(agetxt.getText().trim());
+        if (age <= 0) {
+            JOptionPane.showMessageDialog(null, "Age must be a positive number.");
+            agetxt.requestFocus();
+            return false;
+        }
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(null, "Age must be a valid number.");
+        agetxt.requestFocus();
+        return false;
+    }
+    if (phonetxt.getText().trim().isEmpty() || phonetxt.getText().equals("XXX-XXXXXXX")) {
+        JOptionPane.showMessageDialog(null, "Phone number cannot be empty.");
+        phonetxt.requestFocus();
+        return false;
+    }
 
-String phonePattern = "\\d{3}-\\d{7}"; // Format: XXX-XXXXXXX
-if (!phonetxt.getText().matches(phonePattern)) {
-    JOptionPane.showMessageDialog(null, "Invalid phone number format. Use XXX-XXXXXXX.");
-    phonetxt.requestFocus();
-    return false;
-}
+    String phonePattern = "\\d{3}-\\d{7}"; // Format: XXX-XXXXXXX
+    if (!phonetxt.getText().matches(phonePattern)) {
+        JOptionPane.showMessageDialog(null, "Invalid phone number format. Use XXX-XXXXXXX.");
+        phonetxt.requestFocus();
+        return false;
+    }
 
-// Role-specific validation
-switch (role) {
-    case "customer":
-        if (addresstxta.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Address cannot be empty for customers.");
-            addresstxta.requestFocus();
-            return false;
-        }
-        break;
-    case "vendor":
-        if (shoptxt.getText().trim().isEmpty() || shoptxt.getText().equals("Enter your shop name")) {
-            JOptionPane.showMessageDialog(null, "Shop name cannot be empty for vendors.");
-            shoptxt.requestFocus();
-            return false;
-        }
-        break;
-    case "runner":
-        if (platnumtxt.getText().trim().isEmpty() || platnumtxt.getText().equals("eg. 0110051 UiOVqjEe")) {
-            JOptionPane.showMessageDialog(null, "Plate number cannot be empty for runners.");
-            platnumtxt.requestFocus();
-            return false;
-        }
-        break;
-}
-return true; // All validations passed
+    // Role-specific validation
+    switch (role) {
+        case "customer":
+            if (addresstxta.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Address cannot be empty for customers.");
+                addresstxta.requestFocus();
+                return false;
+            }
+            break;
+        case "vendor":
+            if (shoptxt.getText().trim().isEmpty() || shoptxt.getText().equals("Enter your shop name")) {
+                JOptionPane.showMessageDialog(null, "Shop name cannot be empty for vendors.");
+                shoptxt.requestFocus();
+                return false;
+            }
+            break;
+        case "runner":
+            if (platnumtxt.getText().trim().isEmpty() || platnumtxt.getText().equals("eg. 0110051 UiOVqjEe")) {
+                JOptionPane.showMessageDialog(null, "Plate number cannot be empty for runners.");
+                platnumtxt.requestFocus();
+                return false;
+            }
+            break;
+    }
+    return true; // All validations passed
+    }
 }
