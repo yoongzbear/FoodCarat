@@ -46,9 +46,6 @@ public class vendorMain extends javax.swing.JFrame {
         nameTxt = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         cuisineTxt = new javax.swing.JTextField();
-        editBtn = new javax.swing.JButton();
-        saveBtn = new javax.swing.JButton();
-        jLabel6 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel = new javax.swing.JLabel();
         dineInBox = new javax.swing.JCheckBox();
@@ -127,22 +124,6 @@ public class vendorMain extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel5.setText("Vendor Cuisine:");
 
-        editBtn.setText("Edit Profile");
-        editBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                editBtnActionPerformed(evt);
-            }
-        });
-
-        saveBtn.setText("Save Profile");
-        saveBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveBtnActionPerformed(evt);
-            }
-        });
-
-        jLabel6.setText("add image for upload image");
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -167,16 +148,8 @@ public class vendorMain extends javax.swing.JFrame {
                             .addComponent(salutationTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap(172, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(editBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(saveBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(vendorLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel6)))
-                        .addGap(26, 26, 26))))
+                        .addComponent(vendorLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(26, 438, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -184,9 +157,7 @@ public class vendorMain extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(salutationTxt)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(vendorLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6))
+                .addComponent(vendorLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
@@ -199,10 +170,6 @@ public class vendorMain extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(cuisineTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(editBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(saveBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -392,16 +359,6 @@ public class vendorMain extends javax.swing.JFrame {
         dispose(); 
     }//GEN-LAST:event_orderHistoryBtnActionPerformed
 
-    private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
-        //when clicked, enable the save profile button, disable edit button, enable text fields to fill in except email
-    }//GEN-LAST:event_editBtnActionPerformed
-
-    private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
-        //save the text field info into text file 
-        //if vendor name is edited, rewrite user file
-        //if change cuisine, rewrite vendor file
-    }//GEN-LAST:event_saveBtnActionPerformed
-
     private void dineInBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dineInBoxActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_dineInBoxActionPerformed
@@ -467,7 +424,6 @@ public class vendorMain extends javax.swing.JFrame {
     private javax.swing.JButton currentOrderBtn;
     private javax.swing.JCheckBox deliveryBox;
     private javax.swing.JCheckBox dineInBox;
-    private javax.swing.JButton editBtn;
     private javax.swing.JTextField emailTxt;
     private javax.swing.JButton itemBtn;
     private javax.swing.JLabel jLabel;
@@ -475,7 +431,6 @@ public class vendorMain extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JButton logoutBtn;
@@ -486,7 +441,6 @@ public class vendorMain extends javax.swing.JFrame {
     private javax.swing.JButton revenueBtn;
     private javax.swing.JButton reviewBtn;
     private javax.swing.JLabel salutationTxt;
-    private javax.swing.JButton saveBtn;
     private javax.swing.JCheckBox takeawayBox;
     private javax.swing.JButton updateMethodBtn;
     private javax.swing.JLabel vendorLogo;

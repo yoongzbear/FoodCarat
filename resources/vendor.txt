@@ -1,1 +1,2 @@
-CHAGEE;chagee@gmail.com;Beverage;/FoodCarat/images/vendor/ChageeLogo.png;
+chagee@gmail.com,Beverage,/FoodCarat/images/vendor/ChageeLogo.png,
+alya@mail.com,Restaurant,/FoodCarat/images/vendor/ChageeLogo.png,
