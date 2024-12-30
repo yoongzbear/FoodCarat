@@ -1,2 +1,2 @@
-chagee@gmail.com,Beverage,/FoodCarat/images/vendor/ChageeLogo.png,[Dine In;Take Away;Delivery],17,
-alya@mail.com,Restaurant,/FoodCarat/images/vendor/ChageeLogo.png,[Dine In;Take Away;Delivery],17,
+chagee@gmail.com,Beverage,images/vendors/ChageeLogo.png,[Dine In;Take Away;Delivery],17
+alya@mail.com,Restaurant,images/vendors/ChageeLogo.png,[Dine In],17

@@ -4,6 +4,10 @@
  */
 package FoodCarat;
 
+import java.awt.Image;
+import java.io.File;
+import java.util.Arrays;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 /**
@@ -15,6 +19,8 @@ public class vendorMain extends javax.swing.JFrame {
     /**
      * Creates new form vendorMain
      */
+    
+    //change to userSession 
     private String email = "alya@mail.com";
     private String name = "Alya";
     Vendor vendor = new Vendor(email);
@@ -38,16 +44,33 @@ public class vendorMain extends javax.swing.JFrame {
     public void displayInfo() {
         String[] vendorInfo = vendor.getVendorInfo(email);
         if (vendorInfo != null) {
-            // Update labels with vendor information
-            emailTxt.setText(vendorInfo[0]); // Email
+            emailTxt.setText(vendorInfo[0]);
             nameTxt.setText(name);
             cuisineTxt.setText(vendorInfo[1]);
             creditTxt.setText("RM"+vendorInfo[4]); //later add format
+            
+            ImageIcon icon = new ImageIcon(vendorInfo[2]);
+            Image img = icon.getImage();
+            Image resizedImage = img.getScaledInstance(vendorLogo.getWidth(), vendorLogo.getHeight(), Image.SCALE_SMOOTH);
+            vendorLogo.setIcon(new ImageIcon(resizedImage));
+            
+            displayMethod(vendorInfo);
         } else {
             // Handle case where vendor info is not found
             JOptionPane.showMessageDialog(this, "Vendor information not found for email: " + email,
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+    
+    //display available method
+    public void displayMethod(String[] vendorInfo) {
+        String methods = vendorInfo[3];
+        methods = methods.substring(1, methods.length() - 1); //remove the square brackets
+        String[] methodList = methods.split(";");
+        //display checkboxes based on method saved
+        dineInBox.setSelected(Arrays.asList(methodList).contains("Dine In"));
+        takeawayBox.setSelected(Arrays.asList(methodList).contains("Take Away"));
+        deliveryBox.setSelected(Arrays.asList(methodList).contains("Delivery"));
     }
 
     /**
@@ -432,6 +455,24 @@ public class vendorMain extends javax.swing.JFrame {
 
     private void updateMethodBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateMethodBtnActionPerformed
         //see which is ticked, rewrite in the text file for the available methods, save as array
+        String[] selectedMethod = new String[3];
+        int index = 0;
+        
+        //check if checkbox is ticked
+         if (dineInBox.isSelected()) {
+            selectedMethod[index++] = "Dine In";
+        }
+        if (takeawayBox.isSelected()) {
+            selectedMethod[index++] = "Take Away";
+        }
+        if (deliveryBox.isSelected()) {
+            selectedMethod[index++] = "Delivery";
+        }
+        
+        selectedMethod = Arrays.copyOf(selectedMethod, index); //adjust the size of array
+        String methodString = "[" + String.join(";", selectedMethod) + "]";
+        //call method to update method from vendor class
+        vendor.updateMethodAvailable(methodString);
     }//GEN-LAST:event_updateMethodBtnActionPerformed
 
     private void openAllBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openAllBtnActionPerformed

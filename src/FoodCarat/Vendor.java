@@ -5,10 +5,14 @@
 package FoodCarat;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import javax.swing.JOptionPane;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -34,7 +38,6 @@ public class Vendor {
     //get vendor information in array
     public String[] getVendorInfo(String email){
         try {
-            //String fileName = "/resources/vendor.txt"; "C:\Users\mastu\OneDrive\Documents\NetBeansProjects\FoodCarat\resources\vendor.txt"
             File fileName = new File("resources/vendor.txt");
             FileReader fr = new FileReader(fileName);
             BufferedReader br = new BufferedReader(fr);
@@ -49,7 +52,7 @@ public class Vendor {
                     return data;
                 }
             }
-            
+            fr.close();
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }        
@@ -57,7 +60,41 @@ public class Vendor {
     }
     
     //update method availability
-    
+    public void updateMethodAvailable(String method) {
+        //get the methods stored in the array
+        //rewrite the index of the method in vendor.txt
+        List<String> lines = new ArrayList<>();
+        
+        try (BufferedReader reader = new BufferedReader(new FileReader("resources/vendor.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts[0].equals(email)) {
+                    parts[3] = method; //update the method
+                }
+                lines.add(String.join(",", parts)); 
+            }
+        } catch(IOException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+        
+        //put validation
+        
+        //write into file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("resources/vendor.txt"))) {
+            for (String line : lines) {
+                writer.write(line);
+                writer.newLine();
+            }
+//                    JOptionPane.showMessageDialog(null, "Profile updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+//                    SessionManager.setUser(this.email, this.role, updatedName);
+//                    disableButton();
+//                    disableEditTF();
+//                    btnEdit.setEnabled(true);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Failed to write to the file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
     
     
     //    protected String email;
