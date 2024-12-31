@@ -412,7 +412,7 @@ public class vendorMain extends javax.swing.JFrame {
     }//GEN-LAST:event_itemBtnActionPerformed
 
     private void notificationBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_notificationBtnActionPerformed
-        //new vendorNotification().setVisible(true);
+        new vendorNotification().setVisible(true);
         dispose();  
     }//GEN-LAST:event_notificationBtnActionPerformed
 
@@ -457,30 +457,51 @@ public class vendorMain extends javax.swing.JFrame {
         //see which is ticked, rewrite in the text file for the available methods, save as array
         String[] selectedMethod = new String[3];
         int index = 0;
+        String methodString = "";
         
         //check if checkbox is ticked
-         if (dineInBox.isSelected()) {
-            selectedMethod[index++] = "Dine In";
+        if (!dineInBox.isSelected() && !deliveryBox.isSelected() && !deliveryBox.isSelected()) {
+            int confirm = JOptionPane.showConfirmDialog(null, "Close all methods?", "Close All Methods", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                methodString = "[]";
+            }
+        } else {
+            if (dineInBox.isSelected()) {
+                selectedMethod[index++] = "Dine In";
+            }
+            if (takeawayBox.isSelected()) {
+                selectedMethod[index++] = "Take Away";
+            }
+            if (deliveryBox.isSelected()) {
+                selectedMethod[index++] = "Delivery";
+            }
+
+            selectedMethod = Arrays.copyOf(selectedMethod, index); //adjust the size of array
+            methodString = "[" + String.join(";", selectedMethod) + "]";
         }
-        if (takeawayBox.isSelected()) {
-            selectedMethod[index++] = "Take Away";
-        }
-        if (deliveryBox.isSelected()) {
-            selectedMethod[index++] = "Delivery";
-        }
-        
-        selectedMethod = Arrays.copyOf(selectedMethod, index); //adjust the size of array
-        String methodString = "[" + String.join(";", selectedMethod) + "]";
         //call method to update method from vendor class
         vendor.updateMethodAvailable(methodString);
+        displayInfo(); //refresh info
     }//GEN-LAST:event_updateMethodBtnActionPerformed
 
     private void openAllBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openAllBtnActionPerformed
-        //terus rewrite all methods into the vendor file
+        //add all methods
+        int confirm = JOptionPane.showConfirmDialog(null, "Open all methods?", "Open All Methods", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            String methodString = "[Dine In;Take Away;Delivery]";
+            vendor.updateMethodAvailable(methodString);
+            displayInfo(); //refresh info
+        }
     }//GEN-LAST:event_openAllBtnActionPerformed
 
     private void closeAllBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeAllBtnActionPerformed
-        //terus write [] for availability in the vendor file
+        //rewrite [] into methods for vendor
+        int confirm = JOptionPane.showConfirmDialog(null, "Close all methods?", "Close All Methods", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            String methodString = "[]";
+            vendor.updateMethodAvailable(methodString);
+            displayInfo(); //refresh info
+        }
     }//GEN-LAST:event_closeAllBtnActionPerformed
 
     /**

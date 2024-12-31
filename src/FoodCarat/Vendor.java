@@ -62,7 +62,6 @@ public class Vendor {
     //update method availability
     public void updateMethodAvailable(String method) {
         //get the methods stored in the array
-        //rewrite the index of the method in vendor.txt
         List<String> lines = new ArrayList<>();
         
         try (BufferedReader reader = new BufferedReader(new FileReader("resources/vendor.txt"))) {
@@ -86,11 +85,7 @@ public class Vendor {
                 writer.write(line);
                 writer.newLine();
             }
-//                    JOptionPane.showMessageDialog(null, "Profile updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-//                    SessionManager.setUser(this.email, this.role, updatedName);
-//                    disableButton();
-//                    disableEditTF();
-//                    btnEdit.setEnabled(true);
+            JOptionPane.showMessageDialog(null, "Available methods updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Failed to write to the file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
