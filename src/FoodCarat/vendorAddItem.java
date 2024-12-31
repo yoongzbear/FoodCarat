@@ -4,6 +4,12 @@
  */
 package FoodCarat;
 
+import java.awt.Image;
+import java.io.File;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 /**
  *
  * @author mastu
@@ -13,9 +19,23 @@ public class vendorAddItem extends javax.swing.JFrame {
     /**
      * Creates new form vendorAddItem
      */
+    
+    //variables
+    String imagePath = "";
+    File imageFile = null;
+    
     public vendorAddItem() {
         initComponents();
         getContentPane().setBackground(new java.awt.Color(186,85,211)); //setting background color of frame
+        
+        //prefill item ID 
+        displayID();
+    }
+    
+    //function to return latest item ID 
+    private void displayID() {
+        itemIDTxt.setEditable(false);
+        //call function to return latest row of data and display the latest id + 1 
     }
 
     /**
@@ -30,7 +50,7 @@ public class vendorAddItem extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         menuBtn = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        uploadedImgLabel = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -55,7 +75,9 @@ public class vendorAddItem extends javax.swing.JFrame {
             }
         });
 
-        jLabel2.setText("upload photo here");
+        uploadedImgLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        uploadedImgLabel.setText("Upload Item Image");
+        uploadedImgLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         jLabel3.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel3.setText("Item Name:");
@@ -66,7 +88,12 @@ public class vendorAddItem extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel5.setText("Item Price (RM):");
 
-        typeBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        typeBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Type", "Food", "Beverage", "Dessert", "Set" }));
+        typeBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                typeBoxActionPerformed(evt);
+            }
+        });
 
         addBtn.setText("Add");
         addBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -106,7 +133,7 @@ public class vendorAddItem extends javax.swing.JFrame {
                                 .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(uploadedImgLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(34, 34, 34)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(selectImgBtn)
@@ -127,7 +154,7 @@ public class vendorAddItem extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(23, 23, 23)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(uploadedImgLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(selectImgBtn))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -184,7 +211,7 @@ public class vendorAddItem extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
-        //do data validation, check if vendor has same menu name
+        //do data validation, check if vendor has same menu name - call method 
         //data validation for price
     }//GEN-LAST:event_addBtnActionPerformed
 
@@ -200,8 +227,29 @@ public class vendorAddItem extends javax.swing.JFrame {
     }//GEN-LAST:event_menuBtnActionPerformed
 
     private void selectImgBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectImgBtnActionPerformed
-        // TODO add your handling code here:
+        //display image file chooser, display image chosen, return the file path or set the filepath value to the uploaded image path
+        String tempPath = "";
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter fileFilter = new FileNameExtensionFilter("PNG JPG AND JPEG", "png", "jpg","jpeg");
+        fileChooser.addChoosableFileFilter(fileFilter);
+        
+        int load = fileChooser.showOpenDialog(null);
+        if (load == fileChooser.APPROVE_OPTION) {
+            imageFile = fileChooser.getSelectedFile();
+            
+            //display preview of image using path of local storage
+            tempPath = imageFile.getAbsolutePath();
+            ImageIcon preview = new ImageIcon(tempPath);
+            Image resizedImage = preview.getImage().getScaledInstance(uploadedImgLabel.getWidth(), uploadedImgLabel.getHeight(), Image.SCALE_SMOOTH);
+            uploadedImgLabel.setIcon(new ImageIcon(resizedImage));
+            System.out.println(tempPath);
+        }
+        
     }//GEN-LAST:event_selectImgBtnActionPerformed
+
+    private void typeBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_typeBoxActionPerformed
 
     /**
      * @param args the command line arguments
@@ -243,7 +291,6 @@ public class vendorAddItem extends javax.swing.JFrame {
     private javax.swing.JButton cancelBtn;
     private javax.swing.JTextField itemIDTxt;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -254,5 +301,6 @@ public class vendorAddItem extends javax.swing.JFrame {
     private javax.swing.JTextField priceTxt;
     private javax.swing.JButton selectImgBtn;
     private javax.swing.JComboBox<String> typeBox;
+    private javax.swing.JLabel uploadedImgLabel;
     // End of variables declaration//GEN-END:variables
 }
