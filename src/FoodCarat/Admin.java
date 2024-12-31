@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
  *
  * @author User
  */
-public class Admin extends user{
+public class Admin extends User {
     
     public static void customizeForm(String role, 
                                  javax.swing.JComponent[] customerComponents, 
