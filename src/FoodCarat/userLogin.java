@@ -20,7 +20,7 @@ public class userLogin extends javax.swing.JFrame {
      */
     public userLogin() {
         initComponents();
-        setLocationRelativeTo(null); // Center the JFrame on screen
+        setLocationRelativeTo(null);
     }
     
      @Override

@@ -4,6 +4,8 @@
  */
 package FoodCarat;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Yuna
@@ -16,6 +18,8 @@ public class runnerMain extends javax.swing.JFrame {
     public runnerMain() {
         initComponents();
         setLocationRelativeTo(null);
+        User user = new User();
+        username.setText(user.getName());
     }
 
     /**
@@ -36,7 +40,7 @@ public class runnerMain extends javax.swing.JFrame {
         jRadioButton1 = new javax.swing.JRadioButton();
         jRadioButton2 = new javax.swing.JRadioButton();
         jPanel3 = new javax.swing.JPanel();
-        jButton5 = new javax.swing.JButton();
+        logoutButton = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
@@ -44,7 +48,7 @@ public class runnerMain extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        runnerName = new javax.swing.JLabel();
+        username = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -117,8 +121,13 @@ public class runnerMain extends javax.swing.JFrame {
 
         jPanel3.setBackground(new java.awt.Color(153, 255, 153));
 
-        jButton5.setText("Log Out");
-        jButton5.setPreferredSize(new java.awt.Dimension(70, 20));
+        logoutButton.setText("Log Out");
+        logoutButton.setPreferredSize(new java.awt.Dimension(70, 20));
+        logoutButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logoutButtonActionPerformed(evt);
+            }
+        });
 
         jButton1.setText("View Task");
         jButton1.setPreferredSize(new java.awt.Dimension(70, 20));
@@ -142,7 +151,7 @@ public class runnerMain extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE)
                     .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(logoutButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(29, Short.MAX_VALUE))
@@ -159,7 +168,7 @@ public class runnerMain extends javax.swing.JFrame {
                 .addGap(26, 26, 26)
                 .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26)
-                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(logoutButton, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(34, 34, 34))
         );
 
@@ -171,8 +180,8 @@ public class runnerMain extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Cambria Math", 1, 24)); // NOI18N
         jLabel5.setText("Hi, ");
 
-        runnerName.setFont(new java.awt.Font("Cambria Math", 0, 20)); // NOI18N
-        runnerName.setText("(Ruuner Name)");
+        username.setFont(new java.awt.Font("Cambria Math", 0, 20)); // NOI18N
+        username.setText("(Ruuner Name)");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -184,7 +193,7 @@ public class runnerMain extends javax.swing.JFrame {
                 .addGap(52, 52, 52)
                 .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(runnerName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(username, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -197,7 +206,7 @@ public class runnerMain extends javax.swing.JFrame {
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGap(12, 12, 12)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(runnerName)
+                            .addComponent(username)
                             .addComponent(jLabel5))))
                 .addContainerGap(33, Short.MAX_VALUE))
         );
@@ -288,6 +297,14 @@ public class runnerMain extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
+        User user = new User();
+        user.logOut();
+        JOptionPane.showMessageDialog(this, "You have been logged out!");
+        this.dispose();
+        new userLogin().setVisible(true);
+    }//GEN-LAST:event_logoutButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -329,7 +346,6 @@ public class runnerMain extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -344,7 +360,8 @@ public class runnerMain extends javax.swing.JFrame {
     private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JLabel runnerName;
+    private javax.swing.JButton logoutButton;
     private javax.swing.JLabel taskInfo;
+    private javax.swing.JLabel username;
     // End of variables declaration//GEN-END:variables
 }
