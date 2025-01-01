@@ -4,18 +4,48 @@
  */
 package FoodCarat;
 
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author mastu
  */
 public class vendorMenu extends javax.swing.JFrame {
 
+    Item item = new Item();
+    //change to userSession 
+    private String email = "alya@mail.com";
+    private String name = "Alya";
+    
     /**
      * Creates new form vendorMenu
      */
     public vendorMenu() {
         initComponents();
         getContentPane().setBackground(new java.awt.Color(186,85,211)); //setting background color of frame
+        setLocationRelativeTo(null);
+        
+        //display items in table
+        displayItems();
+    }
+    
+    public void displayItems() {
+        DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
+        List<String[]> allItems = item.getAllItems();
+        int index = 1;
+        //1,Dahongpao Milk Tea,Beverage,13.90,images/menu/chageeDMT.png,alya@mail.com
+        for (String[] itemData : allItems) {
+            if (itemData[5].equals(email)) {
+                String itemName = itemData[1];
+                String itemType = itemData[2];
+                String itemPrice = itemData[3];
+                String itemImgPath = itemData[4];
+                model.addRow(
+                        new Object[]{index, itemImgPath, itemName, itemType, itemPrice});
+            }
+            index++;
+        }
     }
 
     /**
@@ -30,7 +60,7 @@ public class vendorMenu extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         menuBtn = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        itemTable = new javax.swing.JTable();
         viewBtn = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -51,6 +81,7 @@ public class vendorMenu extends javax.swing.JFrame {
         beverageRadiobBtn = new javax.swing.JRadioButton();
         dessertRadioBtn = new javax.swing.JRadioButton();
         filterBtn = new javax.swing.JButton();
+        setRadioBtn = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -64,15 +95,19 @@ public class vendorMenu extends javax.swing.JFrame {
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        itemTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "No.", "ID", "Photo", "Name", "Type", "Price (RM)"
+                "No.", "Photo", "Name", "Type", "Price (RM)"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(itemTable);
+        if (itemTable.getColumnModel().getColumnCount() > 0) {
+            itemTable.getColumnModel().getColumn(0).setResizable(false);
+            itemTable.getColumnModel().getColumn(0).setPreferredWidth(10);
+        }
 
         viewBtn.setText("View Details");
         viewBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -218,6 +253,8 @@ public class vendorMenu extends javax.swing.JFrame {
             }
         });
 
+        setRadioBtn.setText("Set");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -225,11 +262,6 @@ public class vendorMenu extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(32, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(192, 192, 192)
-                        .addComponent(menuBtn)
-                        .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -242,6 +274,8 @@ public class vendorMenu extends javax.swing.JFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(dessertRadioBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(setRadioBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(filterBtn))
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
@@ -250,7 +284,12 @@ public class vendorMenu extends javax.swing.JFrame {
                                             .addComponent(addBtn))
                                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 719, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(10, 10, 10)))
-                        .addGap(22, 22, 22))))
+                        .addGap(22, 22, 22))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(192, 192, 192)
+                        .addComponent(menuBtn)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -264,7 +303,8 @@ public class vendorMenu extends javax.swing.JFrame {
                     .addComponent(foodRadioBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(beverageRadiobBtn)
                     .addComponent(dessertRadioBtn)
-                    .addComponent(filterBtn))
+                    .addComponent(filterBtn)
+                    .addComponent(setRadioBtn))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -362,6 +402,7 @@ public class vendorMenu extends javax.swing.JFrame {
     private javax.swing.JTextField itemIDTxt;
     private javax.swing.JTextField itemNameTxt;
     private javax.swing.JTextField itemNameTxt1;
+    private javax.swing.JTable itemTable;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -371,9 +412,9 @@ public class vendorMenu extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JButton menuBtn;
     private javax.swing.JButton saveBtn;
+    private javax.swing.JRadioButton setRadioBtn;
     private javax.swing.JComboBox<String> typeBox;
     private javax.swing.JButton viewBtn;
     // End of variables declaration//GEN-END:variables

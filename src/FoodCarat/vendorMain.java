@@ -28,6 +28,7 @@ public class vendorMain extends javax.swing.JFrame {
     public vendorMain() {
         initComponents();
         getContentPane().setBackground(new java.awt.Color(186,85,211)); //setting background color of frame
+        setLocationRelativeTo(null);
         
         //display user's name in salutationTxt based on session's name
         //alya@mail.com,Restaurant,/FoodCarat/images/vendor/ChageeLogo.png,[Dine In,Take Away,Delivery],17,

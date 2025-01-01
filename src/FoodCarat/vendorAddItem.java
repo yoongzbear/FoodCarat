@@ -8,6 +8,7 @@ import java.awt.Image;
 import java.io.File;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
@@ -23,12 +24,17 @@ public class vendorAddItem extends javax.swing.JFrame {
     //variables
     String imagePath = "";
     File imageFile = null;
+    //change to userSession 
+    private String email = "alya@mail.com";
+    private String name = "Alya";
+    Item item = new Item();
     
     public vendorAddItem() {
         initComponents();
         getContentPane().setBackground(new java.awt.Color(186,85,211)); //setting background color of frame
+        setLocationRelativeTo(null);
         
-        //prefill item ID 
+        //prefill new item ID 
         displayID();
     }
     
@@ -36,6 +42,9 @@ public class vendorAddItem extends javax.swing.JFrame {
     private void displayID() {
         itemIDTxt.setEditable(false);
         //call function to return latest row of data and display the latest id + 1 
+        String[] latestItem = item.latestItem();
+        int newItemID = Integer.parseInt(latestItem[0]) + 1;
+        itemIDTxt.setText(String.valueOf(newItemID));
     }
 
     /**
@@ -213,6 +222,11 @@ public class vendorAddItem extends javax.swing.JFrame {
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
         //do data validation, check if vendor has same menu name - call method 
         //data validation for price
+        if(nameTxt.getText()==""||typeBox.getSelectedItem()=="Select Type"||priceTxt.getText()=="") {
+            JOptionPane.showMessageDialog(null, "Please fill in all fields.", "Incomplete Submission", JOptionPane.WARNING_MESSAGE);
+        } else {
+            System.out.println("otw");
+        }
     }//GEN-LAST:event_addBtnActionPerformed
 
     private void cancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtnActionPerformed

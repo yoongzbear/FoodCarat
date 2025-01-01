@@ -4,6 +4,13 @@
  */
 package FoodCarat;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author mastu
@@ -16,7 +23,10 @@ public class Item {
     private String itemImgPath;
     private String venEmail;
 
-//constructor
+    //constructor
+    public Item() {
+        
+    }
     
     //setters
     
@@ -33,14 +43,59 @@ public class Item {
     
     //get item data for latest row (last row)
     public String[] latestItem() {
-        //get last row in tetx file
+        //get last row in text file
         String[] latestRow = null;
+        try {
+            FileReader fr = new FileReader("resources/item.txt");
+            BufferedReader br = new BufferedReader(fr);
+            String read;
+            
+            while ((read = br.readLine()) != null) {
+                //get last row
+                latestRow = read.split(",");
+            }
+            
+            br.close();
+            fr.close();
+        } catch(IOException e) {
+            JOptionPane.showMessageDialog(null, "Failed to read from the file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
         return latestRow;
     }
     
-    //get data for all items for the vendor
-    public void vendorItems(String venEmail) {
-        //meow
+//    public void vendorItems(String venEmail) {       
+//        try {
+//            FileReader fr = new FileReader("resources/item.txt");
+//            BufferedReader br = new BufferedReader(fr);
+//            String read;
+//            
+//            while ((read = br.readLine()) != null) {
+//                //get all rows where vendor email == venEmail
+//            }
+//        } catch(IOException e) {
+//            JOptionPane.showMessageDialog(null, "Failed to read from the file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+//        }
+//    }
+    
+    //get data for all items
+    public List<String[]> getAllItems() { 
+        List<String[]> allItems = new ArrayList<>();
+        
+        try {
+            FileReader fr = new FileReader("resources/item.txt");
+            BufferedReader br = new BufferedReader(fr);
+            String read;
+            
+            while ((read = br.readLine()) != null) {
+                //get all rows where vendor email == venEmail
+                String[] itemData = read.split(",");
+                allItems.add(itemData);
+            }
+        } catch(IOException e) {
+            JOptionPane.showMessageDialog(null, "Failed to read from the file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        return allItems;
     }
     
     //update item
