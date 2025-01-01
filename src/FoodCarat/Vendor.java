@@ -89,23 +89,5 @@ public class Vendor {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Failed to write to the file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }
-    
-    
-    //    protected String email;
-//    protected String password;
-//    protected String name;
-    
-//    public user(String email, String password, String name) {
-//        this.email = email;
-//        this.password = password;
-//        this.name = name;
-//    }
-    
-    //method
-    //login - verify user
-    
-    //set user session - name, email, type
-    
-    //logout
+    }  
 }
