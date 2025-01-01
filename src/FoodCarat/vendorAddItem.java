@@ -6,6 +6,8 @@ package FoodCarat;
 
 import java.awt.Image;
 import java.io.File;
+import java.text.DecimalFormat;
+import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -45,6 +47,27 @@ public class vendorAddItem extends javax.swing.JFrame {
         String[] latestItem = item.latestItem();
         int newItemID = Integer.parseInt(latestItem[0]) + 1;
         itemIDTxt.setText(String.valueOf(newItemID));
+    }
+    
+    //validate price in text field
+    private boolean validatePrice(String priceText) {
+        try {
+            double price = Double.parseDouble(priceText);
+            return price >= 0;
+        } catch (NumberFormatException e) {
+            return false; 
+        } 
+    }
+    
+    //validate item name duplication
+    private boolean duplicateName(String name) {
+        List<String[]> allItems = item.getAllItems();
+        for (String[] item : allItems) { 
+            if (item[1].equalsIgnoreCase(name) && item[5].equals(email)) { 
+                return true; 
+            }
+        }
+        return false;
     }
 
     /**
@@ -222,10 +245,56 @@ public class vendorAddItem extends javax.swing.JFrame {
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
         //do data validation, check if vendor has same menu name - call method 
         //data validation for price
-        if(nameTxt.getText()==""||typeBox.getSelectedItem()=="Select Type"||priceTxt.getText()=="") {
+        String name = nameTxt.getText().trim();
+        String type = typeBox.getSelectedItem().toString().trim();
+        String priceText = priceTxt.getText().trim();
+        
+        DecimalFormat df = new DecimalFormat("0.00");
+        double price;
+
+        //validate if fields are empty
+        if (name.isEmpty() || type.equals("Select Type") || priceText.isEmpty() || imagePath == "") {
             JOptionPane.showMessageDialog(null, "Please fill in all fields.", "Incomplete Submission", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        //validate price field
+        if (!validatePrice(priceText)) {
+            JOptionPane.showMessageDialog(null, "Price must be a numerical value.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+            return; 
         } else {
-            System.out.println("otw");
+            price = Double.parseDouble(priceText);
+        }
+        
+        //validate item name if is duplicated
+        if (duplicateName(name)) {
+            JOptionPane.showMessageDialog(null, "Item name is taken, please change the item name.", "Duplicate Name", JOptionPane.ERROR_MESSAGE);
+            return; 
+        }
+        else {
+            //upload image into menu folder
+            String newImagePath = item.uploadImage(imagePath);
+            if (newImagePath == null) {
+                JOptionPane.showMessageDialog(null, "Failed to save the image.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            } else {
+                //get next ID
+                String[] latestItem = item.latestItem();
+                int newItemID = Integer.parseInt(latestItem[0]) + 1;
+                
+                String[] newItem = new String[6];
+                newItem[0] = String.valueOf(newItemID); 
+                newItem[1] = name;
+                newItem[2] = type;
+                //newItem[3] = priceText;
+                newItem[3] = df.format(price).toString();
+                newItem[4] = newImagePath; 
+                newItem[5] = email;
+                
+                item.addItem(newItem);
+                new vendorMenu().setVisible(true);
+                dispose();
+            }
         }
     }//GEN-LAST:event_addBtnActionPerformed
 
@@ -241,8 +310,7 @@ public class vendorAddItem extends javax.swing.JFrame {
     }//GEN-LAST:event_menuBtnActionPerformed
 
     private void selectImgBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectImgBtnActionPerformed
-        //display image file chooser, display image chosen, return the file path or set the filepath value to the uploaded image path
-        String tempPath = "";
+        //display file chooser
         JFileChooser fileChooser = new JFileChooser();
         FileNameExtensionFilter fileFilter = new FileNameExtensionFilter("PNG JPG AND JPEG", "png", "jpg","jpeg");
         fileChooser.addChoosableFileFilter(fileFilter);
@@ -252,11 +320,10 @@ public class vendorAddItem extends javax.swing.JFrame {
             imageFile = fileChooser.getSelectedFile();
             
             //display preview of image using path of local storage
-            tempPath = imageFile.getAbsolutePath();
-            ImageIcon preview = new ImageIcon(tempPath);
+            imagePath = imageFile.getAbsolutePath();
+            ImageIcon preview = new ImageIcon(imagePath);
             Image resizedImage = preview.getImage().getScaledInstance(uploadedImgLabel.getWidth(), uploadedImgLabel.getHeight(), Image.SCALE_SMOOTH);
             uploadedImgLabel.setIcon(new ImageIcon(resizedImage));
-            System.out.println(tempPath);
         }
         
     }//GEN-LAST:event_selectImgBtnActionPerformed
