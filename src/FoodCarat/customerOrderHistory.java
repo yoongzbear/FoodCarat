@@ -5,6 +5,8 @@
 
 package FoodCarat;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -34,6 +36,10 @@ public class customerOrderHistory extends javax.swing.JFrame {
         initComponents();
         populateTable();
         addTableListener();
+        lRunnerNameTitle.setVisible(false);
+        lRunnerName.setVisible(false);
+        lRunnerRating.setVisible(false);
+        cbRunnerRating.setVisible(false);
     }
     
     private Map<String, List<String[]>> orderDetailsMap = new HashMap<>();
@@ -57,15 +63,13 @@ public class customerOrderHistory extends javax.swing.JFrame {
                             //Get feedback
                             Order order = new Order(Integer.parseInt(orderID));
                             String feedback = order.getOrderFeedback();
-                            System.out.println("Feedback: " + feedback);
                             
                             String[] feedbackParts = feedback.split(",");
                             String orderID2 = feedbackParts[0];  
                             String orderFeedback = feedbackParts[1];  
-                            String vendorFeedback = feedbackParts[2]; 
-                            String vendorRating = feedbackParts[3];
+                            String vendorRating = feedbackParts[2]; 
+                            String vendorFeedback = feedbackParts[3];
                             String runnerRating = feedbackParts[4];
-                            System.out.println(orderID2 + "," + orderFeedback + "," + vendorFeedback + "," + vendorRating + "," + runnerRating);
                             
                             //Set the data to text fields
                             lOrderType.setText(orderType);
@@ -76,15 +80,26 @@ public class customerOrderHistory extends javax.swing.JFrame {
                             boolean validFeedback = true; 
 
                             //Check feedback based on the reviewType
-                            if (feedbackParts[2] == null || feedbackParts[2].isEmpty() || 
-                                feedbackParts[3] == null || feedbackParts[3].isEmpty() || 
-                                feedbackParts[4] == null || feedbackParts[4].isEmpty()) {
-                                    validFeedback = false;
+                            if ("null".equals(feedbackParts[1]) || "null".equals(feedbackParts[2]) || "null".equals(feedbackParts[3])) {
+                                validFeedback = false;
+                            }
+                            
+                            if ("Delivery".equals(orderType.trim())) {
+                                // Set visibility of components related to the runner
+                                lRunnerNameTitle.setVisible(true);
+                                lRunnerName.setVisible(true);
+                                lRunnerRating.setVisible(true);
+                                cbRunnerRating.setVisible(true);
+                            } else {
+                                // Set visibility of components when not a "Delivery" order
+                                lRunnerNameTitle.setVisible(false);
+                                lRunnerName.setVisible(false);
+                                lRunnerRating.setVisible(false);
+                                cbRunnerRating.setVisible(false);
                             }
                             
                             //Feedback
                             if (validFeedback) {
-                                
                                 //Feedback exists, set the text area to read-only and display feedback
                                 taOrderFeedback.setText(orderFeedback);
                                 taOrderFeedback.setEditable(false);
@@ -93,23 +108,25 @@ public class customerOrderHistory extends javax.swing.JFrame {
 
                                 taVendorFeedback.setText(vendorFeedback);
                                 taVendorFeedback.setEditable(false);
-                                cbVendorRating.setSelectedItem(runnerRating + " 🌟");
+                                cbRunnerRating.setSelectedItem(runnerRating + " 🌟");
                                 cbRunnerRating.setEditable(false);
                                 bFeedback.setVisible(false);
-                            } else {
+                            } else if (!validFeedback && ("Completed".equals(orderStatus) || "Cancelled".equals(orderStatus))){
                                 //No feedback, allow the user to enter feedback
                                 taOrderFeedback.setText("");
                                 taOrderFeedback.setEditable(true);
                                 cbVendorRating.setEditable(true);
 
                                 //Clear the selection (or reset it to a default choice, if desired)
-                                cbVendorRating.setSelectedItem(null);  // Optional: reset combo box selection
-
+                                cbVendorRating.setSelectedItem("Please Rate"); 
                                 taVendorFeedback.setText("");
                                 taVendorFeedback.setEditable(true);
                                 cbRunnerRating.setEditable(true);
-                                cbRunnerRating.setSelectedItem(null);
+                                cbRunnerRating.setSelectedItem("Please Rate");
+                                bFeedback.setEnabled(true);
                                 bFeedback.setVisible(true);
+                            } else {
+                                bFeedback.setEnabled(false);
                             }
                             
                             //For the order items
@@ -122,17 +139,13 @@ public class customerOrderHistory extends javax.swing.JFrame {
                             
                             //Loop through each item in the order and process it
                             for (String[] item : orderItemDetails) {
-                                String itemName = item[0];
-                                String itemQuantity = item[1];
-                                String itemPrice = item[2];
+                                //rOrderItemID, itemName, rItemQuantity, itemPrice
+                                String itemID = item[0];
+                                String itemName = item[1];
+                                String itemQuantity = item[2];
+                                String itemPrice = item[3];
+                                
                                 model.addRow(new Object[]{itemName, itemQuantity, "RM" + df.format(Double.parseDouble(itemPrice))});
-                            }
-                            
-                            if ("Delivery".equals(orderType)){
-                                lRunnerNameTitle.setVisible(true);
-                                lRunnerName.setVisible(true);
-                                lRunnerRating.setVisible(true);
-                                cbRunnerRating.setVisible(true);
                             }
                         } catch (IOException ex) {
                             Logger.getLogger(customerOrderHistory.class.getName()).log(Level.SEVERE, null, ex);
@@ -166,6 +179,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
                     String rOrderType = record[1];
                     String rOrderList = record[2].replace("[", "").replace("]", "");
                     String rOrderStatus = record[3];
+                    String rVendorEmail = record[5];
                     String rCancelReason = record[6]; 
                     
                     //Split the order items by semicolon
@@ -174,24 +188,37 @@ public class customerOrderHistory extends javax.swing.JFrame {
                     double totalPrice = 0.0; 
                     
                     List<String[]> orderItemDetails = new ArrayList<>();
-
+                    
                     //Loop through each item in the order and concatenate them with a comma
                     for (int i = 0; i < orderItems.length; i++) {
                         String[] itemDetails = orderItems[i].split(";");
-                        String rOrderItem = itemDetails[0]; 
+                        String rOrderItemID = itemDetails[0]; 
                         String rItemQuantity = itemDetails[1];
-                        String rItemPrice = itemDetails[2]; //Need to change based on the vendor ori price
+                        //String rItemPrice = itemDetails[2]; //Need to change based on the vendor ori price
                         
-                        orderItemDetails.add(new String[]{rOrderItem, rItemQuantity, rItemPrice});
+                        Item item1 = new Item();
+                        String[] itemInfo = item1.itemData(rOrderItemID);
+                        String itemID = itemInfo[0];
+                        String itemName = itemInfo[1];  
+                        String itemPrice = itemInfo[3];
+                        String itemImgPath = itemInfo[4];
+                        
+                        /*
+                        Vendor vendor = new Vendor(rVendorEmail); //change to get user info
+                        String[] vendorInfo = vendor.getVendorInfo(rVendorEmail);
+                        String vendorName = vendorInfo[1];
+                        */
+                        
+                        orderItemDetails.add(new String[]{rOrderItemID, itemName, rItemQuantity, itemPrice});
 
                         //Update total price
-                        totalPrice += Double.parseDouble(itemDetails[2]);
+                        totalPrice = totalPrice + Double.parseDouble(itemPrice) * Integer.parseInt(rItemQuantity);
 
                         //Append item to the StringBuilder with a comma
                         if (i > 0) {
                             orderItemsConcatenated.append(", "); 
                         }
-                        orderItemsConcatenated.append(rOrderItem);
+                        orderItemsConcatenated.append(itemName);
                     }
                     
                     
@@ -202,7 +229,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
                     orderDetailsMap.put(orderID, orderItemDetails);
 
                     //Add the booking details to the model
-                    model.addRow(new Object[]{orderID, rOrderType, allOrderItems, "RM" + df.format(totalPrice), "Vendor Name", rOrderStatus, rCancelReason});
+                    model.addRow(new Object[]{orderID, rOrderType, allOrderItems, "RM" + df.format(totalPrice), rVendorEmail, rOrderStatus, rCancelReason});
                 }
             }
         } catch (IOException e) {
@@ -234,11 +261,11 @@ public class customerOrderHistory extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tOrderHistory = new javax.swing.JTable();
         jLabel9 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
+        lVenFeedbackSection = new javax.swing.JLabel();
         lOrderType = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
+        lVenRateTitle = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
+        lOrderFeedbackSection = new javax.swing.JLabel();
         cbVendorRating = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
         lVendorName = new javax.swing.JLabel();
@@ -246,14 +273,14 @@ public class customerOrderHistory extends javax.swing.JFrame {
         taVendorFeedback = new javax.swing.JTextArea();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
+        lOrderFeedbackTitle = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         taOrderFeedback = new javax.swing.JTextArea();
         bAction = new javax.swing.JButton();
         ltotalPrice = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
         tbOrderItem = new javax.swing.JTable();
-        jLabel14 = new javax.swing.JLabel();
+        lVenFeedbackTitle = new javax.swing.JLabel();
         lRunnerNameTitle = new javax.swing.JLabel();
         bFeedback = new javax.swing.JButton();
         lRunnerName = new javax.swing.JLabel();
@@ -261,10 +288,13 @@ public class customerOrderHistory extends javax.swing.JFrame {
         lRunnerRating = new javax.swing.JLabel();
         lOrderStatus = new javax.swing.JLabel();
         cbRunnerRating = new javax.swing.JComboBox<>();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jScrollPane5.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        jScrollPane5.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane5.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
         bBack.setText("Back to Main Page");
         bBack.addActionListener(new java.awt.event.ActionListener() {
@@ -301,20 +331,20 @@ public class customerOrderHistory extends javax.swing.JFrame {
 
         jLabel9.setText("Order Type:");
 
-        jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel11.setText("Vendor Feedback Section");
+        lVenFeedbackSection.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lVenFeedbackSection.setText("Vendor Feedback Section");
 
         lOrderType.setText("orderType");
 
-        jLabel12.setText("Rating:");
+        lVenRateTitle.setText("Rating:");
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel3.setText("Order Details");
 
-        jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel10.setText("Order Feedback Section");
+        lOrderFeedbackSection.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lOrderFeedbackSection.setText("Order Feedback Section");
 
-        cbVendorRating.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1 🌟", "2 🌟", "3 🌟", "4 🌟", "5 🌟" }));
+        cbVendorRating.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Please Rate", "1 🌟", "2 🌟", "3 🌟", "4 🌟", "5 🌟" }));
 
         jLabel4.setText("Vendor Name :");
 
@@ -326,9 +356,9 @@ public class customerOrderHistory extends javax.swing.JFrame {
 
         jLabel6.setText("Ordered Item(s) :");
 
-        jLabel7.setText("Total Price :");
+        jLabel7.setText("Total Price Paid:");
 
-        jLabel8.setText("Order Feedback :");
+        lOrderFeedbackTitle.setText("Order Feedback :");
 
         taOrderFeedback.setColumns(20);
         taOrderFeedback.setRows(5);
@@ -346,9 +376,10 @@ public class customerOrderHistory extends javax.swing.JFrame {
                 "Order Item", "Quantity", "Price"
             }
         ));
+        tbOrderItem.getTableHeader().setReorderingAllowed(false);
         jScrollPane4.setViewportView(tbOrderItem);
 
-        jLabel14.setText("Feedback:");
+        lVenFeedbackTitle.setText("Feedback:");
 
         lRunnerNameTitle.setText("Runner Name:");
 
@@ -368,78 +399,81 @@ public class customerOrderHistory extends javax.swing.JFrame {
 
         lOrderStatus.setText("orderStatus");
 
-        cbRunnerRating.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1 🌟", "2 🌟", "3 🌟", "4 🌟", "5 🌟" }));
+        cbRunnerRating.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Please Rate", "1 🌟", "2 🌟", "3 🌟", "4 🌟", "5 🌟" }));
+
+        jLabel13.setText("Used Points:");
+
+        jLabel15.setText("usedPoint");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(22, 22, 22)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(22, 22, 22)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 682, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jRadioButton1)
-                                .addGap(18, 18, 18)
-                                .addComponent(jRadioButton2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jRadioButton3))
-                            .addComponent(jLabel3)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 379, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel9)
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                            .addComponent(jLabel5)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                            .addComponent(jLabel7)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(ltotalPrice)
-                                                .addComponent(lOrderStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(lOrderType)
-                                                .addComponent(lRunnerName))))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 682, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(jRadioButton1)
+                            .addGap(18, 18, 18)
+                            .addComponent(jRadioButton2)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(jRadioButton3))
+                        .addComponent(jLabel3)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 379, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGap(18, 18, 18)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(bAction, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(lVendorName, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jLabel9)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(lVendorName, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(bAction, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(lRunnerNameTitle)))
+                                        .addComponent(jLabel5)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel7)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(ltotalPrice)
+                                            .addComponent(lOrderStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(lOrderType)
+                                            .addComponent(lRunnerName)))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel15)
+                                        .addGap(38, 38, 38)))
+                                .addComponent(lRunnerNameTitle)
+                                .addComponent(jLabel13)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(lOrderFeedbackSection, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(lOrderFeedbackTitle, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(lVenFeedbackSection, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                    .addComponent(lVenRateTitle)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(cbVendorRating, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 682, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(lVenFeedbackTitle, javax.swing.GroupLayout.Alignment.LEADING))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(lRunnerRating)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cbRunnerRating, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(374, 374, 374)
-                                .addComponent(bFeedback, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jLabel12)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(cbVendorRating, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 682, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel14, javax.swing.GroupLayout.Alignment.LEADING)))))
+                                .addComponent(cbRunnerRating, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(bFeedback, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(33, 33, 33)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel1))
-                                .addGap(123, 123, 123))
-                            .addComponent(bBack, javax.swing.GroupLayout.Alignment.TRAILING))))
-                .addContainerGap(104, Short.MAX_VALUE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel1))
+                        .addGap(123, 123, 123))
+                    .addComponent(bBack))
+                .addGap(104, 104, 104))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -462,12 +496,16 @@ public class customerOrderHistory extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
                             .addComponent(lVendorName))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel13)
+                            .addComponent(jLabel15))
+                        .addGap(11, 11, 11)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel7)
                             .addComponent(ltotalPrice))
@@ -485,29 +523,30 @@ public class customerOrderHistory extends javax.swing.JFrame {
                             .addComponent(lRunnerName))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(bAction))
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jLabel10)
+                .addComponent(lOrderFeedbackSection)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel8)
+                .addComponent(lOrderFeedbackTitle)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel11)
+                .addComponent(lVenFeedbackSection)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel12)
+                    .addComponent(lVenRateTitle)
                     .addComponent(cbVendorRating, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel14)
+                .addComponent(lVenFeedbackTitle)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lRunnerRating)
-                    .addComponent(cbRunnerRating, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(bFeedback))
-                .addContainerGap(14, Short.MAX_VALUE))
+                    .addComponent(cbRunnerRating, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(bFeedback)
+                .addGap(205, 205, 205))
         );
 
         jScrollPane5.setViewportView(jPanel1);
@@ -520,7 +559,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 979, Short.MAX_VALUE)
+            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 1055, Short.MAX_VALUE)
         );
 
         pack();
@@ -534,15 +573,11 @@ public class customerOrderHistory extends javax.swing.JFrame {
 
     private void bFeedbackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bFeedbackActionPerformed
         if (taOrderFeedback != null && !taOrderFeedback.getText().isEmpty() &&
-            cbVendorRating != null && !cbVendorRating.getSelectedItem().toString().isEmpty()) {
+            cbVendorRating != null && cbVendorRating.getSelectedItem().equals("Please Rate")) {
 
             String runnerRating = null;
             if (cbRunnerRating.isVisible()) {
-                String selectedRunnerRating = (String) cbRunnerRating.getSelectedItem();
-                runnerRating = (selectedRunnerRating != null && !selectedRunnerRating.trim().isEmpty()) 
-                                ? selectedRunnerRating.split(" ")[0] 
-                                : null;
-                if (runnerRating == null) {
+                if (cbRunnerRating.getSelectedItem() != null && cbRunnerRating.getSelectedItem().equals("Please Rate")) {
                     JOptionPane.showMessageDialog(null, "Please provide a rating for the runner.");
                     return; 
                 }
@@ -617,17 +652,14 @@ public class customerOrderHistory extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cbRunnerRating;
     private javax.swing.JComboBox<String> cbVendorRating;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JRadioButton jRadioButton1;
@@ -638,11 +670,16 @@ public class customerOrderHistory extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JLabel lOrderFeedbackSection;
+    private javax.swing.JLabel lOrderFeedbackTitle;
     private javax.swing.JLabel lOrderStatus;
     private javax.swing.JLabel lOrderType;
     private javax.swing.JLabel lRunnerName;
     private javax.swing.JLabel lRunnerNameTitle;
     private javax.swing.JLabel lRunnerRating;
+    private javax.swing.JLabel lVenFeedbackSection;
+    private javax.swing.JLabel lVenFeedbackTitle;
+    private javax.swing.JLabel lVenRateTitle;
     private javax.swing.JLabel lVendorName;
     private javax.swing.JLabel ltotalPrice;
     private javax.swing.JTable tOrderHistory;
