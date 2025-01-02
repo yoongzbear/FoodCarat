@@ -4,13 +4,18 @@
  */
 package FoodCarat;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Image;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.util.Arrays;
 import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -39,8 +44,41 @@ public class vendorMenu extends javax.swing.JFrame {
         displayItems();
         
         enableTextField();
+        
+        //set the placeholder for search box
+        setPlaceholder(searchTxt, "Search Item Name");
+        editBtn.setEnabled(false);
+        deleteBtn.setEnabled(false);
+
     }
     
+    //helper method to adjust search box
+    public void setPlaceholder(JTextField textField, String placeholder) {
+        textField.setText(placeholder);
+        textField.setForeground(Color.GRAY);  
+
+        textField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                //if the text field contains the placeholder, clear it when the clicked
+                if (textField.getText().equals(placeholder)) {
+                    textField.setText("");
+                    textField.setForeground(Color.BLACK);  
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                //if the text field is empty, show the placeholder again
+                if (textField.getText().isEmpty()) {
+                    textField.setText(placeholder);
+                    textField.setForeground(Color.GRAY);
+                }
+            }
+        });
+    }
+    
+    //display all items
     public void displayItems() {
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
         List<String[]> allItems = item.getAllItems(email);
@@ -79,8 +117,8 @@ public class vendorMenu extends javax.swing.JFrame {
         });
     }
     
+    //display items based on id
     public void displayItems(String id) {
-        //overriding yuhh
         //display details
         String[] details = item.itemData(id);        
         itemIDTxt.setText(details[0].trim());
@@ -92,6 +130,99 @@ public class vendorMenu extends javax.swing.JFrame {
         ImageIcon itemImage = new ImageIcon(details[4].trim());
         Image resizedImage = itemImage.getImage().getScaledInstance(photoLabel.getWidth(), photoLabel.getHeight(), Image.SCALE_SMOOTH);
         photoLabel.setIcon(new ImageIcon(resizedImage));
+    }
+    
+    //display items based on check boxes
+    public void displayItemsFilter(String[] filter) {      
+        DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
+        List<String[]> allItems = item.getAllItems(email);
+        int index = 1;
+        model.setRowCount(0);
+        itemTable.setRowHeight(100);
+        
+        for (String[] itemData : allItems) {
+            String itemID = itemData[0];
+            String itemName = itemData[1];
+            String itemType = itemData[2];
+            String itemPrice = itemData[3];
+            String itemImgPath = itemData[4];
+
+            //check if item type matches the filter
+            boolean isFiltered = false;
+            for (String filterType : filter) {
+                if (itemType.equals(filterType)) {
+                    isFiltered = true;
+                    break;  // Exit loop once a match is found
+                }
+            }
+
+            if (isFiltered) {
+                //image icon
+                ImageIcon itemImage = new ImageIcon(itemImgPath);
+                Image img = itemImage.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+                itemImage = new ImageIcon(img);
+
+                model.addRow(
+                        new Object[]{index, itemID, itemImage, itemName, itemType, itemPrice});
+                index++;
+            }
+        }
+        //render image column
+        itemTable.getColumnModel().getColumn(2).setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                                                           boolean hasFocus, int row, int column) {
+                if (value instanceof ImageIcon) {
+                    JLabel label = new JLabel((ImageIcon) value);
+                    label.setHorizontalAlignment(SwingConstants.CENTER);
+                    return label;
+                }
+                return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            }
+        });
+    }
+    
+    //display items based on search bar
+    public void displayItemsSearch(String searchItem) {
+        DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
+        List<String[]> allItems = item.getAllItems(email);
+        int index = 1;
+        model.setRowCount(0);
+        itemTable.setRowHeight(100);
+  
+        for (String[] itemData : allItems) {
+            String itemID = itemData[0];
+            String itemName = itemData[1];
+            String itemType = itemData[2];
+            String itemPrice = itemData[3];
+            String itemImgPath = itemData[4];
+
+            //check if item type matches the filter
+            boolean isFound = false;
+            if (itemName.toLowerCase().contains(searchItem.toLowerCase())) {
+                //image icon
+                ImageIcon itemImage = new ImageIcon(itemImgPath);
+                Image img = itemImage.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+                itemImage = new ImageIcon(img);
+
+                model.addRow(
+                        new Object[]{index, itemID, itemImage, itemName, itemType, itemPrice});
+                index++;
+            }
+        }
+        //render image column
+        itemTable.getColumnModel().getColumn(2).setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                                                           boolean hasFocus, int row, int column) {
+                if (value instanceof ImageIcon) {
+                    JLabel label = new JLabel((ImageIcon) value);
+                    label.setHorizontalAlignment(SwingConstants.CENTER);
+                    return label;
+                }
+                return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            }
+        });
     }
     
     public void enableTextField() {
@@ -149,6 +280,7 @@ public class vendorMenu extends javax.swing.JFrame {
         setRadioBtn = new javax.swing.JRadioButton();
         searchTxt = new javax.swing.JTextField();
         searchBtn = new javax.swing.JButton();
+        revertBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -341,7 +473,7 @@ public class vendorMenu extends javax.swing.JFrame {
 
         setRadioBtn.setText("Set");
 
-        searchTxt.setText("Enter your search");
+        searchTxt.setText("Search Item Name");
         searchTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 searchTxtActionPerformed(evt);
@@ -352,6 +484,14 @@ public class vendorMenu extends javax.swing.JFrame {
         searchBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 searchBtnActionPerformed(evt);
+            }
+        });
+
+        revertBtn.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        revertBtn.setText("Revert Table");
+        revertBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                revertBtnActionPerformed(evt);
             }
         });
 
@@ -378,22 +518,24 @@ public class vendorMenu extends javax.swing.JFrame {
                         .addComponent(setRadioBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(filterBtn)
-                        .addGap(51, 51, 51)
-                        .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(searchBtn))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(viewBtn)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 712, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 5, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(revertBtn)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(viewBtn))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 712, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(397, 397, 397)
                         .addComponent(addBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 26, Short.MAX_VALUE))
+                .addGap(0, 39, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -419,13 +561,21 @@ public class vendorMenu extends javax.swing.JFrame {
                         .addComponent(filterBtn)
                         .addComponent(setRadioBtn)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(30, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-                        .addComponent(viewBtn))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(21, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                                .addComponent(viewBtn)
+                                .addContainerGap(21, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(revertBtn)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
         );
 
         pack();
@@ -451,17 +601,37 @@ public class vendorMenu extends javax.swing.JFrame {
         
         //have validation to "choose an item in the table"
         if (selectedRow >= 0) {            
-            //String id = (String) itemTable.getModel().getValueAt(selectedRow, 0);
-            Object id = itemTable.getModel().getValueAt(selectedRow, 0);
+            Object id = itemTable.getModel().getValueAt(selectedRow, 1);
             displayItems(id.toString());                 
+            editBtn.setEnabled(true);
+            deleteBtn.setEnabled(true);
         } else {
-            // No row is selected
+            //no row is selected
             JOptionPane.showMessageDialog(null, "Please select a row to view details.", "Alert", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_viewBtnActionPerformed
 
     private void filterBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterBtnActionPerformed
         //filter table based on the selected ticked box
+        //get checked boxes
+        String[] selectedFilter = new String[3];
+        int index = 0;
+
+        if (foodRadioBtn.isSelected()) {
+            selectedFilter[index++] = "Food";
+        }
+        if (beverageRadiobBtn.isSelected()) {
+            selectedFilter[index++] = "Beverage";
+        }
+        if (dessertRadioBtn.isSelected()) {
+            selectedFilter[index++] = "Dessert";
+        }
+        if (setRadioBtn.isSelected()) {
+            selectedFilter[index++] = "Set";
+        }
+
+        selectedFilter = Arrays.copyOf(selectedFilter, index); //adjust the size of array
+        displayItemsFilter(selectedFilter);
     }//GEN-LAST:event_filterBtnActionPerformed
 
     private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
@@ -472,6 +642,30 @@ public class vendorMenu extends javax.swing.JFrame {
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
         //delete the selected item off the item text file
+        int selectedRow = itemTable.getSelectedRow();
+
+        //have validation to "choose an item in the table"
+        if (selectedRow >= 0) {
+            int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to delete this item?", "Delete Item", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                String id = itemIDTxt.getText();
+                item.deleteItem(id);
+                displayItems();
+
+                //reset details section
+                photoLabel.setIcon(null);
+                photoLabel.setText("Item Photo");
+                itemIDTxt.setText("");
+                itemNameTxt.setText("");
+                typeBox.setSelectedItem("Item Type");
+                itemPriceTxt.setText("");
+                editBtn.setEnabled(false);
+                deleteBtn.setEnabled(false);
+            }
+        } else {
+            //no row is selected
+            JOptionPane.showMessageDialog(null, "Please select a row to delete item.", "Alert", JOptionPane.WARNING_MESSAGE);
+        } 
     }//GEN-LAST:event_deleteBtnActionPerformed
 
     private void editImageBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editImageBtnActionPerformed
@@ -479,12 +673,23 @@ public class vendorMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_editImageBtnActionPerformed
 
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
-        // TODO add your handling code here:
+        //search based on item name
+        String searchItem = searchTxt.getText();
+        displayItemsSearch(searchItem);
     }//GEN-LAST:event_searchBtnActionPerformed
 
     private void searchTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchTxtActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_searchTxtActionPerformed
+
+    private void revertBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_revertBtnActionPerformed
+        displayItems();
+        setPlaceholder(searchTxt, "Search Item Name");
+        foodRadioBtn.setSelected(false);
+        beverageRadiobBtn.setSelected(false);
+        dessertRadioBtn.setSelected(false);
+        setRadioBtn.setSelected(false);
+    }//GEN-LAST:event_revertBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -544,6 +749,7 @@ public class vendorMenu extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton menuBtn;
     private javax.swing.JLabel photoLabel;
+    private javax.swing.JButton revertBtn;
     private javax.swing.JButton searchBtn;
     private javax.swing.JTextField searchTxt;
     private javax.swing.JRadioButton setRadioBtn;

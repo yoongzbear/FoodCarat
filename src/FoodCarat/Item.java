@@ -6,6 +6,7 @@ package FoodCarat;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -54,6 +55,7 @@ public class Item {
             bw.newLine();
             JOptionPane.showMessageDialog(null, "Item successfully added to the file!", "Success", JOptionPane.INFORMATION_MESSAGE);            
             bw.close();
+            fw.close();
         } catch(IOException e) {
             JOptionPane.showMessageDialog(null, "Failed to write into the file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -147,6 +149,7 @@ public class Item {
         return allItems;
     }
     
+    //get data for all items matching vendor email
     public List<String[]> getAllItems(String venEmail) { 
         List<String[]> allItems = new ArrayList<>();
         
@@ -172,6 +175,37 @@ public class Item {
     //update item
     
     //delete item
-    
+    public void deleteItem(String id) {
+        //get all data
+        List<String[]> allItems = getAllItems();
+        boolean isDeleted = false;
+
+        try {
+            FileWriter fw = new FileWriter(fileName);
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            for (String[] itemData : allItems) {
+                if (!itemData[0].equals(id)) {
+                    //keep the row if the ID does not match
+                    bw.write(String.join(",", itemData));
+                    bw.newLine();
+                } else {
+                    //found row and not write the row
+                    isDeleted = true;
+                }
+            }
+            bw.close();
+            fw.close();
+
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Failed to delete the item information: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        if (isDeleted) {
+            JOptionPane.showMessageDialog(null, "Item successfully deleted!", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, "Failed to find the item", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
     
 }
