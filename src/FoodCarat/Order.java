@@ -332,4 +332,19 @@ public class Order {
             e.printStackTrace();
         }
     }
+    
+    //update order status 
+    //user can manipulate status: vendor, runner (for delivery)
+    //parameter: itemID, orderStatus, userType(not sure if needed, leaving it here first)
+    public void updateStatus(String id, String orderStatus, String userType) {
+        //get order info from order.txt using id, see order method
+        //if delivery - vendor and runner
+        //ordered, pending ____idk whats this___, accepted by vendor, accepted by runner, in kitchen, ready, pick up, delivered
+        
+        //if dine in - vendor
+        //ordered, pending ____idk whats this___, accepted by vendor, in kitchen, ready, sent 
+        
+        //if take away - vendor
+        //ordered, pending ____idk whats this___, accepted by vendor, in kitchen, ready, picked up
+    }
 }

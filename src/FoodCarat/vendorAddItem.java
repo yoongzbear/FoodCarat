@@ -109,7 +109,6 @@ public class vendorAddItem extends javax.swing.JFrame {
 
         uploadedImgLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         uploadedImgLabel.setText("Upload Item Image");
-        uploadedImgLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         jLabel3.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel3.setText("Item Name:");
@@ -271,7 +270,7 @@ public class vendorAddItem extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Item name is taken, please change the item name.", "Duplicate Name", JOptionPane.ERROR_MESSAGE);
             return; 
         }
-        else {
+        else {            
             //upload image into menu folder
             String newImagePath = item.uploadImage(imagePath);
             if (newImagePath == null) {

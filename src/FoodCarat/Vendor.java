@@ -90,4 +90,10 @@ public class Vendor {
             JOptionPane.showMessageDialog(null, "Failed to write to the file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }  
+    
+    //accept order status
+    //call update order status in order class
+    
+    //reject order
+    //call update order status in order class
 }

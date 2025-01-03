@@ -6,17 +6,22 @@ package FoodCarat;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.io.File;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -27,6 +32,8 @@ import javax.swing.table.DefaultTableModel;
 public class vendorMenu extends javax.swing.JFrame {
 
     Item item = new Item();
+    String imagePath = "";
+    File imageFile = null;
     //change to userSession 
     private String email = "alya@mail.com";
     private String name = "Alya";
@@ -44,11 +51,17 @@ public class vendorMenu extends javax.swing.JFrame {
         displayItems();
         
         enableTextField();
+        itemIDTxt.setEditable(false);
         
         //set the placeholder for search box
         setPlaceholder(searchTxt, "Search Item Name");
         editBtn.setEnabled(false);
         deleteBtn.setEnabled(false);
+        
+        //set size of photoLabel
+        photoLabel.setPreferredSize(new Dimension(175, 164)); //175, 164
+        photoLabel.setMinimumSize(new Dimension(175, 164));
+        photoLabel.setMaximumSize(new Dimension(175, 164));
 
     }
     
@@ -78,6 +91,19 @@ public class vendorMenu extends javax.swing.JFrame {
         });
     }
     
+    //reset details section
+    public void resetDetails() {
+        //reset details section
+        photoLabel.setIcon(null);
+        photoLabel.setText("Item Photo");
+        itemIDTxt.setText("");
+        itemNameTxt.setText("");
+        typeBox.setSelectedItem("Item Type");
+        itemPriceTxt.setText("");
+        editBtn.setEnabled(false);
+        deleteBtn.setEnabled(false);
+    }
+
     //display all items
     public void displayItems() {
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
@@ -129,7 +155,10 @@ public class vendorMenu extends javax.swing.JFrame {
         //photo
         ImageIcon itemImage = new ImageIcon(details[4].trim());
         Image resizedImage = itemImage.getImage().getScaledInstance(photoLabel.getWidth(), photoLabel.getHeight(), Image.SCALE_SMOOTH);
+        photoLabel.setText(""); //clear the label
         photoLabel.setIcon(new ImageIcon(resizedImage));
+        
+        enableTextField();
     }
     
     //display items based on check boxes
@@ -229,19 +258,27 @@ public class vendorMenu extends javax.swing.JFrame {
         if(edit==false) {
             //when click to edit
             edit = true;
-            itemIDTxt.setEditable(true);
             itemNameTxt.setEditable(true);
             typeBox.setEnabled(true);
             itemPriceTxt.setEditable(true);
             editImageBtn.setEnabled(true);
         } else if(edit==true) {
             edit = false;
-            itemIDTxt.setEditable(false);
             itemNameTxt.setEditable(false);
             typeBox.setEnabled(false);
             itemPriceTxt.setEditable(false);
             editImageBtn.setEnabled(false);
         }
+    }
+    
+    //validate price in text field
+    private boolean validatePrice(String priceText) {
+        try {
+            double price = Double.parseDouble(priceText);
+            return price >= 0;
+        } catch (NumberFormatException e) {
+            return false; 
+        } 
     }
 
     /**
@@ -339,7 +376,9 @@ public class vendorMenu extends javax.swing.JFrame {
         photoLabel.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         photoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         photoLabel.setText("Item Photo");
-        photoLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        photoLabel.setMaximumSize(new java.awt.Dimension(175, 164));
+        photoLabel.setMinimumSize(new java.awt.Dimension(175, 164));
+        photoLabel.setPreferredSize(new java.awt.Dimension(175, 164));
 
         jLabel3.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel3.setText("Item Name:");
@@ -389,16 +428,22 @@ public class vendorMenu extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addGap(16, 16, 16)
+                                    .addComponent(photoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(16, 16, 16)
-                                .addComponent(photoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(32, 32, 32)
-                                .addComponent(editImageBtn))
+                                .addComponent(editImageBtn)))
+                        .addGap(0, 345, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(16, 16, 16)
+                                .addGap(10, 10, 10)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel6)
                                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -409,13 +454,12 @@ public class vendorMenu extends javax.swing.JFrame {
                                     .addComponent(itemNameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(typeBox, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(itemPriceTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(itemIDTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(0, 19, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(editBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(deleteBtn)))
+                                    .addComponent(itemIDTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 19, Short.MAX_VALUE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(editBtn)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(deleteBtn)))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -424,10 +468,10 @@ public class vendorMenu extends javax.swing.JFrame {
                 .addGap(14, 14, 14)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(photoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(editImageBtn))
-                .addGap(18, 18, 18)
+                .addComponent(photoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addComponent(editImageBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(itemIDTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -447,7 +491,7 @@ public class vendorMenu extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(editBtn)
                     .addComponent(deleteBtn))
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addGap(13, 13, 13))
         );
 
         addBtn.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -546,7 +590,7 @@ public class vendorMenu extends javax.swing.JFrame {
                         .addComponent(menuBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(10, Short.MAX_VALUE)
+                        .addContainerGap(22, Short.MAX_VALUE)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -561,21 +605,19 @@ public class vendorMenu extends javax.swing.JFrame {
                         .addComponent(filterBtn)
                         .addComponent(setRadioBtn)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(30, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 411, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-                                .addComponent(viewBtn)
-                                .addContainerGap(21, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
                                 .addComponent(revertBtn)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(viewBtn))))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 19, Short.MAX_VALUE))
         );
 
         pack();
@@ -637,7 +679,62 @@ public class vendorMenu extends javax.swing.JFrame {
     private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
         //enable editing text field
         enableTextField();
-        editBtn.setText("Save Details");
+        DecimalFormat df = new DecimalFormat("0.00");
+        String id = itemIDTxt.getText().trim();
+        String name = itemNameTxt.getText().trim();
+        String type = typeBox.getSelectedItem().toString().trim();
+        String priceText = itemPriceTxt.getText().trim();
+        double price;
+        
+        if (editBtn.getText().equals("Edit Details")) {
+            editBtn.setText("Save Details");
+        } else {
+            enableTextField();
+            int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to edit the item's information?", "Edit Item", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                //validate text fields
+                //validate if fields are empty
+                if (name.isEmpty() || type.equals("Select Type") || priceText.isEmpty() || imagePath == "") {
+                    JOptionPane.showMessageDialog(null, "Please fill in all fields.", "Incomplete Submission", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                //validate price field
+                if (!validatePrice(priceText)) {
+                    JOptionPane.showMessageDialog(null, "Price must be a numerical value.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                    return;
+                } else {
+                    price = Double.parseDouble(priceText);
+                }
+   
+                //upload image into menu folder
+                String newImagePath = item.uploadImage(imagePath);
+                if (newImagePath == null) {
+                    JOptionPane.showMessageDialog(null, "Failed to save the image.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                } else {
+                    //function to update items
+                    String[] updateItem = new String[6];
+                    updateItem[0] = id;
+                    updateItem[1] = name;
+                    updateItem[2] = type;
+                    //newItem[3] = priceText;
+                    updateItem[3] = df.format(price).toString();
+                    updateItem[4] = newImagePath;
+                    updateItem[5] = email;
+
+                    item.editItem(id, updateItem);
+                    editBtn.setText("Edit Details");
+                    displayItems();
+                    resetDetails();
+                }
+            } if (confirm == JOptionPane.NO_OPTION) {
+                edit = false;
+                enableTextField();
+                editBtn.setText("Save Details");
+            }
+        }
+        
     }//GEN-LAST:event_editBtnActionPerformed
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
@@ -651,16 +748,7 @@ public class vendorMenu extends javax.swing.JFrame {
                 String id = itemIDTxt.getText();
                 item.deleteItem(id);
                 displayItems();
-
-                //reset details section
-                photoLabel.setIcon(null);
-                photoLabel.setText("Item Photo");
-                itemIDTxt.setText("");
-                itemNameTxt.setText("");
-                typeBox.setSelectedItem("Item Type");
-                itemPriceTxt.setText("");
-                editBtn.setEnabled(false);
-                deleteBtn.setEnabled(false);
+                resetDetails();
             }
         } else {
             //no row is selected
@@ -669,7 +757,22 @@ public class vendorMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_deleteBtnActionPerformed
 
     private void editImageBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editImageBtnActionPerformed
-        // TODO add your handling code here:
+        //display file chooser
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter fileFilter = new FileNameExtensionFilter("PNG JPG AND JPEG", "png", "jpg", "jpeg");
+        fileChooser.addChoosableFileFilter(fileFilter);
+
+        int load = fileChooser.showOpenDialog(null);
+        if (load == fileChooser.APPROVE_OPTION) {
+            imageFile = fileChooser.getSelectedFile();
+
+            //display preview of image using path of local storage
+            imagePath = imageFile.getAbsolutePath();
+            ImageIcon preview = new ImageIcon(imagePath);
+            Image resizedImage = preview.getImage().getScaledInstance(photoLabel.getWidth(), photoLabel.getHeight(), Image.SCALE_SMOOTH);
+            photoLabel.setText(""); //clear the label
+            photoLabel.setIcon(new ImageIcon(resizedImage));
+        }
     }//GEN-LAST:event_editImageBtnActionPerformed
 
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed

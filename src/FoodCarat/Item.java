@@ -173,6 +173,41 @@ public class Item {
     }
     
     //update item
+    public void editItem(String id, String[] newInfo) {
+        //get all data
+        List<String[]> allItems = getAllItems();
+        boolean isEdited = false;
+        
+        try {
+            FileWriter fw = new FileWriter(fileName);
+            BufferedWriter bw = new BufferedWriter(fw);
+            
+            for (String[] itemData : allItems) {
+                if (!itemData[0].equals(id)) {
+                    //keep the row if the ID does not match
+                    bw.write(String.join(",", itemData));
+                    bw.newLine();
+                } else {
+                    //found row and rewrite the row with the new info
+                    //String newRow = String.join(",", itemInfo);
+                    bw.write(String.join(",", newInfo));
+                    bw.newLine();
+                    isEdited = true;
+                }
+            }
+            bw.close();
+            fw.close();
+            
+        } catch(IOException e) {
+            JOptionPane.showMessageDialog(null, "Failed to update the item information: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        if (isEdited) {
+            JOptionPane.showMessageDialog(null, "Item successfully updated!", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, "Failed to find the item", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
     
     //delete item
     public void deleteItem(String id) {
