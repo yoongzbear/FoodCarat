@@ -4,6 +4,8 @@
  */
 package FoodCarat;
 
+import java.io.IOException;
+
 /**
  *
  * @author User
@@ -15,6 +17,49 @@ public class adminTopupCredit extends javax.swing.JFrame {
      */
     public adminTopupCredit() {
         initComponents();
+        topupnumtxt.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                updateSum();
+            }
+
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                updateSum();
+            }
+
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                updateSum();
+            }
+        });
+        emailtxt.setEditable(false);
+        nametxt.setEditable(false);
+        currentamounttxt.setEditable(false);
+    }
+    
+    private void clearFields() {
+        Admin.clearFields(
+            emailtxt, nametxt, currentamounttxt, topupnumtxt, sumtxt
+        );
+    }
+    
+    private void updateSum() {
+        try {
+            // Get the current amount and top-up amount
+            String currentAmountStr = currentamounttxt.getText().trim();
+            String topUpAmountStr = topupnumtxt.getText().trim();
+
+            // Default values if fields are empty
+            double currentAmount = currentAmountStr.isEmpty() ? 0.0 : Double.parseDouble(currentAmountStr);
+            double topUpAmount = topUpAmountStr.isEmpty() ? 0.0 : Double.parseDouble(topUpAmountStr);
+
+            // Calculate the new amount
+            double newAmount = currentAmount + topUpAmount;
+
+            // Update the sumtxt field
+            sumtxt.setText(String.format("%.2f", newAmount));
+        } catch (NumberFormatException e) {
+            // If the input is invalid, reset the sumtxt field
+            sumtxt.setText("Invalid Input");
+        }
     }
 
     /**
@@ -27,113 +72,136 @@ public class adminTopupCredit extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
-        jTextField5 = new javax.swing.JTextField();
-        jTextField6 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        Lsearch = new javax.swing.JLabel();
+        Lemail = new javax.swing.JLabel();
+        searchtxt = new javax.swing.JTextField();
+        emailtxt = new javax.swing.JTextField();
+        Lname = new javax.swing.JLabel();
+        nametxt = new javax.swing.JTextField();
+        Lcurrentamount = new javax.swing.JLabel();
+        Ltopup = new javax.swing.JLabel();
+        Lsum = new javax.swing.JLabel();
+        currentamounttxt = new javax.swing.JTextField();
+        topupnumtxt = new javax.swing.JTextField();
+        sumtxt = new javax.swing.JTextField();
+        btopup = new javax.swing.JButton();
+        bback = new javax.swing.JButton();
+        bsearch = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Cooper Black", 0, 36)); // NOI18N
         jLabel1.setText("TopUp Credit");
 
-        jLabel2.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        jLabel2.setText("Search:");
+        Lsearch.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        Lsearch.setText("Search:");
 
-        jLabel3.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        jLabel3.setText("Email:");
+        Lemail.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        Lemail.setText("Email:");
 
-        jTextField1.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        searchtxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
 
-        jTextField2.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+        emailtxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        emailtxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
+                emailtxtActionPerformed(evt);
             }
         });
 
-        jLabel4.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        jLabel4.setText("Customer Name:");
+        Lname.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        Lname.setText("Customer Name:");
 
-        jTextField3.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        nametxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
 
-        jLabel5.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        jLabel5.setText("Current Amount: ");
+        Lcurrentamount.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        Lcurrentamount.setText("Current Amount: ");
 
-        jLabel6.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        jLabel6.setText("Topup Amount:");
+        Ltopup.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        Ltopup.setText("Topup Amount:");
 
-        jLabel7.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        jLabel7.setText("Amount after topup: ");
+        Lsum.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        Lsum.setText("Amount after topup: ");
 
-        jTextField4.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        currentamounttxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
 
-        jTextField5.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        topupnumtxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
 
-        jTextField6.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        jTextField6.addActionListener(new java.awt.event.ActionListener() {
+        sumtxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        sumtxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField6ActionPerformed(evt);
+                sumtxtActionPerformed(evt);
             }
         });
 
-        jButton1.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
-        jButton1.setText("Top Up");
+        btopup.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        btopup.setText("Top Up");
+        btopup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btopupActionPerformed(evt);
+            }
+        });
 
-        jButton2.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
-        jButton2.setText("Back");
+        bback.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        bback.setText("Back");
+        bback.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bbackActionPerformed(evt);
+            }
+        });
+
+        bsearch.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        bsearch.setText("Search");
+        bsearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bsearchActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(41, 41, 41)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addGap(47, 47, 47)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(62, 62, 62)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(39, 39, 39)
-                        .addComponent(jTextField1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel7))
-                        .addGap(79, 79, 79)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField6)
-                            .addComponent(jTextField4)
-                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 491, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(38, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jButton1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(41, 41, 41)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(Ltopup)
+                                    .addComponent(Lcurrentamount)
+                                    .addComponent(Lsum))
+                                .addGap(79, 79, 79)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(sumtxt)
+                                    .addComponent(currentamounttxt)
+                                    .addComponent(topupnumtxt, javax.swing.GroupLayout.PREFERRED_SIZE, 491, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(Lemail)
+                                    .addComponent(Lsearch))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(searchtxt, javax.swing.GroupLayout.PREFERRED_SIZE, 537, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(bsearch, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(4, 4, 4))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(emailtxt, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(62, 62, 62)
+                                        .addComponent(Lname)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(nametxt, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(245, 245, 245)
+                        .addComponent(btopup)
                         .addGap(248, 248, 248)
-                        .addComponent(jButton2)
-                        .addGap(230, 230, 230))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(293, 293, 293))))
+                        .addComponent(bback))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(306, 306, 306)
+                        .addComponent(jLabel1)))
+                .addContainerGap(119, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -142,43 +210,107 @@ public class adminTopupCredit extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addGap(49, 49, 49)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Lsearch)
+                    .addComponent(searchtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bsearch))
                 .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 80, Short.MAX_VALUE)
+                    .addComponent(Lemail)
+                    .addComponent(emailtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Lname)
+                    .addComponent(nametxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Lcurrentamount)
+                    .addComponent(currentamounttxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6))
+                    .addComponent(topupnumtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Ltopup))
                 .addGap(21, 21, 21)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(49, 49, 49)
+                    .addComponent(Lsum)
+                    .addComponent(sumtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(51, 51, 51)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
-                .addGap(37, 37, 37))
+                    .addComponent(btopup)
+                    .addComponent(bback))
+                .addGap(35, 35, 35))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+    private void emailtxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailtxtActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
+    }//GEN-LAST:event_emailtxtActionPerformed
 
-    private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField6ActionPerformed
+    private void sumtxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sumtxtActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField6ActionPerformed
+    }//GEN-LAST:event_sumtxtActionPerformed
+
+    private void bsearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bsearchActionPerformed
+        String searchEmail = searchtxt.getText().trim();
+        String cusfile = "customer.txt";
+        String userfile = "user.txt";
+
+        Admin admin = new Admin();
+        String[] resultgeneral = admin.performSearch(searchEmail, cusfile);
+        String[] resultname = admin.performSearch(searchEmail, userfile);
+        // Clear the table and fields before populating
+        clearFields();
+
+        if (resultgeneral != null && resultname != null) {
+            emailtxt.setText(resultgeneral[0]);
+            currentamounttxt.setText(resultgeneral[2]);
+            nametxt.setText(resultname[1]);
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, "No matching record found!");
+        }
+    }//GEN-LAST:event_bsearchActionPerformed
+
+    private void btopupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btopupActionPerformed
+        try {
+            // Get the current amount and top-up amount from the text fields
+            String email = emailtxt.getText().trim();
+            String name = nametxt.getText().trim();
+            String currentAmountStr = currentamounttxt.getText().trim();
+            String topUpAmountStr = topupnumtxt.getText().trim();
+
+            if (topUpAmountStr.isEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Please enter the top-up amount.", "Input Error", javax.swing.JOptionPane.WARNING_MESSAGE);
+                topupnumtxt.requestFocus();
+                return;
+            }
+
+            double currentAmount = Double.parseDouble(currentAmountStr);
+            double topUpAmount = Double.parseDouble(topUpAmountStr);
+
+            // Confirm before proceeding
+            int option = javax.swing.JOptionPane.showConfirmDialog(this,
+                String.format("Name: %s\nTop-up Amount: %.2f\nDo you want to proceed?", name, topUpAmount),
+                "Confirm Top-up", javax.swing.JOptionPane.YES_NO_OPTION);
+
+            if (option != javax.swing.JOptionPane.YES_OPTION) {
+                return;
+            }
+
+            Admin admin = new Admin();
+            admin.processTopUp(email, name, currentAmount, topUpAmount);
+
+            clearFields();
+
+        } catch (NumberFormatException e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Please enter valid numbers.", "Input Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        } catch (IOException e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "An error occurred: " + e.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btopupActionPerformed
+
+    private void bbackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bbackActionPerformed
+        this.dispose();
+        new adminMain().setVisible(true);
+    }//GEN-LAST:event_bbackActionPerformed
 
     /**
      * @param args the command line arguments
@@ -216,20 +348,21 @@ public class adminTopupCredit extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JLabel Lcurrentamount;
+    private javax.swing.JLabel Lemail;
+    private javax.swing.JLabel Lname;
+    private javax.swing.JLabel Lsearch;
+    private javax.swing.JLabel Lsum;
+    private javax.swing.JLabel Ltopup;
+    private javax.swing.JButton bback;
+    private javax.swing.JButton bsearch;
+    private javax.swing.JButton btopup;
+    private javax.swing.JTextField currentamounttxt;
+    private javax.swing.JTextField emailtxt;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
+    private javax.swing.JTextField nametxt;
+    private javax.swing.JTextField searchtxt;
+    private javax.swing.JTextField sumtxt;
+    private javax.swing.JTextField topupnumtxt;
     // End of variables declaration//GEN-END:variables
 }
