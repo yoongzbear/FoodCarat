@@ -9,12 +9,43 @@ package FoodCarat;
  * @author User
  */
 public class adminCusReceipt extends javax.swing.JFrame {
-
+    private String transactionId;
+    private String email;
+    private String customerName;
+    private double beforeTopUp;
+    private double topUpAmount;
+    private double afterTopUp;
+    private String datePayment;
+    private String timePayment;
     /**
      * Creates new form adminCusReceipt
      */
     public adminCusReceipt() {
         initComponents();
+    }
+    
+    public adminCusReceipt(String transactionId, String email, String customerName, double beforeTopUp, double topUpAmount, double afterTopUp, String date, String time) {
+        initComponents();
+        this.transactionId = transactionId;
+        this.email = email;
+        this.customerName = customerName;
+        this.beforeTopUp = beforeTopUp;
+        this.topUpAmount = topUpAmount;
+        this.afterTopUp = afterTopUp;
+        this.datePayment = date;
+        this.timePayment = time;
+
+        setReceiptDetails();
+    }
+    private void setReceiptDetails() {
+        LtransID.setText(transactionId);
+        Lemail.setText(email);
+        Lname.setText(customerName);
+        Lbeforetopup.setText(String.format("%.2f", beforeTopUp));
+        Ltopupnum.setText(String.format("%.2f", topUpAmount));
+        Laftertopup.setText(String.format("%.2f", afterTopUp));
+        Ldate.setText(datePayment);
+        Ltime.setText(timePayment);
     }
 
     /**
@@ -37,13 +68,15 @@ public class adminCusReceipt extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
-        jLabel13 = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
+        Lemail = new javax.swing.JLabel();
+        Lname = new javax.swing.JLabel();
+        LtransID = new javax.swing.JLabel();
+        Lbeforetopup = new javax.swing.JLabel();
+        Ltopupnum = new javax.swing.JLabel();
+        Laftertopup = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
+        Ldate = new javax.swing.JLabel();
+        Ltime = new javax.swing.JLabel();
 
         jTextField1.setText("jTextField1");
 
@@ -79,62 +112,37 @@ public class adminCusReceipt extends javax.swing.JFrame {
         jLabel10.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
         jLabel10.setText("Amount After Topup: ");
 
-        jLabel11.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
-        jLabel11.setText("xxxxx");
+        Lemail.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        Lemail.setText("xxxxx");
 
-        jLabel12.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
-        jLabel12.setText("xxxxx");
+        Lname.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        Lname.setText("xxxxx");
 
-        jLabel13.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
-        jLabel13.setText("xxxxx");
+        LtransID.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        LtransID.setText("xxxxx");
 
-        jLabel14.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
-        jLabel14.setText("xxxxx");
+        Lbeforetopup.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        Lbeforetopup.setText("xxxxx");
 
-        jLabel15.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
-        jLabel15.setText("xxxxx");
+        Ltopupnum.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        Ltopupnum.setText("xxxxx");
 
-        jLabel16.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
-        jLabel16.setText("xxxxx");
+        Laftertopup.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        Laftertopup.setText("xxxxx");
 
         jLabel17.setFont(new java.awt.Font("Viner Hand ITC", 2, 18)); // NOI18N
         jLabel17.setText(" ~  Thank you for using Food Carat System  ~");
+
+        Ldate.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        Ldate.setText("xxxxx");
+
+        Ltime.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        Ltime.setText("xxxxx");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel10)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel5)
-                                    .addComponent(jLabel6))
-                                .addGap(62, 62, 62)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel11)
-                                    .addComponent(jLabel12)
-                                    .addComponent(jLabel13)
-                                    .addComponent(jLabel14)
-                                    .addComponent(jLabel15)
-                                    .addComponent(jLabel16)))
-                            .addComponent(jLabel9)
-                            .addComponent(jLabel7)
-                            .addComponent(jLabel8))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel4)
-                        .addGap(169, 169, 169))))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(85, 85, 85)
-                .addComponent(jLabel17)
-                .addContainerGap(90, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -143,6 +151,42 @@ public class adminCusReceipt extends javax.swing.JFrame {
                         .addComponent(jLabel1))
                     .addComponent(jLabel2))
                 .addGap(137, 137, 137))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(25, 25, 25)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel10)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel5)
+                                            .addComponent(jLabel6))
+                                        .addGap(62, 62, 62)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(Lemail)
+                                            .addComponent(Lname)
+                                            .addComponent(LtransID)
+                                            .addComponent(Lbeforetopup)
+                                            .addComponent(Ltopupnum)
+                                            .addComponent(Laftertopup)))
+                                    .addComponent(jLabel9)
+                                    .addComponent(jLabel7)
+                                    .addComponent(jLabel8))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(18, 18, 18)
+                                .addComponent(Ldate)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel4)
+                                .addGap(28, 28, 28)
+                                .addComponent(Ltime))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(85, 85, 85)
+                        .addComponent(jLabel17)))
+                .addContainerGap(90, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -151,35 +195,37 @@ public class adminCusReceipt extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel2)
-                .addGap(36, 36, 36)
+                .addGap(34, 34, 34)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jLabel4))
+                    .addComponent(jLabel4)
+                    .addComponent(Ldate)
+                    .addComponent(Ltime))
                 .addGap(50, 50, 50)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(jLabel11))
+                    .addComponent(Lemail))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel12)
+                    .addComponent(Lname)
                     .addComponent(jLabel6))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
-                    .addComponent(jLabel13))
+                    .addComponent(LtransID))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
-                    .addComponent(jLabel14))
+                    .addComponent(Lbeforetopup))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
-                    .addComponent(jLabel15))
+                    .addComponent(Ltopupnum))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
-                    .addComponent(jLabel16))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
+                    .addComponent(Laftertopup))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
                 .addComponent(jLabel17)
                 .addGap(16, 16, 16))
         );
@@ -223,14 +269,16 @@ public class adminCusReceipt extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel Laftertopup;
+    private javax.swing.JLabel Lbeforetopup;
+    private javax.swing.JLabel Ldate;
+    private javax.swing.JLabel Lemail;
+    private javax.swing.JLabel Lname;
+    private javax.swing.JLabel Ltime;
+    private javax.swing.JLabel Ltopupnum;
+    private javax.swing.JLabel LtransID;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
