@@ -1,0 +1,125 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package FoodCarat;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ *
+ * @author User
+ */
+public class Manager {
+    //Monitor Runner Performance
+    //
+    public static Map<String, RunnerPerformanceData> getRunnerPerformance(String selectedMonth) throws IOException {
+       Map<String, RunnerPerformanceData> performanceDataMap = new HashMap<>();
+        
+       // Read the customer order file to map orderID to runnerID
+       BufferedReader orderReader = new BufferedReader(new FileReader("customer order.txt"));
+       String line;
+
+       while ((line = orderReader.readLine()) != null) {
+           String[] orderDetails = line.split(",");
+
+           // Check if orderDetails[1] contains "Delivery"
+           if ("Delivery".equalsIgnoreCase(orderDetails[1].trim())) {
+               String orderID = orderDetails[0].trim();
+               String runnerID = orderDetails[6].trim();
+           }
+       }
+       orderReader.close();
+        
+        // Read the review file to get review data for "runner" reviewType
+        BufferedReader reviewReader = new BufferedReader(new FileReader("review.txt"));
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        while ((line = reviewReader.readLine()) != null) {
+            String[] reviewDetails = line.split(",");
+            String reviewType = reviewDetails[2].trim();
+            String orderID = reviewDetails[6].trim();
+            String runnerID = getRunnerIDForOrder(orderID);// fetch runnerID
+            if ("runner".equals(reviewType)) {
+                String rating = reviewDetails[3].trim();
+                String reviewDate = reviewDetails[5].trim();
+                
+                // Check if the review falls in the selected month
+                if (isInSelectedMonth(reviewDate, selectedMonth)) {
+                    // Add or update performance data for the runner
+                    RunnerPerformanceData data = performanceDataMap.getOrDefault(runnerID, new RunnerPerformanceData());
+                    int ratingValue = Integer.parseInt(rating);
+                    data.addOrder(orderID);
+                    data.addRating(ratingValue);
+                    performanceDataMap.put(runnerID, data);
+                }
+            }
+        }
+        reviewReader.close();
+        return performanceDataMap;
+    }
+    //check the month selected for the runner perfomance
+    private static boolean isInSelectedMonth(String reviewDate, String selectedMonth) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = sdf.parse(reviewDate);
+            SimpleDateFormat monthFormat = new SimpleDateFormat("MM");
+            String month = monthFormat.format(date);
+            return month.equals(selectedMonth);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    // get the runner id after mapping the order id in customer order and review.txt
+    private static String getRunnerIDForOrder(String orderID) {
+        try {
+            BufferedReader orderReader = new BufferedReader(new FileReader("customer order.txt"));
+            String line;
+
+            // Loop through the lines in the customer_order.txt file
+            while ((line = orderReader.readLine()) != null) {
+                String[] orderDetails = line.split(",");
+                String currentOrderID = orderDetails[0].trim();  // Order ID is the first element
+                if (currentOrderID.equals(orderID)) {
+                    // The runnerID is the 7th element in the line (index 6)
+                    String runnerID = orderDetails[6].trim();
+                    orderReader.close();
+                    return runnerID;  // Return the found runnerID
+                }
+            }
+            orderReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;  // Return null if the orderID is not found
+    }
+
+    public static class RunnerPerformanceData {
+        private int totalOrders = 0;
+        private int totalRating = 0;
+
+        public void addOrder(String orderID) {
+            totalOrders++;
+        }
+
+        public void addRating(int rating) {
+            totalRating += rating;
+        }
+
+        public int getTotalOrders() {
+            return totalOrders;
+        }
+
+        public double getAverageRating() {
+            if (totalOrders == 0) return 0;
+            return (double) totalRating / totalOrders;
+        }
+    }
+}
