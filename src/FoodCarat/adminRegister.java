@@ -4,18 +4,8 @@
  */
 package FoodCarat;
 
-import java.awt.Color;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.security.SecureRandom;
 import javax.swing.JOptionPane;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
 
 /**
  *
@@ -28,6 +18,7 @@ public class adminRegister extends javax.swing.JFrame {
      */
     public adminRegister() {
         this("customer");  // Default to "customer" role
+        initComponents();
     }
     public adminRegister(String role) {
         this.role=role;
@@ -35,52 +26,6 @@ public class adminRegister extends javax.swing.JFrame {
         Lrole.setText(role);
     }
 
-private void clearFields() {
-    Admin.clearFields(
-        emailtxt,
-        usernametxt
-    );
-}
-// Method to check if the email is already registered
-private boolean isEmailRegistered(String email) {
-    String filename = "user.txt";
-    File file = new File(filename);
-    if (file.exists()) {
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split(";");
-                String existingEmail = parts[0];
-                if (existingEmail.equals(email)) {
-                    return true; // Email already exists
-                }
-            }
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Error checking email: " + e.getMessage());
-        }
-    }
-    return false; // Email is not registered
-}
-
-//Generate sample password
-private String generateSamplePassword(String email) {
-    final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%";
-    SecureRandom random = new SecureRandom();
-    StringBuilder password = new StringBuilder();
-
-    // Extract the part of the email before '@'
-    String usernamePart = email.split("@")[0]; // Split at '@' and take the first part
-
-    // Add the username part to the password
-    password.append(usernamePart);
-
-    // Append 3 random characters
-    for (int i = 0; i < 3; i++) {
-        password.append(characters.charAt(random.nextInt(characters.length())));
-    }
-
-    return password.toString();
-}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -115,7 +60,7 @@ private String generateSamplePassword(String email) {
         });
 
         Lusername.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        Lusername.setText("User Name: ");
+        Lusername.setText("Name:");
 
         usernametxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         usernametxt.addActionListener(new java.awt.event.ActionListener() {
@@ -150,26 +95,25 @@ private String generateSamplePassword(String email) {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(172, 172, 172)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(bRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(232, 232, 232)
-                                .addComponent(bBack, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(Lemail)
-                                    .addComponent(Lusername))
-                                .addGap(106, 106, 106)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(emailtxt)
-                                    .addComponent(usernametxt, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addGap(215, 215, 215)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(Lemail)
+                            .addComponent(Lusername))
+                        .addGap(106, 106, 106)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(emailtxt)
+                            .addComponent(usernametxt, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(229, 229, 229)
                         .addComponent(jLabel1)
                         .addGap(59, 59, 59)
-                        .addComponent(Lrole)))
-                .addContainerGap(186, Short.MAX_VALUE))
+                        .addComponent(Lrole))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(184, 184, 184)
+                        .addComponent(bRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(232, 232, 232)
+                        .addComponent(bBack, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(184, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -207,12 +151,10 @@ private String generateSamplePassword(String email) {
     private void bRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRegisterActionPerformed
     String email = emailtxt.getText().trim();
     String username = usernametxt.getText().trim();
-    
-    //Validation for email and name
-    if (isEmailRegistered(emailtxt.getText().trim())) {
+
+    if (Admin.isEmailRegistered(email, "user.txt")) {
         JOptionPane.showMessageDialog(null, "This email is already registered.");
         emailtxt.requestFocus();
-        Admin.clearFields(emailtxt);
         return;
     }
     if (email.isEmpty() || !email.contains("@")) {
@@ -225,43 +167,16 @@ private String generateSamplePassword(String email) {
         usernametxt.requestFocus();
         return;
     }
-    // Generate a sample password
-    String samplePassword = generateSamplePassword(email);
 
     try {
-        // Write user information to user.txt
-        String userFileName = "user.txt";
-        File userFile = new File(userFileName);
-
-        try (FileWriter userWriter = new FileWriter(userFile, true)) {
-            StringBuilder userInfo = new StringBuilder();
-            userInfo.append(email).append(";")
-                    .append(username).append(";")
-                    .append(samplePassword).append(";")
-                    .append(role).append(";;") // to use for update after login such as userBirth and conctNum
-                    .append("\n");
-
-            userWriter.write(userInfo.toString());
+        String samplePassword = Admin.registerUser(email, username, role);
+        JOptionPane.showMessageDialog(null, 
+            "Successfully registered as " + role + "!\nYour sample password is: " + samplePassword,
+            "Registration Successful", JOptionPane.INFORMATION_MESSAGE);
+            Admin.clearFields(emailtxt,usernametxt);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
         }
-
-        // Handle role-specific file creation
-        String roleFileName = role + ".txt";
-        File roleFile = new File(roleFileName);
-
-        if (!roleFile.exists()) {
-            roleFile.createNewFile();
-        }
-
-        try (FileWriter roleWriter = new FileWriter(roleFile, true)) {
-            roleWriter.write(email + ";;\n");
-        }
-
-        JOptionPane.showMessageDialog(null, "Successfully registered as " + role + "!\nYour sample password is: " + samplePassword);
-        clearFields(); // Clear input fields after successful registration
-
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
-    }
     }//GEN-LAST:event_bRegisterActionPerformed
 
     private void bBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bBackActionPerformed
