@@ -220,37 +220,37 @@ public class Order {
 
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-
-                //Check if orderID matches the current order's ID
-                if (parts[1].equals(String.valueOf(this.orderID))) {
-                    //get splitted data if orderID match
-                    String reviewID = parts[0];
+                String reviewID = parts[0];
                     String reviewType = parts[2];  
                     String rating = parts[3];   
                     String review = parts[4];  
                     String date = parts[5];  
+
+                //Check if orderID matches the current order's ID
+                if (parts[1].equals(String.valueOf(this.orderID))) {
+                    //get splitted data if orderID match
+                    
                     
                     //define order rate and review based on reviewType, if null will return null
                     if (reviewType.equals("order")) {
-                        orderFeedback = review != null && !review.trim().isEmpty() ? review : "null";  
+                        orderFeedback = review != null && !review.trim().isEmpty() ? review : "No feedback provided";  
                     } else if (reviewType.equals("vendor")) {
-                        vendorRating = rating != null && !rating.trim().isEmpty() ? rating : "null";
-                        vendorFeedback = review != null && !review.trim().isEmpty() ? review : "null"; 
+                        vendorRating = rating != null && !rating.trim().isEmpty() ? rating : "No rating";
+                        vendorFeedback = review != null && !review.trim().isEmpty() ? review : "No feedback provided"; 
                     } else if (reviewType.equals("runner")) {
-                        runnerRating = rating != null && !rating.trim().isEmpty() ? rating : "null"; 
+                        runnerRating = rating != null && !rating.trim().isEmpty() ? rating : "No rating"; 
                     }
                 }
             }
         }
 
-        //append review and rate as one result to return: orderID,orderFeedback,vendorRating,vendorFeedback,runnerRating
         if (orderFeedback != null || vendorRating != null || vendorFeedback != null || runnerRating != null) {
             //Format the result in the requested order
             result.append(orderID).append(",")  // orderID
-                  .append(orderFeedback != null ? orderFeedback : "null").append(",") 
-                  .append(vendorRating != null ? vendorRating : "null").append(",") 
-                  .append(vendorFeedback != null ? vendorFeedback : "null").append(",")
-                  .append(runnerRating != null ? runnerRating : "null");
+                  .append(orderFeedback != null ? orderFeedback : "No feedback provided").append(",") 
+                  .append(vendorRating != null ? vendorRating : "No rating").append(",") 
+                  .append(vendorFeedback != null ? vendorFeedback : "No feedback provided").append(",")
+                  .append(runnerRating != null ? runnerRating : "No rating");
         }
         //Return the formatted result (or empty if nothing found)
         return result.length() > 0 ? result.toString() : "";
