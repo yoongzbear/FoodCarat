@@ -4,19 +4,99 @@
  */
 package FoodCarat;
 
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+
 /**
  *
  * @author User
  */
 public class adminNotification extends javax.swing.JFrame {
-
+    private DefaultTableModel tableModel;
     /**
      * Creates new form adminNotification
      */
     public adminNotification() {
         initComponents();
+        // Initialize the table model and set it to the table
+        tableModel = (DefaultTableModel) notificationtable.getModel();
+        
+        setColumnWidths();
+        setRowHeight();
+        populateTransactionData();
+        
+        // Add row selection listener to show receipt on row click
+        notificationtable.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                showReceipt();
+            }
+        });
+    }
+    
+     // Method to populate the table with transaction data
+    private void populateTransactionData() {
+        Admin admin = new Admin();
+        ArrayList<String> transactionMessages = admin.getTransactionMessages();
+
+        // Add the transaction messages to the table
+        int transactionNumber = 1;
+        for (String message : transactionMessages) {
+            tableModel.addRow(new Object[]{transactionNumber++, message});
+        }
     }
 
+    private void setColumnWidths() {
+        TableColumn column = null;
+        column = notificationtable.getColumnModel().getColumn(0);
+        column.setPreferredWidth(50);
+
+        column = notificationtable.getColumnModel().getColumn(1);
+        column.setPreferredWidth(950);
+    }
+
+    private void setRowHeight() {
+        notificationtable.setRowHeight(30);
+    }
+
+    // Show receipt when a row is clicked
+    private void showReceipt() {
+        int selectedRow = notificationtable.getSelectedRow();
+        if (selectedRow != -1) {
+            String message = tableModel.getValueAt(selectedRow, 1).toString(); // The message contains the details
+
+            String[] messageParts = message.split(" ");
+
+            // Extract the transaction ID from the message
+            String transactionMessageId = messageParts[messageParts.length - 1].replace(")", "").replace(":", "");
+
+            // Retrieve details from the customer credit.txt file
+            Admin admin = new Admin();
+            String[] customerDetails = admin.performSearch(transactionMessageId, "customer credit.txt");
+                    
+            if (customerDetails != null) {
+                // Parse details from the file
+                String transID = customerDetails[0];
+                String email = customerDetails[1];
+                double topUpAmount = Double.parseDouble(customerDetails[2]);
+                double newAmount = Double.parseDouble(customerDetails[3]);
+                String datePayment = customerDetails[4];
+                String timePayment = customerDetails[5];
+
+                // Retrieve name of customer user.txt base on text file
+                String [] customerName = admin.performSearch(email, "user.txt");
+                String name = customerName[1];
+                
+                // Create and display the receipt window
+                adminCusReceipt receiptWindow = new adminCusReceipt(transID, email, name, topUpAmount, topUpAmount, newAmount, datePayment, timePayment);
+                receiptWindow.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(this, "Transaction details not found.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -38,13 +118,10 @@ public class adminNotification extends javax.swing.JFrame {
         notificationtable.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
         notificationtable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
-                "No", "Messages", "Read Status"
+                "No", "Messages"
             }
         ));
         jScrollPane1.setViewportView(notificationtable);
