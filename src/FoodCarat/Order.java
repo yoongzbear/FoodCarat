@@ -151,7 +151,8 @@ public class Order {
         this.reasonID = reasonID;
     }
     
-    public void initialOrder(){
+    public void initialOrder(){ //initial order after customer choose orderType
+        //generate orderID
         int lastOrder = 0;
         try {
             BufferedReader br = new BufferedReader(new FileReader("resources/customerOrder.txt"));
@@ -167,7 +168,8 @@ public class Order {
         }
         
         this.orderID = lastOrder;
-        String newLine = lastOrder + "," + orderType + ",,Ordered," + "customerEmail" + ",,";
+        //write order with orderID, orderType and customerEmail
+        String newLine = lastOrder + "," + orderType + ",,," + "customerEmail" + ",,";
         try {
             FileWriter fw = new FileWriter("resources/customerOrder.txt", true); //true is use for appending data in new line
             fw.write(newLine + "\n");
@@ -181,7 +183,7 @@ public class Order {
         }
     }
     
-    public void deleteIncompleteOrder(int orderID){
+    public void deleteIncompleteOrder(int orderID){ //delete order if customer back to main without completing the order
         try {
             //Reading the content of the file
             BufferedReader br = new BufferedReader(new FileReader("resources/customerOrder.txt"));
@@ -192,14 +194,14 @@ public class Order {
                 String[] tokens = line.split(",");
                 String currentOrderID = tokens[0].trim();
 
-                // Skip the line if it matches the order ID to delete
+                //Skip the line if it matches the order ID to delete
                 if (!currentOrderID.equals(String.valueOf(orderID))) {
                     fileContent.append(line).append("\n");
                 }
             }
             br.close();
 
-            // Overwriting the file with the updated content
+            //Overwriting the file with the updated content
             BufferedWriter bw = new BufferedWriter(new FileWriter("resources/customerOrder.txt"));
             bw.write(fileContent.toString());
             bw.close();
@@ -210,7 +212,7 @@ public class Order {
         }
     }
     
-    public String getOrderFeedback() throws FileNotFoundException, IOException {
+    public String getOrderFeedback() throws FileNotFoundException, IOException { //get the feedback given by customer for the order
         StringBuilder result = new StringBuilder();
 
         try (BufferedReader reader = new BufferedReader(new FileReader("resources/review.txt"))) {
@@ -219,42 +221,43 @@ public class Order {
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
 
-                String reviewID = parts[0];
-                //String orderID = parts[1];  
-                String reviewType = parts[2];  
-                String rating = parts[3];   
-                String review = parts[4];  
-                String date = parts[5];  
-
                 //Check if orderID matches the current order's ID
                 if (parts[1].equals(String.valueOf(this.orderID))) {
-                    System.out.println("OrderID: " + orderID);
+                    //get splitted data if orderID match
+                    String reviewID = parts[0];
+                    String reviewType = parts[2];  
+                    String rating = parts[3];   
+                    String review = parts[4];  
+                    String date = parts[5];  
+                    
+                    //define order rate and review based on reviewType, if null will return null
                     if (reviewType.equals("order")) {
-                        orderFeedback = review != null && !review.trim().isEmpty() ? review : "No feedback provided";  
+                        orderFeedback = review != null && !review.trim().isEmpty() ? review : "null";  
                     } else if (reviewType.equals("vendor")) {
-                        vendorRating = rating != null && !rating.trim().isEmpty() ? rating : "No rating";
-                        vendorFeedback = review != null && !review.trim().isEmpty() ? review : "No feedback provided"; 
+                        vendorRating = rating != null && !rating.trim().isEmpty() ? rating : "null";
+                        vendorFeedback = review != null && !review.trim().isEmpty() ? review : "null"; 
                     } else if (reviewType.equals("runner")) {
-                        runnerRating = rating != null && !rating.trim().isEmpty() ? rating : "No rating"; 
+                        runnerRating = rating != null && !rating.trim().isEmpty() ? rating : "null"; 
                     }
                 }
             }
         }
 
+        //append review and rate as one result to return: orderID,orderFeedback,vendorRating,vendorFeedback,runnerRating
         if (orderFeedback != null || vendorRating != null || vendorFeedback != null || runnerRating != null) {
             //Format the result in the requested order
             result.append(orderID).append(",")  // orderID
-                  .append(orderFeedback != null ? orderFeedback : "No feedback provided").append(",") 
-                  .append(vendorRating != null ? vendorRating : "No rating").append(",") 
-                  .append(vendorFeedback != null ? vendorFeedback : "No feedback provided").append(",")
-                  .append(runnerRating != null ? runnerRating : "No rating");
+                  .append(orderFeedback != null ? orderFeedback : "null").append(",") 
+                  .append(vendorRating != null ? vendorRating : "null").append(",") 
+                  .append(vendorFeedback != null ? vendorFeedback : "null").append(",")
+                  .append(runnerRating != null ? runnerRating : "null");
         }
-        System.out.println(result);
         //Return the formatted result (or empty if nothing found)
         return result.length() > 0 ? result.toString() : "";
     }
     
-    public void saveOrderFeedback() {
+    public void saveOrderFeedback() { //save order feedback when user input
+        //generate reviewID
         int lastFeedback = 0;
         try {
             BufferedReader br = new BufferedReader(new FileReader("resources/review.txt"));
@@ -269,7 +272,9 @@ public class Order {
             e.printStackTrace();
         }
         
-        String reviewDate = LocalDate.now().toString(); //Current date for the review
+        
+        String reviewDate = LocalDate.now().toString(); //Current date for the review (CURRENT NOT WORKING)
+        //write the review separately
         try {
             BufferedReader br = new BufferedReader(new FileReader("resources/review.txt"));
             StringBuilder stringBuilder = new StringBuilder(); 
@@ -304,7 +309,7 @@ public class Order {
                     );
                     stringBuilder.append(vendorReviewRecord).append("\n");
 
-                    //3. Write Runner Review Record
+                    //3. Write Runner Review Record if exists
                     if (runnerRating != null) {
                         lastFeedback = lastFeedback + 1;
                         String runnerReviewRecord = String.join(",", 
