@@ -175,21 +175,19 @@ public class Admin extends User {
             JOptionPane.showMessageDialog(null, "Plat number field cannot be empty for runner!");
             return false;
         }
-        // If all checks passed, return true
         return true;
     }
     
+    //update both user and role.txt when admin update user info
     public boolean performUpdate(
             String email, String name, String birthDate,
             String phone, String role, String additionalField) {
 
-        // Update user.txt
         boolean userUpdated = updateFile("user.txt",
                 email,
                 new String[]{name, birthDate, phone},
                 new int[]{1, 4, 5});
 
-        // Update role-specific file
         boolean roleUpdated = updateFile(role + ".txt",
                 email,
                 new String[]{additionalField},
@@ -203,7 +201,6 @@ public class Admin extends User {
         } else {
             JOptionPane.showMessageDialog(null, "Error updating " + role + ".txt!");
         }
-
         return false;
     }
     
@@ -256,7 +253,8 @@ public class Admin extends User {
 
         return true;
     }
-     
+    
+    //delete both user and role.txt when admin delete user acc
     public boolean performDelete(String email, String role) {
         // Delete from user.txt
         boolean userDeleted = deleteFromFile("user.txt", email);
@@ -348,7 +346,6 @@ public class Admin extends User {
         // Update the customer's credit in the file
         updateCustomerCredit(email, newAmount);
         
-        // Notify the user of success
         javax.swing.JOptionPane.showMessageDialog(null, "Top-up completed successfully!\nThe receipt has been sent to the customer.", "Success", javax.swing.JOptionPane.INFORMATION_MESSAGE);
         
         // Show receipt UI
@@ -386,7 +383,6 @@ public class Admin extends User {
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts.length > 1 && parts[0].equals(email)) {
-                    // Update the credit amount
                     parts[2] = String.format("%.2f", newAmount);
                     customerFound = true;
                 }
