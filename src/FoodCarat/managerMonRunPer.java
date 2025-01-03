@@ -4,6 +4,10 @@
  */
 package FoodCarat;
 
+import java.io.IOException;
+import java.util.Map;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author User
@@ -17,6 +21,56 @@ public class managerMonRunPer extends javax.swing.JFrame {
         initComponents();
     }
 
+    private void displayRunnerPerformance(String selectedMonth) throws IOException {
+        Map<String, Manager.RunnerPerformanceData> performanceDataMap = Manager.getRunnerPerformance(selectedMonth);
+
+        // Assuming you have a JTable set up with columns "RunnerID", "Total Orders", and "Average Rating"
+        DefaultTableModel model = (DefaultTableModel) runpertable.getModel();
+        model.setRowCount(0);  // Clear previous rows
+
+        for (Map.Entry<String, Manager.RunnerPerformanceData> entry : performanceDataMap.entrySet()) {
+            String runnerID = entry.getKey();
+            Manager.RunnerPerformanceData data = entry.getValue();
+        }
+        // Populate the table with the new data
+        int rowNumber= 1;
+        for (Map.Entry<String, Manager.RunnerPerformanceData> entry : performanceDataMap.entrySet()) {
+            String runnerID = entry.getKey();
+            Manager.RunnerPerformanceData data = entry.getValue();            
+            
+            Admin admin = new Admin();
+            String [] runnerName = admin.performSearch(runnerID, "user.txt");
+            String name = runnerName[1];
+            
+            model.addRow(new Object[] {
+                rowNumber,
+                name,
+                data.getTotalOrders(),
+                String.format("%.2f", data.getAverageRating())
+            });
+            rowNumber++;
+        }
+        
+         // Calculate summary total orders and average rating
+        int totalOrders = 0;
+        double totalAverageRating = 0.0;
+        int rowCount = model.getRowCount();
+
+        for (int i = 0; i < rowCount; i++) {
+            totalOrders += Integer.parseInt(model.getValueAt(i, 2).toString());
+            totalAverageRating += Double.parseDouble(model.getValueAt(i, 3).toString());
+        }
+
+        double averageRatingSummary = rowCount > 0 ? totalAverageRating / rowCount : 0.0;
+
+        // Add the summary row
+        model.addRow(new Object[]{
+            "Total:",
+            "",
+            totalOrders,
+            String.format("%.2f", averageRatingSummary)
+        });
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -28,38 +82,40 @@ public class managerMonRunPer extends javax.swing.JFrame {
 
         Lmonitorrun = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        bsearch = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        runpertable = new javax.swing.JTable();
+        monthcbx = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         Lmonitorrun.setFont(new java.awt.Font("Cooper Black", 0, 36)); // NOI18N
         Lmonitorrun.setText("Monitor Runner Performance");
 
-        jLabel1.setText("Search: ");
+        jLabel1.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        jLabel1.setText("Month : ");
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        bsearch.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        bsearch.setText("Search");
+        bsearch.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                bsearchActionPerformed(evt);
             }
         });
 
-        jButton1.setText("Search");
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        runpertable.setFont(new java.awt.Font("Constantia", 0, 14)); // NOI18N
+        runpertable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "No", "Runner Name", "Total Order", "Average Rating"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(runpertable);
+
+        monthcbx.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        monthcbx.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -70,18 +126,17 @@ public class managerMonRunPer extends javax.swing.JFrame {
                 .addComponent(Lmonitorrun)
                 .addGap(149, 149, 149))
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(67, 67, 67)
-                        .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 386, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(26, 26, 26)
-                        .addComponent(jButton1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(56, 56, 56)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 730, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(56, 56, 56)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 730, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(71, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(67, 67, 67)
+                .addComponent(jLabel1)
+                .addGap(29, 29, 29)
+                .addComponent(monthcbx, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(bsearch)
+                .addGap(94, 94, 94))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -91,19 +146,26 @@ public class managerMonRunPer extends javax.swing.JFrame {
                 .addGap(36, 36, 36)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                    .addComponent(bsearch)
+                    .addComponent(monthcbx, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(79, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    private void bsearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bsearchActionPerformed
+        String selectedMonth = monthcbx.getSelectedItem().toString();
+
+        try {
+            // Call method to display performance data for the selected month
+            displayRunnerPerformance(selectedMonth);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_bsearchActionPerformed
 
     /**
      * @param args the command line arguments
@@ -142,10 +204,10 @@ public class managerMonRunPer extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Lmonitorrun;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton bsearch;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JComboBox<String> monthcbx;
+    private javax.swing.JTable runpertable;
     // End of variables declaration//GEN-END:variables
 }
