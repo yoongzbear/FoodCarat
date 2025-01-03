@@ -4,13 +4,7 @@
  */
 package FoodCarat;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -22,207 +16,44 @@ public class adminUpdateUser extends javax.swing.JFrame {
      * Creates new form adminUpdateUser
      */
     public adminUpdateUser() {
-        this("customer");
+        
     }
     public adminUpdateUser(String role){
         initComponents();
-        emailtxt.setEditable(false);
         this.role = role;
+        Lrole.setText(role);        
+        emailtxt.setEditable(false); 
         customizeForm();
-        Lrole.setText(role);
     }
-private void customizeForm() {
-    javax.swing.JComponent[] customerComponents = {
-        Laddress, addresstxta, jScrollPane1,LotherInfo
-    };
-    javax.swing.JComponent[] vendorComponents = {
-        Lshop, shoptxt
-    };
-    javax.swing.JComponent[] runnerComponents = {
-        Lplatnum, platnumtxt, Lcartype, cartypecbx,LotherInfo
-    };
-
-    Admin.customizeForm(role, customerComponents, vendorComponents, runnerComponents);
-}
-
-private void clearFields() {
-    Admin.clearFields(
-        emailtxt, nametxt, agetxt, phonetxt, platnumtxt, addresstxta, shoptxt
-    );
-    Admin.clearComboBoxes(gendercbx);
-}
-   
-private void performSearch() {
-    String searchQuery = searchtxt.getText().trim();
-    String fileName = role + ".txt";
-
-    try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-        String line;
-        boolean found = false;
-
-        // Clear the table and fields before populating
-        clearFields();
-
-        while ((line = br.readLine()) != null) {
-            String[] data = line.split(";"); // Assuming CSV format
-            if (data[0].equalsIgnoreCase(searchQuery)) { // Assuming email is the 2nd column
-                found = true;
-
-                // Populate fields
-                emailtxt.setText(data[0]);
-                nametxt.setText(data[1]);
-                gendercbx.setSelectedItem(data[2]);
-                agetxt.setText(data[3]);
-                phonetxt.setText(data[4]);
-
-                if ("customer".equals(role)) {
-                    addresstxta.setText(data[6]);    
-                } else if ("vendor".equals(role)) {
-                    shoptxt.setText(data[6]);
-                } else if("runner".equals(role)){
-                    platnumtxt.setText(data[6]);
-                    cartypecbx.setSelectedItem(data[7]);
-                }
-                break;
-            }
-        }
-
-        if (!found) {
-            javax.swing.JOptionPane.showMessageDialog(this, "No matching record found!");
-        }
-
-    } catch (IOException ex) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Error reading file: " + ex.getMessage());
+    
+    private void clearFields() {
+        Admin.clearFields(emailtxt, nametxt, userbirthtxt, phonetxt, platnumtxt, addresstxta, cuisinetxt
+        );
     }
-}
-
-
-private void performUpdate() {
-    String fileName = role + ".txt"; // e.g., "runner.txt", "vendor.txt", or "user.txt"
-    String email = emailtxt.getText().trim();
-
-    if (email.isEmpty()) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Email field cannot be empty!");
-        return;
+    
+    private void customizeForm() {
+        javax.swing.JComponent[] customerComponents = {
+            Laddress, addresstxta, jScrollPane1, LotherInfo
+        };
+        javax.swing.JComponent[] vendorComponents = {
+            Lshop, cuisinetxt
+        };
+        javax.swing.JComponent[] runnerComponents = {
+            Lplatnum, platnumtxt, LotherInfo
+        };
+        Admin.customizeForm(role, customerComponents, vendorComponents, runnerComponents);
     }
-
-    List<String> fileContent = new ArrayList<>();
-    boolean recordUpdated = false;
-
-    try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-        String line;
-
-        while ((line = br.readLine()) != null) {
-            String[] data = line.split(";");
-
-            if (data[0].equalsIgnoreCase(email)) {
-                // Update the record with new information from the fields
-                data[1] = nametxt.getText().trim();
-                data[2] = (String) gendercbx.getSelectedItem();
-                data[3] = agetxt.getText().trim();
-                data[4] = phonetxt.getText().trim();
-
-                if ("customer".equals(role)) {
-                    data[6] = addresstxta.getText().trim();
-                } else if ("vendor".equals(role)) {
-                    data[6] = shoptxt.getText().trim();
-                } else if ("runner".equals(role)) {
-                    data[6] = platnumtxt.getText().trim();
-                    data[7] = (String) cartypecbx.getSelectedItem();
-                }
-
-                // Reconstruct the updated line
-                line = String.join(";", data);
-                recordUpdated = true;
-            }
-
-            fileContent.add(line); // Add the (updated or unchanged) line to memory
-        }
-    } catch (IOException ex) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Error reading file: " + ex.getMessage());
-        return;
+    
+    //set data after performing search at update user
+    public void setUserData(String email, String name, String userBirth, String contactNumber, String roleSpecificData) {
+        emailtxt.setText(email);
+        nametxt.setText(name);
+        userbirthtxt.setText(userBirth);
+        phonetxt.setText(contactNumber);
+        platnumtxt.setText(roleSpecificData);
+        addresstxta.setText(roleSpecificData);
+        cuisinetxt.setText(roleSpecificData);
     }
-
-    if (!recordUpdated) {
-        javax.swing.JOptionPane.showMessageDialog(this, "No matching record found to update!");
-        return;
-    }
-
-    // Write the updated content back to the file
-    try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName))) {
-        for (String line : fileContent) {
-            bw.write(line);
-            bw.newLine();
-        }
-    } catch (IOException ex) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Error writing to file: " + ex.getMessage());
-        return;
-    }
-
-    javax.swing.JOptionPane.showMessageDialog(this, "Record updated successfully!");
-    clearFields();
-}
-
-
-private void performDelete() {
-    String fileName = role + ".txt";
-    String email = emailtxt.getText().trim();
-
-    if (email.isEmpty()) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Email field cannot be empty!");
-        return;
-    }
-
-    // Confirmation dialog
-    int confirm = javax.swing.JOptionPane.showConfirmDialog(this, 
-        "Are you sure you want to delete this record?", 
-        "Confirm Deletion", 
-        javax.swing.JOptionPane.YES_NO_OPTION);
-
-    if (confirm != javax.swing.JOptionPane.YES_OPTION) {
-        return; // Cancel deletion if the user selects "No"
-    }
-
-    List<String> fileContent = new ArrayList<>();
-    boolean recordDeleted = false;
-
-    try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-        String line;
-
-        while ((line = br.readLine()) != null) {
-            String[] data = line.split(";");
-
-            if (data[0].equalsIgnoreCase(email)) {
-                recordDeleted = true; // Mark the record for deletion
-                continue; // Skip adding this line to the file content
-            }
-
-            fileContent.add(line); // Add other lines to memory
-        }
-    } catch (IOException ex) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Error reading file: " + ex.getMessage());
-        return;
-    }
-
-    if (!recordDeleted) {
-        javax.swing.JOptionPane.showMessageDialog(this, "No matching record found to delete!");
-        return;
-    }
-
-    // Write the updated content back to the file
-    try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName))) {
-        for (String line : fileContent) {
-            bw.write(line);
-            bw.newLine();
-        }
-    } catch (IOException ex) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Error writing to file: " + ex.getMessage());
-        return;
-    }
-
-    javax.swing.JOptionPane.showMessageDialog(this, "Record deleted successfully!");
-    clearFields();
-}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -238,28 +69,24 @@ private void performDelete() {
         Lemail = new javax.swing.JLabel();
         Lname = new javax.swing.JLabel();
         Lgender = new javax.swing.JLabel();
-        Lage = new javax.swing.JLabel();
         Lphone = new javax.swing.JLabel();
         Lshop = new javax.swing.JLabel();
         LotherInfo = new javax.swing.JLabel();
         Lplatnum = new javax.swing.JLabel();
-        Lcartype = new javax.swing.JLabel();
         platnumtxt = new javax.swing.JTextField();
-        cartypecbx = new javax.swing.JComboBox<>();
         Laddress = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         addresstxta = new javax.swing.JTextArea();
         emailtxt = new javax.swing.JTextField();
         nametxt = new javax.swing.JTextField();
-        agetxt = new javax.swing.JTextField();
         phonetxt = new javax.swing.JTextField();
-        shoptxt = new javax.swing.JTextField();
+        cuisinetxt = new javax.swing.JTextField();
         bSearch = new javax.swing.JButton();
         bUpdate = new javax.swing.JButton();
         bDelete = new javax.swing.JButton();
         bBack = new javax.swing.JButton();
-        gendercbx = new javax.swing.JComboBox<>();
         Lrole = new javax.swing.JLabel();
+        userbirthtxt = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -283,16 +110,13 @@ private void performDelete() {
         Lname.setText("Name:");
 
         Lgender.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        Lgender.setText("Gender:");
-
-        Lage.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        Lage.setText("Age:");
+        Lgender.setText("User Birth:");
 
         Lphone.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         Lphone.setText("Phone Number:");
 
         Lshop.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        Lshop.setText("Shop Name:");
+        Lshop.setText("Cuisine:");
 
         LotherInfo.setFont(new java.awt.Font("Cooper Black", 0, 24)); // NOI18N
         LotherInfo.setText("Other Information");
@@ -300,13 +124,7 @@ private void performDelete() {
         Lplatnum.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         Lplatnum.setText("Plate number: ");
 
-        Lcartype.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        Lcartype.setText("Vehicle Type:");
-
         platnumtxt.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
-
-        cartypecbx.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        cartypecbx.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Car", "Motor" }));
 
         Laddress.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         Laddress.setText("Address:");
@@ -325,11 +143,9 @@ private void performDelete() {
             }
         });
 
-        agetxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-
         phonetxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
 
-        shoptxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        cuisinetxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
 
         bSearch.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
         bSearch.setText("Search");
@@ -366,9 +182,6 @@ private void performDelete() {
             }
         });
 
-        gendercbx.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        gendercbx.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Male", "Female" }));
-
         Lrole.setFont(new java.awt.Font("Cooper Black", 0, 24)); // NOI18N
         Lrole.setText("xxxxxx");
 
@@ -386,53 +199,59 @@ private void performDelete() {
                         .addGap(87, 87, 87)
                         .addComponent(bBack, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(81, 81, 81)
+                        .addGap(178, 178, 178)
+                        .addComponent(jLabel1)
+                        .addGap(36, 36, 36)
+                        .addComponent(Lrole)))
+                .addGap(76, 261, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(82, 82, 82)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(Lsearch)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 112, Short.MAX_VALUE)
+                        .addComponent(searchtxt, javax.swing.GroupLayout.PREFERRED_SIZE, 531, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(56, 56, 56)
+                        .addComponent(bSearch)
+                        .addGap(102, 102, 102))
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Lplatnum)
-                            .addComponent(Laddress)
-                            .addComponent(Lgender)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addComponent(Lemail)
                                 .addComponent(Lname))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(1, 1, 1)
-                                .addComponent(Lsearch)))
-                        .addGap(21, 21, 21)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(searchtxt, javax.swing.GroupLayout.PREFERRED_SIZE, 557, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 700, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(Lshop)
+                                    .addComponent(Laddress))))
+                        .addGap(48, 48, 48)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(emailtxt)
+                                    .addComponent(nametxt, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
+                                    .addComponent(cuisinetxt))
+                                .addGap(43, 43, 43)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(emailtxt)
-                                            .addComponent(nametxt)
-                                            .addComponent(gendercbx, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(54, 54, 54)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(Lage)
-                                            .addComponent(Lphone)
-                                            .addComponent(Lshop)))
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(LotherInfo)
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addComponent(platnumtxt, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGap(62, 62, 62)
-                                            .addComponent(Lcartype))))
+                                    .addComponent(Lphone)
+                                    .addComponent(Lgender))
                                 .addGap(59, 59, 59)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(cartypecbx, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(phonetxt, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(shoptxt, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(bSearch)
-                                        .addComponent(agetxt, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(178, 178, 178)
-                        .addComponent(jLabel1)
-                        .addGap(36, 36, 36)
-                        .addComponent(Lrole)))
-                .addContainerGap(97, Short.MAX_VALUE))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(userbirthtxt, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
+                                    .addComponent(phonetxt)))
+                            .addComponent(jScrollPane1))
+                        .addGap(0, 0, Short.MAX_VALUE))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(Lplatnum)
+                        .addGap(21, 21, 21)
+                        .addComponent(platnumtxt, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(277, 277, 277))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(LotherInfo)
+                        .addGap(341, 341, 341))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -441,12 +260,12 @@ private void performDelete() {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(Lrole))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Lsearch)
                     .addComponent(searchtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(bSearch))
-                .addGap(27, 27, 27)
+                .addGap(47, 47, 47)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -455,39 +274,30 @@ private void performDelete() {
                         .addGap(12, 12, 12)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(Lname)
-                            .addComponent(nametxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Lgender)
-                            .addComponent(gendercbx, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(nametxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(Lage)
-                                .addGap(15, 15, 15))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(agetxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(phonetxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(Lphone))
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(shoptxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Lshop))))
-                .addGap(51, 51, 51)
-                .addComponent(LotherInfo)
-                .addGap(28, 28, 28)
+                            .addComponent(Lgender)
+                            .addComponent(userbirthtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(23, 23, 23)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cartypecbx, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Lcartype)
+                    .addComponent(Lshop)
+                    .addComponent(cuisinetxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(38, 38, 38)
+                .addComponent(LotherInfo)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Lplatnum)
                     .addComponent(platnumtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(35, 35, 35)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Laddress))
-                .addGap(38, 38, 38)
+                .addGap(60, 60, 60)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bBack)
                     .addComponent(bDelete)
@@ -507,19 +317,64 @@ private void performDelete() {
     }//GEN-LAST:event_nametxtActionPerformed
 
     private void bUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bUpdateActionPerformed
-        if (!Admin.validateInputs(
-                role, emailtxt, nametxt, agetxt, phonetxt, platnumtxt, shoptxt, addresstxta)) {
-            return; // Exit if validation fails
+        // Retrieve the form field values
+        String email = emailtxt.getText().trim();
+        String name = nametxt.getText().trim();
+        String birthDate = userbirthtxt.getText().trim();
+        String phone = phonetxt.getText().trim();
+        String additionalField = "";
+
+        // Get the additional field value based on the role
+        if ("customer".equals(role)) {
+            additionalField = addresstxta.getText().trim();
+        } else if ("vendor".equals(role)) {
+            additionalField = cuisinetxt.getText().trim();
+        } else if ("runner".equals(role)) {
+            additionalField = platnumtxt.getText().trim();
         }
-        performUpdate();
+        Admin admin = new Admin();
+        if (admin.validateFields(email, name, birthDate, phone, role, additionalField)) {
+
+            boolean success = admin.performUpdate(email, name, birthDate, phone, role, additionalField);
+
+            if (success) {
+                clearFields();
+            } else {
+                JOptionPane.showMessageDialog(null, "Error updating the record!");
+            }
+        }
     }//GEN-LAST:event_bUpdateActionPerformed
 
     private void bDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDeleteActionPerformed
-       performDelete();
+        String email = emailtxt.getText().trim();
+
+        if (email.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please search an email before perform delete");
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(null, 
+            "Are you sure you want to delete this record?", 
+            "Confirm Deletion", 
+            JOptionPane.YES_NO_OPTION);
+
+        Admin admin = new Admin();
+        if (confirm == JOptionPane.YES_OPTION) {
+            if (admin.performDelete(email, role)) {
+                clearFields();
+            }
+        }
     }//GEN-LAST:event_bDeleteActionPerformed
 
     private void bSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSearchActionPerformed
-        performSearch();
+        String searchEmail = searchtxt.getText();
+        clearFields();
+        if (searchEmail != null && !searchEmail.isEmpty()) {
+            Admin admin = new Admin();
+            admin.searchUser(searchEmail,role, this); // Pass the current instance of admin update
+        } else {
+            JOptionPane.showMessageDialog(this, "Please enter a valid email address.");
+        }
     }//GEN-LAST:event_bSearchActionPerformed
 
     private void bBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bBackActionPerformed
@@ -564,8 +419,6 @@ private void performDelete() {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Laddress;
-    private javax.swing.JLabel Lage;
-    private javax.swing.JLabel Lcartype;
     private javax.swing.JLabel Lemail;
     private javax.swing.JLabel Lgender;
     private javax.swing.JLabel Lname;
@@ -576,20 +429,18 @@ private void performDelete() {
     private javax.swing.JLabel Lsearch;
     private javax.swing.JLabel Lshop;
     private javax.swing.JTextArea addresstxta;
-    private javax.swing.JTextField agetxt;
     private javax.swing.JButton bBack;
     private javax.swing.JButton bDelete;
     private javax.swing.JButton bSearch;
     private javax.swing.JButton bUpdate;
-    private javax.swing.JComboBox<String> cartypecbx;
+    private javax.swing.JTextField cuisinetxt;
     private javax.swing.JTextField emailtxt;
-    private javax.swing.JComboBox<String> gendercbx;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField nametxt;
     private javax.swing.JTextField phonetxt;
     private javax.swing.JTextField platnumtxt;
     private javax.swing.JTextField searchtxt;
-    private javax.swing.JTextField shoptxt;
+    private javax.swing.JTextField userbirthtxt;
     // End of variables declaration//GEN-END:variables
 }
