@@ -20,23 +20,66 @@ import java.util.List;
  */
 public class Vendor {
     //alya@mail.com,Restaurant,/FoodCarat/images/vendor/ChageeLogo.png,[Dine In,Take Away,Delivery],
-    //constructor
-    //super(email,password,name);
-    
+    //constructor    
     private String email;
+    //super(email,password,name);
+            
+    private String cuisine;
+    private String photoLink;
+    private String availableMethod;
+    private double creditBalance;
     
     public Vendor(String email) {
         this.email = email;
+        getVendorInfo(email);
     }
     
-    //setters
-    
+    //setters - for current session (not including updating text field)
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setCuisine(String cuisine) {
+        this.cuisine = cuisine;
+    }
+
+    public void setPhotoLink(String photoLink) {
+        this.photoLink = photoLink;
+    }
+
+    public void setAvailableMethod(String availableMethod) {
+        this.availableMethod = availableMethod;
+    }
+
+    public void setCreditBalance(double creditBalance) {
+        this.creditBalance = creditBalance;
+    }
+        
     //getters
+    public String getEmail() {
+        return email;
+    }
+
+    public String getCuisine() {
+        return cuisine;
+    }
+
+    public String getPhotoLink() {
+        return photoLink;
+    }
+
+    
+    public String getAvailableMethod() {
+        return availableMethod;
+    }
+
+    public double getCreditBalance() {
+        return creditBalance;
+    }
     
     //methods
-    //home page
-    //get vendor information in array
-    public String[] getVendorInfo(String email){
+    //setting vendor info
+    private void getVendorInfo(String email){
         try {
             File fileName = new File("resources/vendor.txt");
             FileReader fr = new FileReader(fileName);
@@ -49,17 +92,21 @@ public class Vendor {
                 String[] data = read.split(",", -1);
                 if(data.length > 0 && data[0].equalsIgnoreCase(email)){
                     found = true;
-                    return data;
+                    //setting the variables
+                    setEmail(data[0]);
+                    setCuisine(data[1]);
+                    setPhotoLink(data[2]);
+                    setAvailableMethod(data[3]);
+                    setCreditBalance(Double.parseDouble(data[4]));
                 }
             }
             fr.close();
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }        
-        return null; //if no data is matching - add validation soon
     }
     
-    //update method availability
+    //update method availability in text file
     public void updateMethodAvailable(String method) {
         //get the methods stored in the array
         List<String> lines = new ArrayList<>();

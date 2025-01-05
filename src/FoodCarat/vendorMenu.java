@@ -51,7 +51,6 @@ public class vendorMenu extends javax.swing.JFrame {
         displayItems();
         
         enableTextField();
-        itemIDTxt.setEditable(false);
         
         //set the placeholder for search box
         setPlaceholder(searchTxt, "Search Item Name");
@@ -96,7 +95,7 @@ public class vendorMenu extends javax.swing.JFrame {
         //reset details section
         photoLabel.setIcon(null);
         photoLabel.setText("Item Photo");
-        itemIDTxt.setText("");
+        idLabel.setText("ID");
         itemNameTxt.setText("");
         typeBox.setSelectedItem("Item Type");
         itemPriceTxt.setText("");
@@ -147,7 +146,7 @@ public class vendorMenu extends javax.swing.JFrame {
     public void displayItems(String id) {
         //display details
         String[] details = item.itemData(id);        
-        itemIDTxt.setText(details[0].trim());
+        idLabel.setText(details[0].trim());
         itemNameTxt.setText(details[1].trim());
         typeBox.setSelectedItem(details[2].trim());
         itemPriceTxt.setText(details[3].trim());
@@ -156,9 +155,7 @@ public class vendorMenu extends javax.swing.JFrame {
         ImageIcon itemImage = new ImageIcon(details[4].trim());
         Image resizedImage = itemImage.getImage().getScaledInstance(photoLabel.getWidth(), photoLabel.getHeight(), Image.SCALE_SMOOTH);
         photoLabel.setText(""); //clear the label
-        photoLabel.setIcon(new ImageIcon(resizedImage));
-        
-        enableTextField();
+        photoLabel.setIcon(new ImageIcon(resizedImage));        
     }
     
     //display items based on check boxes
@@ -254,7 +251,7 @@ public class vendorMenu extends javax.swing.JFrame {
         });
     }
     
-    public void enableTextField() {
+    public void enableTextField() { //enable text fields when click edit details
         if(edit==false) {
             //when click to edit
             edit = true;
@@ -307,17 +304,17 @@ public class vendorMenu extends javax.swing.JFrame {
         editBtn = new javax.swing.JButton();
         deleteBtn = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
-        itemIDTxt = new javax.swing.JTextField();
         editImageBtn = new javax.swing.JButton();
+        idLabel = new javax.swing.JLabel();
         addBtn = new javax.swing.JButton();
-        foodRadioBtn = new javax.swing.JRadioButton();
-        beverageRadiobBtn = new javax.swing.JRadioButton();
-        dessertRadioBtn = new javax.swing.JRadioButton();
         filterBtn = new javax.swing.JButton();
-        setRadioBtn = new javax.swing.JRadioButton();
         searchTxt = new javax.swing.JTextField();
         searchBtn = new javax.swing.JButton();
         revertBtn = new javax.swing.JButton();
+        foodBox = new javax.swing.JCheckBox();
+        beverageBox = new javax.swing.JCheckBox();
+        dessertBox = new javax.swing.JCheckBox();
+        setBox = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -420,6 +417,9 @@ public class vendorMenu extends javax.swing.JFrame {
             }
         });
 
+        idLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
+        idLabel.setText("ID");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -428,13 +428,12 @@ public class vendorMenu extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addGap(18, 18, 18)
-                                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addGap(16, 16, 16)
-                                    .addComponent(photoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(16, 16, 16)
+                                .addComponent(photoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(16, 16, 16)
                                 .addComponent(editImageBtn)))
@@ -454,8 +453,8 @@ public class vendorMenu extends javax.swing.JFrame {
                                     .addComponent(itemNameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(typeBox, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(itemPriceTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(itemIDTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 19, Short.MAX_VALUE))
+                                    .addComponent(idLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(editBtn)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -474,7 +473,7 @@ public class vendorMenu extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
-                    .addComponent(itemIDTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(idLabel))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -502,20 +501,12 @@ public class vendorMenu extends javax.swing.JFrame {
             }
         });
 
-        foodRadioBtn.setText("Food");
-
-        beverageRadiobBtn.setText("Beverage");
-
-        dessertRadioBtn.setText("Dessert");
-
         filterBtn.setText("Filter");
         filterBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 filterBtnActionPerformed(evt);
             }
         });
-
-        setRadioBtn.setText("Set");
 
         searchTxt.setText("Search Item Name");
         searchTxt.addActionListener(new java.awt.event.ActionListener() {
@@ -539,85 +530,110 @@ public class vendorMenu extends javax.swing.JFrame {
             }
         });
 
+        foodBox.setText("Food");
+        foodBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                foodBoxActionPerformed(evt);
+            }
+        });
+
+        beverageBox.setText("Beverage");
+        beverageBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                beverageBoxActionPerformed(evt);
+            }
+        });
+
+        dessertBox.setText("Dessert");
+        dessertBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dessertBoxActionPerformed(evt);
+            }
+        });
+
+        setBox.setText("Set");
+        setBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setBoxActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(388, 388, 388)
-                .addComponent(menuBtn)
-                .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(foodRadioBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(beverageRadiobBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(dessertRadioBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(setRadioBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(filterBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(searchBtn))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addGap(388, 388, 388)
+                        .addComponent(menuBtn)
+                        .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 5, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(revertBtn)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(viewBtn))
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 712, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(revertBtn)
+                                .addComponent(foodBox, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(beverageBox)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(dessertBox)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(setBox)
+                                .addGap(18, 18, 18)
+                                .addComponent(filterBtn)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(viewBtn))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 712, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(397, 397, 397)
-                        .addComponent(addBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 39, Short.MAX_VALUE))
+                                .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(searchBtn)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(397, 397, 397)
+                                .addComponent(addBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 39, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
                         .addComponent(menuBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(22, Short.MAX_VALUE)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                        .addGap(0, 18, Short.MAX_VALUE)
+                        .addComponent(jLabel1)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(searchBtn)
                         .addComponent(addBtn))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(foodRadioBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(beverageRadiobBtn)
-                        .addComponent(dessertRadioBtn)
                         .addComponent(filterBtn)
-                        .addComponent(setRadioBtn)))
+                        .addComponent(foodBox)
+                        .addComponent(beverageBox)
+                        .addComponent(dessertBox)
+                        .addComponent(setBox)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 411, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(revertBtn)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(viewBtn))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(viewBtn)
+                            .addComponent(revertBtn)))
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 19, Short.MAX_VALUE))
+                .addGap(0, 18, Short.MAX_VALUE))
         );
 
         pack();
@@ -659,16 +675,16 @@ public class vendorMenu extends javax.swing.JFrame {
         String[] selectedFilter = new String[3];
         int index = 0;
 
-        if (foodRadioBtn.isSelected()) {
+        if (foodBox.isSelected()) {
             selectedFilter[index++] = "Food";
         }
-        if (beverageRadiobBtn.isSelected()) {
+        if (beverageBox.isSelected()) {
             selectedFilter[index++] = "Beverage";
         }
-        if (dessertRadioBtn.isSelected()) {
+        if (dessertBox.isSelected()) {
             selectedFilter[index++] = "Dessert";
         }
-        if (setRadioBtn.isSelected()) {
+        if (setBox.isSelected()) {
             selectedFilter[index++] = "Set";
         }
 
@@ -680,7 +696,7 @@ public class vendorMenu extends javax.swing.JFrame {
         //enable editing text field
         enableTextField();
         DecimalFormat df = new DecimalFormat("0.00");
-        String id = itemIDTxt.getText().trim();
+        String id = idLabel.getText().trim();
         String name = itemNameTxt.getText().trim();
         String type = typeBox.getSelectedItem().toString().trim();
         String priceText = itemPriceTxt.getText().trim();
@@ -745,7 +761,7 @@ public class vendorMenu extends javax.swing.JFrame {
         if (selectedRow >= 0) {
             int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to delete this item?", "Delete Item", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
-                String id = itemIDTxt.getText();
+                String id = idLabel.getText();
                 item.deleteItem(id);
                 displayItems();
                 resetDetails();
@@ -788,11 +804,27 @@ public class vendorMenu extends javax.swing.JFrame {
     private void revertBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_revertBtnActionPerformed
         displayItems();
         setPlaceholder(searchTxt, "Search Item Name");
-        foodRadioBtn.setSelected(false);
-        beverageRadiobBtn.setSelected(false);
-        dessertRadioBtn.setSelected(false);
-        setRadioBtn.setSelected(false);
+        foodBox.setSelected(false);
+        beverageBox.setSelected(false);
+        dessertBox.setSelected(false);
+        setBox.setSelected(false);
     }//GEN-LAST:event_revertBtnActionPerformed
+
+    private void foodBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_foodBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_foodBoxActionPerformed
+
+    private void beverageBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_beverageBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_beverageBoxActionPerformed
+
+    private void dessertBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dessertBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_dessertBoxActionPerformed
+
+    private void setBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_setBoxActionPerformed
 
     /**
      * @param args the command line arguments
@@ -831,14 +863,14 @@ public class vendorMenu extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addBtn;
-    private javax.swing.JRadioButton beverageRadiobBtn;
+    private javax.swing.JCheckBox beverageBox;
     private javax.swing.JButton deleteBtn;
-    private javax.swing.JRadioButton dessertRadioBtn;
+    private javax.swing.JCheckBox dessertBox;
     private javax.swing.JButton editBtn;
     private javax.swing.JButton editImageBtn;
     private javax.swing.JButton filterBtn;
-    private javax.swing.JRadioButton foodRadioBtn;
-    private javax.swing.JTextField itemIDTxt;
+    private javax.swing.JCheckBox foodBox;
+    private javax.swing.JLabel idLabel;
     private javax.swing.JTextField itemNameTxt;
     private javax.swing.JTextField itemPriceTxt;
     private javax.swing.JTable itemTable;
@@ -855,7 +887,7 @@ public class vendorMenu extends javax.swing.JFrame {
     private javax.swing.JButton revertBtn;
     private javax.swing.JButton searchBtn;
     private javax.swing.JTextField searchTxt;
-    private javax.swing.JRadioButton setRadioBtn;
+    private javax.swing.JCheckBox setBox;
     private javax.swing.JComboBox<String> typeBox;
     private javax.swing.JButton viewBtn;
     // End of variables declaration//GEN-END:variables

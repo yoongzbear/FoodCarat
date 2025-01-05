@@ -36,11 +36,65 @@ public class Item {
     public Item() {
         
     }
-    
+
     //setters
+    public void setItemID(int itemID) {
+        this.itemID = itemID;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
+
+    public void setItemType(String itemType) {
+        this.itemType = itemType;
+    }
+
+    public void setItemPrice(double itemPrice) {
+        this.itemPrice = itemPrice;
+    }
+
+    public void setItemImgPath(String itemImgPath) {
+        this.itemImgPath = itemImgPath;
+    }
+
+    public void setVenEmail(String venEmail) {
+        this.venEmail = venEmail;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }   
     
     //getters
+    public int getItemID() {    
+        return itemID;
+    }
+
+    public String getItemName() {
+        return itemName;
+    }
+
+    public String getItemType() {
+        return itemType;
+    }
+
+    public double getItemPrice() {
+        return itemPrice;
+    }
+
+    public String getItemImgPath() {
+        return itemImgPath;
+    }
+
+    public String getVenEmail() {
+        return venEmail;
+    }
     
+    public String getFileName() {    
+        return fileName;
+    }
+
     //method
     //add new item
     public void addItem(String[] itemInfo) {

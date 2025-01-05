@@ -43,19 +43,19 @@ public class vendorMain extends javax.swing.JFrame {
     //method
     //set info
     public void displayInfo() {
-        String[] vendorInfo = vendor.getVendorInfo(email);
-        if (vendorInfo != null) {
-            emailTxt.setText(vendorInfo[0]);
+        //String[] vendorInfo = vendor.getVendorInfo(email);
+        if (vendor != null) {
+            emailTxt.setText(email);
             nameTxt.setText(name);
-            cuisineTxt.setText(vendorInfo[1]);
-            creditTxt.setText("RM"+vendorInfo[4]); //later add format
+            cuisineTxt.setText(vendor.getCuisine());
+            creditTxt.setText("RM"+vendor.getCreditBalance()); //later add format
             
-            ImageIcon icon = new ImageIcon(vendorInfo[2]);
+            ImageIcon icon = new ImageIcon(vendor.getPhotoLink());
             Image img = icon.getImage();
             Image resizedImage = img.getScaledInstance(vendorLogo.getWidth(), vendorLogo.getHeight(), Image.SCALE_SMOOTH);
             vendorLogo.setIcon(new ImageIcon(resizedImage));
             
-            displayMethod(vendorInfo);
+            displayMethod();
         } else {
             // Handle case where vendor info is not found
             JOptionPane.showMessageDialog(this, "Vendor information not found for email: " + email,
@@ -64,8 +64,8 @@ public class vendorMain extends javax.swing.JFrame {
     }
     
     //display available method
-    public void displayMethod(String[] vendorInfo) {
-        String methods = vendorInfo[3];
+    public void displayMethod() {
+        String methods = vendor.getAvailableMethod();
         methods = methods.substring(1, methods.length() - 1); //remove the square brackets
         String[] methodList = methods.split(";");
         //display checkboxes based on method saved
@@ -482,6 +482,7 @@ public class vendorMain extends javax.swing.JFrame {
         }
         //call method to update method from vendor class
         vendor.updateMethodAvailable(methodString);
+        vendor.setAvailableMethod(methodString); //set current session's available methods
         displayInfo(); //refresh info
     }//GEN-LAST:event_updateMethodBtnActionPerformed
 
@@ -491,6 +492,7 @@ public class vendorMain extends javax.swing.JFrame {
         if (confirm == JOptionPane.YES_OPTION) {
             String methodString = "[Dine In;Take Away;Delivery]";
             vendor.updateMethodAvailable(methodString);
+            vendor.setAvailableMethod(methodString);
             displayInfo(); //refresh info
         }
     }//GEN-LAST:event_openAllBtnActionPerformed
@@ -501,6 +503,7 @@ public class vendorMain extends javax.swing.JFrame {
         if (confirm == JOptionPane.YES_OPTION) {
             String methodString = "[]";
             vendor.updateMethodAvailable(methodString);
+            vendor.setAvailableMethod(methodString);
             displayInfo(); //refresh info
         }
     }//GEN-LAST:event_closeAllBtnActionPerformed
