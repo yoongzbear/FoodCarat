@@ -59,31 +59,25 @@ public class customerOrderHistory extends javax.swing.JFrame {
                             String vendorName = (String) tOrderHistory.getValueAt(selectedRow, 4);
                             String orderStatus = (String) tOrderHistory.getValueAt(selectedRow, 5);
                             String cancelReason = (String) tOrderHistory.getValueAt(selectedRow, 6);
-                            
                             //Get feedback
-                            Order order = new Order(Integer.parseInt(orderID));
-                            String feedback = order.getOrderFeedback();
-                            
+                            Review review = new Review(Integer.parseInt(orderID));
+                            String feedback = review.getFeedback();
                             String[] feedbackParts = feedback.split(",");
-                            String orderID2 = feedbackParts[0];  
-                            String orderFeedback = feedbackParts[1];  
-                            String vendorRating = feedbackParts[2]; 
+                            String orderID2 = feedbackParts[0];
+                            String orderFeedback = feedbackParts[1];
+                            String vendorRating = feedbackParts[2];
                             String vendorFeedback = feedbackParts[3];
                             String runnerRating = feedbackParts[4];
-                            
                             //Set the data to text fields
                             lOrderType.setText(orderType);
                             ltotalPrice.setText(totalPrice);
                             lVendorName.setText(vendorName);
                             lOrderStatus.setText(orderStatus);
-                            
-                            boolean validFeedback = true; 
-
+                            boolean validFeedback = true;
                             //Check feedback based on the reviewType
                             if ("null".equals(feedbackParts[1]) || "null".equals(feedbackParts[2]) || "null".equals(feedbackParts[3])) {
                                 validFeedback = false;
                             }
-                            
                             if ("Delivery".equals(orderType.trim())) {
                                 // Set visibility of components related to the runner
                                 lRunnerNameTitle.setVisible(true);
@@ -97,7 +91,6 @@ public class customerOrderHistory extends javax.swing.JFrame {
                                 lRunnerRating.setVisible(false);
                                 cbRunnerRating.setVisible(false);
                             }
-                            
                             //Feedback
                             if (validFeedback) {
                                 //Feedback exists, set the text area to read-only and display feedback
@@ -105,7 +98,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
                                 taOrderFeedback.setEditable(false);
                                 cbVendorRating.setSelectedItem(vendorRating + " 🌟");
                                 cbVendorRating.setEditable(false);
-
+                                
                                 taVendorFeedback.setText(vendorFeedback);
                                 taVendorFeedback.setEditable(false);
                                 cbRunnerRating.setSelectedItem(runnerRating + " 🌟");
@@ -116,9 +109,9 @@ public class customerOrderHistory extends javax.swing.JFrame {
                                 taOrderFeedback.setText("");
                                 taOrderFeedback.setEditable(true);
                                 cbVendorRating.setEditable(true);
-
+                                
                                 //Clear the selection (or reset it to a default choice, if desired)
-                                cbVendorRating.setSelectedItem("Please Rate"); 
+                                cbVendorRating.setSelectedItem("Please Rate");
                                 taVendorFeedback.setText("");
                                 taVendorFeedback.setEditable(true);
                                 cbRunnerRating.setEditable(true);
@@ -128,15 +121,12 @@ public class customerOrderHistory extends javax.swing.JFrame {
                             } else {
                                 bFeedback.setEnabled(false);
                             }
-                            
                             //For the order items
                             DefaultTableModel model = (DefaultTableModel) tbOrderItem.getModel();
                             DecimalFormat df = new DecimalFormat("0.00");
                             model.setRowCount(0);
-                            
                             //Split the order list by semicolon (;) to get individual order items
                             List<String[]> orderItemDetails = orderDetailsMap.get(orderID);
-                            
                             //Loop through each item in the order and process it
                             for (String[] item : orderItemDetails) {
                                 //rOrderItemID, itemName, rItemQuantity, itemPrice
@@ -595,8 +585,8 @@ public class customerOrderHistory extends javax.swing.JFrame {
                     String vendorRating = selectedVendorRating.split(" ")[0];
                     String vendorFeedback = taVendorFeedback.getText();
 
-                    Order order = new Order(orderID, orderFeedback, vendorRating, vendorFeedback, runnerRating);
-                    order.saveOrderFeedback(); 
+                    Review review = new Review(orderID, orderFeedback, vendorRating, vendorFeedback, runnerRating);
+                    review.saveOrderFeedback(); 
 
                     taOrderFeedback.setEditable(false);
                     bFeedback.setVisible(false);
