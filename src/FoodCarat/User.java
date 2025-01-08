@@ -5,6 +5,7 @@
 package FoodCarat;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -13,12 +14,14 @@ import java.io.IOException;
  * @author mastu
  */
 public class User {   
-    public String email;
-    public String password;
-    public String name;
-    public String userType;
-    public String birth;
-    public String contactNumber;
+    private String email;
+    private String password;
+    private String name;
+    private String userType;
+    private String birth;
+    private String contactNumber;
+    
+    private String userFile = "resources/user.txt";
 
     public User(String email, String password, String name, String userType, String birth, String contactNumber) {
         this.email = email;
@@ -34,9 +37,6 @@ public class User {
         this.email = null;
         this.userType = null;
     }
-
-    // Method to verify login
-
         
     // Getters and Setters
     public String getEmail() {
@@ -94,19 +94,48 @@ public class User {
         this.userType = null;
     }
     
-    //check the user whether has performed the first login, before admin update the info
-    public String checkFirstLogin(String searchEmail, String selectedRole, String filePath) {
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+    // METHOD
+    
+    // Login
+    public boolean login(String email, String password) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(userFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] userData = line.split(","); // Assuming data is comma-separated
+                if (userData.length == 4) {
+                    String fileEmail = userData[0]; 
+                    String filePassword = userData[2];
+
+                    if (fileEmail.equals(email) && filePassword.equals(password)) {
+                        // Load user details into this instance
+                        this.userType = userData[2];
+                        this.email = fileEmail;
+                        this.password = filePassword;
+                        return true; // Login successful
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false; // Login failed
+    }
+    
+    //Check first login (User Side) For Login
+                        
+    //Check first login For admin to CRUD user(Admin Side)
+    public String checkFirstLogin(String email, String userType) {
+        try (BufferedReader br = new BufferedReader(new FileReader(userFile))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] details = line.split(",");
 
-                if (details[0].equalsIgnoreCase(searchEmail)) {
+                if (details[0].equalsIgnoreCase(email)) {
 
-                    if (!details[3].equalsIgnoreCase(selectedRole)) {
+                    if (!details[3].equalsIgnoreCase(userType)) {
                         return "roleMismatch";
                     }
-                    // Check if the required fields (birth, contact, gender) are filled
+                    // Check birth, contactNumber, gender are filled OR not
                     if (details.length >= 6 && !details[4].isEmpty() && !details[5].isEmpty()) {
                         // Set user data if email is found and first login is complete
                         this.email = details[0];
@@ -115,7 +144,7 @@ public class User {
                         this.contactNumber = details[5];
                         
                     // Get additional data based on the role
-                    String additionalData = getRoleSpecificData(details[0], selectedRole);
+                    String additionalData = getRoleSpecificData(details[0], userType);
                     return additionalData;
                     } else {
                         return "notCompleted"; // User hasn't completed first login
@@ -128,7 +157,7 @@ public class User {
         return "notFound"; // Email not found
     }
     
-    //get the specific role data if the user has perfor the first login
+    // Get the specific role data if the user has perfor the first login (Admin Side)
     private String getRoleSpecificData(String email, String role) {
         String fileName = getRoleFileName(role);
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
@@ -154,6 +183,7 @@ public class User {
         return "Data not found"; // Data not found for the given email and role
     }
 
+    //(Admin Side)
     private String getRoleFileName(String role) {
         switch (role.toLowerCase()) {
             case "customer":

@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -199,7 +200,16 @@ public class userLogin extends javax.swing.JFrame {
     }//GEN-LAST:event_lPasswordFieldActionPerformed
 
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
-        // TODO add your handling code here:
+        String email = emailTf.getText();
+        String password = new String(lPasswordField.getPassword());
+
+        User user = new User();
+        if (user.login(email, password)){
+            JOptionPane.showMessageDialog(this, "Login successful! Welcome " + user.getName(), "INFORMATION", 
+                JOptionPane.INFORMATION_MESSAGE);
+        }else{
+            JOptionPane.showMessageDialog(this, "Login failed. Try again.", "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_loginButtonActionPerformed
 
     /**
