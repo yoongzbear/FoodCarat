@@ -121,6 +121,39 @@ public class User {
         return false; // Login failed
     }
     
+    // Validation For LOGIN
+    public boolean emailExists(String email) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(userFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] userDetails = line.split(",");
+                if (userDetails[0].equals(email)) {
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean passwordMatches(String email, String password) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(userFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] userDetails = line.split(",");
+                if (userDetails[0].equals(email) && userDetails[2].equals(password)) {
+                    this.name = userDetails[1]; // Assuming the name is in the first column
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    
     //Check first login (User Side) For Login
                         
     //Check first login For admin to CRUD user(Admin Side)
@@ -160,7 +193,7 @@ public class User {
     // Get the specific role data if the user has perfor the first login (Admin Side)
     private String getRoleSpecificData(String email, String role) {
         String fileName = getRoleFileName(role);
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(userFile))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] details = line.split(",");

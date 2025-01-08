@@ -9,19 +9,27 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import javax.swing.JOptionPane;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.PlainDocument;
 
 /**
  *
  * @author mastu
  */
 public class userLogin extends javax.swing.JFrame {
-
     /**
      * Creates new form userLogin   
      */
     public userLogin() {
         initComponents();
         setLocationRelativeTo(null);
+        
+
+        // Set the document filter for emailField and passwordField
+        ((PlainDocument) emailTf.getDocument()).setDocumentFilter(createLengthFilter(30));
+        ((PlainDocument) lPasswordField.getDocument()).setDocumentFilter(createLengthFilter(20));
     }
     
      @Override
@@ -50,6 +58,27 @@ public class userLogin extends javax.swing.JFrame {
         emailTf.repaint();
         lPasswordField.repaint();
         loginButton.repaint();
+    }
+    
+    // Set the input not > max length
+    private DocumentFilter createLengthFilter(int maxLength) {
+        return new DocumentFilter() {
+            @Override
+            public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) 
+                    throws BadLocationException {
+                if (fb.getDocument().getLength() + string.length() <= maxLength) {
+                    super.insertString(fb, offset, string, attr);
+                }
+            }
+
+            @Override
+            public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) 
+                    throws BadLocationException {
+                if (fb.getDocument().getLength() - length + text.length() <= maxLength) {
+                    super.replace(fb, offset, length, text, attrs);
+                }
+            }
+        };
     }
     
     /**
@@ -102,19 +131,9 @@ public class userLogin extends javax.swing.JFrame {
         lPasswordField.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         lPasswordField.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         lPasswordField.setOpaque(true);
-        lPasswordField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                lPasswordFieldActionPerformed(evt);
-            }
-        });
 
         emailTf.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         emailTf.setOpaque(true);
-        emailTf.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                emailTfActionPerformed(evt);
-            }
-        });
 
         jLabel5.setBackground(new java.awt.Color(255, 255, 255));
         jLabel5.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
@@ -191,24 +210,42 @@ public class userLogin extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void emailTfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailTfActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_emailTfActionPerformed
-
-    private void lPasswordFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lPasswordFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_lPasswordFieldActionPerformed
-
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
         String email = emailTf.getText();
         String password = new String(lPasswordField.getPassword());
 
+        if (email.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        // Validate email format
+        if (!email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
+            JOptionPane.showMessageDialog(this, 
+                "Invalid email format. Please enter a valid email.", 
+                "ERROR", 
+                JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         User user = new User();
-        if (user.login(email, password)){
-            JOptionPane.showMessageDialog(this, "Login successful! Welcome " + user.getName(), "INFORMATION", 
+        
+        // Check if email exists and password matches
+        if (!user.emailExists(email)) {
+            JOptionPane.showMessageDialog(this, 
+                "Email does not exist.", 
+                "ERROR", 
+                JOptionPane.ERROR_MESSAGE);
+        } else if (!user.passwordMatches(email, password)) {
+            JOptionPane.showMessageDialog(this, 
+                "Wrong password. Please re-enter.", 
+                "ERROR", 
+                JOptionPane.ERROR_MESSAGE);
+            lPasswordField.setText(""); // Clear password field
+        } else {
+            JOptionPane.showMessageDialog(this, 
+                "Login successful! Welcome " + user.getName(), 
+                "INFORMATION", 
                 JOptionPane.INFORMATION_MESSAGE);
-        }else{
-            JOptionPane.showMessageDialog(this, "Login failed. Try again.", "ERROR", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_loginButtonActionPerformed
 
