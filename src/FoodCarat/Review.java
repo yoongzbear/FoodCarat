@@ -11,6 +11,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -134,6 +137,27 @@ public class Review {
         //Return the formatted result (or empty if nothing found)
         return result.length() > 0 ? result.toString() : "";
     }
+    
+    //get all reviews 
+    public List<String[]> getAllReviews() {
+        List<String[]> allReviews = new ArrayList<>();
+        
+        try {
+            FileReader fr = new FileReader("resources/review.txt");
+            BufferedReader br = new BufferedReader(fr);
+            String read;
+            
+            while ((read = br.readLine()) != null) {
+                String[] reviewData = read.split(",");
+                allReviews.add(reviewData);
+            }
+        } catch(IOException e) {
+            JOptionPane.showMessageDialog(null, "Failed to read from review file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        return allReviews;
+    }
+    
     
     public void saveOrderFeedback() { //save order feedback when user input
         //generate reviewID

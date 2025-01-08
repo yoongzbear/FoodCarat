@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -143,4 +144,26 @@ public class Vendor {
     
     //reject order
     //call update order status in order class
+    
+    //get all reviews + orders + items for the vendor
+    //items txt = calculate price, get vendor email
+    public List<String[]> getAllReviews(String venEmail) {
+        List<String[]> allReviews = new ArrayList<>();
+        
+        //initiate review, order, and items classes
+        //get item IDs from vendor
+//        Item item = new Item();
+//        List<String[]> vendorItems = item.getAllItems(venEmail);        
+//        List<String> allItemIDs = vendorItems.stream()
+//                .map(data -> data[0]) //get itemID
+//                .collect(Collectors.toList());
+//        
+//        //get all orders containing items from vendor
+//        Order order = new Order();
+//        List<String[]> orders = order.getAllOrders();
+//        List<String[]> vendorOrders = 
+        
+        
+        return allReviews;
+    }
 }

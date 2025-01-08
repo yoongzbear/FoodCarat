@@ -110,7 +110,6 @@ public class vendorMenu extends javax.swing.JFrame {
         int index = 1;
         model.setRowCount(0);
         itemTable.setRowHeight(100);
-        //1,Dahongpao Milk Tea,Beverage,13.90,images/menu/chageeDMT.png,alya@mail.com
         for (String[] itemData : allItems) {
             String itemID = itemData[0];
             String itemName = itemData[1];

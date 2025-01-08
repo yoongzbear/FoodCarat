@@ -4,7 +4,10 @@
  */
 package FoodCarat;
 
+import java.util.Arrays;
+import java.util.List;
 import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -14,13 +17,78 @@ public class vendorOrderHistory extends javax.swing.JFrame {
 
     /**
      * Creates new form vendorOrderHistory
-     */
+     */       
+    //change to userSession 
+    private String email = "alya@mail.com";
+    
     public vendorOrderHistory() {
         initComponents();
         getContentPane().setBackground(new java.awt.Color(186,85,211)); //setting background color of frame
+        
+        //test if it works
+        displayVendorOrder();
     }    
     
-    //display all orders
+    //display all orders to vendor
+    public void displayVendorOrder() {
+        //display on table
+        DefaultTableModel model = (DefaultTableModel) orderTable.getModel();
+        int index = 1;
+        model.setRowCount(0);
+     
+        //test if get ordered items from the vendor class
+        Order order = new Order();
+        List<String[]> allOrders = order.getAllOrders(email);
+        for (String[] orderData : allOrders) {
+            Item item = new Item();
+            System.out.println(Arrays.toString(orderData)); // Print entire row
+            //1,Take away,[1;1|2;1],Ordered,customerEmail,NULL,NULL,27.80
+            String orderID = orderData[0];
+            String orderMethod = orderData[1];
+            String orderItems = orderData[2];
+            String orderStatus = orderData[3];
+            String customerEmail = orderData[4];
+            String orderTotal = orderData[7];
+
+            String updatedOrderItems = replaceItemIDsWithNames(orderItems, item);
+
+            model.addRow(new Object[]{
+                index++,
+                orderID,
+                customerEmail,
+                orderMethod, 
+                updatedOrderItems,
+                orderStatus
+            });
+        }
+    }
+
+    //helper method to change item id to item name
+    private String replaceItemIDsWithNames(String orderItems, Item item) {
+        //remove square brackets and split the items by "|"
+        String[] itemDetails = orderItems.replace("[", "").replace("]", "").split("\\|");
+        StringBuilder updatedItems = new StringBuilder();
+
+        //replace itemID with item name
+        for (int i = 0; i < itemDetails.length; i++) {
+            String detail = itemDetails[i];
+            String[] parts = detail.split(";");
+            String itemID = parts[0]; // itemID
+            int quantity = Integer.parseInt(parts[1]); // quantity
+
+            String[] itemData = item.itemData(itemID);
+            String itemName = itemData != null && itemData.length > 1 ? itemData[1] : "Unknown Item";
+
+            //update item format [itemName;quantity]
+            if (i > 0) {
+                updatedItems.append(", ");
+            }
+            updatedItems.append(itemName);
+        }
+
+        return updatedItems.toString();
+    }
+    
     //have filter to show daily, mohtly, or weekly, or yearly
     //another filter to only show status completed, pending, accepted, delivered, cancelled
 
@@ -93,13 +161,15 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         jScrollPane1.setViewportView(orderTable);
         if (orderTable.getColumnModel().getColumnCount() > 0) {
             orderTable.getColumnModel().getColumn(0).setResizable(false);
-            orderTable.getColumnModel().getColumn(0).setPreferredWidth(30);
+            orderTable.getColumnModel().getColumn(0).setPreferredWidth(10);
             orderTable.getColumnModel().getColumn(1).setResizable(false);
-            orderTable.getColumnModel().getColumn(1).setPreferredWidth(30);
+            orderTable.getColumnModel().getColumn(1).setPreferredWidth(10);
+            orderTable.getColumnModel().getColumn(2).setPreferredWidth(60);
             orderTable.getColumnModel().getColumn(3).setResizable(false);
             orderTable.getColumnModel().getColumn(3).setPreferredWidth(50);
+            orderTable.getColumnModel().getColumn(4).setPreferredWidth(150);
             orderTable.getColumnModel().getColumn(5).setResizable(false);
-            orderTable.getColumnModel().getColumn(5).setPreferredWidth(50);
+            orderTable.getColumnModel().getColumn(5).setPreferredWidth(40);
         }
 
         viewBtn.setText("View Details");
@@ -231,18 +301,20 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                     .addComponent(idLabel)
                     .addComponent(idLabel1))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel14)
-                    .addComponent(emailLabel)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(methodLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jLabel18))
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel18)
-                        .addComponent(methodLabel2)))
+                        .addComponent(jLabel14)
+                        .addComponent(emailLabel)))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel15)
-                    .addComponent(methodLabel)
-                    .addComponent(reasonLabel1)
-                    .addComponent(methodLabel1))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(methodLabel, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel15)
+                        .addComponent(reasonLabel1)
+                        .addComponent(methodLabel1)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)

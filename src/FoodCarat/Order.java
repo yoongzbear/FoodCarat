@@ -7,7 +7,12 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
 
 /*
@@ -145,6 +150,87 @@ public class Order {
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
+    }
+    
+    //get all orders 
+    public List<String[]> getAllOrders() {
+        List<String[]> allOrders = new ArrayList<>();
+        
+        try {
+            FileReader fr = new FileReader("resources/customerOrder.txt");
+            BufferedReader br = new BufferedReader(fr);
+            String read;
+            
+            while ((read = br.readLine()) != null) {
+                String[] orderData = read.split(",");
+                allOrders.add(orderData);
+            }
+        } catch(IOException e) {
+            JOptionPane.showMessageDialog(null, "Failed to read from order file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        return allOrders;
+    }
+    
+    //get all orders for the vendor
+    //will change the logic after getting the correct order data
+    public List<String[]> getAllOrders(String vendorEmail) {
+        List<String[]> vendorOrders = new ArrayList<>();
+        DecimalFormat df = new DecimalFormat("0.00");
+
+        //get all items from vendor
+        Item item = new Item();
+        List<String[]> vendorItems = item.getAllItems(vendorEmail);
+        List<String> allItemIDs = vendorItems.stream()
+                .map(data -> data[0]) //get itemID
+                .collect(Collectors.toList());
+
+        //get all orders containing items from vendor
+        List<String[]> allOrders = getAllOrders();
+        //filter orders containing items from vendor
+        for (String[] order : allOrders) {
+            String orderItems = order[2]; //[itemID;quantity|itemID;quantity]
+            if (containsVendorItems(orderItems, allItemIDs)) {
+                double totalPrice = calculateTotalPrice(orderItems, vendorItems);
+                String[] orderWithTotal = Arrays.copyOf(order, order.length + 1);
+                orderWithTotal[order.length] = df.format(totalPrice); // Add total price at the end
+                vendorOrders.add(orderWithTotal);
+            }
+        }
+
+        return vendorOrders;
+    }
+
+    //helper method to determine if order contain items from the vendor
+    private boolean containsVendorItems(String orderItems, List<String> itemIDs) {
+        //[itemID;quantity|itemID;quantity]
+        String[] itemDetails = orderItems.replace("[", "").replace("]", "").split("\\|");
+        for (String detail : itemDetails) {
+            String itemID = detail.split(";")[0];
+            if (itemIDs.contains(itemID)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //helper method to calculate total price of each order
+    private double calculateTotalPrice(String orderItems, List<String[]> vendorItems) {
+        String[] itemDetails = orderItems.replace("[", "").replace("]", "").split("\\|");
+        double totalPrice = 0.0;
+
+        for (String detail : itemDetails) {
+            String[] parts = detail.split(";");
+            String itemID = parts[0];
+            int quantity = Integer.parseInt(parts[1]);
+            //double price = getItemPrice(itemID, vendorItems);
+            Item item = new Item();
+            String priceStr = item.itemData(itemID)[3];
+            double price = Double.parseDouble(priceStr);
+            totalPrice += price * quantity;
+        }
+
+        return totalPrice;
     }
     
     public void deleteIncompleteOrder(int orderID){ //delete order if customer back to main without completing the order

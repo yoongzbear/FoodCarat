@@ -148,10 +148,10 @@ public class Item {
             String read;
             
             while ((read = br.readLine()) != null) {
-                String[] parts = read.split(","); // Split the row by commas
-                if (parts[0].equals(itemID)) { // Check if the ID matches
+                String[] parts = read.split(","); 
+                if (parts[0].equals(itemID)) { 
                     itemInfo = parts;
-                    break; // Exit the loop once a match is found
+                    break; 
                 }
             }
             br.close();
@@ -203,6 +203,7 @@ public class Item {
         return allItems;
     }
     
+    //method overloading
     //get data for all items matching vendor email
     public List<String[]> getAllItems(String venEmail) { 
         List<String[]> allItems = new ArrayList<>();
@@ -243,7 +244,6 @@ public class Item {
                     bw.newLine();
                 } else {
                     //found row and rewrite the row with the new info
-                    //String newRow = String.join(",", itemInfo);
                     bw.write(String.join(",", newInfo));
                     bw.newLine();
                     isEdited = true;
