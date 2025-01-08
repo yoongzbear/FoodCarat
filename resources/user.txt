@@ -1,6 +1,6 @@
 0Email,1Username,2Password,3User Type,4DOB,5Contact Number
-manager@mail.com,Manager,manager123,manager,
-vendor@mail.com,Vendor,vendor123,vendor,
-customer@mail.com,Customer,customer123,customer,
-admin@mail.com,Admin,admin123,admin,
-runner@mail.com,Runner,runner123,runner,
+manager@mail.com,Manager,manager123,manager
+vendor@mail.com,Vendor,vendor123,vendor
+customer@mail.com,Customer,customer123,customer
+admin@mail.com,Admin,admin123,admin,12032024,0139924012
+runner@mail.com,Runner,runner123,runner

@@ -202,7 +202,10 @@ public class User {
                 String[] userData = line.split(","); 
 
                 if (userData[0].equalsIgnoreCase(email)) {
-                    if (userData.length >= 6 && (userData[4].isEmpty() || userData[5].isEmpty())) {
+                    String field5 = userData.length > 4 ? userData[4] : "";
+                    String field6 = userData.length > 5 ? userData[5] : "";
+
+                     if (field5.isEmpty() || field6.isEmpty()) {
                         return "firstLoginPage";
                     }
                     

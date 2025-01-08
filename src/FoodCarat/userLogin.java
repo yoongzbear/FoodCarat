@@ -78,11 +78,6 @@ public class userLogin extends javax.swing.JFrame {
         };
     }
     
-    private void navigateToFirstLoginPage() {
-        this.dispose();
-        new userAccInfo().setVisible(true);
-    }
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
