@@ -30,7 +30,7 @@ public class Item {
     private String itemImgPath;
     private String venEmail;
     
-    private String fileName = "resources/item.txt";
+    private String itemFile = "resources/item.txt";
 
     //constructor
     public Item() {
@@ -61,10 +61,6 @@ public class Item {
     public void setVenEmail(String venEmail) {
         this.venEmail = venEmail;
     }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }   
     
     //getters
     public int getItemID() {    
@@ -90,17 +86,13 @@ public class Item {
     public String getVenEmail() {
         return venEmail;
     }
-    
-    public String getFileName() {    
-        return fileName;
-    }
 
     //method
     //add new item
     public void addItem(String[] itemInfo) {
         //write into item text file
         try {
-            FileWriter fw = new FileWriter(fileName,true);
+            FileWriter fw = new FileWriter(itemFile,true);
             BufferedWriter bw = new BufferedWriter(fw);
             String newRow = String.join(",", itemInfo);
             
@@ -143,7 +135,7 @@ public class Item {
     public String[] itemData(String itemID) {
         String[] itemInfo = null;
         try {
-            FileReader fr = new FileReader(fileName);
+            FileReader fr = new FileReader(itemFile);
             BufferedReader br = new BufferedReader(fr);
             String read;
             
@@ -166,7 +158,7 @@ public class Item {
         //get last row in text file
         String[] latestRow = null;
         try {
-            FileReader fr = new FileReader(fileName);
+            FileReader fr = new FileReader(itemFile);
             BufferedReader br = new BufferedReader(fr);
             String read;
             
@@ -188,7 +180,7 @@ public class Item {
         List<String[]> allItems = new ArrayList<>();
         
         try {
-            FileReader fr = new FileReader(fileName);
+            FileReader fr = new FileReader(itemFile);
             BufferedReader br = new BufferedReader(fr);
             String read;
             
@@ -209,7 +201,7 @@ public class Item {
         List<String[]> allItems = new ArrayList<>();
         
         try {
-            FileReader fr = new FileReader(fileName);
+            FileReader fr = new FileReader(itemFile);
             BufferedReader br = new BufferedReader(fr);
             String read;
             
@@ -234,7 +226,7 @@ public class Item {
         boolean isEdited = false;
         
         try {
-            FileWriter fw = new FileWriter(fileName);
+            FileWriter fw = new FileWriter(itemFile);
             BufferedWriter bw = new BufferedWriter(fw);
             
             for (String[] itemData : allItems) {
@@ -270,7 +262,7 @@ public class Item {
         boolean isDeleted = false;
 
         try {
-            FileWriter fw = new FileWriter(fileName);
+            FileWriter fw = new FileWriter(itemFile);
             BufferedWriter bw = new BufferedWriter(fw);
 
             for (String[] itemData : allItems) {

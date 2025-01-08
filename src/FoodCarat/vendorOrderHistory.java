@@ -35,10 +35,9 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) orderTable.getModel();
         int index = 1;
         model.setRowCount(0);
-     
-        //test if get ordered items from the vendor class
-        Order order = new Order();
-        List<String[]> allOrders = order.getAllOrders(email);
+        //access vendor orders through vendor class
+        Vendor vendor = new Vendor(email);
+        List<String[]> allOrders = vendor.getVendorOrders(email);
         for (String[] orderData : allOrders) {
             Item item = new Item();
             System.out.println(Arrays.toString(orderData)); // Print entire row
@@ -390,7 +389,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                     .addComponent(monthChartBtn))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(76, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -418,7 +417,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel1)
-                        .addGap(352, 352, 352)
+                        .addGap(443, 443, 443)
                         .addComponent(menuBtn)))
                 .addGap(22, 22, 22))
         );
@@ -444,7 +443,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(7, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         pack();

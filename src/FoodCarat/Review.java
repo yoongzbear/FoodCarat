@@ -28,6 +28,8 @@ public class Review {
     private String runnerRating;
     private String reviewDate;
     
+    private String reviewFile = "resources/review.txt";
+    
     public Review(int orderID){ //for getting customer order feedback
         this.orderID = orderID;
     }
@@ -143,7 +145,7 @@ public class Review {
         List<String[]> allReviews = new ArrayList<>();
         
         try {
-            FileReader fr = new FileReader("resources/review.txt");
+            FileReader fr = new FileReader(reviewFile);
             BufferedReader br = new BufferedReader(fr);
             String read;
             

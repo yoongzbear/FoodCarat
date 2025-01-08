@@ -30,6 +30,8 @@ public class Vendor {
     private String availableMethod;
     private double creditBalance;
     
+    private String vendorFile = "resources/vendor.txt";
+    
     public Vendor(String email) {
         this.email = email;
         getVendorInfo(email);
@@ -82,7 +84,7 @@ public class Vendor {
     //setting vendor info
     private void getVendorInfo(String email){
         try {
-            File fileName = new File("resources/vendor.txt");
+            File fileName = new File(vendorFile);
             FileReader fr = new FileReader(fileName);
             BufferedReader br = new BufferedReader(fr);
             String read;
@@ -112,7 +114,7 @@ public class Vendor {
         //get the methods stored in the array
         List<String> lines = new ArrayList<>();
         
-        try (BufferedReader reader = new BufferedReader(new FileReader("resources/vendor.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(vendorFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
@@ -128,7 +130,7 @@ public class Vendor {
         //put validation
         
         //write into file
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("resources/vendor.txt"))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(vendorFile))) {
             for (String line : lines) {
                 writer.write(line);
                 writer.newLine();
@@ -138,6 +140,14 @@ public class Vendor {
             JOptionPane.showMessageDialog(null, "Failed to write to the file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }  
+    
+    //get all vendor orders - access it here         
+    public List<String[]> getVendorOrders(String venEmail) {
+        Order order = new Order();
+        List<String[]> vendorOrders = order.getAllOrders(venEmail);
+        
+        return vendorOrders;
+    }
     
     //accept order status
     //call update order status in order class
@@ -165,5 +175,5 @@ public class Vendor {
         
         
         return allReviews;
-    }
+    }    
 }

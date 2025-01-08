@@ -35,6 +35,8 @@ public class Order {
     private int runnerID;
     private int reasonID;
     
+    private String orderFile = "resources/customerOrder.txt";
+    
     public Order(){ //for deleteIncompleteOrder()
         System.out.println(orderID); //for checking                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
     }
@@ -157,7 +159,7 @@ public class Order {
         List<String[]> allOrders = new ArrayList<>();
         
         try {
-            FileReader fr = new FileReader("resources/customerOrder.txt");
+            FileReader fr = new FileReader(orderFile);
             BufferedReader br = new BufferedReader(fr);
             String read;
             
