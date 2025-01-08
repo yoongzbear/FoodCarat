@@ -5,9 +5,10 @@
 package FoodCarat;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -22,6 +23,11 @@ public class User {
     private String contactNumber;
     
     private String userFile = "resources/user.txt";
+    
+    // Static variables to act as session
+    private static String sessionEmail;
+    private static String sessionName;
+    private static String sessionRole;
 
     public User(String email, String password, String name, String userType, String birth, String contactNumber) {
         this.email = email;
@@ -30,6 +36,30 @@ public class User {
         this.userType = userType;
         this.birth = birth;
         this.contactNumber = contactNumber;
+    }
+    
+    public static void setSession(String email, String role, String name) {
+        sessionEmail = email;
+        sessionRole = role;
+        sessionName = name;
+    }
+    
+    public static String getSessionEmail() {
+        return sessionEmail;
+    }
+
+    public static String getSessionRole() {
+        return sessionRole;
+    }
+
+    public static String getSessionName() {
+        return sessionName;
+    }
+
+    public static void clearSession() {
+        sessionEmail = null;
+        sessionRole = null;
+        sessionName = null;
     }
         
     public User(){
@@ -88,40 +118,51 @@ public class User {
     }
     
     // Log out
-    public void logOut(){
+    public void logOut() {
         this.name = null;
         this.email = null;
         this.userType = null;
+        clearSession();
     }
     
     // METHOD
     
     // Login
-    public boolean login(String email, String password) {
+    public String login(String email, String password) {
         try (BufferedReader reader = new BufferedReader(new FileReader(userFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] userData = line.split(","); // Assuming data is comma-separated
-                if (userData.length == 4) {
-                    String fileEmail = userData[0]; 
+                String[] userData = line.split(",");
+                if (userData.length >= 6) {
+                    String fileEmail = userData[0];
                     String filePassword = userData[2];
+                    String fileName = userData[1];
+                    String fileRole = userData[3];
 
                     if (fileEmail.equals(email) && filePassword.equals(password)) {
-                        // Load user details into this instance
-                        this.userType = userData[2];
+                        // Set instance and session data
                         this.email = fileEmail;
                         this.password = filePassword;
-                        return true; // Login successful
+                        this.name = fileName;
+                        this.userType = fileRole;
+
+                        setSession(fileEmail, fileRole, fileName);
+
+                        // Determine navigation
+                        String page = determinePageAfterLogin(email);
+                        JFrame currentFrame = null;
+                        navigateToPage(page,currentFrame);
+                        return page;
                     }
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return false; // Login failed
+        return "loginFailedPage";
     }
     
-    // Validation For LOGIN
+    // Validation For email&password
     public boolean emailExists(String email) {
         try (BufferedReader reader = new BufferedReader(new FileReader(userFile))) {
             String line;
@@ -143,7 +184,7 @@ public class User {
             while ((line = reader.readLine()) != null) {
                 String[] userDetails = line.split(",");
                 if (userDetails[0].equals(email) && userDetails[2].equals(password)) {
-                    this.name = userDetails[1]; // Assuming the name is in the first column
+                    this.name = userDetails[1];
                     return true;
                 }
             }
@@ -152,9 +193,69 @@ public class User {
         }
         return false;
     }
-
     
     //Check first login (User Side) For Login
+    public String determinePageAfterLogin(String email) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(userFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] userData = line.split(","); 
+
+                if (userData[0].equalsIgnoreCase(email)) {
+                    if (userData.length >= 6 && (userData[4].isEmpty() || userData[5].isEmpty())) {
+                        return "firstLoginPage";
+                    }
+                    
+                    String userType = userData[3].toLowerCase();
+
+                    switch (userType) {
+                        case "vendor":
+                            return "vendorMainPage";
+                        case "admin":
+                            return "adminMainPage";
+                        case "customer":
+                            return "customerMainPage";
+                        case "runner":
+                            return "runnerMainPage";
+                        case "manager":
+                            return "managerMainPage";
+                        default:
+                            return "unknownRolePage";
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "loginFailedPage";
+    }
+    
+    public void navigateToPage(String page, JFrame currentFrame) {
+        currentFrame.dispose();
+        switch (page) {
+            case "firstLoginPage":
+                new userAccInfo().setVisible(true);
+                break;
+            case "vendorMainPage":
+                new vendorMain().setVisible(true);
+                break;
+            case "adminMainPage":
+                new adminMain().setVisible(true);
+                break;
+            case "customerMainPage":
+                new customerMain().setVisible(true);
+                break;
+            case "runnerMainPage":
+                new runnerMain().setVisible(true);
+                break;
+            case "managerMainPage":
+                new managerMain().setVisible(true);
+                break;
+            default:
+                JOptionPane.showMessageDialog(null, "Unknown role or error occurred!", "Error", JOptionPane.ERROR_MESSAGE);
+                break;
+        }
+    }
                         
     //Check first login For admin to CRUD user(Admin Side)
     public String checkFirstLogin(String email, String userType) {

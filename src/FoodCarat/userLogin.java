@@ -19,14 +19,11 @@ import javax.swing.text.PlainDocument;
  * @author mastu
  */
 public class userLogin extends javax.swing.JFrame {
-    /**
-     * Creates new form userLogin   
-     */
+
     public userLogin() {
         initComponents();
         setLocationRelativeTo(null);
         
-
         // Set the document filter for emailField and passwordField
         ((PlainDocument) emailTf.getDocument()).setDocumentFilter(createLengthFilter(30));
         ((PlainDocument) lPasswordField.getDocument()).setDocumentFilter(createLengthFilter(20));
@@ -81,6 +78,11 @@ public class userLogin extends javax.swing.JFrame {
         };
     }
     
+    private void navigateToFirstLoginPage() {
+        this.dispose();
+        new userAccInfo().setVisible(true);
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -131,9 +133,19 @@ public class userLogin extends javax.swing.JFrame {
         lPasswordField.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         lPasswordField.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         lPasswordField.setOpaque(true);
+        lPasswordField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lPasswordFieldActionPerformed(evt);
+            }
+        });
 
         emailTf.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         emailTf.setOpaque(true);
+        emailTf.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                emailTfActionPerformed(evt);
+            }
+        });
 
         jLabel5.setBackground(new java.awt.Color(255, 255, 255));
         jLabel5.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
@@ -216,6 +228,7 @@ public class userLogin extends javax.swing.JFrame {
 
         if (email.isEmpty() || password.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
         
         // Validate email format
@@ -246,8 +259,21 @@ public class userLogin extends javax.swing.JFrame {
                 "Login successful! Welcome " + user.getName(), 
                 "INFORMATION", 
                 JOptionPane.INFORMATION_MESSAGE);
+            
+            String userType = user.getUserType();
+            String nextPage = user.determinePageAfterLogin(email);
+
+            user.navigateToPage(nextPage, this);
         }
     }//GEN-LAST:event_loginButtonActionPerformed
+
+    private void emailTfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailTfActionPerformed
+        lPasswordField.requestFocus();
+    }//GEN-LAST:event_emailTfActionPerformed
+
+    private void lPasswordFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lPasswordFieldActionPerformed
+        loginButton.doClick();
+    }//GEN-LAST:event_lPasswordFieldActionPerformed
 
     /**
      * @param args the command line arguments
@@ -284,8 +310,6 @@ public class userLogin extends javax.swing.JFrame {
         });
     }
     
-    
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField emailTf;
     private javax.swing.JLabel jLabel1;
