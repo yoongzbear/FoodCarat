@@ -4,3 +4,4 @@ vendor@mail.com,Vendor,vendor123,vendor
 customer@mail.com,Customer,customer123,customer
 admin@mail.com,Admin,admin123,admin,12032024,0139924012
 runner@mail.com,Runner,runner123,runner
+chagee@mail.com,Chagee,chagee123,vendor

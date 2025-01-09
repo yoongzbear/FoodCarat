@@ -193,7 +193,7 @@ public class Order {
         for (String[] order : allOrders) {
             String orderItems = order[2]; //[itemID;quantity|itemID;quantity]
             if (containsVendorItems(orderItems, allItemIDs)) {
-                double totalPrice = calculateTotalPrice(orderItems, vendorItems);
+                double totalPrice = calculateTotalPrice(orderItems);
                 String[] orderWithTotal = Arrays.copyOf(order, order.length + 1);
                 orderWithTotal[order.length] = df.format(totalPrice); // Add total price at the end
                 vendorOrders.add(orderWithTotal);
@@ -217,7 +217,7 @@ public class Order {
     }
 
     //helper method to calculate total price of each order
-    private double calculateTotalPrice(String orderItems, List<String[]> vendorItems) {
+    private double calculateTotalPrice(String orderItems) {
         String[] itemDetails = orderItems.replace("[", "").replace("]", "").split("\\|");
         double totalPrice = 0.0;
 
@@ -233,6 +233,35 @@ public class Order {
         }
 
         return totalPrice;
+    }
+    
+    //get order based on ID
+    public String[] getOrder(String id) {
+        String[] orderInfo = null;
+        DecimalFormat df = new DecimalFormat("0.00");
+        try {
+            FileReader fr = new FileReader(orderFile);
+            BufferedReader br = new BufferedReader(fr);
+            String read;
+
+            while ((read = br.readLine()) != null) {
+                String[] parts = read.split(",");
+                if (parts[0].equals(id)) {
+                    String orderItems = parts[2]; //[itemID;quantity|itemID;quantity]
+                    double totalPrice = calculateTotalPrice(orderItems);
+                    String[] orderWithTotal = Arrays.copyOf(orderInfo, orderInfo.length + 1);
+                    orderWithTotal[orderInfo.length] = df.format(totalPrice); // Add total price at the end
+
+                    orderWithTotal = parts;
+                    break;
+                }
+            }
+            br.close();
+        } catch(IOException e) {
+            JOptionPane.showMessageDialog(null, "Failed to read from the file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        return orderInfo;
     }
     
     public void deleteIncompleteOrder(int orderID){ //delete order if customer back to main without completing the order

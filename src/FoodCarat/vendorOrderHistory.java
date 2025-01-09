@@ -4,9 +4,13 @@
  */
 package FoodCarat;
 
+import java.awt.Color;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -27,6 +31,9 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         
         //test if it works
         displayVendorOrder();
+        
+        //set the placeholder for search box
+        setPlaceholder(searchTxt, "Search Item Name");
     }    
     
     //display all orders to vendor
@@ -61,6 +68,17 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             });
         }
     }
+    
+    //display order details
+    public void displayVendorOrder(String orderID) {
+        Order order = new Order();
+        
+        String[] details = order.getOrder(orderID);        
+        idLabel.setText(details[0].trim());
+        itemNameTxt.setText(details[1].trim());
+        typeBox.setSelectedItem(details[2].trim());
+        itemPriceTxt.setText(details[3].trim());
+    }
 
     //helper method to change item id to item name
     private String replaceItemIDsWithNames(String orderItems, Item item) {
@@ -86,6 +104,32 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         }
 
         return updatedItems.toString();
+    }
+    
+    //helper method to adjust search box
+    public void setPlaceholder(JTextField textField, String placeholder) {
+        textField.setText(placeholder);
+        textField.setForeground(Color.GRAY);  
+
+        textField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                //if the text field contains the placeholder, clear it when the clicked
+                if (textField.getText().equals(placeholder)) {
+                    textField.setText("");
+                    textField.setForeground(Color.BLACK);  
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                //if the text field is empty, show the placeholder again
+                if (textField.getText().isEmpty()) {
+                    textField.setText(placeholder);
+                    textField.setForeground(Color.GRAY);
+                }
+            }
+        });
     }
     
     //have filter to show daily, mohtly, or weekly, or yearly

@@ -126,9 +126,7 @@ public class Vendor {
         } catch(IOException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
-        
-        //put validation
-        
+                
         //write into file
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(vendorFile))) {
             for (String line : lines) {

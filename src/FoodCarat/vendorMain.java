@@ -24,6 +24,9 @@ public class vendorMain extends javax.swing.JFrame {
     private String email = "alya@mail.com";
     private String name = "Alya";
     Vendor vendor = new Vendor(email);
+//    String email = User.getSessionEmail();
+//    String name = User.getSessionName();
+//    Vendor vendor = new Vendor(email);
     
     public vendorMain() {
         initComponents();
@@ -35,7 +38,7 @@ public class vendorMain extends javax.swing.JFrame {
         //String email = "alya@mail.com";
         String name = "Alya";
         
-        Vendor vendor = new Vendor(email);
+        //Vendor vendor = new Vendor(email);
         
         displayInfo();
     }
