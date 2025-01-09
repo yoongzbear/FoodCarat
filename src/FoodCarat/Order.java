@@ -195,7 +195,7 @@ public class Order {
             if (containsVendorItems(orderItems, allItemIDs)) {
                 double totalPrice = calculateTotalPrice(orderItems);
                 String[] orderWithTotal = Arrays.copyOf(order, order.length + 1);
-                orderWithTotal[order.length] = df.format(totalPrice); // Add total price at the end
+                orderWithTotal[order.length] = df.format(totalPrice); 
                 vendorOrders.add(orderWithTotal);
             }
         }
@@ -234,7 +234,7 @@ public class Order {
 
         return totalPrice;
     }
-    
+ 
     //get order based on ID
     public String[] getOrder(String id) {
         String[] orderInfo = null;
@@ -249,20 +249,19 @@ public class Order {
                 if (parts[0].equals(id)) {
                     String orderItems = parts[2]; //[itemID;quantity|itemID;quantity]
                     double totalPrice = calculateTotalPrice(orderItems);
-                    String[] orderWithTotal = Arrays.copyOf(orderInfo, orderInfo.length + 1);
-                    orderWithTotal[orderInfo.length] = df.format(totalPrice); // Add total price at the end
-
-                    orderWithTotal = parts;
+                    orderInfo = Arrays.copyOf(parts, parts.length + 1);
+                    orderInfo[parts.length] = df.format(totalPrice); //add total price to the end of the row
                     break;
                 }
             }
             br.close();
-        } catch(IOException e) {
+        } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Failed to read from the file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-        
+
         return orderInfo;
     }
+
     
     public void deleteIncompleteOrder(int orderID){ //delete order if customer back to main without completing the order
         try {
