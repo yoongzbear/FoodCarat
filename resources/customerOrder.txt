@@ -1,4 +1,3 @@
 1,Take away,[1;1|2;1],Ordered,customerEmail,NULL,NULL
 2,Dine in,[3;1],Ordered,customerEmail,NULL,NULL
 3,Take away,[2;1|4;1],Ordered,customerEmail,NULL,NULL
-4,Take away,[1;1|2;1],Ordered,customerEmail,NULL,NULL
