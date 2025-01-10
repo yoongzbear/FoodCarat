@@ -17,7 +17,15 @@ public class vendorNotification extends javax.swing.JFrame {
         initComponents();
         getContentPane().setBackground(new java.awt.Color(186,85,211)); //setting background color of frame
     }
-
+    
+    //display all activities
+    //new order + changed order status + review 
+    //get based on dates la
+    
+    //display based on time range
+    
+    //view details --> display the GUI based on that idk how but can la hadahha
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

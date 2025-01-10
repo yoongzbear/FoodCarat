@@ -19,7 +19,15 @@ public class vendorReview extends javax.swing.JFrame {
         initComponents();
         getContentPane().setBackground(new java.awt.Color(186,85,211)); //setting background color of frame
     }
-    //display vendor reviews - from review text file where type is vendor
+    
+    //display all vendor reviews - from review text file where type is vendor
+    
+    //display based on filters (rating)
+    
+    //sort based on sorting
+    
+    //display selected review 
+    //display vendor and order review
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -57,13 +65,17 @@ public class vendorReview extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         idLabel = new javax.swing.JLabel();
-        idLabel1 = new javax.swing.JLabel();
+        dateLabel = new javax.swing.JLabel();
         emailLabel = new javax.swing.JLabel();
         methodLabel = new javax.swing.JLabel();
         ratingLabel = new javax.swing.JLabel();
-        feedbackLabel = new javax.swing.JLabel();
-        orderFeedbackLabel = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        priceLabel = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        vendorFeedbackTxtArea = new javax.swing.JTextArea();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        orderFeedbackTxtArea = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -216,8 +228,8 @@ public class vendorReview extends javax.swing.JFrame {
         idLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         idLabel.setText("ID");
 
-        idLabel1.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        idLabel1.setText("Date");
+        dateLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
+        dateLabel.setText("Date");
 
         emailLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         emailLabel.setText("Email");
@@ -228,16 +240,22 @@ public class vendorReview extends javax.swing.JFrame {
         ratingLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         ratingLabel.setText("Rating");
 
-        feedbackLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        feedbackLabel.setText("Feedback");
-        feedbackLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-
-        orderFeedbackLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        orderFeedbackLabel.setText("Feedback");
-        orderFeedbackLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-
         jLabel11.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         jLabel11.setText("Order Feedback:");
+
+        jLabel12.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
+        jLabel12.setText("Total Price: ");
+
+        priceLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
+        priceLabel.setText("RM");
+
+        vendorFeedbackTxtArea.setColumns(20);
+        vendorFeedbackTxtArea.setRows(5);
+        jScrollPane2.setViewportView(vendorFeedbackTxtArea);
+
+        orderFeedbackTxtArea.setColumns(20);
+        orderFeedbackTxtArea.setRows(5);
+        jScrollPane3.setViewportView(orderFeedbackTxtArea);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -245,44 +263,47 @@ public class vendorReview extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(16, 16, 16)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel6)
                         .addGap(29, 29, 29)
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 423, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
                             .addComponent(jLabel5)
                             .addComponent(jLabel9))
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel2Layout.createSequentialGroup()
                                         .addComponent(idLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(40, 40, 40)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jLabel8)
                                         .addGap(18, 18, 18)
-                                        .addComponent(idLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(dateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(emailLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGap(18, 18, 18)
-                                .addComponent(methodLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addComponent(jLabel11)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(orderFeedbackLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 364, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel7)
-                                .addComponent(jLabel10))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(ratingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(feedbackLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 364, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(methodLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel12)
+                                .addGap(18, 18, 18)
+                                .addComponent(priceLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel11)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane3))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel10))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(ratingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane2))))
                 .addContainerGap(17, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -295,7 +316,7 @@ public class vendorReview extends javax.swing.JFrame {
                     .addComponent(jLabel4)
                     .addComponent(jLabel8)
                     .addComponent(idLabel)
-                    .addComponent(idLabel1))
+                    .addComponent(dateLabel))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
@@ -303,7 +324,9 @@ public class vendorReview extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
-                    .addComponent(methodLabel))
+                    .addComponent(methodLabel)
+                    .addComponent(jLabel12)
+                    .addComponent(priceLabel))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -317,11 +340,11 @@ public class vendorReview extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel7)
-                    .addComponent(feedbackLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(orderFeedbackLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel11))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(9, 9, 9)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel11)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -410,15 +433,15 @@ public class vendorReview extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel dateLabel;
     private javax.swing.JLabel emailLabel;
-    private javax.swing.JLabel feedbackLabel;
     private javax.swing.JButton filterBtn;
     private javax.swing.JLabel idLabel;
-    private javax.swing.JLabel idLabel1;
     private javax.swing.JTable itemTable;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -430,10 +453,13 @@ public class vendorReview extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JButton menuBtn;
     private javax.swing.JLabel methodLabel;
-    private javax.swing.JLabel orderFeedbackLabel;
+    private javax.swing.JTextArea orderFeedbackTxtArea;
+    private javax.swing.JLabel priceLabel;
     private javax.swing.JCheckBox ratingFiveChkBox;
     private javax.swing.JCheckBox ratingFourChkBox;
     private javax.swing.JLabel ratingLabel;
@@ -443,6 +469,7 @@ public class vendorReview extends javax.swing.JFrame {
     private javax.swing.JTable reviewTable;
     private javax.swing.JButton sortBtn;
     private javax.swing.JComboBox<String> sortComboBox;
+    private javax.swing.JTextArea vendorFeedbackTxtArea;
     private javax.swing.JButton viewBtn;
     // End of variables declaration//GEN-END:variables
 }

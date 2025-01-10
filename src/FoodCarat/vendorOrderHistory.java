@@ -63,14 +63,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
 
             String updatedOrderItems = replaceItemIDsWithNames(orderItems, item);
 
-            model.addRow(new Object[]{
-                index++,
-                orderID,
-                customerEmail,
-                orderMethod, 
-                updatedOrderItems,
-                orderStatus
-            });
+            model.addRow(new Object[]{index++, orderID, customerEmail, orderMethod, updatedOrderItems, orderStatus});
         }
     }
     
@@ -118,7 +111,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         totalPriceLabel.setText("RM"+details[7].trim());
         
         //cancellation reason - need to connect with the get cancellation reason based on cancel id
-        if (details[6].trim().equals("NULL")) {
+        if (details[6].trim().equals("NULL")) { //if status == cancelled
             reasonLabel.setVisible(false);
             cancelReasonLabel.setVisible(false);
         } else {
@@ -126,8 +119,59 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         }       
         
         //view if got feedback for the order
+//        if (details[6].trim().equals("NULL")) { //check in review if got order id && type == order
+//            feedbackLabel.setVisible(false);
+//            feedbackTxtArea.setVisible(false);
+//        } else {
+//            feedbackTxtArea.setText(details[5].trim()); //display the feedback from the review
+//        } 
+    }
+    
+    //display vendor order based on search 
+    public void displayOrderSearch(String search) {
+        DefaultTableModel model = (DefaultTableModel) orderTable.getModel();
+        Vendor vendor = new Vendor(email);
+        List<String[]> allVendorOrders = vendor.getVendorOrders(email);
+        int index = 1;
+        model.setRowCount(0);
+        itemTable.setRowHeight(100);
+        
+        for (String[] orderData : allVendorOrders) {
+            Item item = new Item();            
+            //1,Take away,[1;1|2;1],Ordered,customerEmail,NULL,NULL,27.80
+            String orderID = orderData[0];
+            String orderMethod = orderData[1];
+            String orderItems = orderData[2];
+            String orderStatus = orderData[3];
+            String customerEmail = orderData[4];
+            String orderTotal = orderData[7];
+
+            String updatedOrderItems = replaceItemIDsWithNames(orderItems, item);
+
+            //check if item type matches the filter
+            boolean isFound = false;
+            if (updatedOrderItems.toLowerCase().contains(search.toLowerCase())) {
+                //search email, date, method??, items???
+                model.addRow(new Object[]{index++, orderID, customerEmail, orderMethod, updatedOrderItems, orderStatus});
+                index++;
+            }
+        }
     }
 
+    //have filter to show monthly, or yearly
+    public void displayOrderTimeRange(String[] timeRange) {
+        //get time range []
+        //if monthly --> [month, year]
+        
+        //if year --> [null, year]
+    }
+    
+    //filter to show daily orders including completed orders
+    public void displayOrderTimeRange() {
+        //display orders matching the given date
+    }
+    
+    
     //helper method to change item id to item name
     private String replaceItemIDsWithNames(String orderItems, Item item) {
         //remove square brackets and split the items by "|"
@@ -179,9 +223,6 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             }
         });
     }
-    
-    //have filter to show daily, mohtly, or weekly, or yearly
-    //another filter to only show status completed, pending, accepted, delivered, cancelled
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -213,7 +254,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         idLabel1 = new javax.swing.JLabel();
         emailLabel = new javax.swing.JLabel();
         methodLabel = new javax.swing.JLabel();
-        jLabel17 = new javax.swing.JLabel();
+        feedbackLabel = new javax.swing.JLabel();
         reasonLabel = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         cancelReasonLabel = new javax.swing.JLabel();
@@ -221,7 +262,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         statusLabel = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        feedbackTxtArea = new javax.swing.JTextArea();
         rangeBtn = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -231,6 +272,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         chartMonthBox = new javax.swing.JComboBox<>();
         monthChartBtn = new javax.swing.JButton();
+        chartWeekRange = new javax.swing.JLabel();
         monthTableBox = new javax.swing.JComboBox<>();
         yearTableBox = new javax.swing.JComboBox<>();
 
@@ -285,6 +327,11 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         searchTxt.setText("Enter your search");
 
         searchBtn.setText("Search");
+        searchBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchBtnActionPerformed(evt);
+            }
+        });
 
         jLabel9.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel9.setText("Order Details");
@@ -326,8 +373,8 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         methodLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         methodLabel.setText("Method");
 
-        jLabel17.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        jLabel17.setText("Order Feedback:");
+        feedbackLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
+        feedbackLabel.setText("Order Feedback:");
 
         reasonLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         reasonLabel.setText("Cancellation Reason:");
@@ -347,9 +394,9 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         jLabel16.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         jLabel16.setText("Status:");
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane2.setViewportView(jTextArea1);
+        feedbackTxtArea.setColumns(20);
+        feedbackTxtArea.setRows(5);
+        jScrollPane2.setViewportView(feedbackTxtArea);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -393,7 +440,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                                 .addComponent(jLabel10)
                                 .addGap(29, 29, 29))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel17)
+                                .addComponent(feedbackLabel)
                                 .addGap(18, 18, 18)))
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE)
@@ -436,7 +483,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(23, 23, 23)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel17)
+                    .addComponent(feedbackLabel)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(15, Short.MAX_VALUE))
         );
@@ -465,18 +512,15 @@ public class vendorOrderHistory extends javax.swing.JFrame {
 
         monthChartBtn.setText("Select");
 
+        chartWeekRange.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
+        chartWeekRange.setText("XX/XX/XXXX-XX/XX/XXXX");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel2))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel4))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(14, 14, 14)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -489,7 +533,17 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 242, Short.MAX_VALUE)
                                 .addComponent(chartMonthBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(monthChartBtn)))))
+                                .addComponent(monthChartBtn))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel2))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel4)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(chartWeekRange, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -498,7 +552,9 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                 .addGap(15, 15, 15)
                 .addComponent(jLabel2)
                 .addGap(21, 21, 21)
-                .addComponent(jLabel4)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(chartWeekRange))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(35, 35, 35)
@@ -562,13 +618,14 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                         .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(87, 87, 87)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(monthTableBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(rangeBtn)
-                            .addComponent(yearTableBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(searchBtn)))
+                                .addComponent(searchBtn))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(monthTableBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(rangeBtn)
+                                .addComponent(yearTableBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(12, 12, 12)
@@ -594,7 +651,6 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         //have validation to "choose an item in the table"
         if (selectedRow >= 0) {
             Object id = orderTable.getModel().getValueAt(selectedRow, 1);
-            System.out.println(id.toString());
             displayVendorOrder(id.toString());
         } else {
             //no row is selected
@@ -608,14 +664,25 @@ public class vendorOrderHistory extends javax.swing.JFrame {
 
     private void timeRangeBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_timeRangeBoxActionPerformed
         // TODO add your handling code here:
-        if (timeRangeBox.getSelectedItem().equals("Monthly")) {
+        if (timeRangeBox.getSelectedItem().equals("Daily")) {
+            //display calendar to choose date 
+            //displayOrderTimeRange(date);
+        }
+        
+        else if (timeRangeBox.getSelectedItem().equals("Monthly")) {
             monthTableBox.setVisible(true);
             yearTableBox.setVisible(true);
         } else if (timeRangeBox.getSelectedItem().equals("Yearly")) {
             monthTableBox.setVisible(false);
             yearTableBox.setVisible(true);
-        }
+        } 
     }//GEN-LAST:event_timeRangeBoxActionPerformed
+
+    private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
+        // TODO add your handling code here:
+        String searchOrder = searchTxt.getText();
+        displayOrderSearch(searchOrder);
+    }//GEN-LAST:event_searchBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -655,7 +722,10 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel cancelReasonLabel;
     private javax.swing.JComboBox<String> chartMonthBox;
+    private javax.swing.JLabel chartWeekRange;
     private javax.swing.JLabel emailLabel;
+    private javax.swing.JLabel feedbackLabel;
+    private javax.swing.JTextArea feedbackTxtArea;
     private javax.swing.JLabel idLabel;
     private javax.swing.JLabel idLabel1;
     private javax.swing.JTable itemTable;
@@ -666,7 +736,6 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -679,7 +748,6 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JButton menuBtn;
     private javax.swing.JLabel methodLabel;
     private javax.swing.JButton monthChartBtn;

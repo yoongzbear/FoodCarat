@@ -17,6 +17,18 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         initComponents();
         getContentPane().setBackground(new java.awt.Color(186,85,211)); //setting background color of frame
     }
+    
+    //display new order
+    //status == ordered // pending idk 
+        
+    //display all current orders 
+    //status from accepted by vendor/runner to ready / picked up
+    
+    //display selected order
+    
+    //accept or reject new order
+    
+    //update order status
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -86,10 +98,16 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Item", "Price (RM)", "Quantity"
+                "Item", "Quantity"
             }
         ));
         jScrollPane4.setViewportView(itemTable);
+        if (itemTable.getColumnModel().getColumnCount() > 0) {
+            itemTable.getColumnModel().getColumn(0).setResizable(false);
+            itemTable.getColumnModel().getColumn(0).setPreferredWidth(150);
+            itemTable.getColumnModel().getColumn(1).setResizable(false);
+            itemTable.getColumnModel().getColumn(1).setPreferredWidth(20);
+        }
 
         jLabel5.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         jLabel5.setText("Customer Email:");
@@ -123,7 +141,6 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
                     .addComponent(jLabel6)
                     .addComponent(jLabel2)
                     .addComponent(jLabel7)
-                    .addComponent(jLabel8)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
@@ -133,14 +150,18 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
                             .addComponent(methodTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(emailTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(paidTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(emailTxt1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jLabel8)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(80, 80, 80)
-                        .addComponent(acceptBtn)
-                        .addGap(94, 94, 94)
-                        .addComponent(rejectBtn)))
+                        .addGap(140, 140, 140)
+                        .addComponent(paidTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(17, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(acceptBtn)
+                .addGap(94, 94, 94)
+                .addComponent(rejectBtn)
+                .addGap(97, 97, 97))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -161,19 +182,17 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
                     .addComponent(methodTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jLabel6)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
                     .addComponent(paidTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(32, 32, 32)
+                .addGap(33, 33, 33)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(acceptBtn)
                     .addComponent(rejectBtn))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
 
         jLabel3.setFont(new java.awt.Font("Cooper Black", 0, 24)); // NOI18N
@@ -188,6 +207,17 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
             }
         ));
         jScrollPane5.setViewportView(currentOrderTable);
+        if (currentOrderTable.getColumnModel().getColumnCount() > 0) {
+            currentOrderTable.getColumnModel().getColumn(0).setResizable(false);
+            currentOrderTable.getColumnModel().getColumn(0).setPreferredWidth(20);
+            currentOrderTable.getColumnModel().getColumn(1).setResizable(false);
+            currentOrderTable.getColumnModel().getColumn(1).setPreferredWidth(20);
+            currentOrderTable.getColumnModel().getColumn(2).setPreferredWidth(150);
+            currentOrderTable.getColumnModel().getColumn(3).setResizable(false);
+            currentOrderTable.getColumnModel().getColumn(3).setPreferredWidth(40);
+            currentOrderTable.getColumnModel().getColumn(4).setResizable(false);
+            currentOrderTable.getColumnModel().getColumn(4).setPreferredWidth(40);
+        }
 
         selectBtn.setText("Select Order");
         selectBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -246,10 +276,16 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Item", "Price (RM)", "Quantity"
+                "Item", "Quantity"
             }
         ));
         jScrollPane6.setViewportView(updateOrderTable);
+        if (updateOrderTable.getColumnModel().getColumnCount() > 0) {
+            updateOrderTable.getColumnModel().getColumn(0).setResizable(false);
+            updateOrderTable.getColumnModel().getColumn(0).setPreferredWidth(150);
+            updateOrderTable.getColumnModel().getColumn(1).setResizable(false);
+            updateOrderTable.getColumnModel().getColumn(1).setPreferredWidth(20);
+        }
 
         jLabel12.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         jLabel12.setText("Order Status:");
