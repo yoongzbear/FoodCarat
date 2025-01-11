@@ -11,7 +11,9 @@ import java.io.IOException;
  * @author User
  */
 public class adminTopupCredit extends javax.swing.JFrame {
-
+    private String userFile = "resources/user.txt";
+    private String cusFile = "resources/customer.txt";
+ 
     /**
      * Creates new form adminTopupCredit
      */
@@ -251,12 +253,10 @@ public class adminTopupCredit extends javax.swing.JFrame {
 
     private void bsearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bsearchActionPerformed
         String searchEmail = searchtxt.getText().trim();
-        String cusfile = "customer.txt";
-        String userfile = "user.txt";
 
         Admin admin = new Admin();
-        String[] resultgeneral = admin.performSearch(searchEmail, cusfile);
-        String[] resultname = admin.performSearch(searchEmail, userfile);
+        String[] resultgeneral = admin.performSearch(searchEmail, cusFile);
+        String[] resultname = admin.performSearch(searchEmail, userFile);
         // Clear the table and fields before populating
         clearFields();
 
