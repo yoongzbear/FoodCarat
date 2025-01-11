@@ -261,8 +261,8 @@ public class User {
     }
                         
     //Check first login For admin to CRUD user(Admin Side)
-    public String checkFirstLogin(String email, String userType) {
-        try (BufferedReader br = new BufferedReader(new FileReader(userFile))) {
+    public String checkFirstLogin(String email, String userType, String filePath) {
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] details = line.split(",");
