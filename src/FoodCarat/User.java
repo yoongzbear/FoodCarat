@@ -158,7 +158,7 @@ public class User {
                         this.name = fileName;
                         this.userType = fileRole;
 
-                        setSession(fileEmail, fileRole, fileName);
+                        setSession(fileEmail,filePassword, fileRole, fileName);
 
                         // Determine navigation
                         String page = determinePageAfterLogin(email);
