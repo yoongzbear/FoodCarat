@@ -19,14 +19,16 @@ import javax.swing.text.PlainDocument;
  * @author mastu
  */
 public class userLogin extends javax.swing.JFrame {
+    private User user;
 
     public userLogin() {
         initComponents();
         setLocationRelativeTo(null);
         
+        user = new User();
         // Set the document filter for emailField and passwordField
-        ((PlainDocument) emailTf.getDocument()).setDocumentFilter(createLengthFilter(30));
-        ((PlainDocument) lPasswordField.getDocument()).setDocumentFilter(createLengthFilter(20));
+        ((PlainDocument) emailTf.getDocument()).setDocumentFilter(user.createLengthFilter(30));
+        ((PlainDocument) lPasswordField.getDocument()).setDocumentFilter(user.createLengthFilter(20));
     }
     
      @Override
@@ -55,27 +57,6 @@ public class userLogin extends javax.swing.JFrame {
         emailTf.repaint();
         lPasswordField.repaint();
         loginButton.repaint();
-    }
-    
-    // Set the input not > max length
-    private DocumentFilter createLengthFilter(int maxLength) {
-        return new DocumentFilter() {
-            @Override
-            public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) 
-                    throws BadLocationException {
-                if (fb.getDocument().getLength() + string.length() <= maxLength) {
-                    super.insertString(fb, offset, string, attr);
-                }
-            }
-
-            @Override
-            public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) 
-                    throws BadLocationException {
-                if (fb.getDocument().getLength() - length + text.length() <= maxLength) {
-                    super.replace(fb, offset, length, text, attrs);
-                }
-            }
-        };
     }
     
     /**
@@ -252,7 +233,7 @@ public class userLogin extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(this, 
                 "Login successful! Welcome " + user.getName(), 
-                "INFORMATION", 
+                "INFORMATION",
                 JOptionPane.INFORMATION_MESSAGE);
             
             String userType = user.getUserType();

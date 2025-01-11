@@ -9,6 +9,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 
 /**
  *
@@ -31,6 +34,7 @@ public class User {
     private static String sessionEmail;
     private static String sessionName;
     private static String sessionRole;
+    private static String sessionPassword;
 
     public User(String email, String password, String name, String userType, String birth, String contactNumber) {
         this.email = email;
@@ -41,10 +45,11 @@ public class User {
         this.contactNumber = contactNumber;
     }
     
-    public static void setSession(String email, String role, String name) {
+    public static void setSession(String email, String password, String role, String name) {
         sessionEmail = email;
         sessionRole = role;
         sessionName = name;
+        sessionPassword = password;
     }
     
     public static String getSessionEmail() {
@@ -57,6 +62,10 @@ public class User {
 
     public static String getSessionName() {
         return sessionName;
+    }
+    
+    public static String getSessionPassword() {
+        return sessionPassword;
     }
 
     public static void clearSession() {
@@ -209,7 +218,16 @@ public class User {
                     String field6 = userData.length > 5 ? userData[5] : "";
 
                      if (field5.isEmpty() || field6.isEmpty()) {
-                        return "firstLoginPage";
+                        String userType = userData[3].toLowerCase();
+                        switch (userType) {
+                            case "vendor":
+                                return "vendor1AccInfo";
+                            case "customer":
+                            case "runner":
+                                return "cusRunner1AccInfo";
+                            default:
+                                return "unknownRolePage";
+                        }
                     }
                     
                     String userType = userData[3].toLowerCase();
@@ -239,8 +257,11 @@ public class User {
     public void navigateToPage(String page, JFrame currentFrame) {
         currentFrame.dispose();
         switch (page) {
-            case "firstLoginPage":
-                new userAccInfo().setVisible(true);
+            case "vendor1AccInfo":
+                new vendor1AccInfo().setVisible(true);
+                break;
+            case "cusRunner1AccInfo":
+                new cusRunner1AccInfo().setVisible(true);
                 break;
             case "vendorMainPage":
                 new vendorMain().setVisible(true);
@@ -335,5 +356,26 @@ public class User {
             default:
                 return "";
         }
+    }
+    
+     // Set the input not > max length
+    public DocumentFilter createLengthFilter(int maxLength) {
+        return new DocumentFilter() {
+            @Override
+            public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) 
+                    throws BadLocationException {
+                if (fb.getDocument().getLength() + string.length() <= maxLength) {
+                    super.insertString(fb, offset, string, attr);
+                }
+            }
+
+            @Override
+            public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) 
+                    throws BadLocationException {
+                if (fb.getDocument().getLength() - length + text.length() <= maxLength) {
+                    super.replace(fb, offset, length, text, attrs);
+                }
+            }
+        };
     }
 }
