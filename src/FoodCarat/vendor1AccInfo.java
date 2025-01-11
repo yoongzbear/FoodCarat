@@ -144,6 +144,11 @@ public class vendor1AccInfo extends javax.swing.JFrame {
         jLabel6.setText("Contact Number:");
 
         contactNoTF.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        contactNoTF.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                contactNoTFKeyTyped(evt);
+            }
+        });
 
         jLabel7.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel7.setText("Cuisine:");
@@ -257,6 +262,24 @@ public class vendor1AccInfo extends javax.swing.JFrame {
             return;
         }
         
+        if (contactNumber.length() < 8) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid contact number.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        // Confirmation Dialog
+        int confirm = JOptionPane.showConfirmDialog(
+            this,
+            "Are you sure you want to save the information?",
+            "Confirmation",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (confirm != JOptionPane.YES_OPTION) {
+            return;
+        }
+        
         User user = new User();
         System.out.println("Session email:" + email);
         
@@ -269,8 +292,6 @@ public class vendor1AccInfo extends javax.swing.JFrame {
         
         user.userInfo(email, name, password, contactNumber, date);
         user.vendorInfo(email, savedPicturePath, cuisine);
-
-        JOptionPane.showMessageDialog(this, "Information saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
         
         new vendorMain().setVisible(true);
         dispose();
@@ -296,6 +317,14 @@ public class vendor1AccInfo extends javax.swing.JFrame {
             picJL.setIcon(new ImageIcon(path));
         }
     }//GEN-LAST:event_uploadJBActionPerformed
+
+    private void contactNoTFKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_contactNoTFKeyTyped
+        char c = evt.getKeyChar();
+
+        if (!Character.isDigit(c)) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_contactNoTFKeyTyped
 
     /**
      * @param args the command line arguments

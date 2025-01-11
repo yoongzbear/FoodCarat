@@ -348,6 +348,8 @@ public class User {
                     writer.write(updatedLine);
                     writer.newLine();
                 }
+                JOptionPane.showMessageDialog(null, "Information updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+
             } catch (IOException e) {
                 e.printStackTrace();
                 System.out.println("Error writing to user.txt: " + e.getMessage());
