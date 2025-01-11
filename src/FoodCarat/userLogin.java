@@ -9,9 +9,6 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import javax.swing.JOptionPane;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
 
 /**
@@ -232,11 +229,10 @@ public class userLogin extends javax.swing.JFrame {
             lPasswordField.setText(""); // Clear password field
         } else {
             JOptionPane.showMessageDialog(this, 
-                "Login successful! Welcome " + user.getName(), 
+                "Login successful! Welcome " + user.getName() + "!", 
                 "INFORMATION",
                 JOptionPane.INFORMATION_MESSAGE);
             
-            String userType = user.getUserType();
             String nextPage = user.determinePageAfterLogin(email);
 
             user.navigateToPage(nextPage, this);
