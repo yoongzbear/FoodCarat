@@ -281,7 +281,7 @@ public class User {
         }
     }
                         
-    //Check first login For admin to CRUD user(Admin Side)
+    //Check first login for admin before CRUD user(Admin Side)
     public String checkFirstLogin(String email, String userType, String filePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
@@ -290,8 +290,12 @@ public class User {
 
                 if (details[0].equalsIgnoreCase(email)) {
 
-                    if (!details[3].equalsIgnoreCase(userType)) {
-                        return "roleMismatch";
+                    if (details.length > 3) {
+                        if (!details[3].equalsIgnoreCase(userType)) {
+                            return "roleMismatch";
+                        }
+                    } else { //account has been deleted
+                        return "notExisting"; 
                     }
                     // Check birth, contactNumber, gender are filled OR not
                     if (details.length >= 6 && !details[4].isEmpty() && !details[5].isEmpty()) {
