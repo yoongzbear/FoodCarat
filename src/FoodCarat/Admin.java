@@ -136,7 +136,9 @@ public class Admin extends User {
             JOptionPane.showMessageDialog(null, "The role does not match the selected role.");
         } else if (result.equals("notCompleted")) {
             JOptionPane.showMessageDialog(null, "User has not completed the first login. Admin can't perform the update for the user.");
-        } else {
+        } else if (result.equals("notExisting")) {
+            JOptionPane.showMessageDialog(null, "User account does not exist. Please try again.");
+        }else {
         // If the user has completed the first login, update the user data
         updateUserForm.setUserData(getEmail(), getName(), getBirth(), getContactNumber(), result);
         }
