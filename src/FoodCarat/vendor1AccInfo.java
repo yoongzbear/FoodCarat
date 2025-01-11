@@ -11,21 +11,20 @@ import javax.swing.text.PlainDocument;
  * @author Yuna
  */
 public class vendor1AccInfo extends javax.swing.JFrame {
-    private User user;
     /**
      * Creates new form vendor1ProfilePic
      */
     public vendor1AccInfo() {
         initComponents();
         setLocationRelativeTo(null);
-        
+                
         nameTF.setText(User.getSessionName());
         passwordTF.setText(User.getSessionPassword());
         
-        ((PlainDocument) nameTF.getDocument()).setDocumentFilter(user.createLengthFilter(30));
-        ((PlainDocument) passwordTF.getDocument()).setDocumentFilter(user.createLengthFilter(20));
-        ((PlainDocument) contactNoTF.getDocument()).setDocumentFilter(user.createLengthFilter(15));
-        ((PlainDocument) cuisineTF.getDocument()).setDocumentFilter(user.createLengthFilter(20));
+        ((PlainDocument) nameTF.getDocument()).setDocumentFilter(User.createLengthFilter(20));
+        ((PlainDocument) passwordTF.getDocument()).setDocumentFilter(User.createLengthFilter(20));
+        ((PlainDocument) contactNoTF.getDocument()).setDocumentFilter(User.createLengthFilter(15));
+        ((PlainDocument) cuisineTF.getDocument()).setDocumentFilter(User.createLengthFilter(20));
     }
 
     /**

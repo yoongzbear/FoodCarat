@@ -146,26 +146,23 @@ public class User {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] userData = line.split(",");
-                if (userData.length >= 6) {
+
+                if (userData.length >= 4) {
                     String fileEmail = userData[0];
                     String filePassword = userData[2];
                     String fileName = userData[1];
                     String fileRole = userData[3];
 
                     if (fileEmail.equals(email) && filePassword.equals(password)) {
-                        // Set instance and session data
                         this.email = fileEmail;
                         this.password = filePassword;
                         this.name = fileName;
                         this.userType = fileRole;
 
                         setSession(fileEmail, filePassword, fileRole, fileName);
-
-                        // Determine navigation
-                        String page = determinePageAfterLogin(email);
-                        JFrame currentFrame = null;
-                        navigateToPage(page,currentFrame);
-                        return page;
+                       
+                        String nextPage = determinePageAfterLogin(email);
+                        return nextPage;
                     }
                 }
             }
@@ -212,10 +209,7 @@ public class User {
         try (BufferedReader reader = new BufferedReader(new FileReader(userFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] userData = line.split(","); 
-
-                // Debug: Print the data being processed
-                System.out.println("Processing userData: " + Arrays.toString(userData));
+                String[] userData = line.split(",");
 
                 if (userData[0].equalsIgnoreCase(email)) {
                     String field5 = userData.length > 4 ? userData[4] : "";
@@ -235,7 +229,6 @@ public class User {
                     }
                     
                     String userType = userData[3].toLowerCase();
-
                     switch (userType) {
                         case "vendor":
                             return "vendorMainPage";
@@ -363,7 +356,7 @@ public class User {
     }
     
      // Set the input not > max length
-    public DocumentFilter createLengthFilter(int maxLength) {
+    public static DocumentFilter createLengthFilter(int maxLength) {
         return new DocumentFilter() {
             @Override
             public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) 

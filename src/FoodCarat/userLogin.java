@@ -232,8 +232,16 @@ public class userLogin extends javax.swing.JFrame {
                 "INFORMATION",
                 JOptionPane.INFORMATION_MESSAGE);
 
-            String nextPage = user.determinePageAfterLogin(email);
-            user.navigateToPage(nextPage, this);
+            String nextPage = user.login(email, password);
+
+            if (nextPage.equals("loginFailedPage")) {
+                JOptionPane.showMessageDialog(this, 
+                    "Login failed. Please check your credentials and try again.", 
+                    "ERROR", 
+                    JOptionPane.ERROR_MESSAGE);
+            } else {
+                user.navigateToPage(nextPage, this);
+            }
         }
     }//GEN-LAST:event_loginButtonActionPerformed
 
