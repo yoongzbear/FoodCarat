@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
  */
 public class adminRegister extends javax.swing.JFrame {
     private String role;
+    private String userFile = "resources/user.txt";
     /**
      * Creates new form adminRegister
      */
@@ -152,7 +153,7 @@ public class adminRegister extends javax.swing.JFrame {
     String email = emailtxt.getText().trim();
     String username = usernametxt.getText().trim();
 
-    if (Admin.isEmailRegistered(email, "user.txt")) {
+    if (Admin.isEmailRegistered(email, userFile)) {
         JOptionPane.showMessageDialog(null, "This email is already registered.");
         emailtxt.requestFocus();
         return;
