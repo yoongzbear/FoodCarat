@@ -15,6 +15,8 @@ import javax.swing.table.TableColumn;
  */
 public class adminNotification extends javax.swing.JFrame {
     private DefaultTableModel tableModel;
+    private String cuscreditFile = "resources/customer credit.txt";
+    private String userFile = "resources/user.txt";
     /**
      * Creates new form adminNotification
      */
@@ -73,7 +75,7 @@ public class adminNotification extends javax.swing.JFrame {
 
             // Retrieve details from the customer credit.txt file
             Admin admin = new Admin();
-            String[] customerDetails = admin.performSearch(transactionMessageId, "customer credit.txt");
+            String[] customerDetails = admin.performSearch(transactionMessageId, cuscreditFile);
                     
             if (customerDetails != null) {
                 // Parse details from the file
@@ -85,7 +87,7 @@ public class adminNotification extends javax.swing.JFrame {
                 String timePayment = customerDetails[5];
 
                 // Retrieve name of customer user.txt base on text file
-                String [] customerName = admin.performSearch(email, "user.txt");
+                String [] customerName = admin.performSearch(email, userFile);
                 String name = customerName[1];
                 
                 // Create and display the receipt window
