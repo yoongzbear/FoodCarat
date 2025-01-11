@@ -1,4 +1,4 @@
-1,Dahongpao Milk Tea,Beverage,13.90,images/menu/chageeDMT.png,alya@mail.com
-2,Jasmine Green Milk Tea,Beverage,13.90,images/menu/chageeDMT.png,alya@mail.com
-3,Pepperoni Pizza,Food,24.00,images/menu/chageeDMT.png,mokkys@mail.com
-4,Jasmine Peach Tea,Beverage,11.90,images/menu/ChageeJPT.png,alya@mail.com
+1,Dahongpao Milk Tea,Beverage,13.90,images/menu/chageeDMT.png,alya@mail.com,available
+2,Jasmine Green Milk Tea,Beverage,13.90,images/menu/chageeDMT.png,alya@mail.com,deleted by vendor
+3,Pepperoni Pizza,Food,24.00,images/menu/chageeDMT.png,mokkys@mail.com,available
+4,Jasmine Peach Tea,Beverage,11.90,images/menu/ChageeJPT.png,alya@mail.com,available

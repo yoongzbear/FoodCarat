@@ -37,6 +37,8 @@
                           <Component id="viewBtn" min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" max="-2" attributes="0">
                               <Group type="102" attributes="0">
+                                  <Component id="itemChkBox" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
                                   <Component id="newOrderChkBox" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="orderStatusChkBox" min="-2" max="-2" attributes="0"/>
@@ -74,6 +76,7 @@
                   <Component id="reviewChkBox" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="filterBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="viewTimeBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="itemChkBox" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="jScrollPane1" pref="307" max="32767" attributes="0"/>
@@ -186,6 +189,14 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="viewBtnActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="itemChkBox">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Item"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemChkBoxActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

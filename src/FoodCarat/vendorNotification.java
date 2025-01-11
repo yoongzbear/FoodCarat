@@ -46,6 +46,7 @@ public class vendorNotification extends javax.swing.JFrame {
         reviewChkBox = new javax.swing.JCheckBox();
         viewTimeBtn = new javax.swing.JButton();
         viewBtn = new javax.swing.JButton();
+        itemChkBox = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -97,6 +98,13 @@ public class vendorNotification extends javax.swing.JFrame {
             }
         });
 
+        itemChkBox.setText("Item");
+        itemChkBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemChkBoxActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -114,6 +122,8 @@ public class vendorNotification extends javax.swing.JFrame {
                             .addComponent(viewBtn)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addGroup(layout.createSequentialGroup()
+                                    .addComponent(itemChkBox)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(newOrderChkBox)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(orderStatusChkBox)
@@ -142,7 +152,8 @@ public class vendorNotification extends javax.swing.JFrame {
                     .addComponent(orderStatusChkBox)
                     .addComponent(reviewChkBox)
                     .addComponent(filterBtn)
-                    .addComponent(viewTimeBtn))
+                    .addComponent(viewTimeBtn)
+                    .addComponent(itemChkBox))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -166,6 +177,10 @@ public class vendorNotification extends javax.swing.JFrame {
         // TODO add your handling code here:
         //call respective GUI classes hehe
     }//GEN-LAST:event_viewBtnActionPerformed
+
+    private void itemChkBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemChkBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_itemChkBoxActionPerformed
 
     /**
      * @param args the command line arguments
@@ -204,6 +219,7 @@ public class vendorNotification extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton filterBtn;
+    private javax.swing.JCheckBox itemChkBox;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton menuBtn;
