@@ -16,13 +16,12 @@ import javax.swing.text.PlainDocument;
  * @author mastu
  */
 public class userLogin extends javax.swing.JFrame {
-    private User user;
 
     public userLogin() {
         initComponents();
         setLocationRelativeTo(null);
         
-        user = new User();
+        User user = new User();
         // Set the document filter for emailField and passwordField
         ((PlainDocument) emailTf.getDocument()).setDocumentFilter(user.createLengthFilter(30));
         ((PlainDocument) lPasswordField.getDocument()).setDocumentFilter(user.createLengthFilter(20));
@@ -55,7 +54,7 @@ public class userLogin extends javax.swing.JFrame {
         lPasswordField.repaint();
         loginButton.repaint();
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -212,7 +211,7 @@ public class userLogin extends javax.swing.JFrame {
                 JOptionPane.ERROR_MESSAGE);
             return;
         }
-
+        
         User user = new User();
         
         // Check if email exists and password matches
@@ -232,9 +231,8 @@ public class userLogin extends javax.swing.JFrame {
                 "Login successful! Welcome " + user.getName() + "!", 
                 "INFORMATION",
                 JOptionPane.INFORMATION_MESSAGE);
-            
-            String nextPage = user.determinePageAfterLogin(email);
 
+            String nextPage = user.determinePageAfterLogin(email);
             user.navigateToPage(nextPage, this);
         }
     }//GEN-LAST:event_loginButtonActionPerformed

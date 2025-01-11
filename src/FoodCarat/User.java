@@ -7,6 +7,7 @@ package FoodCarat;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.text.AttributeSet;
@@ -212,6 +213,9 @@ public class User {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] userData = line.split(","); 
+
+                // Debug: Print the data being processed
+                System.out.println("Processing userData: " + Arrays.toString(userData));
 
                 if (userData[0].equalsIgnoreCase(email)) {
                     String field5 = userData.length > 4 ? userData[4] : "";
