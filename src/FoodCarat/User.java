@@ -5,9 +5,17 @@
 package FoodCarat;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.text.AttributeSet;
@@ -28,7 +36,7 @@ public class User {
     
     private String userFile = "resources/user.txt";
     private String cusFile = "resources/customer.txt";
-    private String venFile = "resources/vendor.txt";
+    private String vendorFile = "resources/vendor.txt";
     private String runnerFile = "resources/runner.txt";
     
     // Static variables to act as session
@@ -280,6 +288,144 @@ public class User {
                 break;
         }
     }
+    
+    // Add user data to user.txt for First Login
+    public void userInfo(String email, String name, String password, String contactNumber, String date) {
+        List<String> fileContent = new ArrayList<>();
+        boolean updated = false;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(userFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] userData = line.split(",");
+
+                if (userData.length > 3 && userData[0].equalsIgnoreCase(email)) {
+                    if (userData.length > 1) {
+                        userData[1] = name;
+                    } else {
+                        userData = Arrays.copyOf(userData, 6);
+                        userData[1] = name;
+                    }
+
+                    if (userData.length > 2) {
+                        userData[2] = password;
+                    } else {
+                        userData = Arrays.copyOf(userData, 6);
+                        userData[2] = password;
+                    }
+
+                    if (userData.length > 4) {
+                        // Convert date from dd/MM/yyyy to ddMMyyyy
+                        String formattedDate = date.replace("/", "");
+                        userData[4] = formattedDate;
+                    } else {
+                        userData = Arrays.copyOf(userData, 6);
+                        String formattedDate = date.replace("/", "");
+                        userData[4] = formattedDate;
+                    }
+
+                    if (userData.length > 5) {
+                        userData[5] = contactNumber;
+                    } else {
+                        userData = Arrays.copyOf(userData, 6);
+                        userData[5] = contactNumber;
+                    }
+
+                    updated = true;
+                }
+
+                fileContent.add(String.join(",", userData));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error reading user.txt: " + e.getMessage());
+        }
+
+        if (updated) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(userFile))) {
+                for (String updatedLine : fileContent) {
+                    writer.write(updatedLine);
+                    writer.newLine();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("Error writing to user.txt: " + e.getMessage());
+            }
+        } else {
+            System.out.println("No matching email found to update.");
+        }
+    }
+    
+    // Save Picture to Images/vendors
+    public boolean savePic(String name, String picturePath){
+        try{
+            File imageFolder = new File("images/vendors");
+            
+            File sourceFile = new File(picturePath);
+            
+            // Ensure that the file exists
+            if (!sourceFile.exists()) {
+                System.out.println("File not found: " + picturePath);
+                return false;  // Return false if the file doesn't exist
+            }
+
+            String fileExtension = picturePath.substring(picturePath.lastIndexOf("."));
+            String newFileName = name + "Logo" + fileExtension; // Add the original file extension
+
+            // Define the destination path for the new file
+            File destFile = new File(imageFolder, newFileName);
+
+            // Copy the file from source to destination
+            Path sourcePath = sourceFile.toPath();
+            Path destPath = destFile.toPath();
+            Files.copy(sourcePath, destPath, StandardCopyOption.REPLACE_EXISTING);
+
+            // Return true if the file is successfully copied
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;  // Return false if there's an error during file copy
+        }
+    }
+    
+    // Add vendor Info to vendor.txt for First Login
+    public void vendorInfo(String email, String picturePath, String cuisine) {
+        List<String> fileContent = new ArrayList<>();
+        boolean updated = false;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(vendorFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] vendorData = line.split(",");
+
+                if (vendorData.length > 1 && vendorData[0].equalsIgnoreCase(email)) {
+                    vendorData[1] = picturePath;
+                    vendorData[2] = cuisine;
+                    updated = true;
+                }
+
+                fileContent.add(String.join(",", vendorData));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error reading vendor.txt: " + e.getMessage());
+        }
+
+        if (updated) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(vendorFile))) {
+                for (String updatedLine : fileContent) {
+                    writer.write(updatedLine);
+                    writer.newLine();
+                }
+                System.out.println("Vendor information updated successfully.");
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("Error writing to vendor.txt: " + e.getMessage());
+            }
+        } else {
+            System.out.println("No matching email found to update.");
+        }
+    }
                         
     //Check first login for admin before CRUD user(Admin Side)
     public String checkFirstLogin(String email, String userType, String filePath) {
@@ -351,7 +497,7 @@ public class User {
             case "customer":
                 return cusFile;
             case "vendor":
-                return venFile;
+                return vendorFile;
             case "runner":
                 return runnerFile;
             default:

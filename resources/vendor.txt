@@ -1,2 +1,3 @@
 chagee@gmail.com,Beverage,images/vendors/ChageeLogo.png,[Dine In;Take Away;Delivery],17
 alya@mail.com,Restaurant,images/vendors/ChageeLogo.png,[],17
+vendor@mail.com,,[],0.0
