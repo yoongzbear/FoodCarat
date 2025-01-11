@@ -23,6 +23,10 @@ import javax.swing.JOptionPane;
  * @author User
  */
 public class Admin extends User {
+
+    private static String userFile = "resources/user.txt";
+    private String cusFile = "resources/customer.txt";
+    private String cuscreditFile = "resources/customer credit.txt";
     
     public Admin(){
         
@@ -55,11 +59,10 @@ public class Admin extends User {
     
     public static String registerUser(String email, String username, String role) throws IOException {
         String samplePassword = generateSamplePassword(email);
-        String userFileName = "user.txt";
         String roleFileName = role + ".txt";
 
         // Write to user.txt
-        try (FileWriter userWriter = new FileWriter(userFileName, true)) {
+        try (FileWriter userWriter = new FileWriter(userFile, true)) {
             userWriter.write(email + "," + username + "," + samplePassword + "," + role + ",,\n");
         }
 
@@ -122,7 +125,6 @@ public class Admin extends User {
 
     //search for update user info
     public void searchUser(String searchEmail, String selectedRole, adminUpdateUser updateUserForm) {
-        String userFile = "user.txt";
 
         // Check the login status, role match, and email match
         String result = checkFirstLogin(searchEmail, selectedRole, userFile);
@@ -183,7 +185,7 @@ public class Admin extends User {
             String email, String name, String birthDate,
             String phone, String role, String additionalField) {
 
-        boolean userUpdated = updateFile("user.txt",
+        boolean userUpdated = updateFile(userFile,
                 email,
                 new String[]{name, birthDate, phone},
                 new int[]{1, 4, 5});
@@ -257,7 +259,7 @@ public class Admin extends User {
     //delete both user and role.txt when admin delete user acc
     public boolean performDelete(String email, String role) {
         // Delete from user.txt
-        boolean userDeleted = deleteFromFile("user.txt", email);
+        boolean userDeleted = deleteFromFile(userFile, email);
 
         // Delete from role-specific file
         boolean roleDeleted = deleteFromFile(role + ".txt", email);
@@ -366,15 +368,14 @@ public class Admin extends User {
 
     // Save transaction details to the file
     private void saveTransactionToFile(String transactionDetails) throws IOException {
-        String filePath = "customer credit.txt";
-        try (FileWriter writer = new FileWriter(filePath, true)) { // Append mode
+        try (FileWriter writer = new FileWriter(cuscreditFile, true)) { // Append mode
             writer.write(transactionDetails);
         }
     }
 
     // Update the customer's credit in the file
     public void updateCustomerCredit(String email, double newAmount) throws IOException {
-        String filePath = "customer.txt";
+        String filePath = cusFile;
         StringBuilder updatedData = new StringBuilder();
         boolean customerFound = false;
 
@@ -403,7 +404,7 @@ public class Admin extends User {
     // Method to retrieve the list of transaction messages
     public ArrayList<String> getTransactionMessages() {
         ArrayList<String> transactionMessages = new ArrayList<>();
-        String filePath = "customer credit.txt";
+        String filePath = cuscreditFile;
         
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
