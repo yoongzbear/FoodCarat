@@ -23,6 +23,9 @@ public class User {
     private String contactNumber;
     
     private String userFile = "resources/user.txt";
+    private String cusFile = "resources/customer.txt";
+    private String venFile = "resources/vendor.txt";
+    private String runnerFile = "resources/runner.txt";
     
     // Static variables to act as session
     private static String sessionEmail;
@@ -297,7 +300,7 @@ public class User {
     // Get the specific role data if the user has perfor the first login (Admin Side)
     private String getRoleSpecificData(String email, String role) {
         String fileName = getRoleFileName(role);
-        try (BufferedReader br = new BufferedReader(new FileReader(userFile))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] details = line.split(",");
@@ -324,11 +327,11 @@ public class User {
     private String getRoleFileName(String role) {
         switch (role.toLowerCase()) {
             case "customer":
-                return "customer.txt";
+                return cusFile;
             case "vendor":
-                return "vendor.txt";
+                return venFile;
             case "runner":
-                return "runner.txt";
+                return runnerFile;
             default:
                 return "";
         }
