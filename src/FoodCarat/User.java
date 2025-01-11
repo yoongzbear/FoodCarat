@@ -420,6 +420,68 @@ public class User {
             System.out.println("No matching email found to update.");
         }
     }
+    
+    // Runner save Plate Number
+    public void savePlateNumber(String email, String plateNumber) {    
+        // Loop until a valid plate number is provided
+        if (plateNumber == null || !isValidPlateNumber(plateNumber)) {
+            plateNumber = JOptionPane.showInputDialog(null, "Enter Plate Number (contains both letters and numbers, max 15 characters):", "Plate Number", JOptionPane.PLAIN_MESSAGE);
+        }
+     
+        List<String> fileContent = new ArrayList<>();
+        boolean emailFound = false;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(runnerFile))) {
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] runnerData = line.split(",");
+                if (runnerData.length > 1 && runnerData[0].equalsIgnoreCase(email)) {
+                    runnerData[1] = plateNumber;
+                    emailFound = true;
+                }
+                fileContent.add(String.join(",", runnerData));
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error reading runner.txt: " + e.getMessage());
+        }
+
+        if (emailFound) {
+            // If email found and plate number updated, write all content back to the file
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(runnerFile))) {
+                for (String updatedLine : fileContent) {
+                    writer.write(updatedLine);
+                    writer.newLine();
+                }
+                System.out.println("Runner information updated successfully.");
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("Error writing to runner.txt: " + e.getMessage());
+            }
+        }
+    }
+    
+    // Method to validate plate number
+    private boolean isValidPlateNumber(String plateNumber) {
+        if (plateNumber.length() > 15) {
+            return false;
+        }
+
+        boolean containsLetter = false;
+        boolean containsNumber = false;
+
+        for (char c : plateNumber.toCharArray()) {
+            if (Character.isLetter(c)) {
+                containsLetter = true;
+            } else if (Character.isDigit(c)) {
+                containsNumber = true;
+            }
+        }
+
+        return containsLetter && containsNumber;
+    }
                         
     //Check first login for admin before CRUD user(Admin Side)
     public String checkFirstLogin(String email, String userType, String filePath) {

@@ -263,6 +263,7 @@ public class cusRunner1AccInfo extends javax.swing.JFrame {
 
     private void confirmJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmJBActionPerformed
         String email = User.getSessionEmail();
+        String role = User.getSessionRole();
         
         String name = nameTF.getText().trim();
         String password = passwordTF.getText().trim();
@@ -275,7 +276,7 @@ public class cusRunner1AccInfo extends javax.swing.JFrame {
         }
         
         if (!isValidDate(dateString)) {
-            return; // If date is invalid, stop further processing
+            return;
         }
 
         if (contactNumber.length() < 8) {
@@ -298,6 +299,19 @@ public class cusRunner1AccInfo extends javax.swing.JFrame {
         
         User user = new User();
         System.out.println("Session email:" + email);
+        
+        // If user is a runner, prompt for plate number
+        if ("runner".equalsIgnoreCase(role)) {
+            String plateNumber = JOptionPane.showInputDialog(this, "Please enter your plate number:");
+            
+            // If user cancels or closes the dialog, return immediately without processing
+            if (plateNumber == null || plateNumber.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Plate number is required to proceed.", "Error", JOptionPane.ERROR_MESSAGE);
+                return; // Exit the method without saving information
+            }
+
+            user.savePlateNumber(email, plateNumber);
+        }
       
         user.userInfo(email, name, password, contactNumber, dateString);
         
