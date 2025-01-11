@@ -260,8 +260,8 @@ public class Admin extends User {
     
     //delete both user and role.txt when admin delete user acc
     public boolean performDelete(String email, String role) {
-        // Delete from user.txt
-        boolean userDeleted = deleteFromFile(userFile, email);
+        // Remove info from user.txt left email and name
+        boolean userDeleted = removeInfoUserFile(userFile, email);
 
         // Delete from role-specific file
         boolean roleDeleted = deleteFromFile(role + ".txt", email);
@@ -277,7 +277,38 @@ public class Admin extends User {
 
         return false;
     }
+    
+    private boolean removeInfoUserFile(String fileName, String email) {
+        List<String> fileContent = new ArrayList<>();
+        boolean recordUpdated = false;
 
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(",");
+
+                if (data[0].equalsIgnoreCase(email)) {
+                    recordUpdated = true;
+                    // Update the user record with email, name, and empty fields
+                    fileContent.add(data[0] + "," + data[1] + ",,,,");
+                } else {
+                    fileContent.add(line); // Keep other records unchanged
+                }
+            }
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Error reading file: " + ex.getMessage());
+            return false;
+        }
+
+        if (!recordUpdated) {
+            JOptionPane.showMessageDialog(null, "No matching record found in " + fileName + "!");
+            return false;
+        }
+
+        return writeFile(fileName, fileContent);
+    }
+    
     private boolean deleteFromFile(String fileName, String email) {
         List<String> fileContent = new ArrayList<>();
         boolean recordDeleted = false;
