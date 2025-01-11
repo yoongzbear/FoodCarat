@@ -12,6 +12,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -357,34 +358,25 @@ public class User {
     }
     
     // Save Picture to Images/vendors
-    public boolean savePic(String name, String picturePath){
+    public String savePic(String name, String picturePath){
         try{
             File imageFolder = new File("images/vendors");
-            
-            File sourceFile = new File(picturePath);
-            
-            // Ensure that the file exists
-            if (!sourceFile.exists()) {
-                System.out.println("File not found: " + picturePath);
-                return false;  // Return false if the file doesn't exist
-            }
 
             String fileExtension = picturePath.substring(picturePath.lastIndexOf("."));
-            String newFileName = name + "Logo" + fileExtension; // Add the original file extension
+            String newFileName = name + "Logo" + fileExtension.toLowerCase();
 
             // Define the destination path for the new file
             File destFile = new File(imageFolder, newFileName);
 
             // Copy the file from source to destination
-            Path sourcePath = sourceFile.toPath();
+            Path sourcePath = Paths.get(picturePath);
             Path destPath = destFile.toPath();
             Files.copy(sourcePath, destPath, StandardCopyOption.REPLACE_EXISTING);
 
-            // Return true if the file is successfully copied
-            return true;
+            return "images/vendors/" + newFileName;
         } catch (IOException e) {
             e.printStackTrace();
-            return false;  // Return false if there's an error during file copy
+            return null;
         }
     }
     
@@ -399,8 +391,8 @@ public class User {
                 String[] vendorData = line.split(",");
 
                 if (vendorData.length > 1 && vendorData[0].equalsIgnoreCase(email)) {
-                    vendorData[1] = picturePath;
-                    vendorData[2] = cuisine;
+                    vendorData[1] = cuisine;
+                    vendorData[2] = picturePath;
                     updated = true;
                 }
 

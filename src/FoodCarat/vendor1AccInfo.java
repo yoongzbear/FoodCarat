@@ -19,13 +19,11 @@ import javax.swing.text.PlainDocument;
  * @author Yuna
  */
 public class vendor1AccInfo extends javax.swing.JFrame {
-    /**
+/**
      * Creates new form vendor1ProfilePic
      */
     
-    File f = null;
-    String path = null;
-    private ImageIcon format = null;
+    private String path = null;
     private String picturePath = "";
 
     public vendor1AccInfo() {
@@ -253,9 +251,8 @@ public class vendor1AccInfo extends javax.swing.JFrame {
         String contactNumber = contactNoTF.getText().trim();
         String date = dateTF.getText().trim();
         String cuisine = cuisineJCB.getSelectedItem().toString().trim();
-        String picturePath = picJL.getText().trim();
 
-        if (name.isEmpty() || password.isEmpty() || contactNumber.isEmpty() || date.isEmpty() || cuisine.isEmpty() || picturePath.isEmpty()) {
+        if (name.isEmpty() || password.isEmpty() || contactNumber.isEmpty() || date.isEmpty() || cuisine.isEmpty() || picturePath == null || picturePath.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -264,14 +261,14 @@ public class vendor1AccInfo extends javax.swing.JFrame {
         System.out.println("Session email:" + email);
         
         // Save Picture
-        boolean isPicSaved = user.savePic(name, picturePath);
-        if(!isPicSaved){
+        String savedPicturePath = user.savePic(name, picturePath);
+        if(savedPicturePath == null){
             JOptionPane.showMessageDialog(this, "Please Upload a Picture as Your Shop Logo.", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
         
         user.userInfo(email, name, password, contactNumber, date);
-        user.vendorInfo(email, picturePath, cuisine);
+        user.vendorInfo(email, savedPicturePath, cuisine);
 
         JOptionPane.showMessageDialog(this, "Information saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
         
@@ -288,15 +285,15 @@ public class vendor1AccInfo extends javax.swing.JFrame {
         int load = fileChooser.showOpenDialog(null);
 
         if (load == fileChooser.APPROVE_OPTION) {
-            f = fileChooser.getSelectedFile();
-            path = f.getAbsolutePath();
+            File selectedFile = fileChooser.getSelectedFile();
+            path = selectedFile.getAbsolutePath();
             
-            picJL.setText("");
-            picJL.setText(path);
+            picturePath = path;
 
+            picJL.setText("");
             ImageIcon pic = new ImageIcon(path);
-            Image img = pic.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
-            picJL.setIcon(new ImageIcon(img));
+            Image path = pic.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+            picJL.setIcon(new ImageIcon(path));
         }
     }//GEN-LAST:event_uploadJBActionPerformed
 
