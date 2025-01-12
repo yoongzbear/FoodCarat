@@ -55,6 +55,10 @@ public class User {
         this.contactNumber = contactNumber;
     }
     
+    public User(String email) {
+        this.email = email;
+    }
+    
     public static void setSession(String email, String password, String role, String name) {
         sessionEmail = email;
         sessionRole = role;
