@@ -438,7 +438,6 @@ public class User {
                 JOptionPane.PLAIN_MESSAGE
             );
 
-            // If user cancels or closes the dialog
             if (plateNumber == null) {
                 JOptionPane.showMessageDialog(parentComponent, "Plate number is required to proceed.", "Error", JOptionPane.ERROR_MESSAGE);
                 return null;
