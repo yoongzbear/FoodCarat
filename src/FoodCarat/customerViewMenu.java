@@ -702,7 +702,7 @@ public class customerViewMenu extends javax.swing.JFrame {
         Order order = new Order();
         order.writeOrderDetails(orderID, cart, orderType, selectedVendorEmail);
 
-        customerPayment frame = new customerPayment(orderID);
+        customerPayment frame = new customerPayment(orderID, orderType);
         frame.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_bCheckOutActionPerformed
