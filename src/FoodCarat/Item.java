@@ -244,7 +244,7 @@ public class Item {
     }
     
     //update item
-    public void editItem(String id, String[] newInfo) {
+    public void editItem() {
         //get all data
         List<String[]> allItems = getAllItems();
         boolean isEdited = false;
@@ -254,13 +254,17 @@ public class Item {
             BufferedWriter bw = new BufferedWriter(fw);
             
             for (String[] itemData : allItems) {
-                if (!itemData[0].equals(id)) {
+                int itemDataID = Integer.parseInt(itemData[0]);
+                if (itemDataID!=itemID) {
                     //keep the row if the ID does not match
                     bw.write(String.join(",", itemData));
                     bw.newLine();
                 } else {
                     //found row and rewrite the row with the new info
-                    bw.write(String.join(",", newInfo));
+                    DecimalFormat df = new DecimalFormat("0.00");
+                    String itemPriceStr = df.format(itemPrice).toString();
+                    String updatedRow = itemID + "," + itemName + "," + itemType + "," + itemPriceStr + "," + itemImgPath + "," + venEmail + "," + itemStatus;
+                    bw.write(String.join(",", updatedRow));                    
                     bw.newLine();
                     isEdited = true;
                 }
@@ -282,8 +286,21 @@ public class Item {
     //delete item
     public void deleteItem(String id, String userType) {
         //get all data
-        List<String[]> allItems = getAllItems();
+        List<String[]> allItems = new ArrayList<>();
         boolean isDeleted = false;
+        
+        try {
+            FileReader fr = new FileReader(itemFile);
+            BufferedReader br = new BufferedReader(fr);
+            String read;
+            
+            while ((read = br.readLine()) != null) {
+                String[] itemData = read.split(",");
+                allItems.add(itemData);
+            }
+        } catch(IOException e) {
+            JOptionPane.showMessageDialog(null, "Failed to read from the file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }        
 
         try {
             FileWriter fw = new FileWriter(itemFile);

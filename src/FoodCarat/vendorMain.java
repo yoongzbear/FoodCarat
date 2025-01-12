@@ -6,6 +6,7 @@ package FoodCarat;
 
 import java.awt.Image;
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -21,37 +22,31 @@ public class vendorMain extends javax.swing.JFrame {
      */
     
     //change to userSession 
-    private String email = "alya@mail.com";
-    private String name = "Alya";
+    private String email = "chagee@mail.com";
+    private String name = "Chagee";
+//    private String email = User.getSessionEmail();
+//    private String name = User.getSessionName();
     Vendor vendor = new Vendor(email);
-//    String email = User.getSessionEmail();
-//    String name = User.getSessionName();
-//    Vendor vendor = new Vendor(email);
     
     public vendorMain() {
         initComponents();
         getContentPane().setBackground(new java.awt.Color(186,85,211)); //setting background color of frame
         setLocationRelativeTo(null);
         
-        //display user's name in salutationTxt based on session's name
-        //alya@mail.com,Restaurant,/FoodCarat/images/vendor/ChageeLogo.png,[Dine In,Take Away,Delivery],17,
-        //String email = "alya@mail.com";
-        String name = "Alya";
-        
-        //Vendor vendor = new Vendor(email);
-        
+        //display vendor info
         displayInfo();
     }
-    
-    //method
-    //set info
-    public void displayInfo() {
-        //String[] vendorInfo = vendor.getVendorInfo(email);
+        
+    public void displayInfo() { //display vendor info
         if (vendor != null) {
+            salutationTxt.setText(name);
             emailTxt.setText(email);
             nameTxt.setText(name);
             cuisineTxt.setText(vendor.getCuisine());
-            creditTxt.setText("RM"+vendor.getCreditBalance()); //later add format
+            
+            DecimalFormat df = new DecimalFormat("0.00");
+            String credit = df.format(vendor.getCreditBalance());
+            creditTxt.setText("RM"+credit); 
             
             ImageIcon icon = new ImageIcon(vendor.getPhotoLink());
             Image img = icon.getImage();
@@ -60,7 +55,6 @@ public class vendorMain extends javax.swing.JFrame {
             
             displayMethod();
         } else {
-            // Handle case where vendor info is not found
             JOptionPane.showMessageDialog(this, "Vendor information not found for email: " + email,
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -436,7 +430,7 @@ public class vendorMain extends javax.swing.JFrame {
     }//GEN-LAST:event_revenueBtnActionPerformed
 
     private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
-        //User.logout();
+        User.clearSession();
         dispose();
     }//GEN-LAST:event_logoutBtnActionPerformed
 

@@ -19,7 +19,7 @@ public class vendorNotification extends javax.swing.JFrame {
     }
     
     //display all activities
-    //new order + changed order status + review 
+    //new order + changed order status + review + item (if got deleted by manager)
     //get based on dates la
     
     //display based on time range

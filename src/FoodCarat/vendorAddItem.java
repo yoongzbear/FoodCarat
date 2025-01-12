@@ -27,8 +27,10 @@ public class vendorAddItem extends javax.swing.JFrame {
     String imagePath = "";
     File imageFile = null;
     //change to userSession 
-    private String email = "alya@mail.com";
-    private String name = "Alya";
+    private String email = "chagee@mail.com";
+    private String name = "Chagee";
+//    private String email = User.getSessionEmail();
+//    private String name = User.getSessionName();
     Item item = new Item();
     
     public vendorAddItem() {
@@ -42,7 +44,6 @@ public class vendorAddItem extends javax.swing.JFrame {
     
     //function to return latest item ID 
     private void displayID() {
-        itemIDTxt.setEditable(false);
         //call function to return latest row of data and display the latest id + 1 
         String[] latestItem = item.latestItem();
         int newItemID = Integer.parseInt(latestItem[0]) + 1;
@@ -92,8 +93,8 @@ public class vendorAddItem extends javax.swing.JFrame {
         addBtn = new javax.swing.JButton();
         cancelBtn = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
-        itemIDTxt = new javax.swing.JTextField();
         selectImgBtn = new javax.swing.JButton();
+        itemIDTxt = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -150,6 +151,9 @@ public class vendorAddItem extends javax.swing.JFrame {
             }
         });
 
+        itemIDTxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        itemIDTxt.setText("itemID");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -174,7 +178,7 @@ public class vendorAddItem extends javax.swing.JFrame {
                                 .addGap(139, 139, 139)
                                 .addComponent(cancelBtn))
                             .addComponent(typeBox, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(itemIDTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(itemIDTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(166, 166, 166)
                         .addComponent(addBtn)))
@@ -188,9 +192,9 @@ public class vendorAddItem extends javax.swing.JFrame {
                     .addComponent(uploadedImgLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(selectImgBtn))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel6)
-                    .addComponent(itemIDTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(itemIDTxt))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -235,7 +239,7 @@ public class vendorAddItem extends javax.swing.JFrame {
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         pack();
@@ -360,7 +364,7 @@ public class vendorAddItem extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addBtn;
     private javax.swing.JButton cancelBtn;
-    private javax.swing.JTextField itemIDTxt;
+    private javax.swing.JLabel itemIDTxt;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

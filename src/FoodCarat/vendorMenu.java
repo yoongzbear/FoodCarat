@@ -35,8 +35,10 @@ public class vendorMenu extends javax.swing.JFrame {
     String imagePath = "";
     File imageFile = null;
     //change to userSession 
-    private String email = "alya@mail.com";
-    private String name = "Alya";
+    private String email = "chagee@mail.com";
+    private String name = "Chagee";
+//    private String email = User.getSessionEmail();
+//    private String name = User.getSessionName();
     boolean edit = true;
     
     /**
@@ -58,7 +60,7 @@ public class vendorMenu extends javax.swing.JFrame {
         deleteBtn.setEnabled(false);
         
         //set size of photoLabel
-        photoLabel.setPreferredSize(new Dimension(175, 164)); //175, 164
+        photoLabel.setPreferredSize(new Dimension(175, 164)); 
         photoLabel.setMinimumSize(new Dimension(175, 164));
         photoLabel.setMaximumSize(new Dimension(175, 164));
 
@@ -151,7 +153,8 @@ public class vendorMenu extends javax.swing.JFrame {
         itemPriceTxt.setText(details[3].trim());
         
         //photo
-        ImageIcon itemImage = new ImageIcon(details[4].trim());
+        imagePath = details[4].trim();
+        ImageIcon itemImage = new ImageIcon(imagePath);
         Image resizedImage = itemImage.getImage().getScaledInstance(photoLabel.getWidth(), photoLabel.getHeight(), Image.SCALE_SMOOTH);
         photoLabel.setText(""); //clear the label
         photoLabel.setIcon(new ImageIcon(resizedImage));        
@@ -707,7 +710,6 @@ public class vendorMenu extends javax.swing.JFrame {
             enableTextField();
             int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to edit the item's information?", "Edit Item", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
-                //validate text fields
                 //validate if fields are empty
                 if (name.isEmpty() || type.equals("Select Type") || priceText.isEmpty() || imagePath == "") {
                     JOptionPane.showMessageDialog(null, "Please fill in all fields.", "Incomplete Submission", JOptionPane.WARNING_MESSAGE);
@@ -729,16 +731,9 @@ public class vendorMenu extends javax.swing.JFrame {
                     return;
                 } else {
                     //function to update items
-                    String[] updateItem = new String[6];
-                    updateItem[0] = id;
-                    updateItem[1] = name;
-                    updateItem[2] = type;
-                    //newItem[3] = priceText;
-                    updateItem[3] = df.format(price).toString();
-                    updateItem[4] = newImagePath;
-                    updateItem[5] = email;
+                    Item updateItem = new Item(Integer.parseInt(id), name, type, price, newImagePath, email, "available");
+                    updateItem.editItem();
 
-                    item.editItem(id, updateItem);
                     editBtn.setText("Edit Details");
                     displayItems();
                     resetDetails();
@@ -762,6 +757,7 @@ public class vendorMenu extends javax.swing.JFrame {
             if (confirm == JOptionPane.YES_OPTION) {
                 String id = idLabel.getText();
                 item.deleteItem(id, "vendor"); //see if got add user type for session
+                //item.deleteItem(id, User.getSessionRole());
                 displayItems();
                 resetDetails();
             }
