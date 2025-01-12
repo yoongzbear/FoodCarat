@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -29,6 +30,7 @@ public class Item {
     private double itemPrice;
     private String itemImgPath;
     private String venEmail;
+    private String itemStatus;
     
     private String itemFile = "resources/item.txt";
 
@@ -36,6 +38,17 @@ public class Item {
     public Item() {
         
     }
+
+    //for add new item
+    public Item(int itemID, String itemName, String itemType, double itemPrice, String itemImgPath, String venEmail, String itemStatus) {
+        this.itemID = itemID;
+        this.itemName = itemName;
+        this.itemType = itemType;
+        this.itemPrice = itemPrice;
+        this.itemImgPath = itemImgPath;
+        this.venEmail = venEmail;
+        this.itemStatus = itemStatus;
+    }       
 
     //setters
     public void setItemID(int itemID) {
@@ -60,6 +73,10 @@ public class Item {
 
     public void setVenEmail(String venEmail) {
         this.venEmail = venEmail;
+    }
+
+    public void setItemStatus(String itemStatus) {
+        this.itemStatus = itemStatus;
     }
     
     //getters
@@ -87,14 +104,19 @@ public class Item {
         return venEmail;
     }
 
-    //method
-    //add new item
-    public void addItem(String[] itemInfo) {
+    public String getItemStatus() {
+        return itemStatus;
+    }
+    
+    public void addItem() {
         //write into item text file
         try {
             FileWriter fw = new FileWriter(itemFile,true);
             BufferedWriter bw = new BufferedWriter(fw);
-            String newRow = String.join(",", itemInfo);
+            //convert price to string
+            DecimalFormat df = new DecimalFormat("0.00");
+            String itemPriceStr = df.format(itemPrice).toString();
+            String newRow = itemID + "," + itemName + "," + itemType + "," + itemPriceStr + "," + itemImgPath + "," + venEmail + "," + itemStatus;
             
             //write row and add new row
             bw.write(newRow);

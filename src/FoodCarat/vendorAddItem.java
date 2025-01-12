@@ -280,17 +280,8 @@ public class vendorAddItem extends javax.swing.JFrame {
                 //get next ID
                 String[] latestItem = item.latestItem();
                 int newItemID = Integer.parseInt(latestItem[0]) + 1;
-                
-                String[] newItem = new String[6];
-                newItem[0] = String.valueOf(newItemID); 
-                newItem[1] = name;
-                newItem[2] = type;
-                //newItem[3] = priceText;
-                newItem[3] = df.format(price).toString();
-                newItem[4] = newImagePath; 
-                newItem[5] = email;
-                
-                item.addItem(newItem);
+                Item newItem = new Item(newItemID, name, type, price, newImagePath, email, "available");
+                newItem.addItem();
                 new vendorMenu().setVisible(true);
                 dispose();
             }

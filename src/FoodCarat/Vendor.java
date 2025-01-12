@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
  * @author mastu
  */
 public class Vendor {
-    //alya@mail.com,Restaurant,/FoodCarat/images/vendor/ChageeLogo.png,[Dine In,Take Away,Delivery],
     //constructor    
     private String email;
     //super(email,password,name);
@@ -33,6 +32,7 @@ public class Vendor {
     private String vendorFile = "resources/vendor.txt";
     
     public Vendor(String email) {
+        //super(email)
         this.email = email;
         getVendorInfo(email);
     }
