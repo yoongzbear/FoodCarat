@@ -35,6 +35,7 @@ public class Order {
     private int runnerID;
     private int reasonID;
     
+    private List<String[]> cart;
     private String orderFile = "resources/customerOrder.txt";
     
     public Order(){ //for deleteIncompleteOrder()
@@ -48,6 +49,12 @@ public class Order {
     
     public Order(int orderID){ //for getting customer order feedback
         this.orderID = orderID;
+    }
+    
+    public Order(String orderType, String customerEmail) { //for cart
+        this.orderType = orderType;
+        this.customerEmail = customerEmail;
+        this.cart = new ArrayList<>();
     }
 
     public int getOrderID() {
@@ -140,7 +147,8 @@ public class Order {
         
         this.orderID = lastOrder;
         //write order with orderID, orderType and customerEmail
-        String newLine = lastOrder + "," + orderType + ",,," + "customerEmail" + ",,";
+        //1, Take Away, [1;1|2;1], Ordered, customerEmail, vendor@mail.com, NULL
+        String newLine = lastOrder + "," + orderType + ",,," + "customerEmail" + ",null,null";
         try {
             FileWriter fw = new FileWriter("resources/customerOrder.txt", true); //true is use for appending data in new line
             fw.write(newLine + "\n");
@@ -258,7 +266,7 @@ public class Order {
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Failed to read from the file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-
+        System.out.println(Arrays.toString(orderInfo));
         return orderInfo;
     }
 
@@ -305,5 +313,129 @@ public class Order {
         
         //if take away - vendor
         //ordered, pending ____idk whats this___, accepted by vendor, in kitchen, ready, picked up
+    }
+    
+    // Method to add item to cart
+    public void addItemToCart(int itemID, String itemName, int quantity, double unitPrice) {
+        // Check if the item already exists in the cart
+        for (String[] item : cart) {
+            if (Integer.parseInt(item[0]) == itemID) {
+                int existingQuantity = Integer.parseInt(item[2]);
+                item[2] = String.valueOf(existingQuantity + quantity);  // Update quantity if the item already exists
+                return;
+            }
+        }
+
+        // If not, create a new cart entry
+        String[] newItem = {String.valueOf(itemID), itemName, String.valueOf(quantity), String.valueOf(unitPrice)};
+        cart.add(newItem);
+    }
+
+    // Method to remove item from cart
+    public void removeItemFromCart(int itemID) {
+        cart.removeIf(item -> Integer.parseInt(item[0]) == itemID);
+    }
+    
+    public void updateItemQuantity(int itemID, int newQuantity) {
+        for (String[] item : cart) {
+            if (Integer.parseInt(item[0]) == itemID) {
+                item[2] = String.valueOf(newQuantity);  // Update the quantity
+                break;
+            }
+        }
+    }
+
+    // Method to get the total price of the order
+    public double getTotalPrice() {
+        double total = 0.0;
+        for (String[] item : cart) {
+            double price = Double.parseDouble(item[3]);
+            int quantity = Integer.parseInt(item[2]);
+            total += price * quantity;
+        }
+        return total;
+    }
+
+    public void writeOrderDetails(int orderID, List<String[]> cart, String orderStatus, String vendorEmail) {
+        // Create a StringBuilder to hold the updated content
+        StringBuilder stringBuilder = new StringBuilder();
+
+        try {
+            // Open the customerOrder.txt file to read its content
+            BufferedReader reader = new BufferedReader(new FileReader(orderFile));
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] orderData = line.split(",");
+                int currentOrderID = Integer.parseInt(orderData[0]);
+
+                // Check if the orderID matches
+                if (currentOrderID == orderID) {
+                    // Update order details
+
+                    StringBuilder orderItems = new StringBuilder();
+                    orderItems.append("[");
+
+                    for (int i = 0; i < cart.size(); i++) {
+                        String[] item = cart.get(i);  // Get the item at the current index
+                        String itemID = item[0];  
+                        String quantity = item[2]; 
+
+                        // If it's not the first item, append a "|" separator
+                        if (i > 0) {
+                            orderItems.append("|");
+                        }
+
+                        // Append the itemID and quantity
+                        orderItems.append(itemID).append(";").append(quantity);
+                    }
+
+                    orderItems.append("]");  // End the list with a closing bracket
+
+                    //Update the fields in the orderData array
+                    orderData[2] = orderItems.toString(); // orderItem
+                    orderData[3] = orderStatus; // orderStatus
+                    orderData[5] = vendorEmail; // vendorEmail
+
+                    // Reconstruct the updated line and append it to the StringBuilder
+                    line = String.join(",", orderData);
+                }
+
+                // Append the (possibly updated) line to the StringBuilder
+                stringBuilder.append(line).append("\n");
+            }
+
+            // Close the reader
+            reader.close();
+
+            // Now write the updated content back to the file
+            BufferedWriter writer = new BufferedWriter(new FileWriter("resources/customerOrder.txt"));
+            writer.write(stringBuilder.toString());
+            writer.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Method to clear the cart after the order is placed
+    public void clearCart() {
+        cart.clear();
+    }
+
+    // Method to view all items in the cart
+    public void viewCart() {
+        StringBuilder cartDetails = new StringBuilder("Items in your cart:\n");
+        for (String[] item : cart) {
+            cartDetails.append(item[1]).append(" - Quantity: ").append(item[2])
+                    .append(" - Total: RM").append(Double.parseDouble(item[3]) * Integer.parseInt(item[2])).append("\n");
+        }
+        cartDetails.append("Total Price: RM").append(getTotalPrice());
+        JOptionPane.showMessageDialog(null, cartDetails.toString());
+    }
+
+    // Getter for cart
+    public List<String[]> getCart() {
+        return cart;
     }
 }
