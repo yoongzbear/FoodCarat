@@ -228,7 +228,7 @@ public class customerMain extends javax.swing.JFrame {
     }//GEN-LAST:event_bLogoutActionPerformed
 
     private void bOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bOrderActionPerformed
-        String[] orderTypeArr = {"Dine-in", "Delivery", "Take away"};
+        String[] orderTypeArr = {"Dine In", "Delivery", "Take Away"};
         var choiceIndex = JOptionPane.showOptionDialog(null, "Please select: ", "Start Order! ", 0, 3, null, orderTypeArr, orderTypeArr[0]);
 
         if (choiceIndex != JOptionPane.CLOSED_OPTION) {
@@ -241,7 +241,7 @@ public class customerMain extends javax.swing.JFrame {
 
             //View menu
             this.dispose();
-            customerViewMenu frame = new customerViewMenu(orderID);
+            customerViewMenu frame = new customerViewMenu(orderID, choice);
             frame.setVisible(true);
         }
     }//GEN-LAST:event_bOrderActionPerformed
