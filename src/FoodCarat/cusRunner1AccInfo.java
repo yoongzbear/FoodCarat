@@ -300,17 +300,12 @@ public class cusRunner1AccInfo extends javax.swing.JFrame {
         User user = new User();
         System.out.println("Session email:" + email);
         
-        // If user is a runner, prompt for plate number
+        // If user is a runner, prompt for plate number and validate
         if ("runner".equalsIgnoreCase(role)) {
-            String plateNumber = JOptionPane.showInputDialog(this, "Please enter your plate number:");
-            
-            // If user cancels or closes the dialog, return immediately without processing
-            if (plateNumber == null || plateNumber.trim().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Plate number is required to proceed.", "Error", JOptionPane.ERROR_MESSAGE);
-                return; // Exit the method without saving information
+            String plateNumber = user.promptAndValidatePlateNumber(this, email);
+            if (plateNumber == null) {
+                return; 
             }
-
-            user.savePlateNumber(email, plateNumber);
         }
       
         user.userInfo(email, name, password, contactNumber, dateString);
