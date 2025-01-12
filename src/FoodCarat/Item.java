@@ -175,7 +175,7 @@ public class Item {
         return latestRow;
     }
         
-    //get data for all items
+    //get data for all available items
     public List<String[]> getAllItems() { 
         List<String[]> allItems = new ArrayList<>();
         
@@ -186,7 +186,9 @@ public class Item {
             
             while ((read = br.readLine()) != null) {
                 String[] itemData = read.split(",");
-                allItems.add(itemData);
+                if(itemData[6].equals("available")) {
+                    allItems.add(itemData);
+                }
             }
         } catch(IOException e) {
             JOptionPane.showMessageDialog(null, "Failed to read from the file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -208,7 +210,7 @@ public class Item {
             while ((read = br.readLine()) != null) {
                 //get all rows where vendor email == venEmail
                 String[] itemData = read.split(",");
-                if(itemData[5].equals(venEmail)) {
+                if(itemData[5].equals(venEmail) && itemData[6].equals("available")) {
                     allItems.add(itemData);
                 }
             }
@@ -256,7 +258,7 @@ public class Item {
     }
     
     //delete item
-    public void deleteItem(String id) {
+    public void deleteItem(String id, String userType) {
         //get all data
         List<String[]> allItems = getAllItems();
         boolean isDeleted = false;
@@ -271,7 +273,10 @@ public class Item {
                     bw.write(String.join(",", itemData));
                     bw.newLine();
                 } else {
-                    //found row and not write the row
+                    //found row change status at the end to deleted by userType
+                    itemData[itemData.length - 1] = "deleted by " + userType;
+                    bw.write(String.join(",", itemData));
+                    bw.newLine();
                     isDeleted = true;
                 }
             }

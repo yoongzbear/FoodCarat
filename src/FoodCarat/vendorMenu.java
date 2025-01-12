@@ -761,7 +761,7 @@ public class vendorMenu extends javax.swing.JFrame {
             int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to delete this item?", "Delete Item", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 String id = idLabel.getText();
-                item.deleteItem(id);
+                item.deleteItem(id, "vendor"); //see if got add user type for session
                 displayItems();
                 resetDetails();
             }

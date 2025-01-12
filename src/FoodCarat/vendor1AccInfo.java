@@ -4,6 +4,14 @@
  */
 package FoodCarat;
 
+import java.awt.Image;
+import java.io.File;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.PlainDocument;
 
 /**
@@ -11,9 +19,13 @@ import javax.swing.text.PlainDocument;
  * @author Yuna
  */
 public class vendor1AccInfo extends javax.swing.JFrame {
-    /**
+/**
      * Creates new form vendor1ProfilePic
      */
+    
+    private String path = null;
+    private String picturePath = "";
+
     public vendor1AccInfo() {
         initComponents();
         setLocationRelativeTo(null);
@@ -24,7 +36,13 @@ public class vendor1AccInfo extends javax.swing.JFrame {
         ((PlainDocument) nameTF.getDocument()).setDocumentFilter(User.createLengthFilter(20));
         ((PlainDocument) passwordTF.getDocument()).setDocumentFilter(User.createLengthFilter(20));
         ((PlainDocument) contactNoTF.getDocument()).setDocumentFilter(User.createLengthFilter(15));
-        ((PlainDocument) cuisineTF.getDocument()).setDocumentFilter(User.createLengthFilter(20));
+        
+        LocalDate currentDate = LocalDate.now();
+    
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String formattedDate = currentDate.format(formatter);
+
+        dateTF.setText(formattedDate);
     }
 
     /**
@@ -39,17 +57,19 @@ public class vendor1AccInfo extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
-        passwordTF = new javax.swing.JTextField();
+        picJL = new javax.swing.JLabel();
+        uploadJB = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
         nameTF = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        passwordTF = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
         contactNoTF = new javax.swing.JTextField();
-        cuisineTF = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        dateTF = new javax.swing.JTextField();
+        completeJB = new javax.swing.JButton();
+        cuisineJCB = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -82,49 +102,77 @@ public class vendor1AccInfo extends javax.swing.JFrame {
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setPreferredSize(new java.awt.Dimension(200, 200));
 
-        jLabel2.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("Upload Profile Pic");
-        jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jLabel2.setPreferredSize(new java.awt.Dimension(170, 150));
+        picJL.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        picJL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        picJL.setText("Upload Picture");
+        picJL.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        picJL.setPreferredSize(new java.awt.Dimension(170, 150));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(picJL, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+            .addComponent(picJL, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
-        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jButton1.setText("Upload");
-        jButton1.setPreferredSize(new java.awt.Dimension(80, 30));
-
-        jButton2.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        jButton2.setText("Complete");
-
-        jLabel3.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        jLabel3.setText("Cuisine:");
-
-        passwordTF.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        uploadJB.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        uploadJB.setText("Upload");
+        uploadJB.setPreferredSize(new java.awt.Dimension(80, 30));
+        uploadJB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                uploadJBActionPerformed(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel4.setText("Name:");
 
+        nameTF.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
         jLabel5.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel5.setText("Password:");
+
+        passwordTF.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jLabel6.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel6.setText("Contact Number:");
 
-        nameTF.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-
         contactNoTF.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        contactNoTF.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                contactNoTFKeyTyped(evt);
+            }
+        });
 
-        cuisineTF.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        jLabel7.setText("Cuisine:");
+
+        jLabel3.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        jLabel3.setText("Date:");
+
+        dateTF.setEditable(false);
+        dateTF.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        dateTF.setActionCommand("<Not Set>");
+        dateTF.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        dateTF.setFocusable(false);
+        dateTF.setOpaque(true);
+
+        completeJB.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
+        completeJB.setText("Complete");
+        completeJB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                completeJBActionPerformed(evt);
+            }
+        });
+
+        cuisineJCB.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cuisineJCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Food", "Beverages", "Restaurant", "Dessert", "Cafe", "Western", "Malaysian", "Chinese", "Asian", "Korean", "Fast Food", "BBQ", "French", "Italian", "Thai", "Mexican", "Japanese", "Indian", "Vietnamese", "Vegetarian" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -138,30 +186,27 @@ public class vendor1AccInfo extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(completeJB, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(50, 50, 50))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(49, 49, 49)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel4)
-                                    .addComponent(jLabel5)
-                                    .addComponent(jLabel6))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(nameTF, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(passwordTF, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(contactNoTF, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(cuisineTF, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(3, 3, 3)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(536, 536, 536)))
-                        .addGap(95, 95, 95))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(uploadJB, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(47, 47, 47)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel7))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(nameTF, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+                            .addComponent(passwordTF, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+                            .addComponent(contactNoTF, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+                            .addComponent(dateTF, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+                            .addComponent(cuisineJCB, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(97, 97, 97))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -170,8 +215,7 @@ public class vendor1AccInfo extends javax.swing.JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(28, 28, 28)
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(nameTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel4))
@@ -185,20 +229,102 @@ public class vendor1AccInfo extends javax.swing.JFrame {
                             .addComponent(jLabel6))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cuisineTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7)
+                            .addComponent(cuisineJCB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(dateTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, Short.MAX_VALUE)))
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)))
+                .addComponent(uploadJB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(completeJB, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void completeJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_completeJBActionPerformed
+        String email = User.getSessionEmail();
+        
+        String name = nameTF.getText().trim();
+        String password = passwordTF.getText().trim();
+        String contactNumber = contactNoTF.getText().trim();
+        String date = dateTF.getText().trim();
+        String cuisine = cuisineJCB.getSelectedItem().toString().trim();
+
+        if (name.isEmpty() || password.isEmpty() || contactNumber.isEmpty() || date.isEmpty() || cuisine.isEmpty() || picturePath == null || picturePath.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        if (contactNumber.length() < 8) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid contact number.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        // Confirmation Dialog
+        int confirm = JOptionPane.showConfirmDialog(
+            this,
+            "Are you sure you want to save the information?",
+            "Confirmation",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (confirm != JOptionPane.YES_OPTION) {
+            return;
+        }
+        
+        User user = new User();
+        System.out.println("Session email:" + email);
+        
+        // Save Picture
+        String savedPicturePath = user.savePic(name, picturePath);
+        if(savedPicturePath == null){
+            JOptionPane.showMessageDialog(this, "Please Upload a Picture as Your Shop Logo.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        user.userInfo(email, name, password, contactNumber, date);
+        user.vendorInfo(email, savedPicturePath, cuisine);
+        
+        new vendorMain().setVisible(true);
+        dispose();
+    }//GEN-LAST:event_completeJBActionPerformed
+
+    private void uploadJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadJBActionPerformed
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter fnef = new FileNameExtensionFilter("PNG JPG and JPEG", "png", "jpeg", "jpg");
+        fileChooser.addChoosableFileFilter(fnef);
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        
+        int load = fileChooser.showOpenDialog(null);
+
+        if (load == fileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            path = selectedFile.getAbsolutePath();
+            
+            picturePath = path;
+
+            picJL.setText("");
+            ImageIcon pic = new ImageIcon(path);
+            Image path = pic.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+            picJL.setIcon(new ImageIcon(path));
+        }
+    }//GEN-LAST:event_uploadJBActionPerformed
+
+    private void contactNoTFKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_contactNoTFKeyTyped
+        char c = evt.getKeyChar();
+
+        if (!Character.isDigit(c)) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_contactNoTFKeyTyped
 
     /**
      * @param args the command line arguments
@@ -237,19 +363,21 @@ public class vendor1AccInfo extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton completeJB;
     private javax.swing.JTextField contactNoTF;
-    private javax.swing.JTextField cuisineTF;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JComboBox<String> cuisineJCB;
+    private javax.swing.JTextField dateTF;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JTextField nameTF;
     private javax.swing.JTextField passwordTF;
+    private javax.swing.JLabel picJL;
+    private javax.swing.JButton uploadJB;
     // End of variables declaration//GEN-END:variables
 }
