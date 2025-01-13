@@ -10,16 +10,40 @@ package FoodCarat;
  */
 public class vendorCurrentOrder extends javax.swing.JFrame {
 
+    private String email = "chagee@mail.com";
+//    private String email = User.getSessionEmail();
+    Vendor vendor = new Vendor(email);
+
     /**
      * Creates new form vendorCurrentOrder
      */
     public vendorCurrentOrder() {
         initComponents();
         getContentPane().setBackground(new java.awt.Color(186,85,211)); //setting background color of frame
+        
+        //display new order
+        displayNewOrder();
     }
     
     //display new order
-    //status == ordered // pending idk 
+    public void displayNewOrder() {
+        Order newOrder = new Order();
+        String[] newOrderInfo = newOrder.getNewOrder(email);
+        //if newOrderInfo is null, display "no new orders"
+        if (newOrderInfo==null) {
+            orderMessageLabel.setText("No new orders.");
+        } else {
+            orderMessageLabel.setText("You have a new order, please review it.");
+            //orderID,orderMethod,[itemID;quantity],orderStatus,customerEmail,runnerEmail,deliveryFee,totalPaid,date,totalprice
+            incomingIDLabel.setText(newOrderInfo[0]);
+            incomingEmailTxt.setText(newOrderInfo[4]);
+            incomingMethodTxt.setText(newOrderInfo[1]);
+            
+            //display table item
+            
+        }
+        
+    }
         
     //display all current orders 
     //status from accepted by vendor/runner to ready / picked up
@@ -45,17 +69,17 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
-        itemTable = new javax.swing.JTable();
+        incomingItemTable = new javax.swing.JTable();
         jLabel5 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        emailTxt = new javax.swing.JTextField();
-        methodTxt = new javax.swing.JTextField();
+        incomingEmailTxt = new javax.swing.JTextField();
+        incomingMethodTxt = new javax.swing.JTextField();
         acceptBtn = new javax.swing.JButton();
         rejectBtn = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
-        paidTxt = new javax.swing.JTextField();
+        incomingPaidTxt = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        emailTxt1 = new javax.swing.JTextField();
+        incomingIDLabel = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane5 = new javax.swing.JScrollPane();
@@ -74,6 +98,7 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         updateOrderTable = new javax.swing.JTable();
         jLabel12 = new javax.swing.JLabel();
         statusUpdateBox = new javax.swing.JComboBox<>();
+        orderMessageLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -93,7 +118,7 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         jLabel6.setText("Ordered Items:");
 
-        itemTable.setModel(new javax.swing.table.DefaultTableModel(
+        incomingItemTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -101,12 +126,12 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
                 "Item", "Quantity"
             }
         ));
-        jScrollPane4.setViewportView(itemTable);
-        if (itemTable.getColumnModel().getColumnCount() > 0) {
-            itemTable.getColumnModel().getColumn(0).setResizable(false);
-            itemTable.getColumnModel().getColumn(0).setPreferredWidth(150);
-            itemTable.getColumnModel().getColumn(1).setResizable(false);
-            itemTable.getColumnModel().getColumn(1).setPreferredWidth(20);
+        jScrollPane4.setViewportView(incomingItemTable);
+        if (incomingItemTable.getColumnModel().getColumnCount() > 0) {
+            incomingItemTable.getColumnModel().getColumn(0).setResizable(false);
+            incomingItemTable.getColumnModel().getColumn(0).setPreferredWidth(150);
+            incomingItemTable.getColumnModel().getColumn(1).setResizable(false);
+            incomingItemTable.getColumnModel().getColumn(1).setPreferredWidth(20);
         }
 
         jLabel5.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
@@ -122,14 +147,17 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         jLabel8.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         jLabel8.setText("Total Paid:");
 
-        paidTxt.addActionListener(new java.awt.event.ActionListener() {
+        incomingPaidTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                paidTxtActionPerformed(evt);
+                incomingPaidTxtActionPerformed(evt);
             }
         });
 
         jLabel7.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         jLabel7.setText("Order ID:");
+
+        incomingIDLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
+        incomingIDLabel.setText("ID");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -140,59 +168,61 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel6)
                     .addComponent(jLabel2)
-                    .addComponent(jLabel7)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel8)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGap(140, 140, 140)
+                            .addComponent(incomingPaidTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(acceptBtn)
+                            .addGap(94, 94, 94)
+                            .addComponent(rejectBtn)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
-                            .addComponent(jLabel9))
+                            .addComponent(jLabel9)
+                            .addComponent(jLabel7))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(methodTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(emailTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(incomingMethodTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(incomingEmailTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(emailTxt1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jLabel8)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(140, 140, 140)
-                        .addComponent(paidTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(incomingIDLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(17, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(acceptBtn)
-                .addGap(94, 94, 94)
-                .addComponent(rejectBtn)
-                .addGap(97, 97, 97))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel2)
-                .addGap(11, 11, 11)
+                .addGap(14, 14, 14)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
-                    .addComponent(emailTxt1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(incomingIDLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(emailTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(incomingEmailTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
-                    .addComponent(methodTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(incomingMethodTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel6)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 315, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
-                    .addComponent(paidTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(incomingPaidTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(33, 33, 33)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(acceptBtn)
                     .addComponent(rejectBtn))
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addGap(28, 28, 28))
         );
 
         jLabel3.setFont(new java.awt.Font("Cooper Black", 0, 24)); // NOI18N
@@ -356,6 +386,10 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
                 .addContainerGap(32, Short.MAX_VALUE))
         );
 
+        orderMessageLabel.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        orderMessageLabel.setText("Order Message");
+        orderMessageLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -367,9 +401,11 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
                 .addComponent(menuBtn)
                 .addGap(40, 40, 40))
             .addGroup(layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26)
+                .addGap(24, 24, 24)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(orderMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -383,12 +419,16 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
                     .addComponent(menuBtn)
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(8, 8, 8)
+                        .addComponent(orderMessageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(17, Short.MAX_VALUE))
         );
 
@@ -400,9 +440,9 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_menuBtnActionPerformed
 
-    private void paidTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paidTxtActionPerformed
+    private void incomingPaidTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_incomingPaidTxtActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_paidTxtActionPerformed
+    }//GEN-LAST:event_incomingPaidTxtActionPerformed
 
     private void selectBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectBtnActionPerformed
         // TODO add your handling code here:
@@ -451,9 +491,11 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
     private javax.swing.JButton acceptBtn;
     private javax.swing.JButton cancelUpdateBtn;
     private javax.swing.JTable currentOrderTable;
-    private javax.swing.JTextField emailTxt;
-    private javax.swing.JTextField emailTxt1;
-    private javax.swing.JTable itemTable;
+    private javax.swing.JTextField incomingEmailTxt;
+    private javax.swing.JLabel incomingIDLabel;
+    private javax.swing.JTable incomingItemTable;
+    private javax.swing.JTextField incomingMethodTxt;
+    private javax.swing.JTextField incomingPaidTxt;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -474,8 +516,7 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JButton menuBtn;
-    private javax.swing.JTextField methodTxt;
-    private javax.swing.JTextField paidTxt;
+    private javax.swing.JLabel orderMessageLabel;
     private javax.swing.JButton rejectBtn;
     private javax.swing.JButton selectBtn;
     private javax.swing.JTextField statusIdTxt;

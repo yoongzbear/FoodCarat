@@ -210,6 +210,22 @@ public class Order {
 
         return vendorOrders;
     }
+    
+    //get new orders with status "pending accept"
+    public String[] getNewOrder(String vendorEmail) {
+        String[] newOrder = null;
+        List<String[]> vendorOrders = getAllOrders(vendorEmail);
+        for (String[] orderData : vendorOrders) {
+            //1,Take away,[1;1|2;1],Ordered,customerEmail,NULL,NULL,20.00,2025-01-01,27.80
+            if (orderData[3].equals("pending accept")) {
+                newOrder = orderData;
+                break;
+            }
+        }
+        
+        return newOrder;
+    }
+    
 
     //helper method to determine if order contain items from the vendor
     private boolean containsVendorItems(String orderItems, List<String> itemIDs) {
@@ -266,7 +282,6 @@ public class Order {
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Failed to read from the file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-        System.out.println(Arrays.toString(orderInfo));
         return orderInfo;
     }
 

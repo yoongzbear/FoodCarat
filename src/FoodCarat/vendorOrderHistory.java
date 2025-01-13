@@ -25,7 +25,9 @@ public class vendorOrderHistory extends javax.swing.JFrame {
      * Creates new form vendorOrderHistory
      */       
     //change to userSession 
-    private String email = "alya@mail.com";
+    private String email = "chagee@mail.com";
+//    private String email = User.getSessionEmail();
+    Vendor vendor = new Vendor(email);
     
     public vendorOrderHistory() {
         initComponents();
@@ -53,13 +55,13 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         List<String[]> allOrders = vendor.getVendorOrders(email);
         for (String[] orderData : allOrders) {
             Item item = new Item();            
-            //1,Take away,[1;1|2;1],Ordered,customerEmail,NULL,NULL,27.80
+            //1,Take away,[1;1|2;1],Ordered,customerEmail,NULL,NULL,20.00,2025-01-01,27.80
             String orderID = orderData[0];
             String orderMethod = orderData[1];
             String orderItems = orderData[2];
             String orderStatus = orderData[3];
             String customerEmail = orderData[4];
-            String orderTotal = orderData[7];
+            String orderTotal = orderData[8];
 
             String updatedOrderItems = replaceItemIDsWithNames(orderItems, item);
 
@@ -71,10 +73,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     public void displayVendorOrder(String orderID) {
         DecimalFormat df = new DecimalFormat("0.00");
         Order order = new Order();
-        
-        System.out.println(orderID);
-        //1,Take away,[1;1|2;1],Ordered,customerEmail,NULL,NULL,27.80
-        
+                
         String[] details = order.getOrder(orderID);  
         
         //get items, price, and quantity to display in table
@@ -108,9 +107,10 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         methodLabel.setText(details[1].trim());
         statusLabel.setText(details[3].trim());
         emailLabel.setText(details[4].trim());
-        totalPriceLabel.setText("RM"+details[7].trim());
+        totalPriceLabel.setText("RM"+details[8].trim());
         
         //cancellation reason - need to connect with the get cancellation reason based on cancel id
+        //orderID,orderMethod,[itemID;quantity],orderStatus,customerEmail,runnerEmail,cancelReason,deliveryFee,totalPaid,date
         if (details[6].trim().equals("NULL")) { //if status == cancelled
             reasonLabel.setVisible(false);
             cancelReasonLabel.setVisible(false);
