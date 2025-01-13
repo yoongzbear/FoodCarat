@@ -29,7 +29,7 @@ import javax.swing.text.DocumentFilter;
  * @author mastu
  */
 public class User {   
-    private String email;
+    protected String email;
     private String password;
     private String name;
     private String userType;

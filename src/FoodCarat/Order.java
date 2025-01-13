@@ -493,7 +493,7 @@ public class Order {
                     //Update the fields in the orderData array
                     orderData[2] = orderItems.toString(); // orderItem
                     orderData[3] = orderStatus; // orderStatus
-                    orderData[5] = vendorEmail; // vendorEmail
+                    //orderData[5] = vendorEmail; // vendorEmail
 
                     // Reconstruct the updated line and append it to the StringBuilder
                     line = String.join(",", orderData);
