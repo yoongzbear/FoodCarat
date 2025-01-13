@@ -4,6 +4,9 @@
  */
 package FoodCarat;
 
+import java.text.DecimalFormat;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author mastu
@@ -27,6 +30,7 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
     
     //display new order
     public void displayNewOrder() {
+        DecimalFormat df = new DecimalFormat("0.00");
         Order newOrder = new Order();
         String[] newOrderInfo = newOrder.getNewOrder(email);
         //if newOrderInfo is null, display "no new orders"
@@ -35,14 +39,36 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         } else {
             orderMessageLabel.setText("You have a new order, please review it.");
             //orderID,orderMethod,[itemID;quantity],orderStatus,customerEmail,runnerEmail,deliveryFee,totalPaid,date,totalprice
-            incomingIDLabel.setText(newOrderInfo[0]);
-            incomingEmailTxt.setText(newOrderInfo[4]);
-            incomingMethodTxt.setText(newOrderInfo[1]);
+            incomingIDLabel.setText(newOrderInfo[0].trim());
+            incomingEmailTxt.setText(newOrderInfo[4].trim());
+            incomingMethodTxt.setText(newOrderInfo[1].trim());
             
             //display table item
-            
+            Item item = new Item();
+            String orderItems = newOrderInfo[2].trim();
+            //remove square brackets and split the items by "|"
+            String[] itemDetails = orderItems.replace("[", "").replace("]", "").split("\\|");
+            DefaultTableModel model = (DefaultTableModel) incomingItemTable.getModel();
+            model.setRowCount(0);
+
+            for (String detail : itemDetails) {
+                String[] parts = detail.split(";");
+                String itemID = parts[0];
+                int quantity = Integer.parseInt(parts[1]);
+
+                //retrieve item data through Item class
+                String[] itemData = item.itemData(itemID);
+                if (itemData != null && itemData.length > 3) {
+                    String itemName = itemData[1];
+                    double price = Double.parseDouble(itemData[3]);
+
+                    model.addRow(new Object[]{itemName, df.format(price), quantity});
+                } else {
+                    model.addRow(new Object[]{"Unknown item (ID: " + itemID + ")", 0.0, quantity});
+                }
+            }
         }
-        
+
     }
         
     //display all current orders 
