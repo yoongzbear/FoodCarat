@@ -453,4 +453,67 @@ public class Order {
     public List<String[]> getCart() {
         return cart;
     }
+    
+    public void writePaymentDetails(int orderID, double newPaymentTotal, String today) {
+        // Create a StringBuilder to hold the updated content
+        StringBuilder stringBuilder = new StringBuilder();
+
+        try {
+            // Open the customerOrder.txt file to read its content
+            BufferedReader reader = new BufferedReader(new FileReader(orderFile));
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] orderData = line.split(",");
+                int currentOrderID = Integer.parseInt(orderData[0]);
+
+                // Check if the orderID matches
+                if (currentOrderID == orderID) {
+                    // Update order details
+
+                    StringBuilder orderItems = new StringBuilder();
+                    orderItems.append("[");
+
+                    for (int i = 0; i < cart.size(); i++) {
+                        String[] item = cart.get(i);  // Get the item at the current index
+                        String itemID = item[0];  
+                        String quantity = item[2]; 
+
+                        // If it's not the first item, append a "|" separator
+                        if (i > 0) {
+                            orderItems.append("|");
+                        }
+
+                        // Append the itemID and quantity
+                        orderItems.append(itemID).append(";").append(quantity);
+                    }
+
+                    orderItems.append("]");  // End the list with a closing bracket
+
+                    //Update the fields in the orderData array
+                    orderData[2] = orderItems.toString(); // orderItem
+                    orderData[3] = orderStatus; // orderStatus
+                    orderData[5] = vendorEmail; // vendorEmail
+
+                    // Reconstruct the updated line and append it to the StringBuilder
+                    line = String.join(",", orderData);
+                }
+
+                // Append the (possibly updated) line to the StringBuilder
+                stringBuilder.append(line).append("\n");
+            }
+
+            // Close the reader
+            reader.close();
+
+            // Now write the updated content back to the file
+            BufferedWriter writer = new BufferedWriter(new FileWriter("resources/customerOrder.txt"));
+            writer.write(stringBuilder.toString());
+            writer.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
 }
