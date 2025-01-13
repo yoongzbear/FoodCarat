@@ -1,3 +1,4 @@
-1,Take away,[1;1|2;1],Ordered,customerEmail,NULL,NULL
-2,Dine in,[3;1],Ordered,customerEmail,NULL,NULL
-3,Take away,[2;1|4;1],Ordered,customerEmail,NULL,NULL
+//orderID,orderMethod,[itemID;quantity],orderStatus,customerEmail,runnerEmail,cancelReason,deliveryFee,totalPaid,date
+1,Take away,[1;1|2;1],Ordered,customerEmail,NULL,NULL,20.00,2025-01-01
+2,Dine in,[3;1],Ordered,customerEmail,NULL,NULL,20.00,2025-01-01
+3,Take away,[2;1|4;1],Ordered,customerEmail,NULL,NULL,20.00,2025-01-01 
