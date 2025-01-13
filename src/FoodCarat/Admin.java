@@ -32,9 +32,13 @@ public class Admin extends User {
         
     }
     //clear fields after register, delete, update performed....
-    public static void clearFields(javax.swing.text.JTextComponent... components) {
-        for (javax.swing.text.JTextComponent component : components) {
-            component.setText("");
+    public static void clearFields(java.awt.Component... components) {
+        for (java.awt.Component component : components) {
+            if (component instanceof javax.swing.text.JTextComponent) {
+                ((javax.swing.text.JTextComponent) component).setText(""); // Clear text fields
+            } else if (component instanceof javax.swing.JComboBox) {
+                ((javax.swing.JComboBox<?>) component).setSelectedIndex(-1); // Clear combo box selection
+            }
         }
     }
     //Registration

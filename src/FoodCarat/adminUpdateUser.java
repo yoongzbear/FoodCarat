@@ -27,7 +27,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
     }
     
     private void clearFields() {
-        Admin.clearFields(emailtxt, nametxt, userbirthtxt, phonetxt, platnumtxt, addresstxta, cuisinetxt
+        Admin.clearFields(emailtxt, nametxt, userbirthtxt, phonetxt, platnumtxt, addresstxta, cuisinecbx
         );
     }
     
@@ -36,7 +36,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
             Laddress, addresstxta, jScrollPane1, LotherInfo
         };
         javax.swing.JComponent[] vendorComponents = {
-            Lshop, cuisinetxt
+            Lshop, cuisinecbx
         };
         javax.swing.JComponent[] runnerComponents = {
             Lplatnum, platnumtxt, LotherInfo
@@ -52,7 +52,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
         phonetxt.setText(contactNumber);
         platnumtxt.setText(roleSpecificData);
         addresstxta.setText(roleSpecificData);
-        cuisinetxt.setText(roleSpecificData);
+        cuisinecbx.setSelectedItem(roleSpecificData);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -80,13 +80,13 @@ public class adminUpdateUser extends javax.swing.JFrame {
         emailtxt = new javax.swing.JTextField();
         nametxt = new javax.swing.JTextField();
         phonetxt = new javax.swing.JTextField();
-        cuisinetxt = new javax.swing.JTextField();
         bSearch = new javax.swing.JButton();
         bUpdate = new javax.swing.JButton();
         bDelete = new javax.swing.JButton();
         bBack = new javax.swing.JButton();
         Lrole = new javax.swing.JLabel();
         userbirthtxt = new javax.swing.JTextField();
+        cuisinecbx = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -145,8 +145,6 @@ public class adminUpdateUser extends javax.swing.JFrame {
 
         phonetxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
 
-        cuisinetxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-
         bSearch.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
         bSearch.setText("Search");
         bSearch.addActionListener(new java.awt.event.ActionListener() {
@@ -184,6 +182,9 @@ public class adminUpdateUser extends javax.swing.JFrame {
 
         Lrole.setFont(new java.awt.Font("Cooper Black", 0, 24)); // NOI18N
         Lrole.setText("xxxxxx");
+
+        cuisinecbx.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
+        cuisinecbx.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Please select", "Food", "Beverages", "Restaurant", "Dessert", "Cafe", "Western", "Malaysian", "Chinese", "Please select", "Asian", "Korean", "Fast Food", "BBQ", "French", "Italian", "Thai", "Mexican", "Japanese", "Indian", "Vietnamese", "Vegetarian" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -225,21 +226,22 @@ public class adminUpdateUser extends javax.swing.JFrame {
                                     .addComponent(Lshop)
                                     .addComponent(Laddress))))
                         .addGap(48, 48, 48)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(emailtxt)
-                                    .addComponent(nametxt, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
-                                    .addComponent(cuisinetxt))
-                                .addGap(43, 43, 43)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(Lphone)
-                                    .addComponent(Lgender))
-                                .addGap(59, 59, 59)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(userbirthtxt, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
-                                    .addComponent(phonetxt)))
-                            .addComponent(jScrollPane1))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(emailtxt)
+                                        .addComponent(nametxt, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE))
+                                    .addGap(43, 43, 43)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(Lphone)
+                                        .addComponent(Lgender))
+                                    .addGap(59, 59, 59)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(userbirthtxt, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
+                                        .addComponent(phonetxt)))
+                                .addComponent(jScrollPane1))
+                            .addComponent(cuisinecbx, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
@@ -260,7 +262,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(Lrole))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Lsearch)
                     .addComponent(searchtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -283,10 +285,10 @@ public class adminUpdateUser extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(Lgender)
                             .addComponent(userbirthtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(23, 23, 23)
+                .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Lshop)
-                    .addComponent(cuisinetxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cuisinecbx, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(38, 38, 38)
                 .addComponent(LotherInfo)
                 .addGap(18, 18, 18)
@@ -328,7 +330,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
         if ("customer".equals(role)) {
             additionalField = addresstxta.getText().trim();
         } else if ("vendor".equals(role)) {
-            additionalField = cuisinetxt.getText().trim();
+            additionalField = (String) cuisinecbx.getSelectedItem();
         } else if ("runner".equals(role)) {
             additionalField = platnumtxt.getText().trim();
         }
@@ -433,7 +435,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
     private javax.swing.JButton bDelete;
     private javax.swing.JButton bSearch;
     private javax.swing.JButton bUpdate;
-    private javax.swing.JTextField cuisinetxt;
+    private javax.swing.JComboBox<String> cuisinecbx;
     private javax.swing.JTextField emailtxt;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;

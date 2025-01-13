@@ -68,25 +68,27 @@
                           </Group>
                       </Group>
                       <EmptySpace min="-2" pref="48" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Group type="102" attributes="0">
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="emailtxt" max="32767" attributes="0"/>
-                                  <Component id="nametxt" alignment="0" pref="259" max="32767" attributes="0"/>
-                                  <Component id="cuisinetxt" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="emailtxt" max="32767" attributes="0"/>
+                                      <Component id="nametxt" alignment="0" pref="259" max="32767" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="Lphone" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="Lgender" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace min="-2" pref="59" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="userbirthtxt" pref="219" max="32767" attributes="0"/>
+                                      <Component id="phonetxt" max="32767" attributes="0"/>
+                                  </Group>
                               </Group>
-                              <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="Lphone" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="Lgender" alignment="0" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="59" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="userbirthtxt" pref="219" max="32767" attributes="0"/>
-                                  <Component id="phonetxt" max="32767" attributes="0"/>
-                              </Group>
+                              <Component id="jScrollPane1" max="32767" attributes="0"/>
                           </Group>
-                          <Component id="jScrollPane1" max="32767" attributes="0"/>
+                          <Component id="cuisinecbx" min="-2" pref="259" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
@@ -117,7 +119,7 @@
                   <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="Lrole" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="43" max="32767" attributes="0"/>
+              <EmptySpace pref="39" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="Lsearch" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="searchtxt" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -148,10 +150,10 @@
                       </Group>
                   </Group>
               </Group>
-              <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="Lshop" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="cuisinetxt" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="cuisinecbx" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
               <Component id="LotherInfo" min="-2" max="-2" attributes="0"/>
@@ -316,13 +318,6 @@
         </Property>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="cuisinetxt">
-      <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Cooper Black" size="18" style="0"/>
-        </Property>
-      </Properties>
-    </Component>
     <Component class="javax.swing.JButton" name="bSearch">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
@@ -379,6 +374,42 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="userbirthtxt">
+    </Component>
+    <Component class="javax.swing.JComboBox" name="cuisinecbx">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Constantia" size="18" style="0"/>
+        </Property>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="22">
+            <StringItem index="0" value="Please select"/>
+            <StringItem index="1" value="Food"/>
+            <StringItem index="2" value="Beverages"/>
+            <StringItem index="3" value="Restaurant"/>
+            <StringItem index="4" value="Dessert"/>
+            <StringItem index="5" value="Cafe"/>
+            <StringItem index="6" value="Western"/>
+            <StringItem index="7" value="Malaysian"/>
+            <StringItem index="8" value="Chinese"/>
+            <StringItem index="9" value="Please select"/>
+            <StringItem index="10" value="Asian"/>
+            <StringItem index="11" value="Korean"/>
+            <StringItem index="12" value="Fast Food"/>
+            <StringItem index="13" value="BBQ"/>
+            <StringItem index="14" value="French"/>
+            <StringItem index="15" value="Italian"/>
+            <StringItem index="16" value="Thai"/>
+            <StringItem index="17" value="Mexican"/>
+            <StringItem index="18" value="Japanese"/>
+            <StringItem index="19" value="Indian"/>
+            <StringItem index="20" value="Vietnamese"/>
+            <StringItem index="21" value="Vegetarian"/>
+          </StringArray>
+        </Property>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+      </AuxValues>
     </Component>
   </SubComponents>
 </Form>
