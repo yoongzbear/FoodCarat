@@ -292,7 +292,7 @@ public class customerPayment extends javax.swing.JFrame {
         int currentBalance = Integer.parseInt(sCreditBalance.getText()); //user's current point balance
         int currentPoints = Integer.parseInt(sPointBalance.getText()); //user's current point balance
         double payTotal = Double.parseDouble(sPayTotal.getText()); 
-        int cusPayableAmount = redeemPoints + currentBalance;
+        int cusPayableAmount = redeemPoints + currentBalance; //customer
         
         if (redeemPoints > currentPoints) {
             JOptionPane.showMessageDialog(rootPane, "Points to redeem exceeds current balance.");
