@@ -54,10 +54,10 @@ public class customerViewMenu extends javax.swing.JFrame {
         tCart.getColumnModel().getColumn(4).setPreferredWidth(0);
     }
     
-    private void loadVendors(String vendorFilePath) {
+    private void loadVendors(String userFilePath) {
         mainMenuPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 15, 15));
         //
-        try (BufferedReader reader = new BufferedReader(new FileReader(vendorFilePath))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(userFilePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] details = line.split(",");
@@ -69,11 +69,17 @@ public class customerViewMenu extends javax.swing.JFrame {
                     //get vendor info
                     Vendor vendor = new Vendor(vendorEmail);
                     String availableMethods = vendor.getAvailableMethod();
-                    String methodsWithoutBrackets = availableMethods.substring(1, availableMethods.length() - 1); 
-                    String[] availableMethodsArray = methodsWithoutBrackets.split(";");
+                    boolean isAvailableForOrderType;
+                    if (availableMethods != null && !availableMethods.isEmpty()) {
+                        String methodsWithoutBrackets = availableMethods.substring(1, availableMethods.length() - 1);
+                        String[] availableMethodsArray = methodsWithoutBrackets.split(";");
+
+                        isAvailableForOrderType = Arrays.asList(availableMethodsArray).contains(orderType);
+                    } else {
+                        //if vendor have non available methods
+                        isAvailableForOrderType = false;
+                    }
                     String logoPath = vendor.getPhotoLink();
-                    
-                    boolean isAvailableForOrderType = Arrays.asList(availableMethodsArray).contains(orderType);
 
                     // Get average rating and random review
                     Review review = new Review();
@@ -167,6 +173,7 @@ public class customerViewMenu extends javax.swing.JFrame {
         mainMenuPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 15, 15));
         
         Vendor vendor = new Vendor(vendorEmail);
+        
         String availableMethods = vendor.getAvailableMethod();
         boolean isAvailableForOrderType;
 
