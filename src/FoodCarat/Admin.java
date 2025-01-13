@@ -69,7 +69,7 @@ public class Admin extends User {
         // Write to role-specific file
         try (FileWriter roleWriter = new FileWriter(roleFileName, true)) {
             if ("customer".equalsIgnoreCase(role)) {
-                roleWriter.write(email + ",,0.0\n"); //credit amount will be 0.0 after the registration
+                roleWriter.write(email + ",,0.0,0\n"); //credit amount will be 0.0 after the registration and the point will be 0
             } else {
                 roleWriter.write(email + ",,\n");
             }
