@@ -4,25 +4,243 @@
  */
 package FoodCarat;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.util.Arrays;
+import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author User
  */
 public class managerRmvItem extends javax.swing.JFrame {
-
+    Item item = new Item();
+    String imagePath = "";
+    //change to userSession 
+    private String email = "chagee@mail.com";
+    private String name = "Chagee";
+//    private String email = User.getSessionEmail();
+//    private String name = User.getSessionName();
     /**
      * Creates new form managerRmvItem
      */
     public managerRmvItem() {
         initComponents();
-    }
+        getContentPane().setBackground(new java.awt.Color(186,85,211)); //setting background color of frame
+        setLocationRelativeTo(null);
+        
+        //display items in table
+        displayItems();
+                
+        //set the placeholder for search box
+        setPlaceholder(searchTxt, "Search Item Name");
+        deleteBtn.setEnabled(false);
+        
+        //set size of photoLabel
+        photoLabel.setPreferredSize(new Dimension(175, 164)); 
+        photoLabel.setMinimumSize(new Dimension(175, 164));
+        photoLabel.setMaximumSize(new Dimension(175, 164));
 
+    }
+    
+    public void setPlaceholder(JTextField textField, String placeholder) {
+        textField.setText(placeholder);
+        textField.setForeground(Color.GRAY);  
+
+        textField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                //if the text field contains the placeholder, clear it when the clicked
+                if (textField.getText().equals(placeholder)) {
+                    textField.setText("");
+                    textField.setForeground(Color.BLACK);  
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                //if the text field is empty, show the placeholder again
+                if (textField.getText().isEmpty()) {
+                    textField.setText(placeholder);
+                    textField.setForeground(Color.GRAY);
+                }
+            }
+        });
+    }
+    
+    //reset details section
+    public void resetDetails() {
+        //reset details section
+        photoLabel.setIcon(null);
+        photoLabel.setText("Item Photo");
+        idLabel.setText("ID");
+        itemNameTxt.setText("");
+        typeBox.setSelectedItem("Item Type");
+        itemPriceTxt.setText("");
+        deleteBtn.setEnabled(false);
+    }
+    
+    //display all items
+    public void displayItems() {
+        DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
+        List<String[]> allItems = item.getAllItems(email);
+        int index = 1;
+        model.setRowCount(0);
+        itemTable.setRowHeight(100);
+        for (String[] itemData : allItems) {
+            String itemID = itemData[0];
+            String itemName = itemData[1];
+            String itemType = itemData[2];
+            String itemPrice = itemData[3];
+            String itemImgPath = itemData[4];
+
+            //image icon
+            ImageIcon itemImage = new ImageIcon(itemImgPath);
+            Image img = itemImage.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+            itemImage = new ImageIcon(img);
+
+            model.addRow(
+                    new Object[]{index, itemID, itemImage, itemName, itemType, itemPrice});
+            index++;
+        }
+        //render image column
+        itemTable.getColumnModel().getColumn(2).setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                                                           boolean hasFocus, int row, int column) {
+                if (value instanceof ImageIcon) {
+                    JLabel label = new JLabel((ImageIcon) value);
+                    label.setHorizontalAlignment(SwingConstants.CENTER);
+                    return label;
+                }
+                return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            }
+        });
+    }
+    
+    //display items based on id
+    public void displayItems(String id) {
+        //display details
+        String[] details = item.itemData(id);        
+        idLabel.setText(details[0].trim());
+        itemNameTxt.setText(details[1].trim());
+        typeBox.setSelectedItem(details[2].trim());
+        itemPriceTxt.setText(details[3].trim());
+        
+        //photo
+        imagePath = details[4].trim();
+        ImageIcon itemImage = new ImageIcon(imagePath);
+        Image resizedImage = itemImage.getImage().getScaledInstance(photoLabel.getWidth(), photoLabel.getHeight(), Image.SCALE_SMOOTH);
+        photoLabel.setText(""); //clear the label
+        photoLabel.setIcon(new ImageIcon(resizedImage));        
+    }
+    
+    //display items based on check boxes
+    public void displayItemsFilter(String[] filter) {      
+        DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
+        List<String[]> allItems = item.getAllItems(email);
+        int index = 1;
+        model.setRowCount(0);
+        itemTable.setRowHeight(100);
+        
+        for (String[] itemData : allItems) {
+            String itemID = itemData[0];
+            String itemName = itemData[1];
+            String itemType = itemData[2];
+            String itemPrice = itemData[3];
+            String itemImgPath = itemData[4];
+
+            //check if item type matches the filter
+            boolean isFiltered = false;
+            for (String filterType : filter) {
+                if (itemType.equals(filterType)) {
+                    isFiltered = true;
+                    break;  // Exit loop once a match is found
+                }
+            }
+
+            if (isFiltered) {
+                //image icon
+                ImageIcon itemImage = new ImageIcon(itemImgPath);
+                Image img = itemImage.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+                itemImage = new ImageIcon(img);
+
+                model.addRow(
+                        new Object[]{index, itemID, itemImage, itemName, itemType, itemPrice});
+                index++;
+            }
+        }
+        //render image column
+        itemTable.getColumnModel().getColumn(2).setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                                                           boolean hasFocus, int row, int column) {
+                if (value instanceof ImageIcon) {
+                    JLabel label = new JLabel((ImageIcon) value);
+                    label.setHorizontalAlignment(SwingConstants.CENTER);
+                    return label;
+                }
+                return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            }
+        });
+    }
+    
+    //display items based on search bar
+    public void displayItemsSearch(String searchItem) {
+        DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
+        List<String[]> allItems = item.getAllItems(email);
+        int index = 1;
+        model.setRowCount(0);
+        itemTable.setRowHeight(100);
+  
+        for (String[] itemData : allItems) {
+            String itemID = itemData[0];
+            String itemName = itemData[1];
+            String itemType = itemData[2];
+            String itemPrice = itemData[3];
+            String itemImgPath = itemData[4];
+
+            //check if item type matches the filter
+            boolean isFound = false;
+            if (itemName.toLowerCase().contains(searchItem.toLowerCase())) {
+                //image icon
+                ImageIcon itemImage = new ImageIcon(itemImgPath);
+                Image img = itemImage.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+                itemImage = new ImageIcon(img);
+
+                model.addRow(
+                        new Object[]{index, itemID, itemImage, itemName, itemType, itemPrice});
+                index++;
+            }
+        }
+        //render image column
+        itemTable.getColumnModel().getColumn(2).setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                                                           boolean hasFocus, int row, int column) {
+                if (value instanceof ImageIcon) {
+                    JLabel label = new JLabel((ImageIcon) value);
+                    label.setHorizontalAlignment(SwingConstants.CENTER);
+                    return label;
+                }
+                return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            }
+        });
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -365,7 +583,7 @@ public class managerRmvItem extends javax.swing.JFrame {
     }//GEN-LAST:event_searchBtnActionPerformed
 
     private void menuBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBtnActionPerformed
-        new vendorMain().setVisible(true);
+        new managerMain().setVisible(true);
         dispose();
     }//GEN-LAST:event_menuBtnActionPerformed
 
@@ -390,7 +608,6 @@ public class managerRmvItem extends javax.swing.JFrame {
         if (selectedRow >= 0) {
             Object id = itemTable.getModel().getValueAt(selectedRow, 1);
             displayItems(id.toString());
-            editBtn.setEnabled(true);
             deleteBtn.setEnabled(true);
         } else {
             //no row is selected
