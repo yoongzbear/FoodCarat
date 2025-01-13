@@ -4,6 +4,8 @@
  */
 package FoodCarat;
 
+import FoodCarat.Runner;
+import FoodCarat.User;
 import javax.swing.JOptionPane;
 
 /**
@@ -19,7 +21,31 @@ public class runnerMain extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         username.setText("");
-        username.setText(User.getSessionName());
+        String name = User.getSessionName();
+        
+        String email = User.getSessionEmail();
+        Runner runner = new Runner();
+        String[] runnerDetails = runner.getRunnerDetails(email);
+        
+        if (runnerDetails != null) {
+            String plateNumber = runnerDetails[1];
+            String salary = runnerDetails.length > 2 ? runnerDetails[3] : null;
+
+            // Use HTML for multiline text
+            StringBuilder textBuilder = new StringBuilder("<html>");
+            textBuilder.append(name).append("<br>");
+            textBuilder.append(plateNumber).append("<br>");
+
+            if (salary != null && !salary.isEmpty()) {
+                textBuilder.append("RM ").append(salary);
+            }
+            
+            textBuilder.append("</html>");
+            username.setText(textBuilder.toString());
+
+        } else {
+            System.out.println("No runner details found for email: " + email);
+        }
     }
 
     /**
@@ -73,7 +99,7 @@ public class runnerMain extends javax.swing.JFrame {
                     .addComponent(taskInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel2)
-                        .addGap(0, 239, Short.MAX_VALUE)))
+                        .addGap(0, 255, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -173,7 +199,7 @@ public class runnerMain extends javax.swing.JFrame {
                     .addComponent(logoutButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(revenueJB, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(CusReviewJB, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -196,7 +222,8 @@ public class runnerMain extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Cooper Black", 0, 36)); // NOI18N
         jLabel1.setText("Runner Main Page");
 
-        username.setFont(new java.awt.Font("Cambria Math", 0, 20)); // NOI18N
+        username.setBackground(new java.awt.Color(255, 255, 255));
+        username.setFont(new java.awt.Font("Cambria Math", 0, 18)); // NOI18N
         username.setText("(Ruuner Name)");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -204,7 +231,7 @@ public class runnerMain extends javax.swing.JFrame {
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap(84, Short.MAX_VALUE)
+                .addContainerGap(97, Short.MAX_VALUE)
                 .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(94, 94, 94)
                 .addComponent(username, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
