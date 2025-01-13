@@ -34,7 +34,7 @@ public class customerPayment extends javax.swing.JFrame {
     }
     
     private void displayOrderDetails() {
-        Order order = new Order();
+        Order order = new Order(orderType, User.getSessionEmail());
         String orderIDStr = String.valueOf(orderID);
         String[] tokens = order.getOrder(orderIDStr);
         System.out.println(Arrays.toString(tokens));
@@ -88,7 +88,7 @@ public class customerPayment extends javax.swing.JFrame {
                 Item item1 = new Item();
                 String[] itemData = item1.itemData(itemID);
                 String itemName = itemData[1];  
-                int itemPrice = Integer.parseInt(itemData[3]);
+                double itemPrice = Double.parseDouble(itemData[3]);
                 double orderItemTotal = Integer.parseInt(quantity) * itemPrice;
                 
                 String vendorName = item1.getVendorNameByItemID(Integer.parseInt(itemID));
