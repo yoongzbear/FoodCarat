@@ -707,7 +707,7 @@ public class customerViewMenu extends javax.swing.JFrame {
         List<String[]> cart = currentOrder.getCart(); 
 
         Order order = new Order();
-        order.writeOrderDetails(orderID, cart, orderType, selectedVendorEmail);
+        order.writeOrderDetails(orderID, cart);
 
         customerPayment frame = new customerPayment(orderID, orderType);
         frame.setVisible(true);
