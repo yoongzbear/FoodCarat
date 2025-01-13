@@ -17,15 +17,16 @@ import java.io.IOException;
 public class Customer extends User{
     private int points;
     
-    public Customer(String userEmail){ //for set points
-        super(userEmail);
+    public Customer(String email){ //for set points
+        super(email);
+        //paolawan@mail.com,,0.0,13
         try{
-            BufferedReader br = new BufferedReader(new FileReader("user.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("resources/user.txt"));
             String line;
             while ((line = br.readLine()) != null) {
                 String[] record = line.split(",");
-                if (userEmail.equals(record[0])) {
-                    this.points = Integer.parseInt(record[5]);
+                if (email.equals(record[0])) {
+                    this.points = Integer.parseInt(record[3]);
                 }
             }
         }
@@ -39,20 +40,20 @@ public class Customer extends User{
         this.points += add;
         try{
             //Writing to file
-            BufferedReader br = new BufferedReader(new FileReader("user.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("resources/user.txt"));
             StringBuffer buffer = new StringBuffer();
             String line;
             while ((line = br.readLine()) != null){
                 String record[] = line.split(",");
                 String checkUsername = record[0];
-                if (checkUsername.equals(username)){
-                    line = record[0] + "," + record[1] + ","+ record[2] + ","+ record[3] + ","+ record[4] + "," + points;
+                if (checkUsername.equals(email)){
+                    line = record[0] + "," + record[1] + ","+ record[2] + "," + points;
                 }
                 String bufferLine = line + "\n";
                 buffer.append(bufferLine);
             }
             br.close();
-            BufferedWriter bw = new BufferedWriter(new FileWriter("user.txt"));
+            BufferedWriter bw = new BufferedWriter(new FileWriter("resources/user.txt"));
             bw.write(buffer.toString());
             bw.close();   
     }
@@ -66,23 +67,23 @@ public class Customer extends User{
         this.points -= sub;
         try{
             //Writing to file
-            BufferedReader br = new BufferedReader(new FileReader("user.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("resources/user.txt"));
             StringBuffer buffer = new StringBuffer();
             String line;
             while ((line = br.readLine()) != null){
                 String record[] = line.split(",");
                 String checkUsername = record[0];
-                if (checkUsername.equals(username)){
-                    line = record[0] + "," + record[1] + ","+ record[2] + ","+ record[3] + ","+ record[4] + "," + points;
+                if (checkUsername.equals(email)){
+                    line = record[0] + "," + record[1] + ","+ record[2] + "," + points;
                 }
                 String bufferLine = line + "\n";
                 buffer.append(bufferLine);
             }
             br.close();
-            BufferedWriter bw = new BufferedWriter(new FileWriter("user.txt"));
+            BufferedWriter bw = new BufferedWriter(new FileWriter("resources/user.txt"));
             bw.write(buffer.toString());
             bw.close();   
-    }
+        }
         catch(IOException e){
             e.printStackTrace();
         }
