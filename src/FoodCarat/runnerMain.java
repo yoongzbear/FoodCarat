@@ -4,8 +4,6 @@
  */
 package FoodCarat;
 
-import FoodCarat.Runner;
-import FoodCarat.User;
 import javax.swing.JOptionPane;
 
 /**

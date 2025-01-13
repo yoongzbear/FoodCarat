@@ -4,6 +4,7 @@
  */
 package FoodCarat;
 
+import java.awt.Component;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -28,7 +29,7 @@ import javax.swing.text.DocumentFilter;
  * @author mastu
  */
 public class User {   
-    protected String email;
+    private String email;
     private String password;
     private String name;
     private String userType;
@@ -425,13 +426,36 @@ public class User {
         }
     }
     
-    // Runner save Plate Number
-    public void savePlateNumber(String email, String plateNumber) {    
-        // Loop until a valid plate number is provided
-        if (plateNumber == null || !isValidPlateNumber(plateNumber)) {
-            plateNumber = JOptionPane.showInputDialog(null, "Enter Plate Number (contains both letters and numbers, max 15 characters):", "Plate Number", JOptionPane.PLAIN_MESSAGE);
+    // Prompt and validate plate number
+    public String promptAndValidatePlateNumber(Component parentComponent, String email) {
+        String plateNumber = null;
+
+        while (true) {
+            plateNumber = JOptionPane.showInputDialog(
+                parentComponent,
+                "Enter your plate number (letters and numbers, max 15 characters):",
+                "Plate Number",
+                JOptionPane.PLAIN_MESSAGE
+            );
+
+            if (plateNumber == null) {
+                JOptionPane.showMessageDialog(parentComponent, "Plate number is required to proceed.", "Error", JOptionPane.ERROR_MESSAGE);
+                return null;
+            }
+
+            plateNumber = plateNumber.trim();
+
+            if (isValidPlateNumber(plateNumber)) {
+                savePlateNumber(email, plateNumber);
+                return plateNumber;
+            } else {
+                JOptionPane.showMessageDialog(parentComponent, "Invalid plate number. Ensure it contains letters, numbers, and is max 15 characters.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
-     
+    }
+
+    // Save plate number
+    public void savePlateNumber(String email, String plateNumber) {
         List<String> fileContent = new ArrayList<>();
         boolean emailFound = false;
 
@@ -440,20 +464,18 @@ public class User {
 
             while ((line = reader.readLine()) != null) {
                 String[] runnerData = line.split(",");
-                if (runnerData.length > 1 && runnerData[0].equalsIgnoreCase(email)) {
-                    runnerData[1] = plateNumber;
+                if (runnerData.length > 0 && runnerData[0].equalsIgnoreCase(email)) {
+                    runnerData = new String[]{runnerData[0], plateNumber.toUpperCase()};
                     emailFound = true;
                 }
                 fileContent.add(String.join(",", runnerData));
             }
-
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Error reading runner.txt: " + e.getMessage());
         }
 
         if (emailFound) {
-            // If email found and plate number updated, write all content back to the file
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(runnerFile))) {
                 for (String updatedLine : fileContent) {
                     writer.write(updatedLine);
@@ -464,10 +486,12 @@ public class User {
                 e.printStackTrace();
                 System.out.println("Error writing to runner.txt: " + e.getMessage());
             }
+            } else {
+        System.out.println("No matching email found to update in runner.txt.");
         }
     }
-    
-    // Method to validate plate number
+
+    // Validate plate number
     private boolean isValidPlateNumber(String plateNumber) {
         if (plateNumber.length() > 15) {
             return false;
