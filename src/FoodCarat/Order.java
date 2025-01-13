@@ -44,7 +44,7 @@ public class Order {
     
     public Order(String choice){ //for initialOrder()
         this.orderType = choice;
-        //this.customerEmail = UserSession.getCustomerEmail();
+        this.customerEmail = User.getSessionEmail();
     }
     
     public Order(int orderID){ //for getting customer order feedback
@@ -148,7 +148,7 @@ public class Order {
         this.orderID = lastOrder;
         //write order with orderID, orderType and customerEmail
         //3,Take away,[2;1|4;1],Ordered,customerEmail,NULL,NULL,20.00,2025-01-01 
-        String newLine = lastOrder + "," + orderType + ",,," + "customerEmail" + ",null,null,0.0,0.0,null";
+        String newLine = lastOrder + "," + orderType + ",,," + customerEmail + ",null,null,0.0,0.0,null";
         try {
             FileWriter fw = new FileWriter("resources/customerOrder.txt", true); //true is use for appending data in new line
             fw.write(newLine + "\n");
