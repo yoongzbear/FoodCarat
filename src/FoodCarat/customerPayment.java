@@ -7,6 +7,7 @@ package FoodCarat;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import javax.swing.JOptionPane;
 
@@ -158,7 +159,7 @@ public class customerPayment extends javax.swing.JFrame {
             }
         });
 
-        sCreditBalance.setText("creaditBalance");
+        sCreditBalance.setText("creditBalance");
 
         sPointBalance.setText("pointBalance");
 
@@ -282,7 +283,29 @@ public class customerPayment extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bPayActionPerformed
+        //format the payment date
         Calendar today = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String formattedDate = sdf.format(today.getTime());
+        
+        int redeemPoints = (int) tfRedeemPoints.getValue(); //user wants to redeem
+        int currentBalance = Integer.parseInt(sCreditBalance.getText()); //user's current point balance
+        int currentPoints = Integer.parseInt(sPointBalance.getText()); //user's current point balance
+        double payTotal = Double.parseDouble(sPayTotal.getText()); 
+        int cusPayableAmount = redeemPoints + currentBalance;
+        
+        if (redeemPoints > currentPoints) {
+            JOptionPane.showMessageDialog(rootPane, "Points to redeem exceeds current balance.");
+            return; 
+        } else if (redeemPoints < 0) {
+            JOptionPane.showMessageDialog(rootPane, "Points to redeem cannot be negative.");
+            return;
+        }
+        
+        if (cusPayableAmount < payTotal) {
+            JOptionPane.showMessageDialog(rootPane, "Insufficient balance to complete the payment. Please contact admin to top up your credit or use more points.");
+            return;
+        }
 
         try (BufferedReader br = new BufferedReader(new FileReader("resources/customerOrder.txt"))) {
             String line;
@@ -291,34 +314,20 @@ public class customerPayment extends javax.swing.JFrame {
                 int cusOrderID = Integer.parseInt(tokens[0]);
 
                 if (cusOrderID == Integer.parseInt(sOrderID.getText())) { 
-                    //5,Dine In,[2;2|1;1],Dine In,customerEmail,vendor@mail.com,null
-                    double paymentTotal = Double.parseDouble(tokens[5]);
 
-                    //check if points redemption is within the valid range
-                    int redeemPoints = (int) tfRedeemPoints.getValue(); //user wants to redeem
-                    int currentPoints = Integer.parseInt(sPointBalance.getText()); //user's current point balance
+                    double newPaymentTotal = payTotal - redeemPoints; 
 
-                    if (redeemPoints > currentPoints) {
-                        JOptionPane.showMessageDialog(rootPane, "Points to redeem exceeds current balance.");
-                        return; 
-                    } else if (redeemPoints < 0) {
-                        JOptionPane.showMessageDialog(rootPane, "Points to redeem cannot be negative.");
-                        return;
-                    }
-
-                    double newPaymentTotal = paymentTotal - redeemPoints; 
-
-                    Customer customer = new Customer(UserSession.getUsername());
+                    Customer customer = new Customer(User.getSessionEmail());
                     customer.deductPoints(redeemPoints);
 
-                    Booking booking = new Booking(bookingID, carID, startDate, endDate);
-                    booking.writeBookingDetails(cardNum, newPaymentTotal, bookingID); //write order date
+                    Order order = new Order(orderID);
+                    order.writePaymentDetails(orderID, newPaymentTotal, formattedDate); //write order date
 
                     JOptionPane.showMessageDialog(rootPane, "Payment successful.");
                     dispose();
-                    customerReceipt frame = new customerReceipt(bookingID);
+                    /*customerReceipt frame = new customerReceipt(bookingID);
                     frame.setVisible(true);
-                    return; 
+                    */return; 
                 }
             }
             JOptionPane.showMessageDialog(rootPane, "No matching booking found.");
