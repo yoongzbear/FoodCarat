@@ -8,8 +8,10 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -28,18 +30,24 @@ public class customerPayment extends javax.swing.JFrame {
         this.orderID = orderID;
         //5,Dine In,[2;2|1;1],Dine In,customerEmail,vendor@mail.com,null
         initComponents();
+        displayOrderDetails();
     }
     
     private void displayOrderDetails() {
         Order order = new Order();
         String orderIDStr = String.valueOf(orderID);
         String[] tokens = order.getOrder(orderIDStr);
+        System.out.println(Arrays.toString(tokens));
         //extract the relevant parameters
-        int bookingID = Integer.parseInt(tokens[0]);
-        String carID = tokens[1];
-        String startDate = tokens[2];
-        String endDate = tokens[3];
-        double paymentTotalDouble = Double.parseDouble(tokens[5]);
+        //orderID, orderType, arr[itemID, orderQuantity], orderStatus, orderFeedback, customerID/email,runnerID, reasonID, deliveryFee, totalPaid, orderDate
+        int orderID = Integer.parseInt(tokens[0]);
+        String orderType = tokens[1];
+        String orderItems = tokens[2];
+        String orderStatus = tokens[3];
+        String orderFeedback = tokens[4];
+        String customerEmail = tokens[5];
+        String deliveryFee = tokens[8];
+        double paymentTotalDouble = order.getTotalPrice();
         String paymentTotal = String.format("%.2f", paymentTotalDouble);
         
         //get customer point balance
@@ -47,15 +55,49 @@ public class customerPayment extends javax.swing.JFrame {
         int pointBalance = customer.getPoints();
         int earnablePoints = customer.calculateEarnablePoints(paymentTotalDouble);
         
+        Item item1 = new Item();
+        
         //display
-        sOrderID.setText(String.valueOf(bookingID));
-        sVendorName.setText(String.valueOf(startDate));
-        sOrderType.setText(String.valueOf(endDate));
-        sDeliveryFee.setText("RM "+String.valueOf(paymentTotal));
-        sPayTotal.setText(String.valueOf(earnablePoints));
+        sOrderID.setText(String.valueOf(orderID));
+        sOrderType.setText(String.valueOf(orderType));
+        sDeliveryFee.setText("RM "+String.valueOf(deliveryFee));
+        sPayTotal.setText("RM "+String.valueOf(deliveryFee));
         //tOrderItem
         sCreditBalance.setText(String.valueOf(pointBalance));
         sPointBalance.setText(String.valueOf(pointBalance));
+        
+        populateOrderItemsTable(orderItems);
+    }
+    
+    private void populateOrderItemsTable(String orderItemsString) {
+        DefaultTableModel model = (DefaultTableModel) tOrderItem.getModel();
+        model.setRowCount(0);  //clear table
+
+        //retrieve the order item
+        orderItemsString = orderItemsString.replace("[", "").replace("]", "");
+        String[] items = orderItemsString.split("\\|");
+
+        // Loop through each item and add it to the table
+        for (String item : items) {
+            // Split each item by the semicolon to get itemID and quantity
+            String[] itemDetails = item.split(";");
+            if (itemDetails.length == 2) {
+                String itemID = itemDetails[0];
+                String quantity = itemDetails[1];
+                
+                Item item1 = new Item();
+                String[] itemData = item1.itemData(itemID);
+                String itemName = itemData[1];  
+                int itemPrice = Integer.parseInt(itemData[3]);
+                double orderItemTotal = Integer.parseInt(quantity) * itemPrice;
+                
+                String vendorName = item1.getVendorNameByItemID(Integer.parseInt(itemID));
+                sVendorName.setText(String.valueOf(vendorName));
+
+                // Add the item to the table
+                model.addRow(new Object[]{itemName, "RM " + itemPrice, quantity, "RM " + orderItemTotal});
+            }
+        }
     }
 
     /**
