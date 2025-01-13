@@ -21,7 +21,6 @@ public class runnerMain extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         username.setText("");
-<<<<<<< HEAD
         String name = User.getSessionName();
         
         String email = User.getSessionEmail();
@@ -47,9 +46,6 @@ public class runnerMain extends javax.swing.JFrame {
         } else {
             System.out.println("No runner details found for email: " + email);
         }
-=======
-        username.setText(User.getSessionName());
->>>>>>> 559f68d (no change)
     }
 
     /**
@@ -203,11 +199,7 @@ public class runnerMain extends javax.swing.JFrame {
                     .addComponent(logoutButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(revenueJB, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(CusReviewJB, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-<<<<<<< HEAD
                 .addContainerGap(25, Short.MAX_VALUE))
-=======
-                .addContainerGap(29, Short.MAX_VALUE))
->>>>>>> 559f68d (no change)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -230,12 +222,8 @@ public class runnerMain extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Cooper Black", 0, 36)); // NOI18N
         jLabel1.setText("Runner Main Page");
 
-<<<<<<< HEAD
         username.setBackground(new java.awt.Color(255, 255, 255));
         username.setFont(new java.awt.Font("Cambria Math", 0, 18)); // NOI18N
-=======
-        username.setFont(new java.awt.Font("Cambria Math", 0, 20)); // NOI18N
->>>>>>> 559f68d (no change)
         username.setText("(Ruuner Name)");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
