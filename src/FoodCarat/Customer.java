@@ -16,12 +16,13 @@ import java.io.IOException;
  */
 public class Customer extends User{
     private int points;
+    private String customerFile = "resources/customer.txt";
     
     public Customer(String email){ //for set points
         super(email);
         //paolawan@mail.com,,0.0,13
         try{
-            BufferedReader br = new BufferedReader(new FileReader("resources/user.txt"));
+            BufferedReader br = new BufferedReader(new FileReader(customerFile));
             String line;
             while ((line = br.readLine()) != null) {
                 String[] record = line.split(",");
@@ -40,7 +41,7 @@ public class Customer extends User{
         this.points += add;
         try{
             //Writing to file
-            BufferedReader br = new BufferedReader(new FileReader("resources/user.txt"));
+            BufferedReader br = new BufferedReader(new FileReader(customerFile));
             StringBuffer buffer = new StringBuffer();
             String line;
             while ((line = br.readLine()) != null){
@@ -53,7 +54,7 @@ public class Customer extends User{
                 buffer.append(bufferLine);
             }
             br.close();
-            BufferedWriter bw = new BufferedWriter(new FileWriter("resources/user.txt"));
+            BufferedWriter bw = new BufferedWriter(new FileWriter(customerFile));
             bw.write(buffer.toString());
             bw.close();   
     }
@@ -67,7 +68,7 @@ public class Customer extends User{
         this.points -= sub;
         try{
             //Writing to file
-            BufferedReader br = new BufferedReader(new FileReader("resources/user.txt"));
+            BufferedReader br = new BufferedReader(new FileReader(customerFile));
             StringBuffer buffer = new StringBuffer();
             String line;
             while ((line = br.readLine()) != null){
@@ -80,7 +81,7 @@ public class Customer extends User{
                 buffer.append(bufferLine);
             }
             br.close();
-            BufferedWriter bw = new BufferedWriter(new FileWriter("resources/user.txt"));
+            BufferedWriter bw = new BufferedWriter(new FileWriter(customerFile));
             bw.write(buffer.toString());
             bw.close();   
         }
