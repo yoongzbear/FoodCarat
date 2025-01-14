@@ -4,6 +4,8 @@
  */
 package FoodCarat;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author ASUS
@@ -28,6 +30,10 @@ public class customerFCFeedback extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        taComplaint = new javax.swing.JTextArea();
+        bBack = new javax.swing.JButton();
+        bSubmit = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -35,31 +41,84 @@ public class customerFCFeedback extends javax.swing.JFrame {
         jLabel1.setText("FoodCarat Food Court");
 
         jLabel2.setFont(new java.awt.Font("Cooper Black", 0, 24)); // NOI18N
-        jLabel2.setText("Food Court Feedback");
+        jLabel2.setText("Food Court Complaint");
+
+        taComplaint.setColumns(20);
+        taComplaint.setRows(5);
+        jScrollPane1.setViewportView(taComplaint);
+
+        bBack.setText("Back to Main Page");
+        bBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bBackActionPerformed(evt);
+            }
+        });
+
+        bSubmit.setText("Submit");
+        bSubmit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bSubmitActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(228, 228, 228)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2))
-                .addContainerGap(243, Short.MAX_VALUE))
+                .addContainerGap(69, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 536, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(66, 66, 66))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(bBack, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(71, 71, 71))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(bSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(66, 66, 66))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(16, 16, 16)
+                .addGap(20, 20, 20)
+                .addComponent(bBack)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
-                .addContainerGap(459, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(bSubmit)
+                .addContainerGap(287, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void bBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bBackActionPerformed
+        this.dispose();
+        customerMain frame = new customerMain();
+        frame.setVisible(true);
+    }//GEN-LAST:event_bBackActionPerformed
+
+    private void bSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSubmitActionPerformed
+        if (taComplaint != null && !taComplaint.getText().isEmpty()) {
+            String complaint = taComplaint.getText();
+
+            Review review = new Review(complaint);
+            review.saveOrderFeedback(); 
+            JOptionPane.showMessageDialog(null, "Thank you for providing us with your thoughts. We are grateful that you brought this to our notice, and will work to resolve the issue as quickly as possible.");
+
+            bSubmit.setVisible(false);
+        } else {
+            JOptionPane.showMessageDialog(null, "No order selected.");
+        }
+    }//GEN-LAST:event_bSubmitActionPerformed
 
     /**
      * @param args the command line arguments
@@ -97,7 +156,11 @@ public class customerFCFeedback extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bBack;
+    private javax.swing.JButton bSubmit;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea taComplaint;
     // End of variables declaration//GEN-END:variables
 }
