@@ -34,10 +34,9 @@ public class customerPayment extends javax.swing.JFrame {
     }
     
     private void displayOrderDetails() {
-        Order order = new Order(orderType, User.getSessionEmail());
+        Order order = new Order(orderType, "customerEmail");
         String orderIDStr = String.valueOf(orderID);
         String[] tokens = order.getOrder(orderIDStr);
-        System.out.println(Arrays.toString(tokens));
         //extract the relevant parameters
         //orderID, orderType, arr[itemID, orderQuantity], orderStatus, orderFeedback, customerID/email,runnerID, reasonID, deliveryFee, totalPaid, orderDate
         int orderID = Integer.parseInt(tokens[0]);
@@ -47,15 +46,12 @@ public class customerPayment extends javax.swing.JFrame {
         String orderFeedback = tokens[4];
         String customerEmail = tokens[5];
         String deliveryFee = tokens[8];
-        double paymentTotalDouble = order.getTotalPrice();
-        String paymentTotal = String.format("%.2f", paymentTotalDouble);
+        String paymentTotal = tokens[9];
         
         //get customer point balance
         Customer customer = new Customer("customerEmail");
         int pointBalance = customer.getPoints();
-        int earnablePoints = customer.calculateEarnablePoints(paymentTotalDouble);
-        
-        Item item1 = new Item();
+        System.out.println(pointBalance);
         
         //display
         sOrderID.setText(String.valueOf(orderID));
@@ -131,9 +127,9 @@ public class customerPayment extends javax.swing.JFrame {
         jLabel20 = new javax.swing.JLabel();
         tfRedeemPoints = new javax.swing.JSpinner();
         bPay = new javax.swing.JButton();
-        bBack = new javax.swing.JButton();
         sCreditBalance = new javax.swing.JLabel();
         sPointBalance = new javax.swing.JLabel();
+        bBackMain = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -194,23 +190,46 @@ public class customerPayment extends javax.swing.JFrame {
             }
         });
 
-        bBack.setText("Back to Cart");
-        bBack.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bBackActionPerformed(evt);
-            }
-        });
-
         sCreditBalance.setText("creditBalance");
 
         sPointBalance.setText("pointBalance");
+
+        bBackMain.setText("Back to Main Page");
+        bBackMain.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bBackMainActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(bBackMain)
+                .addGap(56, 56, 56))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(49, 49, 49)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel17)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(bPay, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel18)
+                                        .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGap(18, 18, 18)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(sCreditBalance)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(sPointBalance)
+                                            .addGap(112, 112, 112)
+                                            .addComponent(jLabel20)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(tfRedeemPoints, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(47, 47, 47)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -239,37 +258,15 @@ public class customerPayment extends javax.swing.JFrame {
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel8)
                                         .addGap(18, 18, 18)
-                                        .addComponent(sPayTotal, javax.swing.GroupLayout.DEFAULT_SIZE, 64, Short.MAX_VALUE))))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(49, 49, 49)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel17)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel18)
-                                    .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(sCreditBalance)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(sPointBalance)
-                                        .addGap(30, 30, 30)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(bPay, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(bBack, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                                .addGap(82, 82, 82)
-                                                .addComponent(jLabel20)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(tfRedeemPoints, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))))))))
-                .addContainerGap(53, Short.MAX_VALUE))
+                                        .addComponent(sPayTotal, javax.swing.GroupLayout.DEFAULT_SIZE, 64, Short.MAX_VALUE)))))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(16, 16, 16)
+                .addGap(7, 7, 7)
+                .addComponent(bBackMain)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
@@ -314,11 +311,9 @@ public class customerPayment extends javax.swing.JFrame {
                     .addComponent(tfRedeemPoints, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel19)
                     .addComponent(sPointBalance))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(bPay)
-                    .addComponent(bBack))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addComponent(bPay)
+                .addContainerGap())
         );
 
         pack();
@@ -366,7 +361,7 @@ public class customerPayment extends javax.swing.JFrame {
                     order.writePaymentDetails(orderID, newPaymentTotal, formattedDate); //write order date
 
                     JOptionPane.showMessageDialog(rootPane, "Payment successful.");
-                    dispose();
+                    //dispose();
                     /*customerReceipt frame = new customerReceipt(bookingID);
                     frame.setVisible(true);
                     */return; 
@@ -379,11 +374,18 @@ public class customerPayment extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_bPayActionPerformed
 
-    private void bBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bBackActionPerformed
-        this.dispose();
-        customerViewMenu frame = new customerViewMenu(orderID, orderType);
-        frame.setVisible(true);
-    }//GEN-LAST:event_bBackActionPerformed
+    private void bBackMainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bBackMainActionPerformed
+        int confirm = JOptionPane.showConfirmDialog(null, "Your order will be discarded. Are you sure to proceed?");
+        if (confirm == JOptionPane.YES_OPTION){
+            Order order = new Order();
+            order.deleteIncompleteOrder(orderID);
+
+            //Back to the main page
+            this.dispose();
+            customerMain frame = new customerMain();
+            frame.setVisible(true);
+        }
+    }//GEN-LAST:event_bBackMainActionPerformed
 
     /**
      * @param args the command line arguments
@@ -391,7 +393,7 @@ public class customerPayment extends javax.swing.JFrame {
    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton bBack;
+    private javax.swing.JButton bBackMain;
     private javax.swing.JButton bPay;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
