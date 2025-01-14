@@ -611,7 +611,7 @@ public class User {
         }
 
         if (!customerFound) {
-            throw new IOException("Customer with email " + email + " not found in " + filePath);
+            throw new IOException("Email " + email + " not found. Please try again.");
         }
     }
     
