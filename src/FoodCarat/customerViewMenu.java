@@ -706,8 +706,8 @@ public class customerViewMenu extends javax.swing.JFrame {
     private void bCheckOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCheckOutActionPerformed
         List<String[]> cart = currentOrder.getCart(); 
 
-        Order order = new Order();
-        order.writeOrderDetails(orderID, cart, orderType, selectedVendorEmail);
+        Order order = new Order(orderType, User.getSessionEmail());
+        order.writeOrderDetails(orderID, cart);
 
         customerPayment frame = new customerPayment(orderID, orderType);
         frame.setVisible(true);

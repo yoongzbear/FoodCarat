@@ -44,7 +44,7 @@ public class Order {
     
     public Order(String choice){ //for initialOrder()
         this.orderType = choice;
-        //this.customerEmail = UserSession.getCustomerEmail();
+        this.customerEmail = User.getSessionEmail();
     }
     
     public Order(int orderID){ //for getting customer order feedback
@@ -147,8 +147,8 @@ public class Order {
         
         this.orderID = lastOrder;
         //write order with orderID, orderType and customerEmail
-        //1, Take Away, [1;1|2;1], Ordered, customerEmail, vendor@mail.com, NULL
-        String newLine = lastOrder + "," + orderType + ",,," + "customerEmail" + ",null,null";
+        //3,Take away,[2;1|4;1],Ordered,customerEmail,NULL,NULL,20.00,2025-01-01 
+        String newLine = lastOrder + "," + orderType + ",,," + customerEmail + ",null,null,0.0,0.0,null";
         try {
             FileWriter fw = new FileWriter("resources/customerOrder.txt", true); //true is use for appending data in new line
             fw.write(newLine + "\n");
@@ -360,23 +360,23 @@ public class Order {
         }
     }
 
-    // Method to get the total price of the order
-    public double getTotalPrice() {
+    // Method to get the total price of the order for cart
+    public double getTotalPrice(List<String[]> cart) {
         double total = 0.0;
+        
         for (String[] item : cart) {
+            System.out.println("Item: " + item);
             double price = Double.parseDouble(item[3]);
             int quantity = Integer.parseInt(item[2]);
-            total += price * quantity;
+            total = total + (price * quantity);
         }
         return total;
     }
 
-    public void writeOrderDetails(int orderID, List<String[]> cart, String orderStatus, String vendorEmail) {
-        // Create a StringBuilder to hold the updated content
+    public void writeOrderDetails(int orderID, List<String[]> cart) {
         StringBuilder stringBuilder = new StringBuilder();
 
         try {
-            // Open the customerOrder.txt file to read its content
             BufferedReader reader = new BufferedReader(new FileReader(orderFile));
             String line;
 
@@ -384,47 +384,55 @@ public class Order {
                 String[] orderData = line.split(",");
                 int currentOrderID = Integer.parseInt(orderData[0]);
 
-                // Check if the orderID matches
                 if (currentOrderID == orderID) {
-                    // Update order details
-
+                    // Calculate the total price and delivery fee
+                    double originalPrice = getTotalPrice(cart);  // Get the original total price from the cart
+                    double deliveryFee = calculateDeliveryFee(originalPrice);
+                    double totalPaid = originalPrice + deliveryFee;
+                    
+                    // Build the order items list
                     StringBuilder orderItems = new StringBuilder();
                     orderItems.append("[");
 
                     for (int i = 0; i < cart.size(); i++) {
                         String[] item = cart.get(i);  // Get the item at the current index
-                        String itemID = item[0];  
-                        String quantity = item[2]; 
+                        String itemID = item[0];
+                        System.out.println(itemID);
+                        String quantity = item[2];
 
-                        // If it's not the first item, append a "|" separator
                         if (i > 0) {
                             orderItems.append("|");
                         }
 
-                        // Append the itemID and quantity
                         orderItems.append(itemID).append(";").append(quantity);
                     }
 
-                    orderItems.append("]");  // End the list with a closing bracket
+                    orderItems.append("]");
 
-                    //Update the fields in the orderData array
-                    orderData[2] = orderItems.toString(); // orderItem
-                    orderData[3] = orderStatus; // orderStatus
-                    orderData[5] = vendorEmail; // vendorEmail
+                    // Format the total price and delivery fee for display
+                    String formattedTotalPaid = String.format("%.2f", totalPaid);
+                    String formattedDeliveryFee = String.format("%.2f", deliveryFee);
 
-                    // Reconstruct the updated line and append it to the StringBuilder
+                    // Update the order data with the new values
+                    //3,Take away,[2;1|4;1],Ordered,customerEmail,NULL,NULL,0.0,20.00,2025-01-01
+                    //30,Dine In,[2;4],,customer@mail.com,null,null,0.00,0.00,null
+                    orderData[2] = orderItems.toString();  // Set order items
+                    orderData[7] = formattedDeliveryFee;  // Set delivery fee
+                    orderData[8] = formattedTotalPaid;  // Set total paid (price + delivery)
+
+                    // Reconstruct the updated line
                     line = String.join(",", orderData);
+                    System.out.println("Line: " + line);
                 }
 
-                // Append the (possibly updated) line to the StringBuilder
+                // Append the updated (or unchanged) line to the StringBuilder
                 stringBuilder.append(line).append("\n");
             }
 
-            // Close the reader
             reader.close();
 
-            // Now write the updated content back to the file
-            BufferedWriter writer = new BufferedWriter(new FileWriter("resources/customerOrder.txt"));
+            // Write the updated content back to the file
+            BufferedWriter writer = new BufferedWriter(new FileWriter(orderFile));
             writer.write(stringBuilder.toString());
             writer.close();
 
@@ -445,7 +453,7 @@ public class Order {
             cartDetails.append(item[1]).append(" - Quantity: ").append(item[2])
                     .append(" - Total: RM").append(Double.parseDouble(item[3]) * Integer.parseInt(item[2])).append("\n");
         }
-        cartDetails.append("Total Price: RM").append(getTotalPrice());
+        cartDetails.append("Total Price: RM").append(getTotalPrice(cart));
         JOptionPane.showMessageDialog(null, cartDetails.toString());
     }
 
@@ -455,11 +463,9 @@ public class Order {
     }
     
     public void writePaymentDetails(int orderID, double newPaymentTotal, String today) {
-        // Create a StringBuilder to hold the updated content
         StringBuilder stringBuilder = new StringBuilder();
 
         try {
-            // Open the customerOrder.txt file to read its content
             BufferedReader reader = new BufferedReader(new FileReader(orderFile));
             String line;
 
@@ -467,47 +473,24 @@ public class Order {
                 String[] orderData = line.split(",");
                 int currentOrderID = Integer.parseInt(orderData[0]);
 
-                // Check if the orderID matches
                 if (currentOrderID == orderID) {
-                    // Update order details
+                    // Update the totalPaid and date fields
+                    String formattedPaymentTotal = String.format("%.2f", newPaymentTotal);
+                    orderData[8] = formattedPaymentTotal;  // Set the new total paid (price after payment)
+                    orderData[9] = today;  // Set the current date as the payment date
 
-                    StringBuilder orderItems = new StringBuilder();
-                    orderItems.append("[");
-
-                    for (int i = 0; i < cart.size(); i++) {
-                        String[] item = cart.get(i);  // Get the item at the current index
-                        String itemID = item[0];  
-                        String quantity = item[2]; 
-
-                        // If it's not the first item, append a "|" separator
-                        if (i > 0) {
-                            orderItems.append("|");
-                        }
-
-                        // Append the itemID and quantity
-                        orderItems.append(itemID).append(";").append(quantity);
-                    }
-
-                    orderItems.append("]");  // End the list with a closing bracket
-
-                    //Update the fields in the orderData array
-                    orderData[2] = orderItems.toString(); // orderItem
-                    orderData[3] = orderStatus; // orderStatus
-                    //orderData[5] = vendorEmail; // vendorEmail
-
-                    // Reconstruct the updated line and append it to the StringBuilder
+                    // Reconstruct the updated line
                     line = String.join(",", orderData);
                 }
 
-                // Append the (possibly updated) line to the StringBuilder
+                // Append the updated (or unchanged) line to the StringBuilder
                 stringBuilder.append(line).append("\n");
             }
 
-            // Close the reader
             reader.close();
 
-            // Now write the updated content back to the file
-            BufferedWriter writer = new BufferedWriter(new FileWriter("resources/customerOrder.txt"));
+            // Write the updated content back to the file
+            BufferedWriter writer = new BufferedWriter(new FileWriter(orderFile));
             writer.write(stringBuilder.toString());
             writer.close();
 
@@ -516,4 +499,21 @@ public class Order {
         }
     }
     
+    private double calculateDeliveryFee(double originalPrice) {
+        double deliveryFee = 0.0;
+        if ("Delivery".equals(orderType)) {
+            //calculate 15% of the total order amount
+            double calculatedFee = originalPrice * 0.15;
+
+            //set delivery fee to min/max based on condition
+            if (calculatedFee < 5) {
+                deliveryFee = 5;
+            } else if (calculatedFee > 20) {
+                deliveryFee = 20;
+            } else {
+                deliveryFee = calculatedFee;
+            }
+        }
+        return deliveryFee;
+    }
 }

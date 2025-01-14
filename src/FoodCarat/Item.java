@@ -333,4 +333,37 @@ public class Item {
         }
     }
     
+    public String getVendorNameByItemID(int itemID) {
+        //find the vendor email based on the itemID from item.txt
+        String[] itemData = itemData(String.valueOf(itemID));
+        
+        //if vendor dont have item
+        if (itemData == null || itemData.length < 6) {
+            return null;
+        }
+        String vendorEmail = itemData[5];
+
+        //find the vendor's name from the user.txt file using the vendor email
+        if (vendorEmail != null) {
+            try {
+                FileReader fr = new FileReader("resources/user.txt");
+                BufferedReader br = new BufferedReader(fr);
+                String read;
+
+                while ((read = br.readLine()) != null) {
+                    String[] userParts = read.split(",");
+                    String email = userParts[0];
+
+                    //get user email
+                    if (email.equals(vendorEmail)) {
+                        return userParts[1];
+                    }
+                }
+                br.close();
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "Failed to read from the user file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        return null;
+    }
 }
