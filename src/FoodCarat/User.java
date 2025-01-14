@@ -589,6 +589,32 @@ public class User {
         }
     }
     
+    // Update the credit for vendor, cus, and runner (Admin, customer, vendor side)
+    public void updateCredit(String email, double newAmount, String filePath, int index) throws IOException {
+        StringBuilder updatedData = new StringBuilder();
+        boolean customerFound = false;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length > 1 && parts[0].equals(email)) {
+                    parts[index] = String.format("%.2f", newAmount);
+                    customerFound = true;
+                }
+                updatedData.append(String.join(",", parts)).append("\n");
+            }
+        }
+
+        try (FileWriter writer = new FileWriter(filePath)) {
+            writer.write(updatedData.toString());
+        }
+
+        if (!customerFound) {
+            throw new IOException("Customer with email " + email + " not found in " + filePath);
+        }
+    }
+    
      // Set the input not > max length
     public static DocumentFilter createLengthFilter(int maxLength) {
         return new DocumentFilter() {

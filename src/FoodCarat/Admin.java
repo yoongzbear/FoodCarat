@@ -383,7 +383,7 @@ public class Admin extends User {
         saveTransactionToFile(transactionDetails);
 
         // Update the customer's credit in the file
-        updateCustomerCredit(email, newAmount);
+        updateCredit(email, newAmount, cusFile, 2);
         
         javax.swing.JOptionPane.showMessageDialog(null, "Top-up completed successfully!\nThe receipt has been sent to the customer.", "Success", javax.swing.JOptionPane.INFORMATION_MESSAGE);
         
@@ -407,33 +407,6 @@ public class Admin extends User {
     private void saveTransactionToFile(String transactionDetails) throws IOException {
         try (FileWriter writer = new FileWriter(cuscreditFile, true)) { // Append mode
             writer.write(transactionDetails);
-        }
-    }
-
-    // Update the customer's credit in the file
-    public void updateCustomerCredit(String email, double newAmount) throws IOException {
-        String filePath = cusFile;
-        StringBuilder updatedData = new StringBuilder();
-        boolean customerFound = false;
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length > 1 && parts[0].equals(email)) {
-                    parts[2] = String.format("%.2f", newAmount);
-                    customerFound = true;
-                }
-                updatedData.append(String.join(",", parts)).append("\n");
-            }
-        }
-
-        try (FileWriter writer = new FileWriter(filePath)) {
-            writer.write(updatedData.toString());
-        }
-
-        if (!customerFound) {
-            throw new IOException("Customer with email " + email + " not found in " + filePath);
         }
     }
     
