@@ -311,7 +311,7 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
         User user = new User();
 
        try {
-            String role = User.getRoleByEmail(searchEmail, userFile);
+            String role = user.getRoleByEmail(searchEmail, userFile);
 
             if (role != null) {
                 if(role.equals("vendor")){

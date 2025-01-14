@@ -536,7 +536,7 @@ public class User {
                         this.contactNumber = details[5];
                         
                     // Get additional data based on the role
-                    String additionalData = getRoleSpecificData(details[0], userType);
+                    String additionalData = getRoleSpecificData(details[0], userType, 1); // the additional data for the specific role is at index 1
                     return additionalData;
                     } else {
                         return "notCompleted"; // User hasn't completed first login
@@ -550,7 +550,8 @@ public class User {
     }
     
     // Get the specific role data if the user has perfor the first login (Admin Side)
-    private String getRoleSpecificData(String email, String role) {
+    //used for admin search to update user, credit top up, withdraw and customer payment
+    public String getRoleSpecificData(String email, String role, int dataIndex) {
         String fileName = getRoleFileName(role);
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
@@ -559,11 +560,11 @@ public class User {
                 if (details[0].equalsIgnoreCase(email)) {
                     switch (role.toLowerCase()) {
                         case "customer":
-                            return details[1]; // Address for customer
+                            return details[dataIndex];
                         case "vendor":
-                            return details[1]; // Cuisine for vendor
+                            return details[dataIndex];
                         case "runner":
-                            return details[1]; // Plate number for runner
+                            return details[dataIndex];
                         default:
                             return "Role not found";
                     }
@@ -576,6 +577,7 @@ public class User {
     }
 
     //(Admin Side)
+    //used for admin search to update user, credit top up, withdraw and  customer payment
     private String getRoleFileName(String role) {
         switch (role.toLowerCase()) {
             case "customer":
@@ -587,6 +589,20 @@ public class User {
             default:
                 return "";
         }
+    }
+    
+    // Get the role based on email from user.txt - used for top up, withdraw and payment side
+    public String getRoleByEmail(String email, String userFile) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new FileReader(userFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(","); // Assuming CSV format
+                if (parts.length > 3 && parts[0].trim().equalsIgnoreCase(email)) {
+                    return parts[3].trim(); // Role is at index 3
+                }
+            }
+        }
+        return null; // Return null if email is not found
     }
     
     // Update the credit for vendor, cus, and runner (Admin, customer, vendor side)

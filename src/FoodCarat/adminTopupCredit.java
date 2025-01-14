@@ -258,10 +258,10 @@ public class adminTopupCredit extends javax.swing.JFrame {
         clearFields();
 
         try {
-        String role = User.getRoleByEmail(searchEmail, userFile);
+        String role = user.getRoleByEmail(searchEmail, userFile);
         
         if (role != null && role.equals("customer")) {
-            String data = User.getRoleSpecificData(searchEmail, role, 2);  //customer credit is at index 2
+            String data = user.getRoleSpecificData(searchEmail, role, 2);  //customer credit is at index 2
             Admin admin = new Admin();
             String[] custData = admin.performSearch(searchEmail, cusFile);
             
