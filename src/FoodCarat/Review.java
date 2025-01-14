@@ -10,8 +10,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 import javax.swing.JOptionPane;
@@ -23,6 +25,8 @@ import javax.swing.JOptionPane;
 public class Review {
     private int reviewID;
     private int orderID;
+    private String customerEmail;
+    private String foodCourtComplaint;
     private String orderFeedback;
     private String vendorRating;
     private String vendorFeedback;
@@ -44,10 +48,16 @@ public class Review {
     
     public Review(int orderID, String orderFeedback, String vendorRating, String vendorFeedback, String runnerRating){ //to save customer order feedback with runner
         this.orderID = orderID;
+        this.customerEmail = User.getSessionEmail();
         this.orderFeedback = orderFeedback;
         this.vendorRating = vendorRating;
         this.vendorFeedback = vendorFeedback;
         this.runnerRating = runnerRating;
+    }
+    
+    public Review(String foodCourtComplaint){
+        this.foodCourtComplaint = foodCourtComplaint;
+        this.customerEmail = User.getSessionEmail();
     }
 
     public int getReviewID() {
@@ -169,25 +179,29 @@ public class Review {
     }
     
     
-    public void saveOrderFeedback() { //save order feedback when user input
+    public void saveOrderFeedback() { 
         //generate reviewID
         int lastFeedback = 0;
+        boolean orderIDFound = false;  //to determine feedback or complaint
+
         try {
             BufferedReader br = new BufferedReader(new FileReader(reviewFileName));
             String line;
-            while((line=br.readLine()) != null){
+            while ((line = br.readLine()) != null) {
                 String[] record = line.split(",");
                 lastFeedback = Integer.parseInt(record[0]);
             }
             lastFeedback = lastFeedback + 1;
-        }
-        catch (IOException e){
+            br.close();
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        
-        
-        String reviewDate = LocalDate.now().toString(); //Current date for the review (CURRENT NOT WORKING)
-        //write the review separately
+
+        //review date
+        Calendar today = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDate = sdf.format(today.getTime());
+
         try {
             BufferedReader br = new BufferedReader(new FileReader(reviewFileName));
             StringBuilder stringBuilder = new StringBuilder(); 
@@ -195,10 +209,12 @@ public class Review {
 
             while ((line = br.readLine()) != null) {
                 String[] record = line.split(",");
-                int checkBookingID = Integer.parseInt(record[0]);
+                int checkOrderID = Integer.parseInt(record[0]);
 
-                if (checkBookingID == orderID) {
-                    //1. Write Order Review Record
+                if (checkOrderID == orderID) {
+                    orderIDFound = true;
+
+                    // 1. Write Order Review Record
                     String orderReviewRecord = String.join(",", 
                         String.valueOf(lastFeedback), 
                         String.valueOf(orderID), 
@@ -208,10 +224,10 @@ public class Review {
                         reviewDate
                     );
                     stringBuilder.append(orderReviewRecord).append("\n");
-                    
+
                     lastFeedback = lastFeedback + 1;
 
-                    //2. Write Vendor Review Record
+                    // 2. Write Vendor Review Record
                     String vendorReviewRecord = String.join(",", 
                         String.valueOf(lastFeedback), 
                         String.valueOf(orderID), 
@@ -222,7 +238,7 @@ public class Review {
                     );
                     stringBuilder.append(vendorReviewRecord).append("\n");
 
-                    //3. Write Runner Review Record if exists
+                    // 3. Write Runner Review Record if exists
                     if (runnerRating != null) {
                         lastFeedback = lastFeedback + 1;
                         String runnerReviewRecord = String.join(",", 
@@ -236,16 +252,29 @@ public class Review {
                         stringBuilder.append(runnerReviewRecord).append("\n");
                     }
                 } else {
-                    //keep the existing record
                     stringBuilder.append(line).append("\n");
                 }
             }
             br.close();
 
-            //Write the updated content back to the file
+            //foodcourt complaint
+            if (!orderIDFound) {
+                String foodcourtReviewRecord = String.join(",", 
+                    String.valueOf(lastFeedback), 
+                    "null",  
+                    "foodcourt", 
+                    "null", 
+                    foodCourtComplaint, 
+                    reviewDate
+                );
+                stringBuilder.append(foodcourtReviewRecord).append("\n");
+            }
+
+            // Write the updated content back to the file
             BufferedWriter bw = new BufferedWriter(new FileWriter(reviewFileName));
             bw.write(stringBuilder.toString());
             bw.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
