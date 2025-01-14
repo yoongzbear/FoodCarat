@@ -4,21 +4,68 @@
  */
 package FoodCarat;
 
+import java.io.IOException;
+
 /**
  *
  * @author User
  */
 public class adminWithdrawCredit extends javax.swing.JFrame {
     private String userFile = "resources/user.txt";
-    private String vendorFile = "resources/vendor.txt";
-    private String runnerFile = "resources/runner.txt";
     /**
      * Creates new form adminWithdrawCredit
      */
     public adminWithdrawCredit() {
         initComponents();
+        withdrawnumtxt.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                updateNewAmount();
+            }
+
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                updateNewAmount();
+            }
+
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                updateNewAmount();
+            }
+        });
+        emailtxt.setEditable(false);
+        nametxt.setEditable(false);
+        currentamounttxt.setEditable(false);
     }
 
+    private void clearFields() {
+        Admin.clearFields(
+            emailtxt, nametxt, currentamounttxt, withdrawnumtxt, sumtxt
+        );
+    }
+    
+    private void updateNewAmount() {
+        try {
+            // Get the current amount and top-up amount
+            String currentAmountStr = currentamounttxt.getText().trim();
+            String withdrawAmountStr = withdrawnumtxt.getText().trim();
+
+            double currentAmount = currentAmountStr.isEmpty() ? 0.0 : Double.parseDouble(currentAmountStr);
+            double withdrawAmount = withdrawAmountStr.isEmpty() ? 0.0 : Double.parseDouble(withdrawAmountStr);
+
+            // Check if withdrawal amount is greater than the current amount
+            if (!withdrawAmountStr.isEmpty() && withdrawAmount > currentAmount) {
+                sumtxt.setText("Insufficient balance for withdrawal");
+                return;  // Exit early to prevent further calculations
+            }
+            
+            // Calculate the new amount
+            double newAmount = Admin.calculateNewAmount(currentAmount, withdrawAmount, false);
+
+            // Update the sumtxt field
+            sumtxt.setText(String.format("%.2f", newAmount));
+        } catch (NumberFormatException e) {
+            // If the input is invalid, reset the sumtxt field
+            sumtxt.setText("Invalid Input");
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -35,7 +82,7 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
         Lsearch = new javax.swing.JLabel();
         sumtxt = new javax.swing.JTextField();
         Lemail = new javax.swing.JLabel();
-        btopup = new javax.swing.JButton();
+        withdrawbtn = new javax.swing.JButton();
         searchtxt = new javax.swing.JTextField();
         bback = new javax.swing.JButton();
         emailtxt = new javax.swing.JTextField();
@@ -70,11 +117,11 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
         Lemail.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         Lemail.setText("Email:");
 
-        btopup.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
-        btopup.setText("Withdraw");
-        btopup.addActionListener(new java.awt.event.ActionListener() {
+        withdrawbtn.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        withdrawbtn.setText("Withdraw");
+        withdrawbtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btopupActionPerformed(evt);
+                withdrawbtnActionPerformed(evt);
             }
         });
 
@@ -146,13 +193,13 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
                                         .addGap(4, 4, 4))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(emailtxt, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(62, 62, 62)
-                                        .addComponent(Lname)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(Lname)
+                                        .addGap(30, 30, 30)
                                         .addComponent(nametxt, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(245, 245, 245)
-                        .addComponent(btopup)
+                        .addComponent(withdrawbtn)
                         .addGap(248, 248, 248)
                         .addComponent(bback)))
                 .addContainerGap(71, Short.MAX_VALUE))
@@ -191,7 +238,7 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
                     .addComponent(sumtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(51, 51, 51)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btopup)
+                    .addComponent(withdrawbtn)
                     .addComponent(bback))
                 .addGap(35, 35, 35))
         );
@@ -203,9 +250,51 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_sumtxtActionPerformed
 
-    private void btopupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btopupActionPerformed
+    private void withdrawbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_withdrawbtnActionPerformed
+        try {
+            // Get the current amount and top-up amount from the text fields
+            String email = emailtxt.getText().trim();
+            String name = nametxt.getText().trim();
+            String currentAmountStr = currentamounttxt.getText().trim();
+            String withdrawAmountStr = withdrawnumtxt.getText().trim();
+            String afterWithdrawAmountStr= sumtxt.getText().trim();
 
-    }//GEN-LAST:event_btopupActionPerformed
+            if (withdrawAmountStr.isEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Please enter the top-up amount.", "Input Error", javax.swing.JOptionPane.WARNING_MESSAGE);
+                withdrawnumtxt.requestFocus();
+                return;
+            }
+            
+            if (afterWithdrawAmountStr.equals("Insufficient balance for withdrawal")) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Insufficient balance for withdraw!", "Input Error", javax.swing.JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            double currentAmount = Double.parseDouble(currentAmountStr);
+            double topUpAmount = Double.parseDouble(withdrawAmountStr);
+
+            // Confirm before proceeding
+            int option = javax.swing.JOptionPane.showConfirmDialog(this,
+                String.format("Name: %s\nWithdraw Amount: %.2f\nDo you want to proceed?", name, topUpAmount),
+                "Confirm Top-up", javax.swing.JOptionPane.YES_NO_OPTION);
+
+            if (option != javax.swing.JOptionPane.YES_OPTION) {
+                return;
+            }
+
+            // Process the top-up via Admin class
+            Admin admin = new Admin();
+            admin.processChangesCredit(email, name, currentAmount, topUpAmount);
+
+            // Clear the fields
+            clearFields();
+
+        } catch (NumberFormatException e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Please enter valid numbers.", "Input Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        } catch (IOException e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "An error occurred: " + e.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_withdrawbtnActionPerformed
 
     private void bbackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bbackActionPerformed
         this.dispose();
@@ -217,7 +306,39 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
     }//GEN-LAST:event_emailtxtActionPerformed
 
     private void bsearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bsearchActionPerformed
+        String searchEmail = searchtxt.getText().trim();
 
+        User user = new User();
+
+       try {
+            String role = User.getRoleByEmail(searchEmail, userFile);
+
+            if (role != null) {
+                if(role.equals("vendor")){
+                    String data = user.getRoleSpecificData(searchEmail, role, 4);  //vendor credit is at index 4
+                    Admin admin = new Admin();
+                    String[] venData = admin.performSearch(searchEmail, userFile); //get vendor name
+
+                    emailtxt.setText(venData[0]);
+                    currentamounttxt.setText(data);
+                    nametxt.setText(venData[1]);
+                }else if(role.equals("runner")){
+                    String data = user.getRoleSpecificData(searchEmail, role, 3);  //runner credit is at index 3
+                    Admin admin = new Admin();
+                    String[] runData = admin.performSearch(searchEmail, userFile); //get runner name
+
+                    emailtxt.setText(runData[0]);
+                    currentamounttxt.setText(data);
+                    nametxt.setText(runData[1]);
+                }else if(role.equals("customer")){
+                    javax.swing.JOptionPane.showMessageDialog(this, "Admin unable to withdraw customer credit!", "Input Error", javax.swing.JOptionPane.WARNING_MESSAGE);
+                }
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, "No matching record found!");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_bsearchActionPerformed
 
     /**
@@ -264,13 +385,13 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
     private javax.swing.JLabel Ltopup;
     private javax.swing.JButton bback;
     private javax.swing.JButton bsearch;
-    private javax.swing.JButton btopup;
     private javax.swing.JTextField currentamounttxt;
     private javax.swing.JTextField emailtxt;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JTextField nametxt;
     private javax.swing.JTextField searchtxt;
     private javax.swing.JTextField sumtxt;
+    private javax.swing.JButton withdrawbtn;
     private javax.swing.JTextField withdrawnumtxt;
     // End of variables declaration//GEN-END:variables
 }

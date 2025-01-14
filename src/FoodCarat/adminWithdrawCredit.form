@@ -56,9 +56,9 @@
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="emailtxt" min="-2" pref="200" max="-2" attributes="0"/>
-                                      <EmptySpace min="-2" pref="62" max="-2" attributes="0"/>
-                                      <Component id="Lname" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="32767" attributes="0"/>
+                                      <Component id="Lname" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                                       <Component id="nametxt" min="-2" pref="211" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
@@ -67,7 +67,7 @@
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="245" max="-2" attributes="0"/>
-                      <Component id="btopup" min="-2" max="-2" attributes="0"/>
+                      <Component id="withdrawbtn" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="248" max="-2" attributes="0"/>
                       <Component id="bback" min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -116,7 +116,7 @@
               </Group>
               <EmptySpace min="-2" pref="51" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="btopup" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="withdrawbtn" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="bback" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
@@ -181,7 +181,7 @@
         <Property name="text" type="java.lang.String" value="Email:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="btopup">
+    <Component class="javax.swing.JButton" name="withdrawbtn">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Constantia" size="18" style="1"/>
@@ -189,7 +189,7 @@
         <Property name="text" type="java.lang.String" value="Withdraw"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btopupActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="withdrawbtnActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="searchtxt">
