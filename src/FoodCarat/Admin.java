@@ -362,6 +362,11 @@ public class Admin extends User {
         return null; // Return null if no record is found
     }
     
+    // Utility method for calculating new amounts (withdraw or top up)
+    public static double calculateNewAmount(double currentAmount, double amount, boolean isTopUp) {
+        return isTopUp ? currentAmount + amount : currentAmount - amount;
+    }
+    
     // method for top up credit proccess
     public void processTopUp(String email, String name, double currentAmount, double topUpAmount) throws IOException {
         double newAmount = currentAmount + topUpAmount;
