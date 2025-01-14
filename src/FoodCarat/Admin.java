@@ -26,7 +26,7 @@ public class Admin extends User {
 
     private static String userFile = "resources/user.txt";
     private String cusFile = "resources/customer.txt";
-    private String cuscreditFile = "resources/customer credit.txt";
+    private String cuscreditFile = "resources/customerCredit.txt";
     
     public Admin(){
         
@@ -383,7 +383,7 @@ public class Admin extends User {
         saveTransactionToFile(transactionDetails);
 
         // Update the customer's credit in the file
-        updateCredit(email, newAmount, cusFile, 2);
+        super.updateCredit(email, newAmount, cusFile, 2);
         
         javax.swing.JOptionPane.showMessageDialog(null, "Top-up completed successfully!\nThe receipt has been sent to the customer.", "Success", javax.swing.JOptionPane.INFORMATION_MESSAGE);
         
