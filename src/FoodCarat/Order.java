@@ -360,13 +360,15 @@ public class Order {
         }
     }
 
-    // Method to get the total price of the order
-    public double getTotalPrice() {
+    // Method to get the total price of the order for cart
+    public double getTotalPrice(List<String[]> cart) {
         double total = 0.0;
+        
         for (String[] item : cart) {
+            System.out.println("Item: " + item);
             double price = Double.parseDouble(item[3]);
             int quantity = Integer.parseInt(item[2]);
-            total += price * quantity;
+            total = total + (price * quantity);
         }
         return total;
     }
@@ -383,10 +385,14 @@ public class Order {
                 int currentOrderID = Integer.parseInt(orderData[0]);
 
                 if (currentOrderID == orderID) {
+                    // Calculate the total price and delivery fee
+                    double originalPrice = getTotalPrice(cart);  // Get the original total price from the cart
+                    double deliveryFee = calculateDeliveryFee(originalPrice);
+                    double totalPaid = originalPrice + deliveryFee;
+                    
                     // Build the order items list
                     StringBuilder orderItems = new StringBuilder();
                     orderItems.append("[");
-                    System.out.println("size"+cart.size());
 
                     for (int i = 0; i < cart.size(); i++) {
                         String[] item = cart.get(i);  // Get the item at the current index
@@ -403,22 +409,20 @@ public class Order {
 
                     orderItems.append("]");
 
-                    // Calculate the total price and delivery fee
-                    double originalPrice = getTotalPrice();  // Get the original total price from the cart
-                    double deliveryFee = calculateDeliveryFee(originalPrice);
-                    double totalPaid = originalPrice + deliveryFee;
-
                     // Format the total price and delivery fee for display
                     String formattedTotalPaid = String.format("%.2f", totalPaid);
                     String formattedDeliveryFee = String.format("%.2f", deliveryFee);
 
                     // Update the order data with the new values
+                    //3,Take away,[2;1|4;1],Ordered,customerEmail,NULL,NULL,0.0,20.00,2025-01-01
+                    //30,Dine In,[2;4],,customer@mail.com,null,null,0.00,0.00,null
                     orderData[2] = orderItems.toString();  // Set order items
                     orderData[7] = formattedDeliveryFee;  // Set delivery fee
                     orderData[8] = formattedTotalPaid;  // Set total paid (price + delivery)
 
                     // Reconstruct the updated line
                     line = String.join(",", orderData);
+                    System.out.println("Line: " + line);
                 }
 
                 // Append the updated (or unchanged) line to the StringBuilder
@@ -449,7 +453,7 @@ public class Order {
             cartDetails.append(item[1]).append(" - Quantity: ").append(item[2])
                     .append(" - Total: RM").append(Double.parseDouble(item[3]) * Integer.parseInt(item[2])).append("\n");
         }
-        cartDetails.append("Total Price: RM").append(getTotalPrice());
+        cartDetails.append("Total Price: RM").append(getTotalPrice(cart));
         JOptionPane.showMessageDialog(null, cartDetails.toString());
     }
 
