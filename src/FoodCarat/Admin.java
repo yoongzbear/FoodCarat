@@ -368,7 +368,7 @@ public class Admin extends User {
     }
     
     // method for top up credit proccess
-    public void processChangesCredit(String email, String name, double currentAmount, double topUpAmount) throws IOException {
+    public void processTopUp(String email, String name, double currentAmount, double topUpAmount) throws IOException {
         double newAmount = currentAmount + topUpAmount;
 
         String transactionId = generateTransactionId();
@@ -390,7 +390,7 @@ public class Admin extends User {
         // Update the customer's credit in the file
         super.updateCredit(email, newAmount, cusFile, 2);
         
-        javax.swing.JOptionPane.showMessageDialog(null, "Changes completed successfully!\nThe receipt has been sent to the customer.", "Success", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+        javax.swing.JOptionPane.showMessageDialog(null, "Top-up completed successfully!\nThe receipt has been sent to the customer.", "Success", javax.swing.JOptionPane.INFORMATION_MESSAGE);
         
         // Show receipt UI
         adminCusReceipt receipt = new adminCusReceipt(transactionId, email, name, currentAmount, topUpAmount, newAmount, date, time);
