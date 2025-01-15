@@ -120,7 +120,6 @@ public class Review {
     
     public String getFeedback() throws FileNotFoundException, IOException { //get the feedback given by customer for the order
         StringBuilder result = new StringBuilder();
-        System.out.println("OrderID in Review:" + orderID);
 
         try (BufferedReader reader = new BufferedReader(new FileReader(reviewFileName))) {
             String line;
@@ -148,7 +147,6 @@ public class Review {
                 }
             }
         }
-        System.out.println("Still working here");
 
         //Format the result in the requested order
         result.append(orderID).append(",")  // orderID
@@ -156,7 +154,6 @@ public class Review {
               .append(vendorRating != null ? vendorRating : "null").append(",") 
               .append(vendorFeedback != null ? vendorFeedback : "null").append(",")
               .append(runnerRating != null ? runnerRating : "null");
-        System.out.println("Result"+result);
         //Return the formatted result (or empty if nothing found)
         return result.length() > 0 ? result.toString() : "";
     }
@@ -261,10 +258,9 @@ public class Review {
     }
     
     public void saveOrderFeedback() { 
-        // Generate reviewID
+        //Generate reviewID
         int lastFeedback = 0;
-
-        // Read the existing file to get the last feedback ID
+        //Read the existing file to get the last feedback ID
         try {
             BufferedReader br = new BufferedReader(new FileReader(reviewFileName));
             String line;
@@ -278,17 +274,17 @@ public class Review {
             e.printStackTrace();
         }
 
-        // Get review date
+        //Get review date
         Calendar today = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String reviewDate = sdf.format(today.getTime());
 
-        // Use a StringBuilder to accumulate the review records
+        //Use a StringBuilder to accumulate the review records
         StringBuilder stringBuilder = new StringBuilder(); 
 
-        // Case when there is an orderID (order, vendor, runner reviews)
+        //review from order
         if (orderID > 0) {
-            // Write Order Review Record
+            //1. Write Order Review Record
             stringBuilder.append(String.join(",", 
                 String.valueOf(lastFeedback), 
                 String.valueOf(orderID), 
@@ -301,7 +297,7 @@ public class Review {
 
             lastFeedback++;
 
-            // Write Vendor Review Record
+            //2. Write Vendor Review Record
             stringBuilder.append(String.join(",", 
                 String.valueOf(lastFeedback), 
                 String.valueOf(orderID), 
@@ -314,7 +310,7 @@ public class Review {
 
             lastFeedback++;
 
-            // Write Runner Review Record if it exists
+            //3. Write Runner Review Record if it exists
             if (runnerRating != null && !runnerRating.isEmpty()) {
                 stringBuilder.append(String.join(",", 
                     String.valueOf(lastFeedback), 
@@ -327,7 +323,7 @@ public class Review {
                 )).append("\n");
             }
         } 
-        // Case when there is no orderID (foodcourt complaint)
+        //foodcourt complaint
         else {
             stringBuilder.append(String.join(",", 
                 String.valueOf(lastFeedback), 
@@ -340,7 +336,7 @@ public class Review {
             )).append("\n");
         }
 
-        // Append the feedback to the file
+        // ppend the feedback to the file
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(reviewFileName, true));
             bw.write(stringBuilder.toString());
