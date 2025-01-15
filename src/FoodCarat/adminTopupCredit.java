@@ -262,8 +262,7 @@ public class adminTopupCredit extends javax.swing.JFrame {
         
         if (role != null && role.equals("customer")) {
             String data = user.getRoleSpecificData(searchEmail, role, 2);  //customer credit is at index 2
-            Admin admin = new Admin();
-            String[] custData = admin.performSearch(searchEmail, cusFile);
+            String[] custData = user.performSearch(searchEmail, cusFile);
             
             emailtxt.setText(custData[0]);
             currentamounttxt.setText(data);

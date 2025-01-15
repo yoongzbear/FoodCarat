@@ -631,6 +631,24 @@ public class User {
         }
     }
     
+    //search from the file for the user info (user.txt - name)- admin
+    //notification also use this (transaction id and transaction details) - admin
+    public String[] performSearch(String searchItem, String fileName) {
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(",");
+                if (data[0].equalsIgnoreCase(searchItem)) {
+                    return data; // Return the matching record
+                }
+            }
+        } catch (IOException ex) {
+            javax.swing.JOptionPane.showMessageDialog(null, "Error reading file: " + ex.getMessage());
+        }
+        return null; // Return null if no record is found
+    }
+    
      // Set the input not > max length
     public static DocumentFilter createLengthFilter(int maxLength) {
         return new DocumentFilter() {

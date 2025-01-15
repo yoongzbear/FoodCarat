@@ -316,16 +316,14 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
             if (role != null) {
                 if(role.equals("vendor")){
                     String data = user.getRoleSpecificData(searchEmail, role, 4);  //vendor credit is at index 4
-                    Admin admin = new Admin();
-                    String[] venData = admin.performSearch(searchEmail, userFile); //get vendor name
+                    String[] venData = user.performSearch(searchEmail, userFile); //get vendor name
 
                     emailtxt.setText(venData[0]);
                     currentamounttxt.setText(data);
                     nametxt.setText(venData[1]);
                 }else if(role.equals("runner")){
                     String data = user.getRoleSpecificData(searchEmail, role, 3);  //runner credit is at index 3
-                    Admin admin = new Admin();
-                    String[] runData = admin.performSearch(searchEmail, userFile); //get runner name
+                    String[] runData = user.performSearch(searchEmail, userFile); //get runner name
 
                     emailtxt.setText(runData[0]);
                     currentamounttxt.setText(data);

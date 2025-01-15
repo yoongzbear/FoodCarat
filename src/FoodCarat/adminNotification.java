@@ -74,8 +74,8 @@ public class adminNotification extends javax.swing.JFrame {
             String transactionMessageId = messageParts[messageParts.length - 1].replace(")", "").replace(":", "");
 
             // Retrieve details from the customer credit.txt file
-            Admin admin = new Admin();
-            String[] customerDetails = admin.performSearch(transactionMessageId, cuscreditFile);
+            User user = new User();
+            String[] customerDetails = user.performSearch(transactionMessageId, cuscreditFile);
                     
             if (customerDetails != null) {
                 // Parse details from the file
@@ -87,7 +87,7 @@ public class adminNotification extends javax.swing.JFrame {
                 String timePayment = customerDetails[5];
 
                 // Retrieve name of customer user.txt base on text file
-                String [] customerName = admin.performSearch(email, userFile);
+                String [] customerName = user.performSearch(email, userFile);
                 String name = customerName[1];
                 
                 // Create and display the receipt window

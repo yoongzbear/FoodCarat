@@ -343,25 +343,7 @@ public class Admin extends User {
         return writeFile(fileName, fileContent); // Reuse the writeFile method to save changes
     }
     
-    //Top up credit
-    //search from the file for the user info and the credit amount (customer.txt - email & credit amount) (user.txt - name)
-    //notification also use this (transaction id and transaction details)
-    public String[] performSearch(String searchItem, String fileName) {
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-            String line;
-
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split(",");
-                if (data[0].equalsIgnoreCase(searchItem)) {
-                    return data; // Return the matching record
-                }
-            }
-        } catch (IOException ex) {
-            javax.swing.JOptionPane.showMessageDialog(null, "Error reading file: " + ex.getMessage());
-        }
-        return null; // Return null if no record is found
-    }
-    
+    //Top up credit    
     // Utility method for calculating new amounts (withdraw or top up)
     public static double calculateNewAmount(double currentAmount, double amount, boolean isTopUp) {
         return isTopUp ? currentAmount + amount : currentAmount - amount;
