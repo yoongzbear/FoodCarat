@@ -40,7 +40,7 @@ public class Order {
     private String itemFile = "resources/item.txt";
     
     public Order(){ //for deleteIncompleteOrder()
-        System.out.println(orderID); //for checking                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+        System.out.println("At order class:" + orderID); //for checking                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
     }
     
     public Order(String choice){ //for initialOrder()
@@ -216,13 +216,21 @@ public class Order {
         List<Integer> orderIDs = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(orderFile));
-                BufferedReader itemReader = new BufferedReader(new FileReader(itemFile))) {
+            BufferedReader itemReader = new BufferedReader(new FileReader(itemFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts.length > 10) {
                     if (type.equals("vendor")) {
-                        String currentVendorEmail = parts[5];
+                        String orderItems = parts[2];
+                        String currentVendorEmail = "";
+                        orderItems = orderItems.replace("[", "").replace("]", "");
+                        String[] items = orderItems.split("\\|");
+                        for (String item : items) {
+                            String[] itemDetails = item.split(";");
+                            currentVendorEmail = parts[4];
+                            System.out.println("Vendor:" + currentVendorEmail);
+                        }
                         if (currentVendorEmail.equals(email)) {
                             int orderID = Integer.parseInt(parts[0]);  
                             orderIDs.add(orderID);
