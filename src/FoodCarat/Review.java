@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
@@ -222,6 +223,40 @@ public class Review {
         return reviews;
     }
     
+    //get review, order and item info based on review ID
+    public String[] getReview(String id) {
+        String[] reviewInfo = null;
+        try {
+            FileReader fr = new FileReader(reviewFileName);
+            BufferedReader br = new BufferedReader(fr);
+            String read;
+
+            while ((read = br.readLine()) != null) {
+                String[] reviewData = read.split(",");
+                if (reviewData[0].equals(id)) {
+                    //get order info
+                    //0reviewID,1orderID,2reviewType,3rating,4review,5date,6customerEmail
+                    String orderID = reviewData[1];
+                    Order order = new Order();
+                    String[] orderData = order.getOrder(orderID);
+                    //combine reviewData and orderData
+                    if (orderData != null) {
+                        reviewInfo = new String[reviewData.length + orderData.length];
+                        System.arraycopy(reviewData, 0, reviewInfo, 0, reviewData.length);
+                        System.arraycopy(orderData, 0, reviewInfo, reviewData.length, orderData.length);
+                    } else {
+                        reviewInfo = reviewData; 
+                    }
+                    break;
+                }
+            }
+            br.close();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Failed to read from the file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        return reviewInfo;
+    }
     
     public void saveOrderFeedback() { 
         //generate reviewID

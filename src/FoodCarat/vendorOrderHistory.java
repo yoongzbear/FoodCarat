@@ -107,7 +107,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         methodLabel.setText(details[1].trim());
         statusLabel.setText(details[3].trim());
         emailLabel.setText(details[4].trim());
-        idLabel1.setText(details[9].trim());
+        dateLabel.setText(details[9].trim());
         totalPriceLabel.setText("RM"+details[10].trim());
         
         //cancellation reason - need to connect with the get cancellation reason based on cancel id
@@ -252,7 +252,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
         idLabel = new javax.swing.JLabel();
-        idLabel1 = new javax.swing.JLabel();
+        dateLabel = new javax.swing.JLabel();
         emailLabel = new javax.swing.JLabel();
         methodLabel = new javax.swing.JLabel();
         feedbackLabel = new javax.swing.JLabel();
@@ -365,8 +365,8 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         idLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         idLabel.setText("ID");
 
-        idLabel1.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        idLabel1.setText("Date");
+        dateLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
+        dateLabel.setText("Date");
 
         emailLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         emailLabel.setText("Email");
@@ -422,7 +422,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel12)
                                 .addGap(18, 18, 18)
-                                .addComponent(idLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(dateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jLabel16)
                                 .addGap(18, 18, 18)
@@ -458,7 +458,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                     .addComponent(jLabel13)
                     .addComponent(jLabel12)
                     .addComponent(idLabel)
-                    .addComponent(idLabel1)
+                    .addComponent(dateLabel)
                     .addComponent(jLabel16)
                     .addComponent(statusLabel))
                 .addGap(18, 18, 18)
@@ -640,7 +640,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     }//GEN-LAST:event_menuBtnActionPerformed
 
     private void viewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewBtnActionPerformed
-        //if got reason ID, display the label adn text field for reason cancelled
+        //if got reason ID, display the label and text field for reason cancelled
         //display selected row of item in the table
         int selectedRow = orderTable.getSelectedRow();
 
@@ -719,11 +719,11 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     private javax.swing.JLabel cancelReasonLabel;
     private javax.swing.JComboBox<String> chartMonthBox;
     private javax.swing.JLabel chartWeekRange;
+    private javax.swing.JLabel dateLabel;
     private javax.swing.JLabel emailLabel;
     private javax.swing.JLabel feedbackLabel;
     private javax.swing.JTextArea feedbackTxtArea;
     private javax.swing.JLabel idLabel;
-    private javax.swing.JLabel idLabel1;
     private javax.swing.JTable itemTable;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
