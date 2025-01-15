@@ -57,6 +57,7 @@ public class Review {
     }
     
     public Review(String foodCourtComplaint){
+        this.orderID = -1;
         this.foodCourtComplaint = foodCourtComplaint;
         this.customerEmail = User.getSessionEmail();
     }
@@ -119,23 +120,22 @@ public class Review {
     
     public String getFeedback() throws FileNotFoundException, IOException { //get the feedback given by customer for the order
         StringBuilder result = new StringBuilder();
+        System.out.println("OrderID in Review:" + orderID);
 
         try (BufferedReader reader = new BufferedReader(new FileReader(reviewFileName))) {
             String line;
 
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
+                System.out.println("Part:"+Arrays.toString(parts));
                 String reviewID = parts[0];
-                    String reviewType = parts[2];  
-                    String rating = parts[3];   
-                    String review = parts[4];  
-                    String date = parts[5];  
+                String reviewType = parts[2];  
+                String rating = parts[3];   
+                String review = parts[4];  
+                String date = parts[5];  
 
                 //Check if orderID matches the current order's ID
                 if (parts[1].equals(String.valueOf(this.orderID))) {
-                    //get splitted data if orderID match
-                    
-                    
                     //define order rate and review based on reviewType, if null will return null
                     if (reviewType.equals("order")) {
                         orderFeedback = review != null && !review.trim().isEmpty() ? review : "No feedback provided";  
@@ -148,13 +148,15 @@ public class Review {
                 }
             }
         }
+        System.out.println("Still working here");
 
         //Format the result in the requested order
-            result.append(orderID).append(",")  // orderID
-                  .append(orderFeedback != null ? orderFeedback : "null").append(",") 
-                  .append(vendorRating != null ? vendorRating : "null").append(",") 
-                  .append(vendorFeedback != null ? vendorFeedback : "null").append(",")
-                  .append(runnerRating != null ? runnerRating : "null");
+        result.append(orderID).append(",")  // orderID
+              .append(orderFeedback != null ? orderFeedback : "null").append(",") 
+              .append(vendorRating != null ? vendorRating : "null").append(",") 
+              .append(vendorFeedback != null ? vendorFeedback : "null").append(",")
+              .append(runnerRating != null ? runnerRating : "null");
+        System.out.println("Result"+result);
         //Return the formatted result (or empty if nothing found)
         return result.length() > 0 ? result.toString() : "";
     }
@@ -259,10 +261,10 @@ public class Review {
     }
     
     public void saveOrderFeedback() { 
-        //generate reviewID
+        // Generate reviewID
         int lastFeedback = 0;
-        boolean orderIDFound = false;  //to determine feedback or complaint
 
+        // Read the existing file to get the last feedback ID
         try {
             BufferedReader br = new BufferedReader(new FileReader(reviewFileName));
             String line;
@@ -270,123 +272,89 @@ public class Review {
                 String[] record = line.split(",");
                 lastFeedback = Integer.parseInt(record[0]);
             }
-            lastFeedback = lastFeedback + 1;
+            lastFeedback = lastFeedback + 1; // Increment to generate new feedback ID
             br.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        //review date
+        // Get review date
         Calendar today = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String formattedDate = sdf.format(today.getTime());
+        String reviewDate = sdf.format(today.getTime());
 
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(reviewFileName));
-            StringBuilder stringBuilder = new StringBuilder(); 
-            String line;
+        // Use a StringBuilder to accumulate the review records
+        StringBuilder stringBuilder = new StringBuilder(); 
 
-            while ((line = br.readLine()) != null) {
-                String[] record = line.split(",");
-                int checkOrderID = Integer.parseInt(record[0]);
+        // Case when there is an orderID (order, vendor, runner reviews)
+        if (orderID > 0) {
+            // Write Order Review Record
+            stringBuilder.append(String.join(",", 
+                String.valueOf(lastFeedback), 
+                String.valueOf(orderID), 
+                "order", 
+                "null", 
+                orderFeedback, 
+                reviewDate, 
+                customerEmail
+            )).append("\n");
 
-                if (checkOrderID == orderID) {
-                    orderIDFound = true;
+            lastFeedback++;
 
-                    // 1. Write Order Review Record
-                    String orderReviewRecord = String.join(",", 
-                        String.valueOf(lastFeedback), 
-                        String.valueOf(orderID), 
-                        "order", 
-                        "null",
-                        orderFeedback, 
-                        reviewDate
-                    );
-                    stringBuilder.append(orderReviewRecord).append("\n");
+            // Write Vendor Review Record
+            stringBuilder.append(String.join(",", 
+                String.valueOf(lastFeedback), 
+                String.valueOf(orderID), 
+                "vendor", 
+                vendorRating, 
+                vendorFeedback, 
+                reviewDate, 
+                customerEmail
+            )).append("\n");
 
-                    lastFeedback = lastFeedback + 1;
+            lastFeedback++;
 
-                    // 2. Write Vendor Review Record
-                    String vendorReviewRecord = String.join(",", 
-                        String.valueOf(lastFeedback), 
-                        String.valueOf(orderID), 
-                        "vendor", 
-                        vendorRating, 
-                        vendorFeedback, 
-                        reviewDate
-                    );
-                    stringBuilder.append(vendorReviewRecord).append("\n");
-
-                    // 3. Write Runner Review Record if exists
-                    if (runnerRating != null) {
-                        lastFeedback = lastFeedback + 1;
-                        String runnerReviewRecord = String.join(",", 
-                            String.valueOf(lastFeedback), 
-                            String.valueOf(orderID), 
-                            "runner", 
-                            runnerRating,
-                            "null", 
-                            reviewDate
-                        );
-                        stringBuilder.append(runnerReviewRecord).append("\n");
-                    }
-                } else {
-                    stringBuilder.append(line).append("\n");
-                }
-            }
-            br.close();
-
-            //foodcourt complaint
-            if (!orderIDFound) {
-                String foodcourtReviewRecord = String.join(",", 
+            // Write Runner Review Record if it exists
+            if (runnerRating != null && !runnerRating.isEmpty()) {
+                stringBuilder.append(String.join(",", 
                     String.valueOf(lastFeedback), 
-                    "null",  
-                    "foodcourt", 
+                    String.valueOf(orderID), 
+                    "runner", 
+                    runnerRating, 
                     "null", 
-                    foodCourtComplaint, 
-                    reviewDate
-                );
-                stringBuilder.append(foodcourtReviewRecord).append("\n");
+                    reviewDate, 
+                    customerEmail
+                )).append("\n");
             }
+        } 
+        // Case when there is no orderID (foodcourt complaint)
+        else {
+            stringBuilder.append(String.join(",", 
+                String.valueOf(lastFeedback), 
+                "null",  
+                "foodcourt", 
+                "null", 
+                foodCourtComplaint, 
+                reviewDate, 
+                customerEmail
+            )).append("\n");
+        }
 
-            // Write the updated content back to the file
-            BufferedWriter bw = new BufferedWriter(new FileWriter(reviewFileName));
+        // Append the feedback to the file
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(reviewFileName, true));
             bw.write(stringBuilder.toString());
             bw.close();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
     
-    // Method to get orderIDs associated with a specific vendorEmail
-    private List<Integer> getOrderIDsByVendorEmail(String vendorEmail) {
-        List<Integer> orderIDs = new ArrayList<>();
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(orderFileName))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                    if (parts.length > 5) {  // Check for sufficient columns
-                    String currentVendorEmail = parts[5];
-                    if (currentVendorEmail.equals(vendorEmail)) {
-                        int orderID = Integer.parseInt(parts[0]);  // Order ID is in position 0
-                        orderIDs.add(orderID);
-                    }
-                }
-            }
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "VendorEmail: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-
-        return orderIDs;
-    }
-
     // Method to calculate average vendor rating based on vendorEmail
     public double getVendorAverageRating(String vendorEmail) {
-        List<Integer> orderIDs = getOrderIDsByVendorEmail(vendorEmail);
-//        Order orders = new Order();
-//        List<Integer> orderIDs = orders.getOrderIDsReview(vendorEmail, "vendor");
+        //List<Integer> orderIDs = getOrderIDsByVendorEmail(vendorEmail);
+        Order orders = new Order();
+        List<Integer> orderIDs = orders.getOrderIDsReview(vendorEmail, "vendor");
         if (orderIDs.isEmpty()) {
             return 0;  // No orders for the vendor, so return 0
         }
@@ -422,9 +390,8 @@ public class Review {
 
     // Method to get a random vendor review based on vendorEmail
     public String getRandomVendorReview(String vendorEmail) {
-        List<Integer> orderIDs = getOrderIDsByVendorEmail(vendorEmail);
-//        Order orders = new Order();
-//        List<Integer> orderIDs = orders.getOrderIDsReview(vendorEmail, "vendor");
+        Order orders = new Order();
+        List<Integer> orderIDs = orders.getOrderIDsReview(vendorEmail, "vendor");
         if (orderIDs.isEmpty()) return "No reviews available";  // No orders for the vendor, so return "No reviews available"
 
         List<String> vendorReviews = new ArrayList<>();
@@ -458,9 +425,8 @@ public class Review {
 
     // Method to get the runner rating based on the runner's email
     public String getRunnerRatingForRunner(String runnerEmail) {
-        List<Integer> orderIDs = getOrderIDsByRunnerEmail(runnerEmail);
-//        Order orders = new Order();
-//        List<Integer> orderIDs = orders.getOrderIDsReview(runnerEmail, "runner");
+        Order orders = new Order();
+        List<Integer> orderIDs = orders.getOrderIDsReview(runnerEmail, "runner");
         if (orderIDs.isEmpty()) return "No rating";  // If no orders found for the runner, return "No rating"
 
         try (BufferedReader reader = new BufferedReader(new FileReader(reviewFileName))) {
