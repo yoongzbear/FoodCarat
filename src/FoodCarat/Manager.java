@@ -17,11 +17,11 @@ import java.util.Map;
  * @author User
  */
 public class Manager {
-    
     //Monitor Runner Performance
     //
-    public static Map<String, Runner> getRunnerPerformance(String selectedMonth) throws IOException {
-       Map<String, Runner> performanceDataMap = new HashMap<>();
+
+    public static Map<String, RunnerPerformanceData> getRunnerPerformance(String selectedMonth) throws IOException {
+       Map<String, RunnerPerformanceData> performanceDataMap = new HashMap<>();
         
        // Read the customer order file to map orderID to runnerID
        BufferedReader orderReader = new BufferedReader(new FileReader("customer order.txt"));
@@ -47,7 +47,8 @@ public class Manager {
             String reviewType = reviewDetails[2].trim();
             String orderID = reviewDetails[6].trim();
             
-            String runnerID = Order.getRunnerForOrder(orderID);// fetch runnerID
+            Order order = new Order();
+            String runnerID = order.getRunnerForOrder(orderID);// fetch runnerID
             if ("runner".equals(reviewType)) {
                 String rating = reviewDetails[3].trim();
                 String reviewDate = reviewDetails[5].trim();
@@ -55,7 +56,7 @@ public class Manager {
                 // Check if the review falls in the selected month
                 if (isInSelectedMonth(reviewDate, selectedMonth)) {
                     // Add or update performance data for the runner
-                    Runner data = performanceDataMap.getOrDefault(runnerID, new Runner());
+                    RunnerPerformanceData data = performanceDataMap.getOrDefault(runnerID, new RunnerPerformanceData());
                     int ratingValue = Integer.parseInt(rating);
                     data.addOrder(orderID);
                     data.addRating(ratingValue);
@@ -77,6 +78,28 @@ public class Manager {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public static class RunnerPerformanceData {
+        private int totalOrders = 0;
+        private int totalRating = 0;
+
+        public void addOrder(String orderID) {
+            totalOrders++;
+        }
+
+        public void addRating(int rating) {
+            totalRating += rating;
+        }
+
+        public int getTotalOrders() {
+            return totalOrders;
+        }
+
+        public double getAverageRating() {
+            if (totalOrders == 0) return 0;
+            return (double) totalRating / totalOrders;
         }
     }
 }
