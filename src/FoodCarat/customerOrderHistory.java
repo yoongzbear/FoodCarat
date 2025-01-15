@@ -165,7 +165,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
             while ((line = reader.readLine()) != null) {
                 String[] record = line.split(",");
                 String rUser = record[4];
-                if (rUser.equals("customerEmail")){ //UserSession.getCustomerEmail()
+                if (rUser.equals(User.getSessionEmail())){
                     String rOrderType = record[1];
                     String rOrderList = record[2].replace("[", "").replace("]", "");
                     String rOrderStatus = record[3];
