@@ -44,6 +44,9 @@ public class customerViewMenu extends javax.swing.JFrame {
         this.orderType = orderType;
         this.currentOrder = new Order(orderType, "customerEmail"); 
         initComponents();
+        lItemName.setText("");
+        lUnitPrice.setText("");
+        lTotalPrice.setText("");
         bBackVendor.setVisible(false);
         bSave.setEnabled(false);
         bRemove.setEnabled(false);
@@ -618,6 +621,13 @@ public class customerViewMenu extends javax.swing.JFrame {
 
         if (quantityStr == null || quantityStr.trim().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Quantity cannot be empty.");
+            
+            //allow user to back to vendor menu only if the cart have no item
+            if (currentOrder.getCart().isEmpty()) {
+                bBackVendor.setEnabled(true);
+            } else {
+                bBackVendor.setEnabled(false);
+            }
             return;
         }
 
@@ -692,10 +702,13 @@ public class customerViewMenu extends javax.swing.JFrame {
                 currentOrder.removeItemFromCart(Integer.parseInt(itemID)); 
                 JOptionPane.showMessageDialog(null, "Item removed.");
                 
+                //disable the checkout button and enable back to vendor button if the cart is empty
                 if (currentOrder.getCart().isEmpty()) {
-                    bCheckOut.setEnabled(false); //disable the checkout button if the cart is empty
+                    bCheckOut.setEnabled(false); 
+                    bBackVendor.setEnabled(true);
                 } else {
                     bCheckOut.setEnabled(true);
+                    bBackVendor.setEnabled(false);
                 }
                 populateCartTable();
             }
