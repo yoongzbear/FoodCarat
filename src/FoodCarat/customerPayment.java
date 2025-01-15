@@ -28,38 +28,37 @@ public class customerPayment extends javax.swing.JFrame {
     public customerPayment(int orderID, String orderType) {
         this.orderType = orderType;
         this.orderID = orderID;
-        //5,Dine In,[2;2|1;1],Dine In,customerEmail,vendor@mail.com,null
         initComponents();
         displayOrderDetails();
     }
     
     private void displayOrderDetails() {
-        Order order = new Order(orderType, "customerEmail");
+        Order order = new Order(orderType, User.getSessionEmail());
         String orderIDStr = String.valueOf(orderID);
         String[] tokens = order.getOrder(orderIDStr);
+        System.out.println(Arrays.toString(tokens));
+        System.out.println(User.getSessionEmail());
         //extract the relevant parameters
+        //40,Dine In,[2;3],,customer@mail.com,null,null,0.00,41.70,null
         //orderID, orderType, arr[itemID, orderQuantity], orderStatus, orderFeedback, customerID/email,runnerID, reasonID, deliveryFee, totalPaid, orderDate
-        int orderID = Integer.parseInt(tokens[0]);
         String orderType = tokens[1];
         String orderItems = tokens[2];
         String orderStatus = tokens[3];
-        String orderFeedback = tokens[4];
-        String customerEmail = tokens[5];
-        String deliveryFee = tokens[8];
-        String paymentTotal = tokens[9];
+        String customerEmail = tokens[4];
+        String deliveryFee = tokens[7];
+        String paymentTotal = tokens[8];
         
         //get customer point balance
-        Customer customer = new Customer("customerEmail");
+        Customer customer = new Customer(User.getSessionEmail());
         int pointBalance = customer.getPoints();
-        System.out.println(pointBalance);
         
         //display
         sOrderID.setText(String.valueOf(orderID));
         sOrderType.setText(String.valueOf(orderType));
         sDeliveryFee.setText("RM "+String.valueOf(deliveryFee));
-        sPayTotal.setText("RM "+String.valueOf(deliveryFee));
+        sPayTotal.setText("RM "+String.valueOf(paymentTotal));
         //tOrderItem
-        sCreditBalance.setText(String.valueOf(pointBalance));
+        //sCreditBalance.setText(String.valueOf(creditBalance));
         sPointBalance.setText(String.valueOf(pointBalance));
         
         populateOrderItemsTable(orderItems);
@@ -259,7 +258,7 @@ public class customerPayment extends javax.swing.JFrame {
                                         .addComponent(jLabel8)
                                         .addGap(18, 18, 18)
                                         .addComponent(sPayTotal, javax.swing.GroupLayout.DEFAULT_SIZE, 64, Short.MAX_VALUE)))))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(48, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -322,13 +321,15 @@ public class customerPayment extends javax.swing.JFrame {
     private void bPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bPayActionPerformed
         //format the payment date
         Calendar today = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDate = sdf.format(today.getTime());
         
         int redeemPoints = (int) tfRedeemPoints.getValue(); //user wants to redeem
-        int currentBalance = Integer.parseInt(sCreditBalance.getText()); //user's current point balance
+        //int currentBalance = Integer.parseInt(sCreditBalance.getText()); //user's current point balance
+        int currentBalance = 15;
         int currentPoints = Integer.parseInt(sPointBalance.getText()); //user's current point balance
-        double payTotal = Double.parseDouble(sPayTotal.getText()); 
+        String payTotalStr = sPayTotal.getText().replaceAll("RM ", ""); 
+        double payTotal = Double.parseDouble(payTotalStr); 
         int cusPayableAmount = redeemPoints + currentBalance; //customer
         
         if (redeemPoints > currentPoints) {
