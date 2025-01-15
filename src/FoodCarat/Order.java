@@ -213,85 +213,86 @@ public class Order {
     }
     
     //get order IDs by vendor/runner email
-//    public List<Integer> getOrderIDsReview(String email, String type) {
-//        List<Integer> orderIDs = new ArrayList<>();
-//
-//        try (BufferedReader reader = new BufferedReader(new FileReader(orderFile));
-//                BufferedReader itemReader = new BufferedReader(new FileReader(itemFile))) {
-//            String line;
-//            while ((line = reader.readLine()) != null) {
-//                String[] parts = line.split(",");
-//                if (parts.length > 10) {
-//                    if (type.equals("vendor")) {
-//                        String currentVendorEmail = parts[5];
-//                        if (currentVendorEmail.equals(email)) {
-//                            int orderID = Integer.parseInt(parts[0]);  
-//                            orderIDs.add(orderID);
-//                        }
-//                    } else if (type.equals("runner")) {
-//                        String currentRunnerEmail = parts[6];  
-//
-//                        if (currentRunnerEmail.equals(email)) {
-//                            int orderID = Integer.parseInt(parts[0]);  
-//                            orderIDs.add(orderID);
-//                        }
-//                    }
-//                }
-//            }
-//        } catch (IOException e) {
-//            JOptionPane.showMessageDialog(null, "Could not find " + email + " in " + type + ": " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-//        }
-//
-//        return orderIDs;
-//    }
     public List<Integer> getOrderIDsReview(String email, String type) {
         List<Integer> orderIDs = new ArrayList<>();
 
-        try (BufferedReader orderReader = new BufferedReader(new FileReader(orderFile)); BufferedReader itemReader = new BufferedReader(new FileReader(itemFile))) {
-
-            List<String> vendorItemIDs = new ArrayList<>();
-
-            // If the type is "vendor", collect all item IDs associated with the vendor
-            if (type.equals("vendor")) {
-                String itemLine;
-                while ((itemLine = itemReader.readLine()) != null) {
-                    String[] itemParts = itemLine.split(",");
-                    if (itemParts[5].equals(email)) { // Check if the item belongs to the vendor
-                        vendorItemIDs.add(itemParts[0]);
-                    }
-                }
-            }
-
-            // Read orders and filter based on type
-            String orderLine;
-            while ((orderLine = orderReader.readLine()) != null) {
-                String[] orderParts = orderLine.split(",");
-                if (type.equals("vendor")) {
-                    // Vendor logic: Check if order contains vendor items
-                    String orderItems = orderParts[2]; // [itemID;quantity|itemID;quantity]
-                    String[] items = orderItems.replace("[", "").replace("]", "").split("\\|");
-
-                    for (String item : items) {
-                        String itemID = item.split(";")[0];
-                        if (vendorItemIDs.contains(itemID)) {
-                            orderIDs.add(Integer.parseInt(orderParts[0])); // Add the order ID
-                            break; // Exit loop as this order matches the vendor
+        try (BufferedReader reader = new BufferedReader(new FileReader(orderFile));
+                BufferedReader itemReader = new BufferedReader(new FileReader(itemFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length > 10) {
+                    if (type.equals("vendor")) {
+                        String currentVendorEmail = parts[5];
+                        if (currentVendorEmail.equals(email)) {
+                            int orderID = Integer.parseInt(parts[0]);  
+                            orderIDs.add(orderID);
                         }
-                    }
-                } else if (type.equals("runner")) {
-                    // Runner logic: Check if the runner email matches
-                    String runnerEmail = orderParts[5]; // Assuming runner email is in column 5
-                    if (runnerEmail.equals(email)) {
-                        orderIDs.add(Integer.parseInt(orderParts[0])); // Add the order ID
+                    } else if (type.equals("runner")) {
+                        String currentRunnerEmail = parts[6];  
+
+                        if (currentRunnerEmail.equals(email)) {
+                            int orderID = Integer.parseInt(parts[0]);  
+                            orderIDs.add(orderID);
+                        }
                     }
                 }
             }
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Error reading files: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Could not find " + email + " in " + type + ": " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
 
         return orderIDs;
     }
+    
+//    public List<Integer> getOrderIDsReview(String email, String type) {
+//        List<Integer> orderIDs = new ArrayList<>();
+//
+//        try (BufferedReader orderReader = new BufferedReader(new FileReader(orderFile)); BufferedReader itemReader = new BufferedReader(new FileReader(itemFile))) {
+//
+//            List<String> vendorItemIDs = new ArrayList<>();
+//
+//            // If the type is "vendor", collect all item IDs associated with the vendor
+//            if (type.equals("vendor")) {
+//                String itemLine;
+//                while ((itemLine = itemReader.readLine()) != null) {
+//                    String[] itemParts = itemLine.split(",");
+//                    if (itemParts[5].equals(email)) { // Check if the item belongs to the vendor
+//                        vendorItemIDs.add(itemParts[0]);
+//                    }
+//                }
+//            }
+//
+//            // Read orders and filter based on type
+//            String orderLine;
+//            while ((orderLine = orderReader.readLine()) != null) {
+//                String[] orderParts = orderLine.split(",");
+//                if (type.equals("vendor")) {
+//                    // Vendor logic: Check if order contains vendor items
+//                    String orderItems = orderParts[2]; // [itemID;quantity|itemID;quantity]
+//                    String[] items = orderItems.replace("[", "").replace("]", "").split("\\|");
+//
+//                    for (String item : items) {
+//                        String itemID = item.split(";")[0];
+//                        if (vendorItemIDs.contains(itemID)) {
+//                            orderIDs.add(Integer.parseInt(orderParts[0])); // Add the order ID
+//                            break; // Exit loop as this order matches the vendor
+//                        }
+//                    }
+//                } else if (type.equals("runner")) {
+//                    // Runner logic: Check if the runner email matches
+//                    String runnerEmail = orderParts[5]; // Assuming runner email is in column 5
+//                    if (runnerEmail.equals(email)) {
+//                        orderIDs.add(Integer.parseInt(orderParts[0])); // Add the order ID
+//                    }
+//                }
+//            }
+//        } catch (IOException e) {
+//            JOptionPane.showMessageDialog(null, "Error reading files: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+//        }
+//
+//        return orderIDs;
+//    }
 
     
     //get new orders with status "pending accept"
@@ -372,7 +373,7 @@ public class Order {
     public void deleteIncompleteOrder(int orderID){ //delete order if customer back to main without completing the order
         try {
             //Reading the content of the file
-            BufferedReader br = new BufferedReader(new FileReader("resources/customerOrder.txt"));
+            BufferedReader br = new BufferedReader(new FileReader(orderFile));
             StringBuilder fileContent = new StringBuilder();
             String line;
 
@@ -388,7 +389,7 @@ public class Order {
             br.close();
 
             //Overwriting the file with the updated content
-            BufferedWriter bw = new BufferedWriter(new FileWriter("resources/customerOrder.txt"));
+            BufferedWriter bw = new BufferedWriter(new FileWriter(orderFile));
             bw.write(fileContent.toString());
             bw.close();
 
@@ -601,9 +602,9 @@ public class Order {
     
     //Manager Side to use
     // get the runner email after mapping the order id in customer order and review.txt
-    public static String getRunnerForOrder(String orderID) {
+    public String getRunnerForOrder(String orderID) {
         try {
-            BufferedReader orderReader = new BufferedReader(new FileReader("customer order.txt"));
+            BufferedReader orderReader = new BufferedReader(new FileReader(orderFile));
             String line;
 
             // Loop through the lines in the customer_order.txt file
