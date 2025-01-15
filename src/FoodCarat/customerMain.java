@@ -25,6 +25,17 @@ public class customerMain extends javax.swing.JFrame {
         username.setText(User.getSessionName());
         Customer customer = new Customer(User.getSessionEmail());
         pointsLabel.setText(String.valueOf(customer.getPoints()));
+        String creditBalance = "0";
+        try {
+            User user = new User();
+            String role = user.getRoleByEmail(User.getSessionEmail(), "resources/user.txt");
+            if (role != null && role.equals("customer")) {
+                creditBalance = user.getRoleSpecificData(User.getSessionEmail(), role, 2);
+            }
+            creditLabel.setText(creditBalance);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
     
     public String displayCredit() throws IOException{
