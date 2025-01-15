@@ -33,35 +33,43 @@ public class customerPayment extends javax.swing.JFrame {
     }
     
     private void displayOrderDetails() {
-        Order order = new Order(orderType, User.getSessionEmail());
-        String orderIDStr = String.valueOf(orderID);
-        String[] tokens = order.getOrder(orderIDStr);
-        System.out.println(Arrays.toString(tokens));
-        System.out.println(User.getSessionEmail());
-        //extract the relevant parameters
-        //40,Dine In,[2;3],,customer@mail.com,null,null,0.00,41.70,null
-        //orderID, orderType, arr[itemID, orderQuantity], orderStatus, orderFeedback, customerID/email,runnerID, reasonID, deliveryFee, totalPaid, orderDate
-        String orderType = tokens[1];
-        String orderItems = tokens[2];
-        String orderStatus = tokens[3];
-        String customerEmail = tokens[4];
-        String deliveryFee = tokens[7];
-        String paymentTotal = tokens[8];
-        
-        //get customer point balance
-        Customer customer = new Customer(User.getSessionEmail());
-        int pointBalance = customer.getPoints();
-        
-        //display
-        sOrderID.setText(String.valueOf(orderID));
-        sOrderType.setText(String.valueOf(orderType));
-        sDeliveryFee.setText("RM "+String.valueOf(deliveryFee));
-        sPayTotal.setText("RM "+String.valueOf(paymentTotal));
-        //tOrderItem
-        //sCreditBalance.setText(String.valueOf(creditBalance));
-        sPointBalance.setText(String.valueOf(pointBalance));
-        
-        populateOrderItemsTable(orderItems);
+        try {
+            Order order = new Order(orderType, User.getSessionEmail());
+            String orderIDStr = String.valueOf(orderID);
+            String[] tokens = order.getOrder(orderIDStr); // This might throw IOException
+
+            // Extract the relevant parameters
+            String orderType = tokens[1];
+            String orderItems = tokens[2];
+            String orderStatus = tokens[3];
+            String customerEmail = tokens[4];
+            String deliveryFee = tokens[7];
+            String paymentTotal = tokens[8];
+
+            // Get customer point balance
+            Customer customer = new Customer(User.getSessionEmail());
+            int pointBalance = customer.getPoints();
+            String creditBalance = "0";
+
+            // Display
+            sOrderID.setText(String.valueOf(orderID));
+            sOrderType.setText(String.valueOf(orderType));
+            sDeliveryFee.setText("RM " + String.valueOf(deliveryFee));
+            sPayTotal.setText("RM " + String.valueOf(paymentTotal));
+
+            User user = new User();
+            String role = user.getRoleByEmail(customerEmail, "resources/user.txt");
+            if (role != null && role.equals("customer")) {
+                creditBalance = user.getRoleSpecificData(User.getSessionEmail(), role, 2);
+            }
+            sCreditBalance.setText(creditBalance);
+            sPointBalance.setText(String.valueOf(pointBalance));
+
+            populateOrderItemsTable(orderItems);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error loading order details: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
     
     private void populateOrderItemsTable(String orderItemsString) {
@@ -319,27 +327,39 @@ public class customerPayment extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bPayActionPerformed
-        //format the payment date
+        //payment date
         Calendar today = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDate = sdf.format(today.getTime());
-        
-        int redeemPoints = (int) tfRedeemPoints.getValue(); //user wants to redeem
-        //int currentBalance = Integer.parseInt(sCreditBalance.getText()); //user's current point balance
-        int currentBalance = 15;
-        int currentPoints = Integer.parseInt(sPointBalance.getText()); //user's current point balance
-        String payTotalStr = sPayTotal.getText().replaceAll("RM ", ""); 
+
+        //retrieve data
+        int redeemPoints = (int) tfRedeemPoints.getValue(); 
+        int currentBalance = Integer.parseInt(sCreditBalance.getText()); 
+        int currentPoints = Integer.parseInt(sPointBalance.getText()); 
+        String payTotalStr = sPayTotal.getText().replaceAll("RM ", "");
         double payTotal = Double.parseDouble(payTotalStr); 
-        int cusPayableAmount = redeemPoints + currentBalance; //customer
+        double deliveryFee = Double.parseDouble(sDeliveryFee.getText().replace("RM ", ""));
         
+        double orderTotal = payTotal - deliveryFee; //calculate order total excluding delivery fee
+        int maxRedeemPoints = (int) (orderTotal * 0.25 / 0.01); //calculate the maximum points to redeem (25% of the order total exclude delivery)
+
+        //check if points more than current points and maximum points redeem
         if (redeemPoints > currentPoints) {
             JOptionPane.showMessageDialog(rootPane, "Points to redeem exceeds current balance.");
-            return; 
+            return;
         } else if (redeemPoints < 0) {
             JOptionPane.showMessageDialog(rootPane, "Points to redeem cannot be negative.");
             return;
+        } else if (redeemPoints > maxRedeemPoints) {
+            JOptionPane.showMessageDialog(rootPane, "You can only redeem a maximum of " + maxRedeemPoints + " points (25% of the order total excluding delivery fee)");
+            return;
         }
-        
+
+        //calculate the total redeemable amount based on points into RM
+        double redeemAmount = redeemPoints * 0.01;
+
+        //ensure the total payable amount (after redemption) is less than or equal to the payment total
+        double cusPayableAmount = redeemAmount + currentBalance; 
         if (cusPayableAmount < payTotal) {
             JOptionPane.showMessageDialog(rootPane, "Insufficient balance to complete the payment. Please contact admin to top up your credit or use more points.");
             return;
@@ -351,21 +371,23 @@ public class customerPayment extends javax.swing.JFrame {
                 String[] tokens = line.split(",");
                 int cusOrderID = Integer.parseInt(tokens[0]);
 
-                if (cusOrderID == Integer.parseInt(sOrderID.getText())) { 
+                if (cusOrderID == Integer.parseInt(sOrderID.getText())) {
 
-                    double newPaymentTotal = payTotal - redeemPoints; 
+                    double newPaymentTotal = payTotal - redeemAmount; //update the payment total
 
+                    //deduct points from the customer
                     Customer customer = new Customer(User.getSessionEmail());
                     customer.deductPoints(redeemPoints);
 
+                    //write the payment details to the order
                     Order order = new Order(orderID);
-                    order.writePaymentDetails(orderID, newPaymentTotal, formattedDate); //write order date
+                    order.writePaymentDetails(orderID, newPaymentTotal, formattedDate);
 
                     JOptionPane.showMessageDialog(rootPane, "Payment successful.");
-                    //dispose();
-                    /*customerReceipt frame = new customerReceipt(bookingID);
-                    frame.setVisible(true);
-                    */return; 
+                    // dispose();
+                    // customerReceipt frame = new customerReceipt(bookingID);
+                    // frame.setVisible(true);
+                    return;
                 }
             }
             JOptionPane.showMessageDialog(rootPane, "No matching booking found.");
@@ -391,6 +413,10 @@ public class customerPayment extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
+    
+    public static void main(String args[]) {
+       
+    }
    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
