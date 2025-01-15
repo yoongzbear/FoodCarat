@@ -598,4 +598,29 @@ public class Order {
         }
         return deliveryFee;
     }
+    
+    //Manager Side to use
+    // get the runner email after mapping the order id in customer order and review.txt
+    public static String getRunnerForOrder(String orderID) {
+        try {
+            BufferedReader orderReader = new BufferedReader(new FileReader("customer order.txt"));
+            String line;
+
+            // Loop through the lines in the customer_order.txt file
+            while ((line = orderReader.readLine()) != null) {
+                String[] orderDetails = line.split(",");
+                String currentOrderID = orderDetails[0].trim();  // Order ID is the first element
+                if (currentOrderID.equals(orderID)) {
+                    // The runnerID is the 7th element in the line (index 6)
+                    String runnerID = orderDetails[6].trim();
+                    orderReader.close();
+                    return runnerID;  // Return the found runnerID
+                }
+            }
+            orderReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;  // Return null if the orderID is not found
+    }
 }

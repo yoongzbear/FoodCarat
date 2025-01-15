@@ -19,6 +19,7 @@ import java.util.Map;
 public class Manager {
     //Monitor Runner Performance
     //
+
     public static Map<String, RunnerPerformanceData> getRunnerPerformance(String selectedMonth) throws IOException {
        Map<String, RunnerPerformanceData> performanceDataMap = new HashMap<>();
         
@@ -45,7 +46,8 @@ public class Manager {
             String[] reviewDetails = line.split(",");
             String reviewType = reviewDetails[2].trim();
             String orderID = reviewDetails[6].trim();
-            String runnerID = getRunnerIDForOrder(orderID);// fetch runnerID
+            
+            String runnerID = Order.getRunnerForOrder(orderID);// fetch runnerID
             if ("runner".equals(reviewType)) {
                 String rating = reviewDetails[3].trim();
                 String reviewDate = reviewDetails[5].trim();
@@ -76,29 +78,6 @@ public class Manager {
             e.printStackTrace();
             return false;
         }
-    }
-    // get the runner id after mapping the order id in customer order and review.txt
-    private static String getRunnerIDForOrder(String orderID) {
-        try {
-            BufferedReader orderReader = new BufferedReader(new FileReader("customer order.txt"));
-            String line;
-
-            // Loop through the lines in the customer_order.txt file
-            while ((line = orderReader.readLine()) != null) {
-                String[] orderDetails = line.split(",");
-                String currentOrderID = orderDetails[0].trim();  // Order ID is the first element
-                if (currentOrderID.equals(orderID)) {
-                    // The runnerID is the 7th element in the line (index 6)
-                    String runnerID = orderDetails[6].trim();
-                    orderReader.close();
-                    return runnerID;  // Return the found runnerID
-                }
-            }
-            orderReader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;  // Return null if the orderID is not found
     }
 
     public static class RunnerPerformanceData {
