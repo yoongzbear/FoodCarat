@@ -155,23 +155,13 @@ public class Vendor {
     
     //get all reviews + orders + items for the vendor
     //items txt = calculate price, get vendor email
-    public List<String[]> getAllReviews(String venEmail) {
-        List<String[]> allReviews = new ArrayList<>();
+    public List<String[]> getAllReviewInfo(String venEmail) {
+        List<String[]> allReviewInfo = new ArrayList<>();
         
-        //initiate review, order, and items classes
-        //get item IDs from vendor
-//        Item item = new Item();
-//        List<String[]> vendorItems = item.getAllItems(venEmail);        
-//        List<String> allItemIDs = vendorItems.stream()
-//                .map(data -> data[0]) //get itemID
-//                .collect(Collectors.toList());
-//        
-//        //get all orders containing items from vendor
-//        Order order = new Order();
-//        List<String[]> orders = order.getAllOrders();
-//        List<String[]> vendorOrders = 
-        
-        
-        return allReviews;
+        //review
+        Review review = new Review();
+        allReviewInfo = review.getAllReviews(venEmail, "vendor");      
+                
+        return allReviewInfo;
     }    
 }

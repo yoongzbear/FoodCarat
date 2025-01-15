@@ -25,9 +25,8 @@ public class vendorOrderHistory extends javax.swing.JFrame {
      * Creates new form vendorOrderHistory
      */       
     //change to userSession 
-    private String email = "chagee@mail.com";
+    private String email = "vendor@mail.com";
 //    private String email = User.getSessionEmail();
-    Vendor vendor = new Vendor(email);
     
     public vendorOrderHistory() {
         initComponents();
@@ -55,7 +54,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         List<String[]> allOrders = vendor.getVendorOrders(email);
         for (String[] orderData : allOrders) {
             Item item = new Item();            
-            //1,Take away,[1;1|2;1],Ordered,customerEmail,NULL,NULL,20.00,2025-01-01,27.80
+            //1,Take away,[1;1|2;1],Ordered,customerEmail,NULL,NULL,20.00,2025-01-01,25.80
             String orderID = orderData[0];
             String orderMethod = orderData[1];
             String orderItems = orderData[2];
@@ -63,7 +62,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             String customerEmail = orderData[4];
             String orderTotal = orderData[8];
 
-            String updatedOrderItems = replaceItemIDsWithNames(orderItems, item);
+            String updatedOrderItems = item.replaceItemIDsWithNames(orderItems);
 
             model.addRow(new Object[]{index++, orderID, customerEmail, orderMethod, updatedOrderItems, orderStatus});
         }
@@ -103,11 +102,13 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             }
         }
 
+        //orderID,orderMethod,[itemID;quantity],orderStatus,customerEmail,runnerEmail,cancelReason,deliveryFee,totalPaid,date
         idLabel.setText(details[0].trim());
         methodLabel.setText(details[1].trim());
         statusLabel.setText(details[3].trim());
         emailLabel.setText(details[4].trim());
-        totalPriceLabel.setText("RM"+details[8].trim());
+        idLabel1.setText(details[9].trim());
+        totalPriceLabel.setText("RM"+details[10].trim());
         
         //cancellation reason - need to connect with the get cancellation reason based on cancel id
         //orderID,orderMethod,[itemID;quantity],orderStatus,customerEmail,runnerEmail,cancelReason,deliveryFee,totalPaid,date
@@ -146,7 +147,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             String customerEmail = orderData[4];
             String orderTotal = orderData[7];
 
-            String updatedOrderItems = replaceItemIDsWithNames(orderItems, item);
+            String updatedOrderItems = item.replaceItemIDsWithNames(orderItems);
 
             //check if item type matches the filter
             boolean isFound = false;
@@ -173,30 +174,30 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     
     
     //helper method to change item id to item name
-    private String replaceItemIDsWithNames(String orderItems, Item item) {
-        //remove square brackets and split the items by "|"
-        String[] itemDetails = orderItems.replace("[", "").replace("]", "").split("\\|");
-        StringBuilder updatedItems = new StringBuilder();
-
-        //replace itemID with item name
-        for (int i = 0; i < itemDetails.length; i++) {
-            String detail = itemDetails[i];
-            String[] parts = detail.split(";");
-            String itemID = parts[0]; // itemID
-            int quantity = Integer.parseInt(parts[1]); // quantity
-
-            String[] itemData = item.itemData(itemID);
-            String itemName = itemData != null && itemData.length > 1 ? itemData[1] : "Unknown Item";
-
-            //update item format [itemName;quantity]
-            if (i > 0) {
-                updatedItems.append(", ");
-            }
-            updatedItems.append(itemName);
-        }
-
-        return updatedItems.toString();
-    }
+//    private String replaceItemIDsWithNames(String orderItems, Item item) {
+//        //remove square brackets and split the items by "|"
+//        String[] itemDetails = orderItems.replace("[", "").replace("]", "").split("\\|");
+//        StringBuilder updatedItems = new StringBuilder();
+//
+//        //replace itemID with item name
+//        for (int i = 0; i < itemDetails.length; i++) {
+//            String detail = itemDetails[i];
+//            String[] parts = detail.split(";");
+//            String itemID = parts[0]; // itemID
+//            int quantity = Integer.parseInt(parts[1]); // quantity
+//
+//            String[] itemData = item.itemData(itemID);
+//            String itemName = itemData != null && itemData.length > 1 ? itemData[1] : "Unknown Item";
+//
+//            //update item format [itemName;quantity]
+//            if (i > 0) {
+//                updatedItems.append(", ");
+//            }
+//            updatedItems.append(itemName);
+//        }
+//
+//        return updatedItems.toString();
+//    }
     
     //helper method to adjust search box
     public void setPlaceholder(JTextField textField, String placeholder) {
@@ -477,14 +478,12 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                         .addComponent(cancelReasonLabel)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel10)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(23, 23, 23)
+                    .addComponent(jLabel10)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(feedbackLabel)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(feedbackLabel))
                 .addContainerGap(15, Short.MAX_VALUE))
         );
 
@@ -535,13 +534,10 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(monthChartBtn))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel2))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel4)))
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel4))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(chartWeekRange, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())

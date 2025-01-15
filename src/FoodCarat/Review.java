@@ -178,6 +178,50 @@ public class Review {
         return allReviews;
     }
     
+    //get all reviews for vendor/runner
+    public List<String[]> getAllReviews(String email, String role) {
+        List<String[]> reviews = new ArrayList<>();
+        
+        Order orders = new Order();
+        
+        try {
+            FileReader fr = new FileReader(reviewFileName);
+            BufferedReader br = new BufferedReader(fr);
+            String read;
+            
+            while ((read = br.readLine()) != null) {
+                String[] reviewData = read.split(",");
+                //vendor
+                if (role.equals("vendor")) {
+                    String reviewType = reviewData[2];
+                    if (reviewType.equals("vendor")) {
+                        List<Integer> vendorOrderIDs = orders.getOrderIDsReview(email, role);
+                        int orderID = Integer.parseInt(reviewData[1]);
+                        if (vendorOrderIDs.contains(orderID)) {
+                            //add all info of review into the list
+                            reviews.add(reviewData);
+                        }
+                    }
+                } else if (role.equals("runner")) {
+                    String reviewType = reviewData[2];
+                    if (reviewType.equals("runner")) {
+                        List<Integer> runnerOrderIDs = orders.getOrderIDsReview(email, role);
+                        int orderID = Integer.parseInt(reviewData[1]);
+                        if (runnerOrderIDs.contains(orderID)) {
+                            //add all info of review into the list
+                            reviews.add(reviewData);
+                        }
+                    }
+                }
+
+            }
+        } catch(IOException e) {
+            JOptionPane.showMessageDialog(null, "Failed to read from review file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        return reviews;
+    }
+    
     
     public void saveOrderFeedback() { 
         //generate reviewID

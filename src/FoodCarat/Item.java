@@ -243,6 +243,32 @@ public class Item {
         return allItems;
     }
     
+    //get item names 
+    public String replaceItemIDsWithNames(String orderItems) {
+        //remove square brackets and split the items by "|"
+        String[] itemDetails = orderItems.replace("[", "").replace("]", "").split("\\|");
+        StringBuilder updatedItems = new StringBuilder();
+
+        //replace itemID with item name
+        for (int i = 0; i < itemDetails.length; i++) {
+            String detail = itemDetails[i];
+            String[] parts = detail.split(";");
+            String itemID = parts[0]; // itemID
+            int quantity = Integer.parseInt(parts[1]); // quantity
+
+            String[] itemData = itemData(itemID);
+            String itemName = itemData != null && itemData.length > 1 ? itemData[1] : "Unknown Item";
+
+            //update item format [itemName;quantity]
+            if (i > 0) {
+                updatedItems.append(", ");
+            }
+            updatedItems.append(itemName);
+        }
+
+        return updatedItems.toString();
+    }
+    
     //update item
     public void editItem() {
         //get all data
