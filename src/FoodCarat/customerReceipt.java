@@ -163,6 +163,7 @@ public class customerReceipt extends javax.swing.JFrame {
                 "Product Name", "Unit Price", "Quantity", "Total Price"
             }
         ));
+        tOrderItem.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(tOrderItem);
 
         jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
