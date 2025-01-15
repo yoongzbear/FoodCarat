@@ -61,9 +61,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
                             String cancelReason = (String) tOrderHistory.getValueAt(selectedRow, 6);
                             //Get feedback
                             Review review = new Review(Integer.parseInt(orderID));
-                            System.out.println("OrderID:" + orderID);
                             String feedback = review.getFeedback();
-                            System.out.println("Feedback: " + feedback);
                             String[] feedbackParts = feedback.split(",");
                             String orderID2 = feedbackParts[0];
                             String orderFeedback = feedbackParts[1];
