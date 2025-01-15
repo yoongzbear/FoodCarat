@@ -36,9 +36,9 @@ public class customerPayment extends javax.swing.JFrame {
         try {
             Order order = new Order(orderType, User.getSessionEmail());
             String orderIDStr = String.valueOf(orderID);
-            String[] tokens = order.getOrder(orderIDStr); // This might throw IOException
+            String[] tokens = order.getOrder(orderIDStr); 
 
-            // Extract the relevant parameters
+            //extract the relevant parameters
             String orderType = tokens[1];
             String orderItems = tokens[2];
             String orderStatus = tokens[3];
@@ -46,17 +46,18 @@ public class customerPayment extends javax.swing.JFrame {
             String deliveryFee = tokens[7];
             String paymentTotal = tokens[8];
 
-            // Get customer point balance
+            //get customer point balance
             Customer customer = new Customer(User.getSessionEmail());
             int pointBalance = customer.getPoints();
             String creditBalance = "0";
 
-            // Display
+            //display
             sOrderID.setText(String.valueOf(orderID));
             sOrderType.setText(String.valueOf(orderType));
             sDeliveryFee.setText("RM " + String.valueOf(deliveryFee));
             sPayTotal.setText("RM " + String.valueOf(paymentTotal));
 
+            //get credit balance
             User user = new User();
             String role = user.getRoleByEmail(customerEmail, "resources/user.txt");
             if (role != null && role.equals("customer")) {
@@ -72,7 +73,7 @@ public class customerPayment extends javax.swing.JFrame {
         }
     }
     
-    private void populateOrderItemsTable(String orderItemsString) {
+    private void populateOrderItemsTable(String orderItemsString) { //to display the order items in table
         DefaultTableModel model = (DefaultTableModel) tOrderItem.getModel();
         model.setRowCount(0);  //clear table
 
@@ -80,24 +81,25 @@ public class customerPayment extends javax.swing.JFrame {
         orderItemsString = orderItemsString.replace("[", "").replace("]", "");
         String[] items = orderItemsString.split("\\|");
 
-        // Loop through each item and add it to the table
         for (String item : items) {
-            // Split each item by the semicolon to get itemID and quantity
+            //split each item to get itemID and quantity
             String[] itemDetails = item.split(";");
             if (itemDetails.length == 2) {
                 String itemID = itemDetails[0];
                 String quantity = itemDetails[1];
                 
+                //get item data and calculate total price
                 Item item1 = new Item();
                 String[] itemData = item1.itemData(itemID);
                 String itemName = itemData[1];  
                 double itemPrice = Double.parseDouble(itemData[3]);
                 double orderItemTotal = Integer.parseInt(quantity) * itemPrice;
                 
+                //set the vendor name using item ID
                 String vendorName = item1.getVendorNameByItemID(Integer.parseInt(itemID));
                 sVendorName.setText(String.valueOf(vendorName));
 
-                // Add the item to the table
+                //add the item to the table
                 model.addRow(new Object[]{itemName, "RM " + itemPrice, quantity, "RM " + orderItemTotal});
             }
         }
@@ -374,6 +376,7 @@ public class customerPayment extends javax.swing.JFrame {
                 if (cusOrderID == Integer.parseInt(sOrderID.getText())) {
 
                     double newPaymentTotal = payTotal - redeemAmount + deliveryFee;; //update the payment total
+                    double updatedCredit = currentBalance - newPaymentTotal;
 
                     //deduct points from the customer
                     Customer customer = new Customer(User.getSessionEmail());
@@ -382,6 +385,9 @@ public class customerPayment extends javax.swing.JFrame {
                     //write the payment details to the order
                     Order order = new Order(orderID);
                     order.writePaymentDetails(orderID, newPaymentTotal, formattedDate);
+                    
+                    //update user credit
+                    customer.updateCredit(User.getSessionEmail(), updatedCredit, "resources/customer.txt", 2);
 
                     JOptionPane.showMessageDialog(rootPane, "Payment successful.");
                     dispose();
