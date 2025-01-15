@@ -32,7 +32,7 @@ public class Order {
     private int orderQuantity;
     private String orderStatus;
     private String customerEmail;
-    private int runnerID;
+    private String runnerEmail;
     private int reasonID;
     
     private List<String[]> cart;
@@ -113,12 +113,12 @@ public class Order {
         this.customerEmail = customerEmail;
     }
 
-    public int getRunnerID() {
-        return runnerID;
+    public String getRunnerEmail() {
+        return runnerEmail;
     }
 
-    public void setRunnerID(int runnerID) {
-        this.runnerID = runnerID;
+    public void setRunnerID(String runnerEmail) {
+        this.runnerEmail = runnerEmail;
     }
 
     public int getReasonID() {
@@ -209,6 +209,29 @@ public class Order {
         }
 
         return vendorOrders;
+    }
+    
+    //get order IDs by vendor/runner email
+    private List<Integer> getOrderIDsReview(String email, String type) {
+        List<Integer> orderIDs = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(orderFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                    if (parts.length >10) {  
+                    String currentVendorEmail = parts[5];
+                    if (currentVendorEmail.equals(vendorEmail)) {
+                        int orderID = Integer.parseInt(parts[0]);  // Order ID is in position 0
+                        orderIDs.add(orderID);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "VendorEmail: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        return orderIDs;
     }
     
     //get new orders with status "pending accept"
