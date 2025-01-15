@@ -373,7 +373,7 @@ public class customerPayment extends javax.swing.JFrame {
 
                 if (cusOrderID == Integer.parseInt(sOrderID.getText())) {
 
-                    double newPaymentTotal = payTotal - redeemAmount; //update the payment total
+                    double newPaymentTotal = payTotal - redeemAmount + deliveryFee;; //update the payment total
 
                     //deduct points from the customer
                     Customer customer = new Customer(User.getSessionEmail());
@@ -384,9 +384,9 @@ public class customerPayment extends javax.swing.JFrame {
                     order.writePaymentDetails(orderID, newPaymentTotal, formattedDate);
 
                     JOptionPane.showMessageDialog(rootPane, "Payment successful.");
-                    // dispose();
-                    // customerReceipt frame = new customerReceipt(bookingID);
-                    // frame.setVisible(true);
+                    dispose();
+                    customerReceipt frame = new customerReceipt(orderID, orderType);
+                    frame.setVisible(true);
                     return;
                 }
             }
