@@ -148,10 +148,9 @@ public class Order {
         
         this.orderID = lastOrder;
         //write order with orderID, orderType and customerEmail
-        //3,Take away,[2;1|4;1],Ordered,customerEmail,NULL,NULL,20.00,2025-01-01 
         String newLine = lastOrder + "," + orderType + ",,," + customerEmail + ",null,null,0.0,0.0,null";
         try {
-            FileWriter fw = new FileWriter("resources/customerOrder.txt", true); //true is use for appending data in new line
+            FileWriter fw = new FileWriter(orderFile, true); //true is use for appending data in new line
             fw.write(newLine + "\n");
             fw.close();
             if ("Delivery".equals(orderType)){
@@ -244,56 +243,6 @@ public class Order {
 
         return orderIDs;
     }
-    
-//    public List<Integer> getOrderIDsReview(String email, String type) {
-//        List<Integer> orderIDs = new ArrayList<>();
-//
-//        try (BufferedReader orderReader = new BufferedReader(new FileReader(orderFile)); BufferedReader itemReader = new BufferedReader(new FileReader(itemFile))) {
-//
-//            List<String> vendorItemIDs = new ArrayList<>();
-//
-//            // If the type is "vendor", collect all item IDs associated with the vendor
-//            if (type.equals("vendor")) {
-//                String itemLine;
-//                while ((itemLine = itemReader.readLine()) != null) {
-//                    String[] itemParts = itemLine.split(",");
-//                    if (itemParts[5].equals(email)) { // Check if the item belongs to the vendor
-//                        vendorItemIDs.add(itemParts[0]);
-//                    }
-//                }
-//            }
-//
-//            // Read orders and filter based on type
-//            String orderLine;
-//            while ((orderLine = orderReader.readLine()) != null) {
-//                String[] orderParts = orderLine.split(",");
-//                if (type.equals("vendor")) {
-//                    // Vendor logic: Check if order contains vendor items
-//                    String orderItems = orderParts[2]; // [itemID;quantity|itemID;quantity]
-//                    String[] items = orderItems.replace("[", "").replace("]", "").split("\\|");
-//
-//                    for (String item : items) {
-//                        String itemID = item.split(";")[0];
-//                        if (vendorItemIDs.contains(itemID)) {
-//                            orderIDs.add(Integer.parseInt(orderParts[0])); // Add the order ID
-//                            break; // Exit loop as this order matches the vendor
-//                        }
-//                    }
-//                } else if (type.equals("runner")) {
-//                    // Runner logic: Check if the runner email matches
-//                    String runnerEmail = orderParts[5]; // Assuming runner email is in column 5
-//                    if (runnerEmail.equals(email)) {
-//                        orderIDs.add(Integer.parseInt(orderParts[0])); // Add the order ID
-//                    }
-//                }
-//            }
-//        } catch (IOException e) {
-//            JOptionPane.showMessageDialog(null, "Error reading files: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-//        }
-//
-//        return orderIDs;
-//    }
-
     
     //get new orders with status "pending accept"
     public String[] getNewOrder(String vendorEmail) {
@@ -559,6 +508,7 @@ public class Order {
                 if (currentOrderID == orderID) {
                     // Update the totalPaid and date fields
                     String formattedPaymentTotal = String.format("%.2f", newPaymentTotal);
+                    orderData[3] = "Ordered";
                     orderData[8] = formattedPaymentTotal;  // Set the new total paid (price after payment)
                     orderData[9] = today;  // Set the current date as the payment date
 
