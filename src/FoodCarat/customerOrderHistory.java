@@ -61,7 +61,9 @@ public class customerOrderHistory extends javax.swing.JFrame {
                             String cancelReason = (String) tOrderHistory.getValueAt(selectedRow, 6);
                             //Get feedback
                             Review review = new Review(Integer.parseInt(orderID));
+                            System.out.println("OrderID:" + orderID);
                             String feedback = review.getFeedback();
+                            System.out.println("Feedback: " + feedback);
                             String[] feedbackParts = feedback.split(",");
                             String orderID2 = feedbackParts[0];
                             String orderFeedback = feedbackParts[1];
@@ -104,7 +106,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
                                 cbRunnerRating.setSelectedItem(runnerRating + " 🌟");
                                 cbRunnerRating.setEditable(false);
                                 bFeedback.setVisible(false);
-                            } else if (!validFeedback && ("Completed".equals(orderStatus) || "Cancelled".equals(orderStatus))){
+                            } else if (!validFeedback && "Completed".equals(orderStatus)){
                                 //No feedback, allow the user to enter feedback
                                 taOrderFeedback.setText("");
                                 taOrderFeedback.setEditable(true);
@@ -169,7 +171,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
                     String rOrderType = record[1];
                     String rOrderList = record[2].replace("[", "").replace("]", "");
                     String rOrderStatus = record[3];
-                    String rVendorEmail = record[5];
+                    String rVendorEmail = null;
                     String rCancelReason = record[6]; 
                     
                     //Split the order items by semicolon
@@ -193,11 +195,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
                         String itemPrice = itemInfo[3];
                         String itemImgPath = itemInfo[4];
                         
-                        /*
-                        Vendor vendor = new Vendor(rVendorEmail); //change to get user info
-                        String[] vendorInfo = vendor.getVendorInfo(rVendorEmail);
-                        String vendorName = vendorInfo[1];
-                        */
+                        rVendorEmail = item1.getVendorNameByItemID(Integer.parseInt(itemID));
                         
                         orderItemDetails.add(new String[]{rOrderItemID, itemName, rItemQuantity, itemPrice});
 
@@ -563,8 +561,9 @@ public class customerOrderHistory extends javax.swing.JFrame {
 
     private void bFeedbackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bFeedbackActionPerformed
         if (taOrderFeedback != null && !taOrderFeedback.getText().isEmpty() &&
-            cbVendorRating != null && cbVendorRating.getSelectedItem().equals("Please Rate")) {
-
+            taVendorFeedback != null && !taVendorFeedback.getText().isEmpty() && 
+            !cbVendorRating.getSelectedItem().equals("Please Rate")) {
+            
             String runnerRating = null;
             if (cbRunnerRating.isVisible()) {
                 if (cbRunnerRating.getSelectedItem() != null && cbRunnerRating.getSelectedItem().equals("Please Rate")) {
@@ -579,6 +578,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
 
                 if (selectedRow != -1) {
                     String orderIDString = (String) tOrderHistory.getValueAt(selectedRow, 0);
+                    System.out.println("OrderID: " + orderIDString);
                     int orderID = Integer.parseInt(orderIDString); 
                     String orderFeedback = taOrderFeedback.getText();
                     String selectedVendorRating = (String) cbVendorRating.getSelectedItem();
@@ -595,7 +595,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
                 }
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Please insert the feedback before saving it.");
+            JOptionPane.showMessageDialog(null, "Check: Please insert the feedback before saving it.");
         }
     }//GEN-LAST:event_bFeedbackActionPerformed
 
