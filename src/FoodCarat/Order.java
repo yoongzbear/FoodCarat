@@ -508,7 +508,7 @@ public class Order {
                 if (currentOrderID == orderID) {
                     // Update the totalPaid and date fields
                     String formattedPaymentTotal = String.format("%.2f", newPaymentTotal);
-                    orderData[3] = "Ordered";
+                    orderData[3] = "pending accept";
                     orderData[8] = formattedPaymentTotal;  // Set the new total paid (price after payment)
                     orderData[9] = today;  // Set the current date as the payment date
 
