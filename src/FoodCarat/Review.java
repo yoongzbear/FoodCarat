@@ -306,8 +306,11 @@ public class Review {
     // Method to calculate average vendor rating based on vendorEmail
     public double getVendorAverageRating(String vendorEmail) {
         List<Integer> orderIDs = getOrderIDsByVendorEmail(vendorEmail);
-        if (orderIDs.isEmpty()) return 0;  // No orders for the vendor, so return 0
-
+//        Order orders = new Order();
+//        List<Integer> orderIDs = orders.getOrderIDsReview(vendorEmail, "vendor");
+        if (orderIDs.isEmpty()) {
+            return 0;  // No orders for the vendor, so return 0
+        }
         double totalRating = 0;
         int ratingCount = 0;
 
@@ -341,6 +344,8 @@ public class Review {
     // Method to get a random vendor review based on vendorEmail
     public String getRandomVendorReview(String vendorEmail) {
         List<Integer> orderIDs = getOrderIDsByVendorEmail(vendorEmail);
+//        Order orders = new Order();
+//        List<Integer> orderIDs = orders.getOrderIDsReview(vendorEmail, "vendor");
         if (orderIDs.isEmpty()) return "No reviews available";  // No orders for the vendor, so return "No reviews available"
 
         List<String> vendorReviews = new ArrayList<>();
@@ -375,6 +380,8 @@ public class Review {
     // Method to get the runner rating based on the runner's email
     public String getRunnerRatingForRunner(String runnerEmail) {
         List<Integer> orderIDs = getOrderIDsByRunnerEmail(runnerEmail);
+//        Order orders = new Order();
+//        List<Integer> orderIDs = orders.getOrderIDsReview(runnerEmail, "runner");
         if (orderIDs.isEmpty()) return "No rating";  // If no orders found for the runner, return "No rating"
 
         try (BufferedReader reader = new BufferedReader(new FileReader(reviewFileName))) {

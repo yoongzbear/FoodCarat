@@ -219,16 +219,25 @@ public class Order {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                    if (parts.length >10) {  
-                    String currentVendorEmail = parts[5];
-                    if (currentVendorEmail.equals(vendorEmail)) {
-                        int orderID = Integer.parseInt(parts[0]);  // Order ID is in position 0
-                        orderIDs.add(orderID);
+                if (parts.length > 10) {
+                    if (type.equals("vendor")) {
+                        String currentVendorEmail = parts[5];
+                        if (currentVendorEmail.equals(email)) {
+                            int orderID = Integer.parseInt(parts[0]);  
+                            orderIDs.add(orderID);
+                        }
+                    } else if (type.equals("runner")) {
+                        String currentRunnerEmail = parts[6];  
+
+                        if (currentRunnerEmail.equals(email)) {
+                            int orderID = Integer.parseInt(parts[0]);  
+                            orderIDs.add(orderID);
+                        }
                     }
                 }
             }
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "VendorEmail: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Could not find " + email + " in " + type + ": " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
 
         return orderIDs;
