@@ -348,7 +348,6 @@ public class Review {
     
     // Method to calculate average vendor rating based on vendorEmail
     public double getVendorAverageRating(String vendorEmail) {
-        //List<Integer> orderIDs = getOrderIDsByVendorEmail(vendorEmail);
         Order orders = new Order();
         List<Integer> orderIDs = orders.getOrderIDsReview(vendorEmail, "vendor");
         if (orderIDs.isEmpty()) {
