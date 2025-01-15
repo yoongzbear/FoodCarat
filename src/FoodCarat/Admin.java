@@ -368,7 +368,7 @@ public class Admin extends User {
     }
     
     // method for top up credit proccess
-    public void processTopUp(String email, String name, double currentAmount, double topUpAmount) throws IOException {
+    public void processChangesCredit(String email, String name, double currentAmount, double topUpAmount) throws IOException {
         double newAmount = currentAmount + topUpAmount;
 
         String transactionId = generateTransactionId();
