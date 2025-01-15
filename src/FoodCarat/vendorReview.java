@@ -4,7 +4,10 @@
  */
 package FoodCarat;
 
+import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 
@@ -25,6 +28,8 @@ public class vendorReview extends javax.swing.JFrame {
         getContentPane().setBackground(new java.awt.Color(186, 85, 211)); //setting background color of frame
         
         displayReviews();
+        vendorFeedbackTxtArea.setEditable(false);
+        
     }
 
     //display all vendor reviews
@@ -49,11 +54,102 @@ public class vendorReview extends javax.swing.JFrame {
     }
     
     //display based on filters (rating)
+    public void displayReviews(String[] filter) {
+        DefaultTableModel model = (DefaultTableModel) reviewTable.getModel();
+        int index = 1;
+        model.setRowCount(0);
+        //get the filters
+        Vendor vendor = new Vendor(email);
+        List<String[]> allReviews = vendor.getAllReviewInfo(email);
+        for (String[] reviewData : allReviews) {
+                    
+            //0reviewID,1orderID,2reviewType,3rating,4review,5date,6customerEmail
+            String reviewID = reviewData[0];
+            String rating = reviewData[3];
+            String feedback = reviewData[4];
+            String reviewDate = reviewData[5];
+            String customerEmail = reviewData[6];
+
+            for (String selectedRating : filter) {
+                if (rating.equals(selectedRating)) {
+                    model.addRow(new Object[]{index++, reviewID, customerEmail, reviewDate, rating + "🌟", feedback});
+                    break;
+                }
+            }
+        }
+    }
     
     //sort based on sorting
+    public void displayReviews(String sorting) {
+        DefaultTableModel model = (DefaultTableModel) reviewTable.getModel();
+        int index = 1;
+        model.setRowCount(0);
+        Vendor vendor = new Vendor(email);
+        List<String[]> allReviews = vendor.getAllReviewInfo(email);
+
+        //sorting
+        if (sorting.equals("Highest to Lowest")) {
+            allReviews.sort((a, b) -> Integer.parseInt(b[3]) - Integer.parseInt(a[3])); // Descending order
+        } else if (sorting.equals("Lowest to Highest")) {
+            allReviews.sort((a, b) -> Integer.parseInt(a[3]) - Integer.parseInt(b[3])); // Ascending order
+        }
+
+        for (String[] reviewData : allReviews) {
+
+            //0reviewID,1orderID,2reviewType,3rating,4review,5date,6customerEmail
+            String reviewID = reviewData[0];
+            String rating = reviewData[3];
+            String feedback = reviewData[4];
+            String reviewDate = reviewData[5];
+            String customerEmail = reviewData[6];
+
+            model.addRow(new Object[]{index++, reviewID, customerEmail, reviewDate, rating + "🌟", feedback});
+        }
+    }
     
-    //display selected review 
-    //display vendor and order review
+    //display selected vendor review 
+    public void displaySelectedReview(String reviewID) {
+        DecimalFormat df = new DecimalFormat("0.00");
+        //review, order, items
+        Review selectedReview = new Review();
+        String[] details = selectedReview.getReview(reviewID);
+        
+        //get items, price, and quantity to display in table
+        Item item = new Item();
+        //get item data from Item class to get price
+        String orderItems = details[9].trim();
+        //remove square brackets and split the items by "|"
+        String[] itemDetails = orderItems.replace("[", "").replace("]", "").split("\\|");
+        
+        DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
+        model.setRowCount(0);
+        
+        for (String detail : itemDetails) {
+            String[] parts = detail.split(";");
+            String itemID = parts[0]; 
+            int quantity = Integer.parseInt(parts[1]); 
+
+            //retrieve item data through Item class
+            String[] itemData = item.itemData(itemID);
+            if (itemData != null && itemData.length > 3) {
+                String itemName = itemData[1]; 
+                double price = Double.parseDouble(itemData[3]); 
+
+                model.addRow(new Object[]{itemName, df.format(price), quantity});
+            } else {
+                model.addRow(new Object[]{"Unknown item (ID: " + itemID + ")", 0.0, quantity});
+            }
+        }
+        
+        //5, 3, vendor, 3, Kena cancelled, 2024-01-01, customer@mail.com, 3, Take away, [2;1|4;1], Ordered, customerEmail, NULL, NULL, NULL, 20.00, 2025-01-01 , 25.80
+        idLabel.setText(details[1].trim()); //order ID
+        dateLabel.setText(details[5].trim());
+        methodLabel.setText(details[8].trim());
+        emailLabel.setText(details[6].trim());
+        priceLabel.setText("RM"+details[17].trim());
+        ratingLabel.setText(details[3].trim() + " star");
+        vendorFeedbackTxtArea.setText(details[4].trim());
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -79,6 +175,7 @@ public class vendorReview extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         filterBtn = new javax.swing.JButton();
         viewBtn = new javax.swing.JButton();
+        revertBtn = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
@@ -95,13 +192,10 @@ public class vendorReview extends javax.swing.JFrame {
         emailLabel = new javax.swing.JLabel();
         methodLabel = new javax.swing.JLabel();
         ratingLabel = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         priceLabel = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         vendorFeedbackTxtArea = new javax.swing.JTextArea();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        orderFeedbackTxtArea = new javax.swing.JTextArea();
         jPanel3 = new javax.swing.JPanel();
         jLabel14 = new javax.swing.JLabel();
         chartWeekRange = new javax.swing.JLabel();
@@ -125,11 +219,6 @@ public class vendorReview extends javax.swing.JFrame {
         });
 
         ratingOneChkBox.setText("1 🌟");
-        ratingOneChkBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ratingOneChkBoxActionPerformed(evt);
-            }
-        });
 
         ratingTwoChkBox.setText("2 🌟");
 
@@ -162,46 +251,69 @@ public class vendorReview extends javax.swing.JFrame {
         }
 
         sortBtn.setText("Sort");
+        sortBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sortBtnActionPerformed(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel2.setText("Filter:");
 
         filterBtn.setText("Filter");
+        filterBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                filterBtnActionPerformed(evt);
+            }
+        });
 
         viewBtn.setText("View Details");
+        viewBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewBtnActionPerformed(evt);
+            }
+        });
+
+        revertBtn.setText("Revert Table");
+        revertBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                revertBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(viewBtn)
-                            .addComponent(jLabel2))
-                        .addGap(545, 545, 545))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(ratingOneChkBox, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(ratingTwoChkBox)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(ratingThreeChkBox)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(ratingFourChkBox)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(ratingFiveChkBox)
-                                .addGap(18, 18, 18)
-                                .addComponent(filterBtn)
+                        .addGap(12, 12, 12)
+                        .addComponent(ratingOneChkBox, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ratingTwoChkBox)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ratingThreeChkBox)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ratingFourChkBox)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ratingFiveChkBox)
+                        .addGap(18, 18, 18)
+                        .addComponent(filterBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(sortComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(sortBtn))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel2)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 646, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(revertBtn)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(sortComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(sortBtn)))
-                        .addGap(25, 25, 25))))
+                                .addComponent(viewBtn)))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -221,7 +333,9 @@ public class vendorReview extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(viewBtn)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(viewBtn)
+                    .addComponent(revertBtn))
                 .addGap(18, 18, 18))
         );
 
@@ -280,9 +394,6 @@ public class vendorReview extends javax.swing.JFrame {
         ratingLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         ratingLabel.setText("Rating");
 
-        jLabel11.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        jLabel11.setText("Order Feedback:");
-
         jLabel12.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         jLabel12.setText("Total Price: ");
 
@@ -293,57 +404,48 @@ public class vendorReview extends javax.swing.JFrame {
         vendorFeedbackTxtArea.setRows(5);
         jScrollPane2.setViewportView(vendorFeedbackTxtArea);
 
-        orderFeedbackTxtArea.setColumns(20);
-        orderFeedbackTxtArea.setRows(5);
-        jScrollPane3.setViewportView(orderFeedbackTxtArea);
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(16, 16, 16)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel11)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel10))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(ratingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane2)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addGap(29, 29, 29)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 436, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel3)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel5))
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane3))
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel7)
-                                .addComponent(jLabel10))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(ratingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jScrollPane2)))
-                        .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel4)
-                                .addComponent(jLabel5))
-                            .addGap(18, 18, 18)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addGroup(jPanel2Layout.createSequentialGroup()
-                                    .addComponent(idLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel8)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(dateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(emailLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel9)
-                                .addComponent(jLabel12))
-                            .addGap(18, 18, 18)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(priceLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(methodLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                            .addComponent(jLabel6)
-                            .addGap(29, 29, 29)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 552, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(23, Short.MAX_VALUE))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(idLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(91, 91, 91)
+                                .addComponent(jLabel8)
+                                .addGap(18, 18, 18)
+                                .addComponent(dateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(emailLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel9)
+                        .addGap(32, 32, 32)
+                        .addComponent(methodLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel12)
+                        .addGap(36, 36, 36)
+                        .addComponent(priceLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(39, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -355,31 +457,30 @@ public class vendorReview extends javax.swing.JFrame {
                     .addComponent(jLabel4)
                     .addComponent(jLabel8)
                     .addComponent(idLabel)
-                    .addComponent(dateLabel)
-                    .addComponent(jLabel12)
-                    .addComponent(priceLabel))
+                    .addComponent(dateLabel))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(emailLabel)
+                    .addComponent(emailLabel))
+                .addGap(21, 21, 21)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
-                    .addComponent(methodLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(methodLabel)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel12)
+                        .addComponent(priceLabel)))
+                .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel6)
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
                     .addComponent(ratingLabel))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel7)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel11)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -416,7 +517,7 @@ public class vendorReview extends javax.swing.JFrame {
                         .addGap(64, 64, 64)
                         .addComponent(chartWeekRange, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 492, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 409, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 489, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
@@ -451,22 +552,23 @@ public class vendorReview extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(389, 389, 389)
-                .addComponent(menuBtn)
-                .addGap(71, 71, 71))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addGap(21, 21, 21)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 3, Short.MAX_VALUE)))
-                .addGap(20, 20, 20))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 503, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addGap(389, 389, 389)
+                        .addComponent(menuBtn)
+                        .addGap(71, 71, 71))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(18, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -496,9 +598,64 @@ public class vendorReview extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_menuBtnActionPerformed
 
-    private void ratingOneChkBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ratingOneChkBoxActionPerformed
+    private void viewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewBtnActionPerformed
+        //display selected row of item in the table
+        int selectedRow = reviewTable.getSelectedRow();
+
+        //have validation to "choose an item in the table"
+        if (selectedRow >= 0) {
+            Object id = reviewTable.getModel().getValueAt(selectedRow, 1);
+            displaySelectedReview(id.toString());
+        } else {
+            //no row is selected
+            JOptionPane.showMessageDialog(null, "Please select a row to view details.", "Alert", JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_viewBtnActionPerformed
+
+    private void filterBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterBtnActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_ratingOneChkBoxActionPerformed
+        String[] selectedFilter = new String[5];
+        int index = 0;
+        
+        if (ratingOneChkBox.isSelected()) {
+            selectedFilter[index++] = "1";
+        }
+        if (ratingTwoChkBox.isSelected()) {
+            selectedFilter[index++] = "2";
+        } 
+        if (ratingThreeChkBox.isSelected()) {
+            selectedFilter[index++] = "3";
+        } 
+        if (ratingFourChkBox.isSelected()) {
+            selectedFilter[index++] = "4";
+        } 
+        if (ratingFiveChkBox.isSelected()) {
+            selectedFilter[index++] = "5";
+        }
+        selectedFilter = Arrays.copyOf(selectedFilter, index); //adjust the size of array
+        //call displayreview filter
+        displayReviews(selectedFilter);
+    }//GEN-LAST:event_filterBtnActionPerformed
+
+    private void revertBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_revertBtnActionPerformed
+        ratingOneChkBox.setSelected(false);
+        ratingTwoChkBox.setSelected(false);
+        ratingThreeChkBox.setSelected(false);
+        ratingFourChkBox.setSelected(false);
+        ratingFiveChkBox.setSelected(false);
+        sortComboBox.setSelectedItem("Sort Rating");
+        displayReviews();
+    }//GEN-LAST:event_revertBtnActionPerformed
+
+    private void sortBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortBtnActionPerformed
+        //get the combo box
+        String sorting = (String) sortComboBox.getSelectedItem();
+        if (sorting.equals("Sort Rating")) {
+            JOptionPane.showMessageDialog(null, "Please select sorting order.", "Alert", JOptionPane.WARNING_MESSAGE);
+        } else {
+            displayReviews(sorting);
+        }        
+    }//GEN-LAST:event_sortBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -546,7 +703,6 @@ public class vendorReview extends javax.swing.JFrame {
     private javax.swing.JTable itemTable;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
@@ -565,12 +721,10 @@ public class vendorReview extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JButton menuBtn;
     private javax.swing.JLabel methodLabel;
     private javax.swing.JButton monthChartBtn;
-    private javax.swing.JTextArea orderFeedbackTxtArea;
     private javax.swing.JLabel priceLabel;
     private javax.swing.JCheckBox ratingFiveChkBox;
     private javax.swing.JCheckBox ratingFourChkBox;
@@ -578,6 +732,7 @@ public class vendorReview extends javax.swing.JFrame {
     private javax.swing.JCheckBox ratingOneChkBox;
     private javax.swing.JCheckBox ratingThreeChkBox;
     private javax.swing.JCheckBox ratingTwoChkBox;
+    private javax.swing.JButton revertBtn;
     private javax.swing.JTable reviewTable;
     private javax.swing.JButton sortBtn;
     private javax.swing.JComboBox<String> sortComboBox;
