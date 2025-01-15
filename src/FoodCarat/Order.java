@@ -448,7 +448,6 @@ public class Order {
         double total = 0.0;
         
         for (String[] item : cart) {
-            System.out.println("Item: " + item);
             double price = Double.parseDouble(item[3]);
             int quantity = Integer.parseInt(item[2]);
             total = total + (price * quantity);
@@ -466,11 +465,15 @@ public class Order {
             while ((line = reader.readLine()) != null) {
                 String[] orderData = line.split(",");
                 int currentOrderID = Integer.parseInt(orderData[0]);
+                String currentOrderType = orderData[1];
 
                 if (currentOrderID == orderID) {
                     // Calculate the total price and delivery fee
                     double originalPrice = getTotalPrice(cart);  // Get the original total price from the cart
-                    double deliveryFee = calculateDeliveryFee(originalPrice);
+                    double deliveryFee = 0.0;
+                    if ("Delivery".equals(currentOrderType)){
+                        deliveryFee = calculateDeliveryFee(originalPrice);
+                    }
                     double totalPaid = originalPrice + deliveryFee;
                     
                     // Build the order items list
@@ -480,7 +483,6 @@ public class Order {
                     for (int i = 0; i < cart.size(); i++) {
                         String[] item = cart.get(i);  // Get the item at the current index
                         String itemID = item[0];
-                        System.out.println(itemID);
                         String quantity = item[2];
 
                         if (i > 0) {
@@ -505,10 +507,7 @@ public class Order {
 
                     // Reconstruct the updated line
                     line = String.join(",", orderData);
-                    System.out.println("Line: " + line);
                 }
-
-                // Append the updated (or unchanged) line to the StringBuilder
                 stringBuilder.append(line).append("\n");
             }
 
