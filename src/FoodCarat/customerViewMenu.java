@@ -153,7 +153,6 @@ public class customerViewMenu extends javax.swing.JFrame {
         JButton btnViewMenu = new JButton("View Menu");
         btnViewMenu.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
         btnViewMenu.addActionListener(e -> loadVendorMenu(vendorEmail)); // Action to load the vendor's menu
-        System.out.println(vendorEmail);
 
         // Add components to the panel
         panel.add(logo);
