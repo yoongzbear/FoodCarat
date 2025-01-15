@@ -36,6 +36,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
         initComponents();
         populateTable();
         addTableListener();
+        bFeedback.setVisible(false);
         lRunnerNameTitle.setVisible(false);
         lRunnerName.setVisible(false);
         lRunnerRating.setVisible(false);
