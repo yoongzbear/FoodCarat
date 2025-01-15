@@ -15,6 +15,27 @@ import java.io.IOException;
 public class Runner {
     private String runnerFile = "resources/runner.txt";
     
+    //Manager Monitor Runner Performance
+    private int totalOrders = 0; 
+    private int totalRating = 0;
+    
+    public void addOrder(String orderID) {
+        totalOrders++;
+    }
+
+    public void addRating(int rating) {
+        totalRating += rating;
+    }
+
+    public int getTotalOrders() {
+        return totalOrders;
+    }
+
+    public double getAverageRating() {
+        if (totalOrders == 0) return 0;
+        return (double) totalRating / totalOrders;
+    }
+    
     public String[] getRunnerDetails(String email) {
         try (BufferedReader reader = new BufferedReader(new FileReader(runnerFile))) {
             String line;
