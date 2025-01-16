@@ -359,9 +359,10 @@ public class Item {
         }
     }
     
-    public String getVendorNameByItemID(int itemID) {
+    public String[] getVendorInfoByItemID(int itemID) {
         //find the vendor email based on the itemID from item.txt
         String[] itemData = itemData(String.valueOf(itemID));
+        String[] vendorInfo = null;
         
         //if vendor dont have item
         if (itemData == null || itemData.length < 6) {
@@ -382,7 +383,7 @@ public class Item {
 
                     //get user email
                     if (email.equals(vendorEmail)) {
-                        return userParts[1];
+                        vendorInfo = userParts;
                     }
                 }
                 br.close();
@@ -390,6 +391,6 @@ public class Item {
                 JOptionPane.showMessageDialog(null, "Failed to read from the user file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
-        return null;
+        return vendorInfo;
     }
 }
