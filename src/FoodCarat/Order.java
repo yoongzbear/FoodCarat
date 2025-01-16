@@ -226,15 +226,12 @@ public class Order {
                         String currentVendorEmail = "";
                         orderItems = orderItems.replace("[", "").replace("]", "");
                         String[] items = orderItems.split("\\|");
-                        System.out.println("Item:" + Arrays.toString(items));
                         for (String item : items) {
                             String[] itemDetails = item.split(";");
                             String itemID = itemDetails[0];
                             Item item1 = new Item();
                             String[] itemData = item1.itemData(itemID);
-                            System.out.println("Item details:" + Arrays.toString(itemDetails));
                             currentVendorEmail = itemData[5];
-                            System.out.println("Vendor in order class:" + currentVendorEmail);
                         }
                         if (currentVendorEmail.equals(email)) {
                             int orderID = Integer.parseInt(parts[0]);  
@@ -274,18 +271,31 @@ public class Order {
     }
     
     //get orders with status ordered --> in kitchen --> ready 
-    public String[] getOrderByStatus(String vendorEmail, String orderStatus) {
-        String[] order = null;
+    public List<String[]> getOrderByStatus(String vendorEmail, String orderStatus) {
+        List<String[]> orderData = new ArrayList<>();
+        //get all orders containing items from vendor
         List<String[]> vendorOrders = getAllOrders(vendorEmail);
-        for (String[] orderData : vendorOrders) {
-            String status = orderData[3];
-            //1,Take away,[1;1|2;1],Ordered,customerEmail,NULL,NULL,20.00,2025-01-01,27.80
-            if (orderData[3].equals("pending accept")) {
-                order = orderData;
+        //filter orders containing items from vendor
+        for (String[] order : vendorOrders) {
+            if (orderStatus.equals(order[3])) {
+                String orderItems = order[2];
+                String currentVendorEmail = "";
+                orderItems = orderItems.replace("[", "").replace("]", "");
+                String[] items = orderItems.split("\\|");
+                for (String item : items) {
+                    String[] itemDetails = item.split(";");
+                    String itemID = itemDetails[0];
+                    Item item1 = new Item();
+                    String[] itemData = item1.itemData(itemID);
+                    currentVendorEmail = itemData[5];
+                }
+                if (currentVendorEmail.equals(vendorEmail)) {
+                    orderData.add(order);
+                }
             }
         }
-        
-        return status;
+
+        return vendorOrders;
     }
 
     //helper method to determine if order contain items from the vendor
