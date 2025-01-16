@@ -439,7 +439,13 @@ public class Review {
                 String[] parts = line.split(",");
                 String reviewType = parts[2];
                 String rating = parts[3];
-                int orderID = Integer.parseInt(parts[1]);
+                String orderID = parts[1];
+                
+                if ("null".equals(orderID)) {
+                    continue; 
+                }
+                
+                int orderID1 = Integer.parseInt(orderID);
 
                 // If the review is for a runner and matches the orderID
                 if ("runner".equals(reviewType) && orderIDs.contains(orderID)) {
