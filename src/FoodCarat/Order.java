@@ -387,8 +387,11 @@ public class Order {
     //update order status 
     //user can manipulate status: vendor, runner (for delivery)
     //parameter: itemID, orderStatus, userType(not sure if needed, leaving it here first)
-    public void updateStatus(String id, String orderStatus, String userType) {
+    public void updateStatus(String id, String newOrderStatus, String userType) {        
         //get order info from order.txt using id, see order method
+        String[] order = getOrder(id);
+        //orderID,orderMethod,[itemID;quantity],orderStatus,customerEmail,runnerEmail,cancelReason,deliveryFee,totalPaid,date,totalPrice
+        //get delivert method
 //        if delivery - vendor and runner
 //        pending accept, assigning runner, ordered, in kitchen, ready, pick up by runner, completed
 //

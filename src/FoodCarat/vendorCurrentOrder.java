@@ -6,6 +6,7 @@ package FoodCarat;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -15,7 +16,9 @@ import javax.swing.table.DefaultTableModel;
 public class vendorCurrentOrder extends javax.swing.JFrame {
 
     private String email = "vendor@mail.com";
+    private String role = "vendor";
 //    private String email = User.getSessionEmail();
+//    private String email = User.getSessionRole();
     Vendor vendor = new Vendor(email);
 
     /**
@@ -44,6 +47,7 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
             incomingIDLabel.setText(newOrderInfo[0].trim());
             incomingEmailTxt.setText(newOrderInfo[4].trim());
             incomingMethodTxt.setText(newOrderInfo[1].trim());
+            incomingTotalPriceTxt.setText("RM" + newOrderInfo[9].trim());
             
             //display table item
             Item item = new Item();
@@ -80,6 +84,7 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
     
     //accept or reject new order
     
+    
     //update order status
     //statusUpdateBox - make the model based on delivery method
         //if delivery - ordered, in kitchen, ready, pick up by runner
@@ -103,14 +108,14 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         incomingItemTable = new javax.swing.JTable();
         jLabel5 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        incomingEmailTxt = new javax.swing.JTextField();
-        incomingMethodTxt = new javax.swing.JTextField();
         acceptBtn = new javax.swing.JButton();
         rejectBtn = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
-        incomingPaidTxt = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         incomingIDLabel = new javax.swing.JLabel();
+        incomingEmailTxt = new javax.swing.JLabel();
+        incomingMethodTxt = new javax.swing.JLabel();
+        incomingTotalPriceTxt = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane5 = new javax.swing.JScrollPane();
@@ -174,23 +179,31 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         jLabel9.setText("Order Method:");
 
         acceptBtn.setText("Accept");
+        acceptBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                acceptBtnActionPerformed(evt);
+            }
+        });
 
         rejectBtn.setText("Reject");
 
         jLabel8.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         jLabel8.setText("Total Paid:");
 
-        incomingPaidTxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                incomingPaidTxtActionPerformed(evt);
-            }
-        });
-
         jLabel7.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         jLabel7.setText("Order ID:");
 
         incomingIDLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         incomingIDLabel.setText("ID");
+
+        incomingEmailTxt.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
+        incomingEmailTxt.setText("Email");
+
+        incomingMethodTxt.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
+        incomingMethodTxt.setText("Method");
+
+        incomingTotalPriceTxt.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
+        incomingTotalPriceTxt.setText("RM");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -202,10 +215,10 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
                     .addComponent(jLabel6)
                     .addComponent(jLabel2)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel8)
                         .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addGap(140, 140, 140)
-                            .addComponent(incomingPaidTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel8)
+                            .addGap(60, 60, 60)
+                            .addComponent(incomingTotalPriceTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(acceptBtn)
@@ -218,10 +231,10 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
                             .addComponent(jLabel7))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(incomingMethodTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(incomingEmailTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(incomingIDLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(incomingIDLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(incomingEmailTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(incomingMethodTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(17, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -236,11 +249,11 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(incomingEmailTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(incomingEmailTxt))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
-                    .addComponent(incomingMethodTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(incomingMethodTxt))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -250,8 +263,8 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
-                    .addComponent(incomingPaidTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(33, 33, 33)
+                    .addComponent(incomingTotalPriceTxt))
+                .addGap(35, 35, 35)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(acceptBtn)
                     .addComponent(rejectBtn))
@@ -484,10 +497,6 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_menuBtnActionPerformed
 
-    private void incomingPaidTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_incomingPaidTxtActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_incomingPaidTxtActionPerformed
-
     private void selectBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectBtnActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_selectBtnActionPerformed
@@ -495,6 +504,14 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
     private void updateOrderBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateOrderBtnActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_updateOrderBtnActionPerformed
+
+    private void acceptBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptBtnActionPerformed
+        //updateStatus(String id, String orderStatus, String userType)
+        String orderID = incomingIDLabel.getText();
+        
+        Order order = new Order();
+        order.updateStatus(orderID, "Ordered", role);
+    }//GEN-LAST:event_acceptBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -537,11 +554,11 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
     private javax.swing.JTable currentOrderTable;
     private javax.swing.JButton filterBtn;
     private javax.swing.JComboBox<String> filterStatusBox;
-    private javax.swing.JTextField incomingEmailTxt;
+    private javax.swing.JLabel incomingEmailTxt;
     private javax.swing.JLabel incomingIDLabel;
     private javax.swing.JTable incomingItemTable;
-    private javax.swing.JTextField incomingMethodTxt;
-    private javax.swing.JTextField incomingPaidTxt;
+    private javax.swing.JLabel incomingMethodTxt;
+    private javax.swing.JLabel incomingTotalPriceTxt;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;

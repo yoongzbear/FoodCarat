@@ -99,10 +99,10 @@
                       <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                       <Group type="103" alignment="0" groupAlignment="0" attributes="0">
-                          <Component id="jLabel8" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="140" pref="140" max="-2" attributes="0"/>
-                              <Component id="incomingPaidTxt" min="-2" pref="96" max="-2" attributes="0"/>
+                              <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
+                              <Component id="incomingTotalPriceTxt" min="-2" pref="185" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace pref="97" max="-2" attributes="0"/>
@@ -119,10 +119,10 @@
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="incomingMethodTxt" alignment="0" min="-2" pref="185" max="-2" attributes="0"/>
-                              <Component id="incomingEmailTxt" alignment="0" min="-2" pref="185" max="-2" attributes="0"/>
                               <Component id="jScrollPane4" min="-2" pref="275" max="-2" attributes="0"/>
                               <Component id="incomingIDLabel" alignment="0" min="-2" pref="40" max="-2" attributes="0"/>
+                              <Component id="incomingEmailTxt" alignment="0" min="-2" pref="185" max="-2" attributes="0"/>
+                              <Component id="incomingMethodTxt" min="-2" pref="185" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -161,9 +161,9 @@
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="incomingPaidTxt" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="incomingTotalPriceTxt" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="acceptBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="rejectBtn" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -242,14 +242,13 @@
             <Property name="text" type="java.lang.String" value="Order Method:"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="incomingEmailTxt">
-        </Component>
-        <Component class="javax.swing.JTextField" name="incomingMethodTxt">
-        </Component>
         <Component class="javax.swing.JButton" name="acceptBtn">
           <Properties>
             <Property name="text" type="java.lang.String" value="Accept"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="acceptBtnActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="rejectBtn">
           <Properties>
@@ -263,11 +262,6 @@
             </Property>
             <Property name="text" type="java.lang.String" value="Total Paid:"/>
           </Properties>
-        </Component>
-        <Component class="javax.swing.JTextField" name="incomingPaidTxt">
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="incomingPaidTxtActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel7">
           <Properties>
@@ -283,6 +277,30 @@
               <Font name="Cooper Black" size="14" style="0"/>
             </Property>
             <Property name="text" type="java.lang.String" value="ID"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="incomingEmailTxt">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Cooper Black" size="14" style="0"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Email"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="incomingMethodTxt">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Cooper Black" size="14" style="0"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Method"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="incomingTotalPriceTxt">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Cooper Black" size="14" style="0"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="RM"/>
           </Properties>
         </Component>
       </SubComponents>
