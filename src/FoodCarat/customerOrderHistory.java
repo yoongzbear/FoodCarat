@@ -170,7 +170,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
                     String rOrderType = record[1];
                     String rOrderList = record[2].replace("[", "").replace("]", "");
                     String rOrderStatus = record[3];
-                    String rVendorEmail = null;
+                    String rVendorName = null;
                     String rCancelReason = record[6]; 
                     
                     //Split the order items by semicolon
@@ -194,7 +194,8 @@ public class customerOrderHistory extends javax.swing.JFrame {
                         String itemPrice = itemInfo[3];
                         String itemImgPath = itemInfo[4];
                         
-                        rVendorEmail = item1.getVendorNameByItemID(Integer.parseInt(itemID));
+                        String[] vendorInfo = item1.getVendorInfoByItemID(Integer.parseInt(itemID));
+                        rVendorName = vendorInfo[1];
                         
                         orderItemDetails.add(new String[]{rOrderItemID, itemName, rItemQuantity, itemPrice});
 
@@ -216,7 +217,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
                     orderDetailsMap.put(orderID, orderItemDetails);
 
                     //Add the booking details to the model
-                    model.addRow(new Object[]{orderID, rOrderType, allOrderItems, "RM" + df.format(totalPrice), rVendorEmail, rOrderStatus, rCancelReason});
+                    model.addRow(new Object[]{orderID, rOrderType, allOrderItems, "RM" + df.format(totalPrice), rVendorName, rOrderStatus, rCancelReason});
                 }
             }
         } catch (IOException e) {
