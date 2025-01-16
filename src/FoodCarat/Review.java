@@ -350,6 +350,8 @@ public class Review {
     public double getVendorAverageRating(String vendorEmail) {
         Order orders = new Order();
         List<Integer> orderIDs = orders.getOrderIDsReview(vendorEmail, "vendor");
+        System.out.println(orderIDs);
+        System.out.println("vendor email in review: " + vendorEmail);
         if (orderIDs.isEmpty()) {
             return 0;  // No orders for the vendor, so return 0
         }
@@ -398,10 +400,16 @@ public class Review {
                 String[] parts = line.split(",");
                 String reviewType = parts[2];
                 String review = parts[4];
-                int orderID = Integer.parseInt(parts[1]);
+                String orderID = parts[1];
+                
+                if ("null".equals(orderID)) {
+                    continue; 
+                }
+                
+                int orderID1 = Integer.parseInt(orderID);
 
                 // If the review is for a vendor and matches the orderID
-                if ("vendor".equals(reviewType) && orderIDs.contains(orderID)) {
+                if ("vendor".equals(reviewType) && orderIDs.contains(orderID1)) {
                     vendorReviews.add(review);
                 }
             }
