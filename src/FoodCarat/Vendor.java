@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  *
  * @author mastu
  */
-public class Vendor {
+public class Vendor extends User{
     //constructor    
     private String email;
     //super(email,password,name);
@@ -31,10 +31,21 @@ public class Vendor {
     
     private String vendorFile = "resources/vendor.txt";
     
+    private String vendorName;
+    private double totalRevenue;
+    
     public Vendor(String email) {
         //super(email)
         this.email = email;
         getVendorInfo(email);
+    }
+    
+    //constructor for performance tracking
+    public Vendor(String vendorName, boolean initializeName) {
+        if (initializeName) {
+            this.vendorName = vendorName; // Set vendorName if flag is true
+        }
+        this.totalRevenue = 0.0;
     }
     
     //setters - for current session (not including updating text field)
@@ -78,6 +89,22 @@ public class Vendor {
 
     public double getCreditBalance() {
         return creditBalance;
+    }
+    
+    public String getVendorName() {
+        return vendorName;
+    }
+
+    public double getTotalRevenue() {
+        return totalRevenue;
+    }
+
+    public double getAverageValuePerOrder() {
+         return getTotalOrders() == 0 ? 0.0 : totalRevenue / getTotalOrders();
+    }
+
+    public void addRevenue(double revenue) {
+        this.totalRevenue += revenue; // Increment revenue only
     }
     
     //methods
