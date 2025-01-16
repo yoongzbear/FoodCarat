@@ -22,7 +22,8 @@ public class managerMonRunPer extends javax.swing.JFrame {
     }
 
     private void displayRunnerPerformance(String selectedMonth) throws IOException {
-        Map<String, Runner> performanceDataMap = Manager.getRunnerPerformance(selectedMonth);
+        Manager manager = new Manager();
+        Map<String, Runner> performanceDataMap = manager.getRunnerPerformance(selectedMonth);
 
         // Assuming you have a JTable set up with columns "RunnerID", "Total Orders", and "Average Rating"
         DefaultTableModel model = (DefaultTableModel) runpertable.getModel();
@@ -38,8 +39,8 @@ public class managerMonRunPer extends javax.swing.JFrame {
             String runnerID = entry.getKey();
             Runner data = entry.getValue();            
             
-            Admin admin = new Admin();
-            String [] runnerName = admin.performSearch(runnerID, "user.txt");
+            User user = new User();
+            String [] runnerName = user.performSearch(runnerID, "user.txt");
             String name = runnerName[1];
             
             model.addRow(new Object[] {
