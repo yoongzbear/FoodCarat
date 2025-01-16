@@ -454,7 +454,7 @@ public class Review {
     }
 
     // Method to get orderIDs associated with a specific runnerEmail
-    private List<Integer> getOrderIDsByRunnerEmail(String runnerEmail) {
+    public List<Integer> getOrderIDsByRunnerEmail(String runnerEmail) {
         List<Integer> orderIDs = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(orderFileName))) {
