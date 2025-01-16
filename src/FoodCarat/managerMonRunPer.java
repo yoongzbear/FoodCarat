@@ -116,7 +116,7 @@ public class managerMonRunPer extends javax.swing.JFrame {
         jScrollPane1.setViewportView(runpertable);
 
         monthcbx.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
-        monthcbx.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" }));
+        monthcbx.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Please select", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
