@@ -220,16 +220,21 @@ public class Order {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts.length > 10) {
+                if (parts.length < 10) {
                     if (type.equals("vendor")) {
                         String orderItems = parts[2];
                         String currentVendorEmail = "";
                         orderItems = orderItems.replace("[", "").replace("]", "");
                         String[] items = orderItems.split("\\|");
+                        System.out.println("Item:" + Arrays.toString(items));
                         for (String item : items) {
                             String[] itemDetails = item.split(";");
-                            currentVendorEmail = parts[4];
-                            System.out.println("Vendor:" + currentVendorEmail);
+                            String itemID = itemDetails[0];
+                            Item item1 = new Item();
+                            String[] itemData = item1.itemData(itemID);
+                            System.out.println("Item details:" + Arrays.toString(itemDetails));
+                            currentVendorEmail = itemData[5];
+                            System.out.println("Vendor in order class:" + currentVendorEmail);
                         }
                         if (currentVendorEmail.equals(email)) {
                             int orderID = Integer.parseInt(parts[0]);  
@@ -257,6 +262,7 @@ public class Order {
         String[] newOrder = null;
         List<String[]> vendorOrders = getAllOrders(vendorEmail);
         for (String[] orderData : vendorOrders) {
+            //1,Take away,[1;1|2;1],Ordered,customerEmail,NULL,NULL,20.00,2025-01-01,27.80
             if (orderData[3].equals("pending accept")) {
                 newOrder = orderData;
                 break;
@@ -362,14 +368,13 @@ public class Order {
     public void updateStatus(String id, String orderStatus, String userType) {
         //get order info from order.txt using id, see order method
         //if delivery - vendor and runner
-        //pending accept, assigning runner, ordered, in kitchen, ready, pick up by runner, completed
-        //
+        //ordered, pending ____idk whats this___, accepted by vendor, accepted by runner, in kitchen, ready, pick up, delivered
+        
         //if dine in - vendor
-        //pending accept, ordered, in kitchen, ready, completed
-        //
+        //ordered, pending ____idk whats this___, accepted by vendor, in kitchen, ready, sent 
+        
         //if take away - vendor
-        //pending accept, ordered, in kitchen, ready, completed
-
+        //ordered, pending ____idk whats this___, accepted by vendor, in kitchen, ready, picked up
     }
     
     // Method to add item to cart
