@@ -5,6 +5,7 @@
 package FoodCarat;
 
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -13,7 +14,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class vendorCurrentOrder extends javax.swing.JFrame {
 
-    private String email = "chagee@mail.com";
+    private String email = "vendor@mail.com";
 //    private String email = User.getSessionEmail();
     Vendor vendor = new Vendor(email);
 
@@ -34,6 +35,7 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         Order newOrder = new Order();
         String[] newOrderInfo = newOrder.getNewOrder(email);
         //if newOrderInfo is null, display "no new orders"
+        System.out.println(Arrays.toString(newOrderInfo));
         if (newOrderInfo==null) {
             orderMessageLabel.setText("No new orders.");
         } else {
@@ -114,6 +116,8 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         jScrollPane5 = new javax.swing.JScrollPane();
         currentOrderTable = new javax.swing.JTable();
         selectBtn = new javax.swing.JButton();
+        filterStatusBox = new javax.swing.JComboBox<>();
+        filterBtn = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         statusIdTxt = new javax.swing.JTextField();
@@ -285,6 +289,10 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
             }
         });
 
+        filterStatusBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Status" }));
+
+        filterBtn.setText("Filter");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -292,8 +300,13 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(16, 16, 16)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(filterStatusBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(27, 27, 27)
+                        .addComponent(filterBtn))
                     .addComponent(selectBtn)
-                    .addComponent(jLabel3)
                     .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 586, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(18, Short.MAX_VALUE))
         );
@@ -301,7 +314,10 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel3)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(filterStatusBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(filterBtn))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -447,7 +463,6 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(menuBtn)
                     .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -458,7 +473,7 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
                         .addComponent(orderMessageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         pack();
@@ -520,6 +535,8 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
     private javax.swing.JButton acceptBtn;
     private javax.swing.JButton cancelUpdateBtn;
     private javax.swing.JTable currentOrderTable;
+    private javax.swing.JButton filterBtn;
+    private javax.swing.JComboBox<String> filterStatusBox;
     private javax.swing.JTextField incomingEmailTxt;
     private javax.swing.JLabel incomingIDLabel;
     private javax.swing.JTable incomingItemTable;
