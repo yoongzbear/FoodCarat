@@ -88,7 +88,8 @@ public class customerReceipt extends javax.swing.JFrame {
                 double orderItemTotal = Integer.parseInt(quantity) * itemPrice;
                 subtotal += orderItemTotal;
                 
-                String vendorName = item1.getVendorNameByItemID(Integer.parseInt(itemID));
+                String[] vendorInfo = item1.getVendorInfoByItemID(Integer.parseInt(itemID));
+                String vendorName = vendorInfo[1];
                 sVendorName.setText(String.valueOf(vendorName));
 
                 // Add the item to the table
