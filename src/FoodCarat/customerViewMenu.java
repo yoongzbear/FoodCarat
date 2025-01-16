@@ -87,6 +87,8 @@ public class customerViewMenu extends javax.swing.JFrame {
                     // Get average rating and random review
                     Review review = new Review();
                     double vendorRating = review.getVendorAverageRating(vendorEmail);  // Get average rating
+                    System.out.println("Vendor email in review: " + vendorEmail);
+                    System.out.println("Rate in review: " + vendorRating);
                     String randomReview = review.getRandomVendorReview(vendorEmail);  // Get random review
                     
                     JPanel vendorPanel = createVendorPanel(vendorName, vendorEmail, logoPath, vendorRating, randomReview, isAvailableForOrderType);
