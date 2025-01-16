@@ -12,28 +12,19 @@ import java.io.IOException;
  *
  * @author Yuna
  */
-public class Runner {
+public class Runner extends User{
     private String runnerFile = "resources/runner.txt";
     
     //Manager Monitor Runner Performance
-    private int totalOrders = 0; 
     private int totalRating = 0;
     
-    public void addOrder(String orderID) {
-        totalOrders++;
-    }
-
     public void addRating(int rating) {
-        totalRating += rating;
-    }
-
-    public int getTotalOrders() {
-        return totalOrders;
+        this.totalRating += rating;
     }
 
     public double getAverageRating() {
-        if (totalOrders == 0) return 0;
-        return (double) totalRating / totalOrders;
+        if (getTotalOrders() == 0) return 0; // Avoid division by zero
+        return (double) totalRating / getTotalOrders();
     }
     
     public String[] getRunnerDetails(String email) {
