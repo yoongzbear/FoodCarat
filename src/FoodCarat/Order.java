@@ -603,8 +603,7 @@ public class Order {
                 String[] orderDetails = line.split(",");
                 String currentOrderID = orderDetails[0].trim();  // Order ID is the first element
                 if (currentOrderID.equals(orderID)) {
-                    // The runnerID is the 7th element in the line (index 6)
-                    String runnerID = orderDetails[6].trim();
+                    String runnerID = orderDetails[5].trim();
                     orderReader.close();
                     return runnerID;  // Return the found runnerID
                 }
