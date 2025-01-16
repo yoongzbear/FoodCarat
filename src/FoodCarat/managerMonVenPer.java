@@ -4,6 +4,8 @@
  */
 package FoodCarat;
 
+import java.util.List;
+
 /**
  *
  * @author User
@@ -39,18 +41,23 @@ public class managerMonVenPer extends javax.swing.JFrame {
         jLabel1.setText("Monitor Vendor Performance");
 
         searchbtn.setText("Search");
+        searchbtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchbtnActionPerformed(evt);
+            }
+        });
 
         searchlabel.setText("Search:");
 
         VenPertable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "No", "Vendor", "Total Revenue", "Total order", "Average value per order", "Average rating"
+                "No", "Vendor", "Total Revenue", "Total order", "Average value per order"
             }
         ));
         jScrollPane1.setViewportView(VenPertable);
@@ -98,6 +105,28 @@ public class managerMonVenPer extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void searchbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchbtnActionPerformed
+        String selectedMonth = (String) monthcbx.getSelectedItem();
+
+        // Validate if the user has selected a valid month
+        if (selectedMonth == null || "Please select".equals(selectedMonth)) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Please select a valid month!");
+            return;
+        }
+
+        // Call the Manager method to get vendor performance data
+        Manager manager = new Manager();
+        List<String[]> vendorData = manager.getVendorPerformanceByMonth(selectedMonth);
+
+        // Populate the VenPertable
+        javax.swing.table.DefaultTableModel tableModel = (javax.swing.table.DefaultTableModel) VenPertable.getModel();
+        tableModel.setRowCount(0); // Clear existing rows
+
+        for (Object[] rowData : vendorData) {
+            tableModel.addRow(rowData);
+        }
+    }//GEN-LAST:event_searchbtnActionPerformed
 
     /**
      * @param args the command line arguments
