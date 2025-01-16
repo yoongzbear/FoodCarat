@@ -79,6 +79,9 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
     //accept or reject new order
     
     //update order status
+    //statusUpdateBox - make the model based on delivery method
+        //if delivery - ordered, in kitchen, ready, pick up by runner
+        //if dine in or take away - ordered, in kitchen, ready, completed
 
     /**
      * This method is called from within the constructor to initialize the form.

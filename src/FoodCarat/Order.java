@@ -257,7 +257,6 @@ public class Order {
         String[] newOrder = null;
         List<String[]> vendorOrders = getAllOrders(vendorEmail);
         for (String[] orderData : vendorOrders) {
-            //1,Take away,[1;1|2;1],Ordered,customerEmail,NULL,NULL,20.00,2025-01-01,27.80
             if (orderData[3].equals("pending accept")) {
                 newOrder = orderData;
                 break;
@@ -267,6 +266,7 @@ public class Order {
         return newOrder;
     }
     
+    //get orders with status ordered --> in kitchen --> ready 
 
     //helper method to determine if order contain items from the vendor
     private boolean containsVendorItems(String orderItems, List<String> itemIDs) {
@@ -362,13 +362,14 @@ public class Order {
     public void updateStatus(String id, String orderStatus, String userType) {
         //get order info from order.txt using id, see order method
         //if delivery - vendor and runner
-        //ordered, pending ____idk whats this___, accepted by vendor, accepted by runner, in kitchen, ready, pick up, delivered
-        
+        //pending accept, assigning runner, ordered, in kitchen, ready, pick up by runner, completed
+        //
         //if dine in - vendor
-        //ordered, pending ____idk whats this___, accepted by vendor, in kitchen, ready, sent 
-        
+        //pending accept, ordered, in kitchen, ready, completed
+        //
         //if take away - vendor
-        //ordered, pending ____idk whats this___, accepted by vendor, in kitchen, ready, picked up
+        //pending accept, ordered, in kitchen, ready, completed
+
     }
     
     // Method to add item to cart
