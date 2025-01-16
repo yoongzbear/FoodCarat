@@ -4,9 +4,14 @@
  */
 package FoodCarat;
 
+import java.awt.Color;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -28,8 +33,37 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         initComponents();
         getContentPane().setBackground(new java.awt.Color(186,85,211)); //setting background color of frame
         
-        //display new order
+        //display new order and current orders
         displayNewOrder();
+        displayCurrentOrder();
+        
+        setPlaceholder(searchOrderIDTxt, "Search Order ID"); //set placeholder for search
+    }
+    
+    //helper method to adjust search box
+    public void setPlaceholder(JTextField textField, String placeholder) {
+        textField.setText(placeholder);
+        textField.setForeground(Color.GRAY);  
+
+        textField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                //if the text field contains the placeholder, clear it when the clicked
+                if (textField.getText().equals(placeholder)) {
+                    textField.setText("");
+                    textField.setForeground(Color.BLACK);  
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                //if the text field is empty, show the placeholder again
+                if (textField.getText().isEmpty()) {
+                    textField.setText(placeholder);
+                    textField.setForeground(Color.GRAY);
+                }
+            }
+        });
     }
     
     //display new order
@@ -38,12 +72,18 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         Order newOrder = new Order();
         String[] newOrderInfo = newOrder.getNewOrder(email);
         //if newOrderInfo is null, display "no new orders"
-        System.out.println(Arrays.toString(newOrderInfo));
         if (newOrderInfo==null) {
             orderMessageLabel.setText("No new orders.");
+            //reset new order section 
+            incomingIDLabel.setText("");
+            incomingEmailTxt.setText("");
+            incomingMethodTxt.setText("");
+            incomingTotalPriceTxt.setText("RM0.00");
+            DefaultTableModel model = (DefaultTableModel) incomingItemTable.getModel();
+            model.setRowCount(0);
         } else {
+            //display information in the new order section
             orderMessageLabel.setText("You have a new order, please review it.");
-            //orderID,orderMethod,[itemID;quantity],orderStatus,customerEmail,runnerEmail,deliveryFee,totalPaid,date,totalprice
             incomingIDLabel.setText(newOrderInfo[0].trim());
             incomingEmailTxt.setText(newOrderInfo[4].trim());
             incomingMethodTxt.setText(newOrderInfo[1].trim());
@@ -68,27 +108,155 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
                     String itemName = itemData[1];
                     double price = Double.parseDouble(itemData[3]);
 
-                    model.addRow(new Object[]{itemName, df.format(price), quantity});
+                    model.addRow(new Object[]{itemName, quantity});
                 } else {
-                    model.addRow(new Object[]{"Unknown item (ID: " + itemID + ")", 0.0, quantity});
+                    model.addRow(new Object[]{"Unknown item (ID: " + itemID + ")", quantity});
                 }
             }
         }
-
     }
         
     //display all current orders 
-    //status from accepted by vendor/runner to ready / picked up
+    public void displayCurrentOrder() {
+        Order orders = new Order();
+        //create lists for orders with ordered, in kitchen, and ready statuses
+        List<String[]> ordered = orders.getOrderByStatus(email, "Ordered");
+        List<String[]> inKitchen = orders.getOrderByStatus(email, "In kitchen");
+        List<String[]> ready = orders.getOrderByStatus(email, "Ready");
+
+        DefaultTableModel model = (DefaultTableModel) currentOrderTable.getModel();
+        int index = 1;
+        model.setRowCount(0);
+        
+        Item item = new Item();
+
+        //iterate through each list and add into table model
+        for (String[] orderData : ordered) {
+            String orderItems = orderData[2].trim();
+            String updatedOrderItems = item.replaceItemIDsWithNames(orderItems);
+            model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, orderData[1], orderData[3]});
+        }
+        
+        for (String[] orderData : inKitchen) {
+            String orderItems = orderData[2].trim();
+            String updatedOrderItems = item.replaceItemIDsWithNames(orderItems);
+            model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, orderData[1], orderData[3]});
+        }
+        
+        for (String[] orderData : ready) {
+            String orderItems = orderData[2].trim();
+            String updatedOrderItems = item.replaceItemIDsWithNames(orderItems);
+            model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, orderData[1], orderData[3]});
+        }
+        
+    }
+    
+    //display according to status combo box
+    public void displayCurrentOrder(String filter) {
+        Order orders = new Order();
+        DefaultTableModel model = (DefaultTableModel) currentOrderTable.getModel();
+        int index = 1;
+        model.setRowCount(0);
+        Item item = new Item();
+
+        if (filter.equalsIgnoreCase("Ordered")) {
+            List<String[]> orderList = orders.getOrderByStatus(email, "Ordered");
+            for (String[] orderData : orderList) {
+                String orderItems = orderData[2].trim();
+                String updatedOrderItems = item.replaceItemIDsWithNames(orderItems); //replace item ID with item names
+                model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, orderData[1], orderData[3]});
+            }
+        } else if (filter.equalsIgnoreCase("In kitchen")) {
+            List<String[]> orderList = orders.getOrderByStatus(email, "In kitchen");
+            for (String[] orderData : orderList) {
+                String orderItems = orderData[2].trim();
+                String updatedOrderItems = item.replaceItemIDsWithNames(orderItems);
+                model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, orderData[1], orderData[3]});
+            }
+        } else if (filter.equalsIgnoreCase("Ready")) {
+            List<String[]> orderList = orders.getOrderByStatus(email, "Ready");
+            for (String[] orderData : orderList) {
+                String orderItems = orderData[2].trim();
+                String updatedOrderItems = item.replaceItemIDsWithNames(orderItems);
+                model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, orderData[1], orderData[3]});
+            }
+        } 
+    }
+    
+    //display searched id in table
+    public void displaySearch(String orderID) {
+        Order order = new Order();
+        DefaultTableModel model = (DefaultTableModel) currentOrderTable.getModel();
+        int index = 1;
+        model.setRowCount(0);
+        Item item = new Item();
+        String[] searchedOrder = order.getOrder(orderID);
+        if (searchedOrder == null) {
+            JOptionPane.showMessageDialog(null, "Order ID cannot be found", "Alert", JOptionPane.WARNING_MESSAGE);
+            displayCurrentOrder();
+            setPlaceholder(searchOrderIDTxt, "Search Order ID");
+        } else {
+            String orderItems = searchedOrder[2].trim();
+            String updatedOrderItems = item.replaceItemIDsWithNames(orderItems);
+            model.addRow(new Object[]{index++, searchedOrder[0], updatedOrderItems, searchedOrder[1], searchedOrder[3]});
+        }
+    }
     
     //display selected order
-    
-    //accept or reject new order
-    
-    
-    //update order status
-    //statusUpdateBox - make the model based on delivery method
-        //if delivery - ordered, in kitchen, ready, pick up by runner
-        //if dine in or take away - ordered, in kitchen, ready, completed
+    public void displayOrderDetails(String orderID) {
+        DecimalFormat df = new DecimalFormat("0.00");
+        Order order = new Order();
+        String[] orderDetails = order.getOrder(orderID);
+        statusIdTxt.setText(orderDetails[0].trim());
+        String orderMethod = orderDetails[1].trim();
+        statusMethodTxt.setText(orderMethod);
+
+        //display table item
+        Item item = new Item();
+        String orderItems = orderDetails[2].trim();
+        //remove square brackets and split the items by "|"
+        String[] itemDetails = orderItems.replace("[", "").replace("]", "").split("\\|");
+        DefaultTableModel model = (DefaultTableModel) updateOrderTable.getModel();
+        model.setRowCount(0);
+
+        for (String detail : itemDetails) {
+            String[] parts = detail.split(";");
+            String itemID = parts[0];
+            int quantity = Integer.parseInt(parts[1]);
+
+            //retrieve item data through Item class
+            String[] itemData = item.itemData(itemID);
+            if (itemData != null && itemData.length > 3) {
+                String itemName = itemData[1];
+                double price = Double.parseDouble(itemData[3]);
+
+                model.addRow(new Object[]{itemName, quantity});
+            } else {
+                model.addRow(new Object[]{"Unknown item (ID: " + itemID + ")", quantity});
+            }
+        }
+        
+        //get current status and display next status 
+        String currentStatus = orderDetails[3].trim();
+        currentStatusTxt.setText(currentStatus);
+        if (orderMethod.equalsIgnoreCase("Delivery")) {
+            if (currentStatus.equalsIgnoreCase("Ordered")) {
+                nextStatusTxt.setText("In kitchen");
+            } else if (currentStatus.equalsIgnoreCase("In kitchen")) {
+                nextStatusTxt.setText("Ready");
+            } else if (currentStatus.equalsIgnoreCase("Ready")) {
+                nextStatusTxt.setText("Picked up by runner");
+            }
+        } else {
+            if (currentStatus.equalsIgnoreCase("Ordered")) {
+                nextStatusTxt.setText("In kitchen");
+            } else if (currentStatus.equalsIgnoreCase("In kitchen")) {
+                nextStatusTxt.setText("Ready");
+            } else if (currentStatus.equalsIgnoreCase("Ready")) {
+                nextStatusTxt.setText("Completed");
+            }
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -122,12 +290,11 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         currentOrderTable = new javax.swing.JTable();
         selectBtn = new javax.swing.JButton();
         filterStatusBox = new javax.swing.JComboBox<>();
-        filterBtn = new javax.swing.JButton();
+        searchOrderIDTxt = new javax.swing.JTextField();
+        searchBtn = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        statusIdTxt = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
-        statusMethodTxt = new javax.swing.JTextField();
         updateOrderBtn = new javax.swing.JButton();
         cancelUpdateBtn = new javax.swing.JButton();
         jLabel13 = new javax.swing.JLabel();
@@ -135,7 +302,11 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         jScrollPane6 = new javax.swing.JScrollPane();
         updateOrderTable = new javax.swing.JTable();
         jLabel12 = new javax.swing.JLabel();
-        statusUpdateBox = new javax.swing.JComboBox<>();
+        statusIdTxt = new javax.swing.JLabel();
+        statusMethodTxt = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        currentStatusTxt = new javax.swing.JLabel();
+        nextStatusTxt = new javax.swing.JLabel();
         orderMessageLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -186,6 +357,11 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         });
 
         rejectBtn.setText("Reject");
+        rejectBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rejectBtnActionPerformed(evt);
+            }
+        });
 
         jLabel8.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         jLabel8.setText("Total Paid:");
@@ -259,7 +435,7 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel6)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 315, Short.MAX_VALUE))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
@@ -302,9 +478,21 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
             }
         });
 
-        filterStatusBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Status" }));
+        filterStatusBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Status", "Ordered", "In Kitchen", "Ready" }));
+        filterStatusBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                filterStatusBoxActionPerformed(evt);
+            }
+        });
 
-        filterBtn.setText("Filter");
+        searchOrderIDTxt.setText("Search Order ID");
+
+        searchBtn.setText("Search");
+        searchBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -313,29 +501,33 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(16, 16, 16)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(filterStatusBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(27, 27, 27)
-                        .addComponent(filterBtn))
+                    .addComponent(jLabel3)
                     .addComponent(selectBtn)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 586, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(18, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addComponent(filterStatusBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(searchOrderIDTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(searchBtn))
+                        .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 745, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(filterStatusBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(filterBtn))
+                .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(filterStatusBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(searchOrderIDTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(searchBtn))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(selectBtn)
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addGap(14, 14, 14))
         );
 
         jLabel4.setFont(new java.awt.Font("Cooper Black", 0, 24)); // NOI18N
@@ -352,6 +544,11 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         });
 
         cancelUpdateBtn.setText("Cancel Update");
+        cancelUpdateBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelUpdateBtnActionPerformed(evt);
+            }
+        });
 
         jLabel13.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         jLabel13.setText("Order ID:");
@@ -376,9 +573,18 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         }
 
         jLabel12.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        jLabel12.setText("Order Status:");
+        jLabel12.setText("Current Status:");
 
-        statusUpdateBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        statusIdTxt.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
+
+        statusMethodTxt.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
+
+        jLabel15.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
+        jLabel15.setText("Next Status:");
+
+        currentStatusTxt.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
+
+        nextStatusTxt.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -388,28 +594,34 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
                 .addGap(17, 17, 17)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4)
-                    .addComponent(jLabel14)
-                    .addComponent(jLabel13)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel11)
-                        .addGap(32, 32, 32)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(statusMethodTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(statusIdTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel12)
-                        .addGap(40, 40, 40)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel11)
+                                    .addComponent(jLabel13))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(statusMethodTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(statusIdTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(207, 207, 207)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel15)
+                                    .addComponent(jLabel12))
+                                .addGap(18, 18, Short.MAX_VALUE))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel14)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(updateOrderBtn)
-                                    .addComponent(cancelUpdateBtn)))
+                                .addComponent(updateOrderBtn)))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(currentStatusTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(nextStatusTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(statusUpdateBox, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))))
-                .addGap(20, 20, 20))
+                                .addGap(44, 44, 44)
+                                .addComponent(cancelUpdateBtn)))))
+                .addGap(35, 35, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -417,31 +629,31 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
                 .addGap(16, 16, 16)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel13)
-                    .addComponent(statusIdTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel13)
+                        .addComponent(jLabel12)
+                        .addComponent(statusIdTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(currentStatusTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel11)
-                            .addComponent(statusMethodTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel11)
+                                .addComponent(jLabel15)
+                                .addComponent(nextStatusTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(statusMethodTxt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jLabel14)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 99, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
-                        .addComponent(updateOrderBtn)
-                        .addGap(45, 45, 45)
-                        .addComponent(cancelUpdateBtn)))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel12)
-                    .addComponent(statusUpdateBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(32, Short.MAX_VALUE))
+                            .addComponent(jLabel14)
+                            .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(updateOrderBtn)
+                            .addComponent(cancelUpdateBtn))
+                        .addGap(109, 109, 109)))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         orderMessageLabel.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
@@ -453,38 +665,44 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(262, 262, 262)
-                .addComponent(menuBtn)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(orderMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(27, 27, 27)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addGap(339, 339, 339)
+                        .addComponent(menuBtn)))
                 .addGap(40, 40, 40))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(orderMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(27, 27, 27)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(19, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(menuBtn)
-                    .addComponent(jLabel1))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(menuBtn)
+                        .addGap(19, 19, 19))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(8, 8, 8)
                         .addComponent(orderMessageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(16, Short.MAX_VALUE))
         );
@@ -498,20 +716,94 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
     }//GEN-LAST:event_menuBtnActionPerformed
 
     private void selectBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectBtnActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = currentOrderTable.getSelectedRow();        
+        //validation to choose a row 
+        if (selectedRow >= 0) {            
+            Object id = currentOrderTable.getModel().getValueAt(selectedRow, 1);
+            displayOrderDetails(id.toString());
+        } else { //no row is selected
+            JOptionPane.showMessageDialog(null, "Please select a row to view details.", "Alert", JOptionPane.WARNING_MESSAGE);
+        }
     }//GEN-LAST:event_selectBtnActionPerformed
 
     private void updateOrderBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateOrderBtnActionPerformed
-        // TODO add your handling code here:
+        int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to update the order's status?", "Update Order Status", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            String orderID = statusIdTxt.getText();
+            String newStatus = nextStatusTxt.getText();
+            Order order = new Order();
+            order.updateStatus(orderID, newStatus, role);
+            JOptionPane.showMessageDialog(null, "Order " + orderID + "'s status updated successfully!");
+            displayCurrentOrder();
+
+            //reset order details section
+            statusIdTxt.setText("");
+            statusMethodTxt.setText("");
+            DefaultTableModel model = (DefaultTableModel) updateOrderTable.getModel();
+            model.setRowCount(0);
+            currentStatusTxt.setText("");
+            nextStatusTxt.setText("");
+        }
     }//GEN-LAST:event_updateOrderBtnActionPerformed
 
     private void acceptBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptBtnActionPerformed
-        //updateStatus(String id, String orderStatus, String userType)
+        //update order status to Ordered or Assigning runner
         String orderID = incomingIDLabel.getText();
+        String orderMethod = incomingMethodTxt.getText();
         
         Order order = new Order();
-        order.updateStatus(orderID, "Ordered", role);
+        if (orderMethod.equalsIgnoreCase("delivery")) {
+            order.updateStatus(orderID, "Assigning runner", role);
+        } else {
+            order.updateStatus(orderID, "Ordered", role);
+        }
+        displayNewOrder(); //display next new order 
+        displayCurrentOrder(); //refresh current orders table
+        JOptionPane.showMessageDialog(null, "Order " + orderID + " is accepted.");
     }//GEN-LAST:event_acceptBtnActionPerformed
+
+    private void rejectBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rejectBtnActionPerformed
+        //update order status to cancelled - not sure if need to include reason
+        String orderID = incomingIDLabel.getText();
+        String orderMethod = incomingMethodTxt.getText();
+        
+        Order order = new Order();
+        //may need to add cancellation reason
+        int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to reject this order?", "Reject Order", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            order.updateStatus(orderID, "Canceled", role);
+            JOptionPane.showMessageDialog(null, "Order " + orderID + " is rejected.");
+            displayNewOrder(); //display next new order
+        }
+    }//GEN-LAST:event_rejectBtnActionPerformed
+
+    private void filterStatusBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterStatusBoxActionPerformed
+        String filter = filterStatusBox.getSelectedItem().toString();
+        if (filter.equals("Select Status")) {
+            displayCurrentOrder(); //display all current orders
+        } else {
+            displayCurrentOrder(filter); //display based on filter
+        }        
+    }//GEN-LAST:event_filterStatusBoxActionPerformed
+
+    private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
+        String search = searchOrderIDTxt.getText();
+        if (search.equals("Search Order ID")) {
+            JOptionPane.showMessageDialog(null, "Please enter your search.", "Alert", JOptionPane.WARNING_MESSAGE);
+        } else {
+            displaySearch(search);
+        }
+    }//GEN-LAST:event_searchBtnActionPerformed
+
+    private void cancelUpdateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelUpdateBtnActionPerformed
+        //reset order details section
+        statusIdTxt.setText("");
+        statusMethodTxt.setText("");
+        DefaultTableModel model = (DefaultTableModel) updateOrderTable.getModel();
+        model.setRowCount(0);
+        currentStatusTxt.setText("");
+        nextStatusTxt.setText("");
+    }//GEN-LAST:event_cancelUpdateBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -552,7 +844,7 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
     private javax.swing.JButton acceptBtn;
     private javax.swing.JButton cancelUpdateBtn;
     private javax.swing.JTable currentOrderTable;
-    private javax.swing.JButton filterBtn;
+    private javax.swing.JLabel currentStatusTxt;
     private javax.swing.JComboBox<String> filterStatusBox;
     private javax.swing.JLabel incomingEmailTxt;
     private javax.swing.JLabel incomingIDLabel;
@@ -564,6 +856,7 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -579,12 +872,14 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JButton menuBtn;
+    private javax.swing.JLabel nextStatusTxt;
     private javax.swing.JLabel orderMessageLabel;
     private javax.swing.JButton rejectBtn;
+    private javax.swing.JButton searchBtn;
+    private javax.swing.JTextField searchOrderIDTxt;
     private javax.swing.JButton selectBtn;
-    private javax.swing.JTextField statusIdTxt;
-    private javax.swing.JTextField statusMethodTxt;
-    private javax.swing.JComboBox<String> statusUpdateBox;
+    private javax.swing.JLabel statusIdTxt;
+    private javax.swing.JLabel statusMethodTxt;
     private javax.swing.JButton updateOrderBtn;
     private javax.swing.JTable updateOrderTable;
     // End of variables declaration//GEN-END:variables

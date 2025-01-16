@@ -141,6 +141,7 @@ public class Order {
                 lastOrder = Integer.parseInt(record[0]);
             }
             lastOrder = lastOrder + 1;
+            br.close();
         }
         catch (IOException e){
             e.printStackTrace();
@@ -175,6 +176,8 @@ public class Order {
                 String[] orderData = read.split(",");
                 allOrders.add(orderData);
             }
+            br.close();
+            fr.close();
         } catch(IOException e) {
             JOptionPane.showMessageDialog(null, "Failed to read from order file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -183,11 +186,9 @@ public class Order {
     }
     
     //get all orders for the vendor
-    //will change the logic after getting the correct order data
     public List<String[]> getAllOrders(String vendorEmail) {
         List<String[]> vendorOrders = new ArrayList<>();
         DecimalFormat df = new DecimalFormat("0.00");
-
         //get all items from vendor
         Item item = new Item();
         List<String[]> vendorItems = item.getAllItems(vendorEmail);
@@ -207,7 +208,6 @@ public class Order {
                 vendorOrders.add(orderWithTotal);
             }
         }
-
         return vendorOrders;
     }
     
@@ -247,6 +247,8 @@ public class Order {
                     }
                 }
             }
+            itemReader.close();
+            reader.close();
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Could not find " + email + " in " + type + ": " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -259,41 +261,23 @@ public class Order {
         List<Integer> orderIDs = new ArrayList<>();
         List<String[]> vendorOrders = getAllOrders(vendorEmail);
         for (String[] orderData : vendorOrders) {
-            //1,Take away,[1;1|2;1],Ordered,customerEmail,NULL,NULL,20.00,2025-01-01,27.80
             if (orderData[3].equalsIgnoreCase("Pending accept")) {
                 return orderData;
             }
-        }
-        
+        }        
         return null; //no new order
     }
     
-    //get orders with status ordered --> in kitchen --> ready 
+    //get orders based on status for the vendor
     public List<String[]> getOrderByStatus(String vendorEmail, String orderStatus) {
         List<String[]> orderData = new ArrayList<>();
-        //get all orders containing items from vendor
-        List<String[]> vendorOrders = getAllOrders(vendorEmail);
-        //filter orders containing items from vendor
-        for (String[] order : vendorOrders) {
+        List<String[]> vendorOrders = getAllOrders(vendorEmail); //get all orders containing items from vendor
+        for (String[] order : vendorOrders) { //filter orders containing items from vendor
             if (orderStatus.equals(order[3])) {
-                String orderItems = order[2];
-                String currentVendorEmail = "";
-                orderItems = orderItems.replace("[", "").replace("]", "");
-                String[] items = orderItems.split("\\|");
-                for (String item : items) {
-                    String[] itemDetails = item.split(";");
-                    String itemID = itemDetails[0];
-                    Item item1 = new Item();
-                    String[] itemData = item1.itemData(itemID);
-                    currentVendorEmail = itemData[5];
-                }
-                if (currentVendorEmail.equals(vendorEmail)) {
-                    orderData.add(order);
-                }
+                orderData.add(order);
             }
         }
-
-        return vendorOrders;
+        return orderData;
     }
 
     //helper method to determine if order contain items from the vendor
@@ -324,7 +308,6 @@ public class Order {
             double price = Double.parseDouble(priceStr);
             totalPrice += price * quantity;
         }
-
         return totalPrice;
     }
  
@@ -348,6 +331,7 @@ public class Order {
                 }
             }
             br.close();
+            fr.close();
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Failed to read from the file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -390,17 +374,34 @@ public class Order {
     public void updateStatus(String id, String newOrderStatus, String userType) {        
         //get order info from order.txt using id, see order method
         String[] order = getOrder(id);
-        //orderID,orderMethod,[itemID;quantity],orderStatus,customerEmail,runnerEmail,cancelReason,deliveryFee,totalPaid,date,totalPrice
-        //get delivert method
-//        if delivery - vendor and runner
-//        pending accept, assigning runner, ordered, in kitchen, ready, pick up by runner, completed
-//
-//        if dine in - vendor
-//        pending accept, ordered, in kitchen, ready, completed
-//
-//        if take away - vendor
-//        pending accept, ordered, in kitchen, ready, completed
+        String method = order[1].trim();
+        String currentStatus = order[3].trim();
+        List<String[]> allOrders = getAllOrders();
         
+        try {
+            FileWriter fw = new FileWriter(orderFile);
+            BufferedWriter bw = new BufferedWriter(fw);
+            
+            for (String[] orderData : allOrders) {
+                String orderDataID = orderData[0];
+                if (!orderDataID.equals(id)) {
+                    //keep the row if the ID does not match
+                    bw.write(String.join(",", orderData));
+                    bw.newLine();
+                } else {
+                    //found row and rewrite the row without total price
+                    order[3] = newOrderStatus;
+                    String[] updatedOrder = Arrays.copyOf(order, order.length - 1);
+                    bw.write(String.join(",", updatedOrder));
+                    bw.newLine();
+
+                }
+            }
+            bw.close();
+            fw.close();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Update order status failed: " + e.getMessage());
+        }   
     }
     
     // Method to add item to cart
