@@ -20,7 +20,7 @@ import java.util.Set;
  *
  * @author User
  */
-public class Manager {
+public class Manager extends User{
     private String userFile = "resources/user.txt";
     //Monitor Runner Performance
     //
