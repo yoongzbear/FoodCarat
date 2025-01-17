@@ -38,6 +38,7 @@ public class Order {
     private List<String[]> cart;
     private String orderFile = "resources/customerOrder.txt";
     private String itemFile = "resources/item.txt";
+    private String reasonFile = "resources/cancellationReason.txt";
     
     public Order(){ //for deleteIncompleteOrder()
         System.out.println("At order class:" + orderID); //for checking                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
@@ -128,6 +129,30 @@ public class Order {
 
     public void setReasonID(int reasonID) {
         this.reasonID = reasonID;
+    }
+    
+    //get reason based on reason ID
+    public String getReason(int reasonID) {
+        String reason = "";
+        try {
+            FileReader fr = new FileReader(reasonFile);
+            BufferedReader br = new BufferedReader(fr);
+            String read;
+
+            while ((read = br.readLine()) != null) {
+                String[] parts = read.split(",");
+                int orderReasonID = Integer.parseInt(parts[0].trim());
+                if (orderReasonID == reasonID) {
+                    reason = parts[1];
+                    break;
+                }
+            }
+            br.close();
+            fr.close();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Failed to read from reason file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return reason;
     }
     
     public void initialOrder(){ //initial order after customer choose orderType
@@ -390,6 +415,10 @@ public class Order {
                     bw.newLine();
                 } else {
                     //found row and rewrite the row without total price
+                    //if status = canceled and usertype = vendor, add reason id 1 (rejected by vendor)
+                    if (newOrderStatus.equalsIgnoreCase("Canceled") && userType.equalsIgnoreCase("vendor")) {                        
+                        order[6] = "1"; //reason ID for "rejected by vendor" is 1
+                    }                    
                     order[3] = newOrderStatus;
                     String[] updatedOrder = Arrays.copyOf(order, order.length - 1);
                     bw.write(String.join(",", updatedOrder));

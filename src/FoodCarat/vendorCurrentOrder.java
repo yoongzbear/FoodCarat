@@ -87,7 +87,7 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
             incomingIDLabel.setText(newOrderInfo[0].trim());
             incomingEmailTxt.setText(newOrderInfo[4].trim());
             incomingMethodTxt.setText(newOrderInfo[1].trim());
-            incomingTotalPriceTxt.setText("RM" + newOrderInfo[9].trim());
+            incomingTotalPriceTxt.setText("RM" + newOrderInfo[10].trim());
             
             //display table item
             Item item = new Item();
