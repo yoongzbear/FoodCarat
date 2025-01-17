@@ -7,6 +7,7 @@ package FoodCarat;
 import java.awt.Color;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
@@ -41,6 +42,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         //hide month and year combo box for table
         monthTableBox.setVisible(false);
         yearTableBox.setVisible(false);
+        rangeBtn.setVisible(false);
     }    
     
     //display all orders to vendor
@@ -112,12 +114,26 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         statusLabel.setText(details[3].trim());
         emailLabel.setText(details[4].trim());
         dateLabel.setText(details[9].trim());
-        totalPriceLabel.setText("RM"+details[10].trim());             
-        
+        totalPriceLabel.setText("RM" + details[10].trim());
+
         //view if got feedback for the order
         int orderIDInt = Integer.parseInt(orderID);
         Review orderReview = new Review(orderIDInt);
         //String reviews = orderReview.getFeedback();
+        Review review = new Review(Integer.parseInt(orderID));
+        try {
+            String feedback = review.getFeedback();
+            String[] feedbackParts = feedback.split(",");
+            String orderFeedback = feedbackParts[1];
+            if (!orderFeedback.equals("null")) {
+                //display feedback in feedback text area
+                feedbackTxtArea.setText(orderFeedback);
+            } else {
+                feedbackTxtArea.setText("-");
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
     
     //display vendor order based on search 
@@ -163,34 +179,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     public void displayOrderTimeRange() {
         //display orders matching the given date
     }
-    
-    
-    //helper method to change item id to item name
-//    private String replaceItemIDsWithNames(String orderItems, Item item) {
-//        //remove square brackets and split the items by "|"
-//        String[] itemDetails = orderItems.replace("[", "").replace("]", "").split("\\|");
-//        StringBuilder updatedItems = new StringBuilder();
-//
-//        //replace itemID with item name
-//        for (int i = 0; i < itemDetails.length; i++) {
-//            String detail = itemDetails[i];
-//            String[] parts = detail.split(";");
-//            String itemID = parts[0]; // itemID
-//            int quantity = Integer.parseInt(parts[1]); // quantity
-//
-//            String[] itemData = item.itemData(itemID);
-//            String itemName = itemData != null && itemData.length > 1 ? itemData[1] : "Unknown Item";
-//
-//            //update item format [itemName;quantity]
-//            if (i > 0) {
-//                updatedItems.append(", ");
-//            }
-//            updatedItems.append(itemName);
-//        }
-//
-//        return updatedItems.toString();
-//    }
-    
+                
     //helper method to adjust search box
     public void setPlaceholder(JTextField textField, String placeholder) {
         textField.setText(placeholder);
@@ -414,8 +403,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel18)
                                 .addGap(74, 74, 74)
-                                .addComponent(totalPriceLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(91, 91, 91))
+                                .addComponent(totalPriceLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
@@ -427,7 +415,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE)
                             .addComponent(jScrollPane2))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(39, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -560,9 +548,9 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                             .addComponent(timeRangeBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(monthTableBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(yearTableBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(rangeBtn)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -646,9 +634,11 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         else if (timeRangeBox.getSelectedItem().equals("Monthly")) {
             monthTableBox.setVisible(true);
             yearTableBox.setVisible(true);
+            rangeBtn.setVisible(true);
         } else if (timeRangeBox.getSelectedItem().equals("Yearly")) {
             monthTableBox.setVisible(false);
             yearTableBox.setVisible(true);
+            rangeBtn.setVisible(true);
         } 
     }//GEN-LAST:event_timeRangeBoxActionPerformed
 

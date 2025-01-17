@@ -126,7 +126,6 @@ public class Review {
 
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                System.out.println("Part:"+Arrays.toString(parts));
                 String reviewID = parts[0];
                 String reviewType = parts[2];  
                 String rating = parts[3];   
