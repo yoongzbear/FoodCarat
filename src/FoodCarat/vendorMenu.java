@@ -35,8 +35,8 @@ public class vendorMenu extends javax.swing.JFrame {
     String imagePath = "";
     File imageFile = null;
     //change to userSession 
-    private String email = "chagee@mail.com";
-    private String name = "Chagee";
+    private String email = "vendor@mail.com";
+    private String name = "Vendor";
 //    private String email = User.getSessionEmail();
 //    private String name = User.getSessionName();
     boolean edit = true;

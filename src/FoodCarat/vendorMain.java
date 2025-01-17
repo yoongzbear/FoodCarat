@@ -22,8 +22,8 @@ public class vendorMain extends javax.swing.JFrame {
      */
     
     //change to userSession 
-    private String email = "chagee@mail.com";
-    private String name = "Chagee";
+    private String email = "vendor@mail.com";
+    private String name = "Vendor";
 //    private String email = User.getSessionEmail();
 //    private String name = User.getSessionName();
     Vendor vendor = new Vendor(email);

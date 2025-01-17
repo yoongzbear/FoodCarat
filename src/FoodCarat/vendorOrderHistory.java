@@ -64,7 +64,12 @@ public class vendorOrderHistory extends javax.swing.JFrame {
 
             String updatedOrderItems = item.replaceItemIDsWithNames(orderItems);
 
-            model.addRow(new Object[]{index++, orderID, customerEmail, orderMethod, updatedOrderItems, orderStatus});
+            //if status = pending accept, dont show
+            if (orderStatus.equalsIgnoreCase("Pending accept") || orderStatus.equalsIgnoreCase("Canceled")) {
+                continue;
+            } else {
+                model.addRow(new Object[]{index++, orderID, customerEmail, orderMethod, updatedOrderItems, orderStatus});
+            }            
         }
     }
     
@@ -86,7 +91,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         model.setRowCount(0);
 
         for (String detail : itemDetails) {
-            String[] parts = detail.split(";");
+            String[] parts = detail.split(";");            
             String itemID = parts[0]; 
             int quantity = Integer.parseInt(parts[1]); 
 
@@ -102,30 +107,17 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             }
         }
 
-        //orderID,orderMethod,[itemID;quantity],orderStatus,customerEmail,runnerEmail,cancelReason,deliveryFee,totalPaid,date
         idLabel.setText(details[0].trim());
         methodLabel.setText(details[1].trim());
         statusLabel.setText(details[3].trim());
         emailLabel.setText(details[4].trim());
         dateLabel.setText(details[9].trim());
-        totalPriceLabel.setText("RM"+details[10].trim());
-        
-        //cancellation reason - need to connect with the get cancellation reason based on cancel id
-        //orderID,orderMethod,[itemID;quantity],orderStatus,customerEmail,runnerEmail,cancelReason,deliveryFee,totalPaid,date
-        if (details[6].trim().equals("NULL")) { //if status == cancelled
-            reasonLabel.setVisible(false);
-            cancelReasonLabel.setVisible(false);
-        } else {
-            cancelReasonLabel.setText(details[5].trim());
-        }       
+        totalPriceLabel.setText("RM"+details[10].trim());             
         
         //view if got feedback for the order
-//        if (details[6].trim().equals("NULL")) { //check in review if got order id && type == order
-//            feedbackLabel.setVisible(false);
-//            feedbackTxtArea.setVisible(false);
-//        } else {
-//            feedbackTxtArea.setText(details[5].trim()); //display the feedback from the review
-//        } 
+        int orderIDInt = Integer.parseInt(orderID);
+        Review orderReview = new Review(orderIDInt);
+        //String reviews = orderReview.getFeedback();
     }
     
     //display vendor order based on search 
@@ -256,9 +248,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         emailLabel = new javax.swing.JLabel();
         methodLabel = new javax.swing.JLabel();
         feedbackLabel = new javax.swing.JLabel();
-        reasonLabel = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
-        cancelReasonLabel = new javax.swing.JLabel();
         totalPriceLabel = new javax.swing.JLabel();
         statusLabel = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
@@ -377,14 +367,8 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         feedbackLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         feedbackLabel.setText("Order Feedback:");
 
-        reasonLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        reasonLabel.setText("Cancellation Reason:");
-
         jLabel18.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         jLabel18.setText("Total Price:");
-
-        cancelReasonLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        cancelReasonLabel.setText("Reason");
 
         totalPriceLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         totalPriceLabel.setText("RM");
@@ -428,13 +412,10 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(statusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(reasonLabel)
-                                    .addComponent(jLabel18))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(totalPriceLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(cancelReasonLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(jLabel18)
+                                .addGap(74, 74, 74)
+                                .addComponent(totalPriceLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(91, 91, 91))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
@@ -472,10 +453,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(methodLabel, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel15)
-                        .addComponent(reasonLabel)
-                        .addComponent(cancelReasonLabel)))
+                    .addComponent(jLabel15))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel10)
@@ -529,7 +507,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 489, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 242, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 248, Short.MAX_VALUE)
                                 .addComponent(chartMonthBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(monthChartBtn))))
@@ -716,7 +694,6 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel cancelReasonLabel;
     private javax.swing.JComboBox<String> chartMonthBox;
     private javax.swing.JLabel chartWeekRange;
     private javax.swing.JLabel dateLabel;
@@ -750,7 +727,6 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> monthTableBox;
     private javax.swing.JTable orderTable;
     private javax.swing.JButton rangeBtn;
-    private javax.swing.JLabel reasonLabel;
     private javax.swing.JButton searchBtn;
     private javax.swing.JTextField searchTxt;
     private javax.swing.JLabel statusLabel;

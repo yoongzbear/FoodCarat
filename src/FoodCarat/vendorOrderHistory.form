@@ -248,17 +248,12 @@
                                   <Component id="statusLabel" min="-2" pref="132" max="-2" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="reasonLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="jLabel18" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="totalPriceLabel" min="-2" pref="187" max="-2" attributes="0"/>
-                                      <Component id="cancelReasonLabel" min="-2" pref="296" max="-2" attributes="0"/>
-                                  </Group>
+                                  <Component id="jLabel18" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="74" max="-2" attributes="0"/>
+                                  <Component id="totalPriceLabel" min="-2" pref="187" max="-2" attributes="0"/>
                               </Group>
                           </Group>
+                          <EmptySpace min="-2" pref="91" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
@@ -309,11 +304,7 @@
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="methodLabel" alignment="1" min="-2" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jLabel15" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="reasonLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="cancelReasonLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
+                      <Component id="jLabel15" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
@@ -461,28 +452,12 @@
             <Property name="text" type="java.lang.String" value="Order Feedback:"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="reasonLabel">
-          <Properties>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Cooper Black" size="14" style="0"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="Cancellation Reason:"/>
-          </Properties>
-        </Component>
         <Component class="javax.swing.JLabel" name="jLabel18">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Cooper Black" size="14" style="0"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Total Price:"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JLabel" name="cancelReasonLabel">
-          <Properties>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Cooper Black" size="14" style="0"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="Reason"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="totalPriceLabel">
@@ -551,7 +526,7 @@
                               <Component id="jLabel3" min="-2" pref="489" max="-2" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace pref="242" max="32767" attributes="0"/>
+                                  <EmptySpace pref="248" max="32767" attributes="0"/>
                                   <Component id="chartMonthBox" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Component id="monthChartBtn" min="-2" max="-2" attributes="0"/>
