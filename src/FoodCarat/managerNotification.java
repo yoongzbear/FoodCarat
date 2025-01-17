@@ -4,6 +4,10 @@
  */
 package FoodCarat;
 
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author User
@@ -15,6 +19,45 @@ public class managerNotification extends javax.swing.JFrame {
      */
     public managerNotification() {
         initComponents();
+        complaintNotificationtable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                handleTableClick(evt);
+            }
+        });
+        // Hide the "review ID" column (index 4)
+        complaintNotificationtable.getColumnModel().getColumn(4).setMinWidth(0);
+        complaintNotificationtable.getColumnModel().getColumn(4).setMaxWidth(0);
+        complaintNotificationtable.getColumnModel().getColumn(4).setWidth(0);
+        complaintNotificationtable.getColumnModel().getColumn(4).setPreferredWidth(0);
+    }
+    
+    private void handleTableClick(java.awt.event.MouseEvent evt) {
+        // Check if the user clicked a row
+        int selectedRow = complaintNotificationtable.getSelectedRow();
+        if (selectedRow >= 0) {
+            // Show confirmation dialog
+            int result = JOptionPane.showConfirmDialog(
+                    this,
+                    "Resolve this complaint by giving 50 points to the customer?",
+                    "Confirm Action",
+                    JOptionPane.YES_NO_OPTION
+            );
+
+            if (result == JOptionPane.YES_OPTION) {
+                User user = new User();
+                // Retrieve email and reviewID from the selected row
+                String customerEmail = (String) complaintNotificationtable.getValueAt(selectedRow, 2);
+                String reviewID = (String) complaintNotificationtable.getValueAt(selectedRow, 4);
+
+                // Update points in the file
+                Manager manager = new Manager();
+                manager.updateReviewStatus(reviewID);
+                manager.updateCustomerPoint(customerEmail);
+                JOptionPane.showMessageDialog(this, "Complaint resolved, points updated successfully!");
+                // Refresh the table by calling the search action
+                searchbtnActionPerformed(null);
+            }
+        }
     }
 
     /**
@@ -28,51 +71,116 @@ public class managerNotification extends javax.swing.JFrame {
 
         Lnotification = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        complaintNotificationtable = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        monthcbx = new javax.swing.JComboBox<>();
+        searchbtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         Lnotification.setFont(new java.awt.Font("Cooper Black", 0, 36)); // NOI18N
         Lnotification.setText("Notification");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        complaintNotificationtable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "No", "Message"
+                "No", "Customer", "Email", "Complaints", "Review ID"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(complaintNotificationtable);
+
+        jLabel2.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
+        jLabel2.setText("Month:");
+
+        monthcbx.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
+        monthcbx.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Please select", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" }));
+
+        searchbtn.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
+        searchbtn.setText("Search");
+        searchbtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchbtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(45, 45, 45)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 774, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(61, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(309, 309, 309)
-                .addComponent(Lnotification)
-                .addGap(138, 349, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(312, 312, 312)
+                        .addComponent(Lnotification))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(45, 45, 45)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel2)
+                                .addGap(40, 40, 40)
+                                .addComponent(monthcbx, javax.swing.GroupLayout.PREFERRED_SIZE, 565, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(29, 29, 29)
+                                .addComponent(searchbtn))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 776, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(56, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(32, Short.MAX_VALUE)
+                .addGap(47, 47, 47)
                 .addComponent(Lnotification)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(17, 17, 17))
+                .addGap(19, 19, 19)
+                .addComponent(jLabel1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 352, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(17, 17, 17))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(monthcbx, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(searchbtn))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void searchbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchbtnActionPerformed
+        String selectedMonth = (String) monthcbx.getSelectedItem();
+
+        if (selectedMonth.equals("Please select")) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid month.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        Manager manager = new Manager(); 
+
+        // Get the filtered reviews based on the selected month
+        List<String[]> complaintData = manager.getFilteredReviews(selectedMonth);
+
+        if (complaintData.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No complaints found for this month.", "Info", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            DefaultTableModel model = (DefaultTableModel) complaintNotificationtable.getModel();
+            // Clear the existing data in the table
+            model.setRowCount(0);
+            // Loop through the complaintData and add each row to the table
+            for (String[] complaint : complaintData) {
+                model.addRow(complaint);
+            }
+        }
+    }//GEN-LAST:event_searchbtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -111,7 +219,11 @@ public class managerNotification extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Lnotification;
+    private javax.swing.JTable complaintNotificationtable;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JComboBox<String> monthcbx;
+    private javax.swing.JButton searchbtn;
     // End of variables declaration//GEN-END:variables
 }
