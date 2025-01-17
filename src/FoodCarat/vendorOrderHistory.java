@@ -8,8 +8,12 @@ import java.awt.Color;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -39,10 +43,9 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         //set the placeholder for search box
         setPlaceholder(searchTxt, "Enter your search");
         
-        //hide month and year combo box for table
-//        monthTableBox.setVisible(false);
-//        yearTableBox.setVisible(false);
-        rangeBtn.setVisible(false);
+        //hide month and year chooser for table
+        monthChooser.setVisible(false);
+        yearChooser.setVisible(false);        
     }    
     
     //display all orders to vendor
@@ -56,7 +59,6 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         List<String[]> allOrders = vendor.getVendorOrders(email);
         for (String[] orderData : allOrders) {
             Item item = new Item();            
-            //1,Take away,[1;1|2;1],Ordered,customerEmail,NULL,NULL,20.00,2025-01-01,25.80
             String orderID = orderData[0];
             String orderMethod = orderData[1];
             String orderItems = orderData[2];
@@ -147,7 +149,6 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         
         for (String[] orderData : allVendorOrders) {
             Item item = new Item();            
-            //1,Take away,[1;1|2;1],Ordered,customerEmail,NULL,NULL,27.80
             String orderID = orderData[0];
             String orderMethod = orderData[1];
             String orderItems = orderData[2];
@@ -160,7 +161,6 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             //check if item type matches the filter
             boolean isFound = false;
             if (updatedOrderItems.toLowerCase().contains(search.toLowerCase())) {
-                //search email, date, method??, items???
                 model.addRow(new Object[]{index++, orderID, customerEmail, orderMethod, updatedOrderItems, orderStatus});
                 index++;
             }
@@ -168,16 +168,63 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     }
 
     //have filter to show monthly, or yearly
-    public void displayOrderTimeRange(String[] timeRange) {
-        //get time range []
-        //if monthly --> [month, year]
+    public void displayOrderTimeRange(String timeRange, String inputTime) {
+        //get date to test         
+        DefaultTableModel model = (DefaultTableModel) orderTable.getModel();
+        int index = 1;
+        model.setRowCount(0);
         
-        //if year --> [null, year]
-    }
-    
-    //filter to show daily orders including completed orders
-    public void displayOrderTimeRange() {
-        //display orders matching the given date
+        //SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        
+        //get all orders from vendor, filter based on date        
+        //access vendor orders through vendor class
+        Vendor vendor = new Vendor(email);
+        List<String[]> allOrders = vendor.getVendorOrders(email);
+        for (String[] orderData : allOrders) {
+            Item item = new Item();            
+            //orderID,orderMethod,[itemID;quantity],orderStatus,customerEmail,runnerEmail,cancelReason,deliveryFee,totalPaid,date,totalprice
+            String orderID = orderData[0];
+            String orderMethod = orderData[1];
+            String orderItems = orderData[2];
+            String orderStatus = orderData[3];
+            String customerEmail = orderData[4];
+            String orderTotal = orderData[8];
+            String orderDate = orderData[9];
+
+            String updatedOrderItems = item.replaceItemIDsWithNames(orderItems);
+
+            //excluding orders with status pending accept
+            if (orderStatus.equalsIgnoreCase("Pending accept") || orderStatus.equalsIgnoreCase("Canceled")) {
+                continue;
+            } else {
+                if (timeRange.equalsIgnoreCase("Daily")) { //daily
+                    //inputTime = date
+                    if (orderDate.trim().equals(inputTime.trim())) {
+                        model.addRow(new Object[]{index++, orderID, customerEmail, orderMethod, updatedOrderItems, orderStatus});
+                    }
+                } else if (timeRange.equalsIgnoreCase("Monthly")) { //monthly
+                    //inputTime = 1,2025
+                    String[] inputTimeParts = inputTime.split(",");
+                    int inputMonth = Integer.parseInt(inputTimeParts[0]);
+                    int inputYear = Integer.parseInt(inputTimeParts[1]);
+
+                    String[] orderDateParts = orderDate.split("-");
+                    int orderYear = Integer.parseInt(orderDateParts[0]);
+                    int orderMonth = Integer.parseInt(orderDateParts[1]);
+
+                    if (orderYear == inputYear && orderMonth == inputMonth) {
+                        model.addRow(new Object[]{index++, orderID, customerEmail, orderMethod, updatedOrderItems, orderStatus});
+                    }
+                } else if (timeRange.equalsIgnoreCase("Yearly")) { //yearly
+                    int inputYear = Integer.parseInt(inputTime);
+                    String[] orderDateParts = orderDate.split("-");
+                    int orderYear = Integer.parseInt(orderDateParts[0]);
+                    if (orderYear == inputYear) {
+                        model.addRow(new Object[]{index++, orderID, customerEmail, orderMethod, updatedOrderItems, orderStatus});
+                    }
+                }
+            }
+        }
     }
                 
     //helper method to adjust search box
@@ -253,8 +300,10 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         chartMonthBox = new javax.swing.JComboBox<>();
         monthChartBtn = new javax.swing.JButton();
         chartWeekRange = new javax.swing.JLabel();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
-        jLabel7 = new javax.swing.JLabel();
+        dateChooser = new com.toedter.calendar.JDateChooser();
+        selectDateLabel = new javax.swing.JLabel();
+        monthChooser = new com.toedter.calendar.JMonthChooser();
+        yearChooser = new com.toedter.calendar.JYearChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -297,7 +346,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             }
         });
 
-        timeRangeBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Time Range", "Daily", "Weekly", "Monthly", "Yearly" }));
+        timeRangeBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Time Range", "Daily", "Monthly", "Yearly" }));
         timeRangeBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 timeRangeBoxActionPerformed(evt);
@@ -402,7 +451,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                                 .addComponent(statusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel18)
-                                .addGap(74, 74, 74)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(totalPriceLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -415,7 +464,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE)
                             .addComponent(jScrollPane2))))
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addContainerGap(55, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -495,7 +544,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 489, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 248, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 232, Short.MAX_VALUE)
                                 .addComponent(chartMonthBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(monthChartBtn))))
@@ -529,10 +578,13 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jDateChooser1.setDateFormatString("yyyy-MM-dd");
+        dateChooser.setDateFormatString("yyyy-MM-dd");
 
-        jLabel7.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        jLabel7.setText("Select date:");
+        selectDateLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
+        selectDateLabel.setText("Select:");
+
+        yearChooser.setMinimumSize(new java.awt.Dimension(80, 22));
+        yearChooser.setPreferredSize(new java.awt.Dimension(70, 22));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -547,21 +599,22 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                             .addComponent(jScrollPane1)
                             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(timeRangeBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(timeRangeBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(searchBtn))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(rangeBtn)
-                                        .addGap(243, 243, 243)))))
+                                .addComponent(searchBtn))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(selectDateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(dateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(monthChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(yearChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(rangeBtn)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                                .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(78, 78, 78)))
                         .addGap(48, 48, 48)
                         .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
@@ -579,29 +632,31 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                     .addComponent(jLabel1)
                     .addComponent(menuBtn))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(timeRangeBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(searchBtn))
-                        .addGap(22, 22, 22)
-                        .addComponent(rangeBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(12, 12, 12)
-                        .addComponent(viewBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(timeRangeBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(searchBtn))
+                                    .addComponent(rangeBtn))
+                                .addGap(11, 11, 11)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(12, 12, 12)
+                                .addComponent(viewBtn)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(monthChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(0, 0, Short.MAX_VALUE)))))
+                                    .addComponent(dateChooser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(selectDateLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(yearChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -615,7 +670,6 @@ public class vendorOrderHistory extends javax.swing.JFrame {
 
     private void viewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewBtnActionPerformed
         //if got reason ID, display the label and text field for reason cancelled
-        //display selected row of item in the table
         int selectedRow = orderTable.getSelectedRow();
 
         //have validation to "choose an item in the table"
@@ -629,26 +683,54 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     }//GEN-LAST:event_viewBtnActionPerformed
 
     private void rangeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rangeBtnActionPerformed
-        //get date to test 
-        
+        String timeRange = timeRangeBox.getSelectedItem().toString();
+        String inputTime = "";
+
+        if (timeRange.equalsIgnoreCase("Select Time Range")) {
+            JOptionPane.showMessageDialog(null, "Please select a time range.", "Alert", JOptionPane.WARNING_MESSAGE);
+            displayVendorOrder();
+        } else {
+            if (timeRange.equalsIgnoreCase("Daily")) {
+                //get date
+                if (dateChooser.getDate() == null) {
+                    JOptionPane.showMessageDialog(null, "Please select a date.", "Alert", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    inputTime = dateFormat.format(dateChooser.getDate());
+                }
+            } else if (timeRange.equalsIgnoreCase("Monthly")) {
+                //get month and year, append into input time string
+                String month = String.valueOf(monthChooser.getMonth() + 1); //index of month + 1 
+                String year = String.valueOf(yearChooser.getYear());
+                inputTime = month + "," + year;
+            } else if (timeRange.equalsIgnoreCase("Yearly")) {
+                inputTime = String.valueOf(yearChooser.getYear());
+            }
+            displayOrderTimeRange(timeRange, inputTime); //call method
+        }
     }//GEN-LAST:event_rangeBtnActionPerformed
 
     private void timeRangeBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_timeRangeBoxActionPerformed
-        // TODO add your handling code here:
         if (timeRangeBox.getSelectedItem().equals("Daily")) {
             //display calendar to choose date 
-            //displayOrderTimeRange(date);
-        }
-        
+            selectDateLabel.setText("Date:");
+            dateChooser.setVisible(true);
+            monthChooser.setVisible(false);
+            yearChooser.setVisible(false);
+        }    
         else if (timeRangeBox.getSelectedItem().equals("Monthly")) {
-//            monthTableBox.setVisible(true);
-//            yearTableBox.setVisible(true);
-            rangeBtn.setVisible(true);
+            selectDateLabel.setText("Select:");
+            dateChooser.setVisible(false);
+            monthChooser.setVisible(true);
+            yearChooser.setVisible(true);
         } else if (timeRangeBox.getSelectedItem().equals("Yearly")) {
-//            monthTableBox.setVisible(false);
-//            yearTableBox.setVisible(true);
-            rangeBtn.setVisible(true);
-        } 
+            selectDateLabel.setText("Select:");
+            dateChooser.setVisible(false);
+            monthChooser.setVisible(false);
+            yearChooser.setVisible(true);
+        } else if (timeRangeBox.getSelectedItem().equals("Select Time Range")) {
+            displayVendorOrder();
+        }
     }//GEN-LAST:event_timeRangeBoxActionPerformed
 
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
@@ -695,13 +777,13 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> chartMonthBox;
     private javax.swing.JLabel chartWeekRange;
+    private com.toedter.calendar.JDateChooser dateChooser;
     private javax.swing.JLabel dateLabel;
     private javax.swing.JLabel emailLabel;
     private javax.swing.JLabel feedbackLabel;
     private javax.swing.JTextArea feedbackTxtArea;
     private javax.swing.JLabel idLabel;
     private javax.swing.JTable itemTable;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;
@@ -715,7 +797,6 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -725,13 +806,16 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     private javax.swing.JButton menuBtn;
     private javax.swing.JLabel methodLabel;
     private javax.swing.JButton monthChartBtn;
+    private com.toedter.calendar.JMonthChooser monthChooser;
     private javax.swing.JTable orderTable;
     private javax.swing.JButton rangeBtn;
     private javax.swing.JButton searchBtn;
     private javax.swing.JTextField searchTxt;
+    private javax.swing.JLabel selectDateLabel;
     private javax.swing.JLabel statusLabel;
     private javax.swing.JComboBox<String> timeRangeBox;
     private javax.swing.JLabel totalPriceLabel;
     private javax.swing.JButton viewBtn;
+    private com.toedter.calendar.JYearChooser yearChooser;
     // End of variables declaration//GEN-END:variables
 }
