@@ -158,6 +158,52 @@ public class Manager extends User{
 
         return tableData;
     }
+    public List<String[]> getFilteredReviews(String selectedMonth) {
+        List<String[]> filteredData = new ArrayList<>();
+        int recordNumber = 1;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("review.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] fields = line.split(","); // Assuming CSV format
+                if (fields.length >= 8) {
+                    String date = fields[5];
+                    String reviewType = fields[2];
+                    String complaint = fields[4];
+                    String email = fields[6];
+                    String complaintStatus = fields[7];
+                    String reviewID = fields[0];
+                    
+                    User user = new User();
+                    String []userDetails = user.performSearch(email, "user.txt");
+                    String cusName = userDetails[1];
+                    // Check if the month matches and review type is "foodcourt"
+                    if (getMonthFromOrderOrReview(date).equalsIgnoreCase(selectedMonth) &&
+                        reviewType.equalsIgnoreCase("foodcourt") && complaintStatus.equals("unresolved")) {
+                        
+                        filteredData.add(new String[]{
+                            String.valueOf(recordNumber), cusName, email, complaint, reviewID
+                        });
+                        recordNumber++;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
+
+        return filteredData;
+    }
+    
+    public void updateReviewStatus(String reviewID){
+        Review review = new Review();
+        review.updateStatus(reviewID, "resolved");
+    }
+    
+    public void updateCustomerPoint(String cusEmail){
+        Customer customer = new Customer(cusEmail);
+        customer.addPoints(50);
+    }
 
     // method to extract month from order data (ven)/review data(runner)
     private String getMonthFromOrderOrReview(String date) {
