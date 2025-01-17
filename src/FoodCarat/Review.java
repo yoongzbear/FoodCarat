@@ -484,11 +484,10 @@ public class Review {
     
     // Method to update the status in review.txt
     public void updateStatus(String reviewID, String newStatus) {
-        File file = new File("review.txt");
         List<String> fileContent = new ArrayList<>();
         boolean updated = false;
 
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(reviewFileName))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
@@ -501,7 +500,7 @@ public class Review {
 
             if (updated) {
                 // Write updated content back to the file
-                try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
+                try (BufferedWriter bw = new BufferedWriter(new FileWriter(reviewFileName))) {
                     for (String content : fileContent) {
                         bw.write(content);
                         bw.newLine();
