@@ -130,7 +130,7 @@ public class customerViewMenu extends javax.swing.JFrame {
         JLabel lblVendor = new JLabel(vendorName);
         lblVendor.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
         
-        JLabel lblRating = new JLabel("Vendor Average Rating: " + vendorRating);
+        JLabel lblRating = new JLabel("🌟 " + vendorRating);
         lblRating.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
         
         JLabel lblReview = new JLabel("Review: " + randomReview);
