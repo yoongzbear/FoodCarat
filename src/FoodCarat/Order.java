@@ -244,9 +244,9 @@ public class Order {
             BufferedReader itemReader = new BufferedReader(new FileReader(itemFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length < 10) {
-                    if (type.equals("vendor")) {
+                String[] parts = line.split(","); //orderFile
+                if (parts.length < 11) {
+                    if (type.equalsIgnoreCase("vendor")) {
                         String orderItems = parts[2];
                         String currentVendorEmail = "";
                         orderItems = orderItems.replace("[", "").replace("]", "");
@@ -256,13 +256,16 @@ public class Order {
                             String itemID = itemDetails[0];
                             Item item1 = new Item();
                             String[] itemData = item1.itemData(itemID);
-                            currentVendorEmail = itemData[5];
+                            //currentVendorEmail = itemData[5];
+                            if (itemData != null && itemData.length > 5) {
+                                currentVendorEmail = itemData[5];
+                            } 
                         }
                         if (currentVendorEmail.equals(email)) {
                             int orderID = Integer.parseInt(parts[0]);  
                             orderIDs.add(orderID);
                         }
-                    } else if (type.equals("runner")) {
+                    } else if (type.equalsIgnoreCase("runner")) {
                         String currentRunnerEmail = parts[6];  
 
                         if (currentRunnerEmail.equals(email)) {

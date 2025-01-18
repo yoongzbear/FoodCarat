@@ -40,6 +40,7 @@ public class vendorReview extends javax.swing.JFrame {
         //access vendor orders through vendor class
         Vendor vendor = new Vendor(email);
         List<String[]> allReviews = vendor.getAllReviewInfo(email);
+        System.out.println(email);
         for (String[] reviewData : allReviews) {
                     
             //0reviewID,1orderID,2reviewType,3rating,4review,5date,6customerEmail

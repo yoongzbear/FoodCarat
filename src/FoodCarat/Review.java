@@ -194,7 +194,7 @@ public class Review {
                 //vendor
                 if (role.equals("vendor")) {
                     String reviewType = reviewData[2];
-                    if (reviewType.equals("vendor")) {
+                    if (reviewType.equalsIgnoreCase("vendor")) {
                         List<Integer> vendorOrderIDs = orders.getOrderIDsReview(email, role);
                         int orderID = Integer.parseInt(reviewData[1]);
                         if (vendorOrderIDs.contains(orderID)) {
@@ -204,7 +204,7 @@ public class Review {
                     }
                 } else if (role.equals("runner")) {
                     String reviewType = reviewData[2];
-                    if (reviewType.equals("runner")) {
+                    if (reviewType.equalsIgnoreCase("runner")) {
                         List<Integer> runnerOrderIDs = orders.getOrderIDsReview(email, role);
                         int orderID = Integer.parseInt(reviewData[1]);
                         if (runnerOrderIDs.contains(orderID)) {
