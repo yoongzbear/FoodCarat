@@ -60,7 +60,8 @@ public class Runner extends User{
             while ((line = reader.readLine()) != null) {
                 String[] runnerData = line.split(",");
                 if (runnerData.length > 0 && runnerData[0].equalsIgnoreCase(email)) {
-                    runnerData = new String[]{runnerData[0], plateNumber.toUpperCase()};
+                    runnerData = new String[]{runnerData[0], plateNumber.toUpperCase(), "unavailable", "0"};
+                    
                     emailFound = true;
                 }
                 fileContent.add(String.join(",", runnerData));
@@ -105,7 +106,7 @@ public class Runner extends User{
 
         return containsLetter && containsNumber;
     }
-    
+
     //Manager Monitor Runner Performance
     private int totalRating = 0;
     
@@ -132,5 +133,39 @@ public class Runner extends User{
             System.out.println("Error reading runner.txt: " + e.getMessage());
         }
         return null;
+    }
+    
+    // Update status
+    public void updateStatus(String email, String status) {
+        List<String> fileContent = new ArrayList<>();
+        boolean emailFound = false;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(runnerFile))) {
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] runnerData = line.split(",");
+
+                if (runnerData.length > 2 && runnerData[0].equalsIgnoreCase(email)) {
+                    runnerData[2] = status;
+                    emailFound = true;
+                }
+
+                fileContent.add(String.join(",", runnerData));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (emailFound) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(runnerFile))) {
+                for (String updatedLine : fileContent) {
+                    writer.write(updatedLine);
+                    writer.newLine();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

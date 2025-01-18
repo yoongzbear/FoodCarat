@@ -4,7 +4,9 @@
  */
 package FoodCarat;
 
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.JRadioButton;
 
 /**
  *
@@ -12,9 +14,6 @@ import javax.swing.JOptionPane;
  */
 public class runnerMain extends javax.swing.JFrame {
 
-    /**
-     * Creates new form runnerMain
-     */
     public runnerMain() {
         initComponents();
         setLocationRelativeTo(null);
@@ -40,10 +39,19 @@ public class runnerMain extends javax.swing.JFrame {
             
             textBuilder.append("</html>");
             username.setText(textBuilder.toString());
-
-        } else {
-            System.out.println("No runner details found for email: " + email);
         }
+        
+        /**
+        // Status
+        String status = runnerDetails[2];
+        if ("available".equalsIgnoreCase(status)) {
+            avaJRB.setSelected(true);
+            statusImage.setIcon(new ImageIcon("images/runner/available.png"));
+        } else {
+            unaJRB.setSelected(true);
+            statusImage.setIcon(new ImageIcon("images/runner/unavailable.png"));
+        }
+        **/
     }
 
     /**
@@ -55,14 +63,15 @@ public class runnerMain extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonGroup1 = new javax.swing.ButtonGroup();
+        statusGroup = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         taskInfo = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
+        avaJRB = new javax.swing.JRadioButton();
+        unaJRB = new javax.swing.JRadioButton();
+        statusImage = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         viewTaskJB = new javax.swing.JButton();
         THistoryJB = new javax.swing.JButton();
@@ -112,20 +121,37 @@ public class runnerMain extends javax.swing.JFrame {
 
         jLabel7.setText("Are You Ready for Task Allocation?");
 
-        jRadioButton1.setText("Available");
+        statusGroup.add(avaJRB);
+        avaJRB.setText("Available");
+        avaJRB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                avaJRBActionPerformed(evt);
+            }
+        });
 
-        jRadioButton2.setText("Unavailable");
+        statusGroup.add(unaJRB);
+        unaJRB.setText("Unavailable");
+        unaJRB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                unaJRBActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(17, 17, 17)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jRadioButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jRadioButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(17, 17, 17)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(unaJRB, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(avaJRB, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(55, 55, 55)
+                        .addComponent(statusImage, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -134,10 +160,12 @@ public class runnerMain extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel7)
                 .addGap(18, 18, 18)
-                .addComponent(jRadioButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(avaJRB, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jRadioButton2)
-                .addContainerGap(132, Short.MAX_VALUE))
+                .addComponent(unaJRB)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(statusImage, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         jPanel3.setBackground(new java.awt.Color(153, 255, 153));
@@ -227,10 +255,10 @@ public class runnerMain extends javax.swing.JFrame {
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(94, 94, 94)
-                .addComponent(username, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(58, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE)
+                .addGap(146, 146, 146)
+                .addComponent(username)
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -364,6 +392,26 @@ public class runnerMain extends javax.swing.JFrame {
         new userLogin().setVisible(true);
     }//GEN-LAST:event_logoutButtonActionPerformed
 
+    private void avaJRBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_avaJRBActionPerformed
+        String email = User.getSessionEmail();
+        String status = "available";
+        
+        Runner runner = new Runner();
+        runner.updateStatus(email, status);
+        
+        //statusImage.setIcon(new ImageIcon("images/runner/available.png"));
+    }//GEN-LAST:event_avaJRBActionPerformed
+
+    private void unaJRBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_unaJRBActionPerformed
+        String email = User.getSessionEmail();
+        String status = "unavailable";
+        
+        Runner runner = new Runner();
+        runner.updateStatus(email, status);
+        
+        //statusImage.setIcon(new ImageIcon("images/runner/unavailable.png"));
+    }//GEN-LAST:event_unaJRBActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -402,7 +450,7 @@ public class runnerMain extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton CusReviewJB;
     private javax.swing.JButton THistoryJB;
-    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JRadioButton avaJRB;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -412,13 +460,14 @@ public class runnerMain extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JButton logoutButton;
     private javax.swing.JButton revenueJB;
+    private javax.swing.ButtonGroup statusGroup;
+    private javax.swing.JLabel statusImage;
     private javax.swing.JLabel taskInfo;
+    private javax.swing.JRadioButton unaJRB;
     private javax.swing.JLabel username;
     private javax.swing.JButton viewTaskJB;
     // End of variables declaration//GEN-END:variables
