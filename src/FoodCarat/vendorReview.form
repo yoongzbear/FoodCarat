@@ -27,7 +27,6 @@
               <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <EmptySpace max="32767" attributes="0"/>
                       <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="389" max="-2" attributes="0"/>
                       <Component id="menuBtn" min="-2" max="-2" attributes="0"/>
@@ -712,6 +711,12 @@
           </Properties>
         </Component>
         <Component class="com.toedter.calendar.JDateChooser" name="weeklyStartDateChooser">
+          <Properties>
+            <Property name="dateFormatString" type="java.lang.String" value="yyyy-MM-dd"/>
+          </Properties>
+          <Events>
+            <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="jDateChooserInput"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel18">
           <Properties>
@@ -745,11 +750,17 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Generate Chart"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="weeklyChartBtnActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="monthlyChartBtn">
           <Properties>
             <Property name="text" type="java.lang.String" value="Generate Chart"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="monthlyChartBtnActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel20">
           <Properties>

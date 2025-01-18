@@ -11,11 +11,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import javax.swing.JOptionPane;
@@ -344,6 +347,50 @@ public class Review {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    //get count of ratings of vendor/runner
+    public int[] ratingCount(String email, String role, String type, String timeRange) { //type = weekly/monthly
+        int[] totalCount = new int[5]; //{1 star,2 stars, ..., 5 stars}
+        List<String[]> reviews = getAllReviews(email, role);
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        //get start and end date
+        LocalDate startDate = null, endDate = null;
+        String[] timeRangeParts = timeRange.split(",");
+        try {
+            if (type.equalsIgnoreCase("weekly")) {
+                startDate = LocalDate.parse(timeRangeParts[0], dateFormat); 
+                endDate = LocalDate.parse(timeRangeParts[1], dateFormat);   
+            } else if (type.equalsIgnoreCase("monthly")) {
+                int month = Integer.parseInt(timeRangeParts[0]); 
+                int year = Integer.parseInt(timeRangeParts[1]);  
+                startDate = LocalDate.of(year, month, 1); 
+                endDate = startDate.withDayOfMonth(startDate.lengthOfMonth()); 
+            }
+        } catch (Exception e) {
+            System.err.println("Invalid time range format: " + timeRange);
+            return totalCount;
+        }
+
+        //count ratings based on timeRange (weekly or monthly)
+        for (String[] review : reviews) {
+            try {
+                int rating = Integer.parseInt(review[3]); 
+                LocalDate reviewDate = LocalDate.parse(review[5], dateFormat); 
+
+                if ((reviewDate.isEqual(startDate) || reviewDate.isAfter(startDate))
+                        && (reviewDate.isEqual(endDate) || reviewDate.isBefore(endDate))) {
+                    if (rating >= 1 && rating <= 5) {
+                        totalCount[rating - 1]++; //increase total count at the rating's index
+                    }
+                }
+            } catch (NumberFormatException | java.time.format.DateTimeParseException e) {
+                System.err.println("Invalid data in review: " + e.getMessage());
+            }
+        }
+
+        return totalCount;
     }
     
     // Method to calculate average vendor rating based on vendorEmail

@@ -192,4 +192,10 @@ public class Vendor extends User{
         return allReviewInfo;
     }    
     
+    //get rating count for vendor based on time range
+    public int[] getVendorRatingCount(String type, String timeRange) {
+        Review ratings = new Review();
+        return ratings.ratingCount(email, "vendor", type, timeRange);
+    }
+    
 }

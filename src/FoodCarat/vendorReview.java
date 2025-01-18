@@ -5,7 +5,10 @@
 package FoodCarat;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -19,6 +22,7 @@ public class vendorReview extends javax.swing.JFrame {
 
     private String email = "vendor@mail.com";
 //    private String email = User.getSessionEmail();
+    private String role = "vendor";
 
     /**
      * Creates new form vendorReview
@@ -150,6 +154,12 @@ public class vendorReview extends javax.swing.JFrame {
         priceLabel.setText("RM"+details[17].trim());
         ratingLabel.setText(details[3].trim() + " star");
         vendorFeedbackTxtArea.setText(details[4].trim());
+    }
+    
+    //generate weekly chart
+    public void generateChart() {
+        //placeholder dulu
+        //if all rating is 0, show message no ratings received for the week/month
     }
 
     /**
@@ -503,6 +513,13 @@ public class vendorReview extends javax.swing.JFrame {
         jLabel17.setText("pie chart");
         jLabel17.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
+        weeklyStartDateChooser.setDateFormatString("yyyy-MM-dd");
+        weeklyStartDateChooser.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jDateChooserInput(evt);
+            }
+        });
+
         jLabel18.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         jLabel18.setText("Select Starting Date:");
 
@@ -513,8 +530,18 @@ public class vendorReview extends javax.swing.JFrame {
         weeklyEndDateTxt.setText("yyyy-MM-dd");
 
         weeklyChartBtn.setText("Generate Chart");
+        weeklyChartBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                weeklyChartBtnActionPerformed(evt);
+            }
+        });
 
         monthlyChartBtn.setText("Generate Chart");
+        monthlyChartBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                monthlyChartBtnActionPerformed(evt);
+            }
+        });
 
         jLabel20.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         jLabel20.setText("Select Month and Year:");
@@ -595,7 +622,6 @@ public class vendorReview extends javax.swing.JFrame {
                 .addGap(21, 21, 21)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel1)
                         .addGap(389, 389, 389)
                         .addComponent(menuBtn)
@@ -695,6 +721,57 @@ public class vendorReview extends javax.swing.JFrame {
             displayReviews(sorting);
         }        
     }//GEN-LAST:event_sortBtnActionPerformed
+
+    private void weeklyChartBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_weeklyChartBtnActionPerformed
+        //get start date and end date, combine into a string and call ratingCount in review class
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date chosenDate = weeklyStartDateChooser.getDate();
+        String startDate = dateFormat.format(chosenDate);
+        
+        String endDate = weeklyEndDateTxt.getText();
+        String timeRange = startDate + "," + endDate;
+        System.out.println(timeRange);
+        
+        Vendor vendor = new Vendor(email);
+        
+        //get rating count
+        int[] ratingsCount = vendor.getVendorRatingCount("weekly", timeRange);
+        
+        //pass into chart making function - pie chart
+    }//GEN-LAST:event_weeklyChartBtnActionPerformed
+
+    private void jDateChooserInput(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jDateChooserInput
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date chosenDate = weeklyStartDateChooser.getDate();
+        if (chosenDate != null) {
+            //set the date to the monday of the week
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(chosenDate);
+
+            //check if the selected date is Monday
+            if (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
+                //move to the nearest next Monday
+                while (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
+                    calendar.add(Calendar.DAY_OF_MONTH, 1);
+                }
+                weeklyStartDateChooser.setDate(calendar.getTime());
+                JOptionPane.showMessageDialog(null, "Only Mondays are allowed to be selected. The next Monday is selected.");
+            }
+            
+            //calculate and display end date
+            calendar.add(Calendar.DAY_OF_MONTH, 6); //Monday to Sunday
+            Date endDate = calendar.getTime();
+            weeklyEndDateTxt.setText(dateFormat.format(endDate));
+        }
+
+    }//GEN-LAST:event_jDateChooserInput
+
+    private void monthlyChartBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_monthlyChartBtnActionPerformed
+        //get month and year
+        //month index + 1
+        
+        //send to timeRange
+    }//GEN-LAST:event_monthlyChartBtnActionPerformed
 
     /**
      * @param args the command line arguments
