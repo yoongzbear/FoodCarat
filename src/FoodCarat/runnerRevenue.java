@@ -47,7 +47,7 @@ public class runnerRevenue extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(153, 255, 153));
 
-        backJB.setText("<  Back to Main");
+        backJB.setText("<  Main Menu");
         backJB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 backJBActionPerformed(evt);

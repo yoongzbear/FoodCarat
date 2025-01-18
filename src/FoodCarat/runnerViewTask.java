@@ -70,7 +70,7 @@ public class runnerViewTask extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Cooper Black", 0, 36)); // NOI18N
         jLabel1.setText("Task");
 
-        backJB.setText("<  Back To Main");
+        backJB.setText("<  Main Menu");
         backJB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 backJBActionPerformed(evt);

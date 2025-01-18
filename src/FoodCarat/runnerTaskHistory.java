@@ -43,7 +43,7 @@ public class runnerTaskHistory extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Cooper Black", 0, 36)); // NOI18N
         jLabel1.setText("Task History");
 
-        backJB.setText("< Back To Main");
+        backJB.setText("<  Main Menu");
         backJB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 backJBActionPerformed(evt);
@@ -59,7 +59,7 @@ public class runnerTaskHistory extends javax.swing.JFrame {
                 .addComponent(backJB)
                 .addGap(158, 158, 158)
                 .addComponent(jLabel1)
-                .addContainerGap(280, Short.MAX_VALUE))
+                .addContainerGap(288, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
