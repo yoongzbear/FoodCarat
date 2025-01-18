@@ -32,6 +32,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     //change to userSession 
     private String email = "vendor@mail.com";
 //    private String email = User.getSessionEmail();
+    Vendor vendor = new Vendor(email);
     
     public vendorOrderHistory() {
         initComponents();
@@ -55,8 +56,8 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         int index = 1;
         model.setRowCount(0);
         //access vendor orders through vendor class
-        Vendor vendor = new Vendor(email);
-        List<String[]> allOrders = vendor.getVendorOrders(email);
+        Order orders = new Order();
+        List<String[]> allOrders = orders.getAllOrders(email);
         for (String[] orderData : allOrders) {
             Item item = new Item();            
             String orderID = orderData[0];
@@ -78,11 +79,10 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     }
     
     //display order details
-    public void displayVendorOrder(String orderID) {
+    public void displayVendorOrder(int orderID) {
         DecimalFormat df = new DecimalFormat("0.00");
-        Order order = new Order();
                 
-        String[] details = order.getOrder(orderID);  
+        String[] details = vendor.getSpecificOrder(orderID);  
         
         //get items, price, and quantity to display in table
         Item item = new Item();
@@ -119,30 +119,22 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         totalPriceLabel.setText("RM" + details[10].trim());
 
         //view if got feedback for the order
-        int orderIDInt = Integer.parseInt(orderID);
-        Review orderReview = new Review(orderIDInt);
-        //String reviews = orderReview.getFeedback();
-        Review review = new Review(Integer.parseInt(orderID));
-        try {
-            String feedback = review.getFeedback();
-            String[] feedbackParts = feedback.split(",");
-            String orderFeedback = feedbackParts[1];
-            if (!orderFeedback.equals("null")) {
-                //display feedback in feedback text area
-                feedbackTxtArea.setText(orderFeedback);
-            } else {
-                feedbackTxtArea.setText("-");
-            }
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Error", "Error", JOptionPane.ERROR_MESSAGE);
+        String feedback = vendor.orderFeedback(orderID);
+        String[] feedbackParts = feedback.split(",");
+        String orderFeedback = feedbackParts[1];
+        if (!orderFeedback.equals("null")) {
+            //display feedback in feedback text area
+            feedbackTxtArea.setText(orderFeedback);
+        } else {
+            feedbackTxtArea.setText("-");
         }
     }
     
     //display vendor order based on search 
     public void displayOrderSearch(String search) {
         DefaultTableModel model = (DefaultTableModel) orderTable.getModel();
-        Vendor vendor = new Vendor(email);
-        List<String[]> allVendorOrders = vendor.getVendorOrders(email);
+        Order orders = new Order();
+        List<String[]> allVendorOrders = orders.getAllOrders(email);
         int index = 1;
         model.setRowCount(0);
         itemTable.setRowHeight(100);
@@ -176,10 +168,9 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         
         //SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         
-        //get all orders from vendor, filter based on date        
-        //access vendor orders through vendor class
-        Vendor vendor = new Vendor(email);
-        List<String[]> allOrders = vendor.getVendorOrders(email);
+        //get all orders from vendor, filter based on date  
+        Order orders = new Order();
+        List<String[]> allOrders = orders.getAllOrders(email);
         for (String[] orderData : allOrders) {
             Item item = new Item();            
             //orderID,orderMethod,[itemID;quantity],orderStatus,customerEmail,runnerEmail,cancelReason,deliveryFee,totalPaid,date,totalprice
@@ -719,7 +710,8 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         //have validation to "choose an item in the table"
         if (selectedRow >= 0) {
             Object id = orderTable.getModel().getValueAt(selectedRow, 1);
-            displayVendorOrder(id.toString());
+            int selectID = (int) id;
+            displayVendorOrder(selectID);
         } else {
             //no row is selected
             JOptionPane.showMessageDialog(null, "Please select a row to view details.", "Alert", JOptionPane.WARNING_MESSAGE);

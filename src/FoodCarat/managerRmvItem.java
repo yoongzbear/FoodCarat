@@ -638,8 +638,7 @@ public class managerRmvItem extends javax.swing.JFrame {
             int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to delete this item?", "Delete Item", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 int id = Integer.parseInt(idLabel.getText());
-                item.deleteItem(id, "vendor"); //call delete item function in manager
-                //manager.deleteItem(id);
+                item.deleteItem(id, "vendor"); 
                 displayItems();
                 resetDetails();
             }

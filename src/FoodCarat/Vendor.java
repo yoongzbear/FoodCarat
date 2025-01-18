@@ -13,6 +13,8 @@ import javax.swing.JOptionPane;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -166,32 +168,11 @@ public class Vendor extends User{
         }
     }  
     
-    //get all vendor orders - access it here         
-    public List<String[]> getVendorOrders(String venEmail) {
-        Order order = new Order();
-        List<String[]> vendorOrders = order.getAllOrders(venEmail);
-        
-        return vendorOrders;
-    }
-    
-    //items
-    //display all items
-    public List<String[]> getItems() {
-        Item items = new Item();
-        return items.getAllItems(email);
-    }
-    
-    //display selected item
-    public String[] getSpecificItem(int itemID) {
-        Item item = new Item();
-        return item.itemData(itemID);
-    }
-    
     //insert new item 
-    public void uploadNewItem(int newItemID, String itemName, String itemType, double price, String newImagePath) {
-        Item newItem = new Item(newItemID, itemName, itemType, price, newImagePath, email, "available");
-        newItem.addItem();
-    }
+//    public void uploadNewItem(int newItemID, String itemName, String itemType, double price, String newImagePath) {
+//        Item newItem = new Item(newItemID, itemName, itemType, price, newImagePath, email, "available");
+//        newItem.addItem();
+//    }
     
     //upload item image
     public String getUploadedImagePath(String imageSource) {
@@ -217,11 +198,25 @@ public class Vendor extends User{
         item.deleteItem(itemID, "vendor");
     }
     
-    //accept order status
-    //call update order status in order class
+    //get order
+    public String[] getSpecificOrder(int orderID) {
+        return new Order().getOrder(orderID);
+    }
     
-    //reject order
-    //call update order status in order class
+    //get new order
+    public String[] getNewOrder() {
+        return new Order().getNewOrder(email);
+    }
+    
+    //get order by status
+    public List<String[]> getOrderByStatus(String status) {
+        return new Order().getOrderByStatus(email, status);
+    }
+    
+    //update order status
+    public void updateOrderStatus(int orderID, String status) {
+        new Order().updateStatus(orderID, status, "vendor");
+    }
     
     //get all reviews + orders + items for the vendor
     public List<String[]> getAllReviewInfo(String venEmail) {
@@ -233,6 +228,16 @@ public class Vendor extends User{
                 
         return allReviewInfo;
     }    
+    
+    //get feedback for order
+    public String orderFeedback(int orderID) {
+        try {
+            return new Review(orderID).getFeedback();
+        } catch (IOException ex) {
+            Logger.getLogger(Vendor.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
     
     //get review based on ID
     public String[] getReview(String reviewID) {

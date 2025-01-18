@@ -340,7 +340,7 @@ public class Order {
     }
  
     //get order based on ID
-    public String[] getOrder(String id) {
+    public String[] getOrder(int id) {
         String[] orderInfo = null;
         DecimalFormat df = new DecimalFormat("0.00");
         try {
@@ -350,7 +350,8 @@ public class Order {
 
             while ((read = br.readLine()) != null) {
                 String[] parts = read.split(",");
-                if (parts[0].equals(id)) {
+                int orderID = Integer.parseInt(parts[0]);
+                if (orderID == id) {
                     String orderItems = parts[2]; //[itemID;quantity|itemID;quantity]
                     double totalPrice = calculateTotalPrice(orderItems);
                     orderInfo = Arrays.copyOf(parts, parts.length + 1);
@@ -399,7 +400,7 @@ public class Order {
     //update order status 
     //user can manipulate status: vendor, runner (for delivery)
     //parameter: itemID, orderStatus, userType(not sure if needed, leaving it here first)
-    public void updateStatus(String id, String newOrderStatus, String userType) {        
+    public void updateStatus(int id, String newOrderStatus, String userType) {        
         //get order info from order.txt using id, see order method
         String[] order = getOrder(id);
         String method = order[1].trim();
@@ -411,8 +412,8 @@ public class Order {
             BufferedWriter bw = new BufferedWriter(fw);
             
             for (String[] orderData : allOrders) {
-                String orderDataID = orderData[0];
-                if (!orderDataID.equals(id)) {
+                int orderDataID = Integer.parseInt(orderData[0]);
+                if (orderDataID != id) {
                     //keep the row if the ID does not match
                     bw.write(String.join(",", orderData));
                     bw.newLine();

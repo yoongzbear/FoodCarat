@@ -238,7 +238,7 @@ public class Review {
                 if (reviewData[0].equals(id)) {
                     //get order info
                     //0reviewID,1orderID,2reviewType,3rating,4review,5date,6customerEmail
-                    String orderID = reviewData[1];
+                    int orderID = Integer.parseInt(reviewData[1]);
                     Order order = new Order();
                     String[] orderData = order.getOrder(orderID);
                     //combine reviewData and orderData

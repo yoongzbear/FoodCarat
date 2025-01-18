@@ -35,8 +35,7 @@ public class customerPayment extends javax.swing.JFrame {
     private void displayOrderDetails() {
         try {
             Order order = new Order(orderType, User.getSessionEmail());
-            String orderIDStr = String.valueOf(orderID);
-            String[] tokens = order.getOrder(orderIDStr); 
+            String[] tokens = order.getOrder(orderID); 
 
             //extract the relevant parameters
             String orderType = tokens[1];

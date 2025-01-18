@@ -29,8 +29,7 @@ public class customerReceipt extends javax.swing.JFrame {
     
     private void displayOrderDetails() {
         Order order = new Order(orderType, User.getSessionEmail());
-        String orderIDStr = String.valueOf(orderID);
-        String[] tokens = order.getOrder(orderIDStr); // This might throw IOException
+        String[] tokens = order.getOrder(orderID); // This might throw IOException
         //Extract the relevant parameters
         String orderType = tokens[1];
         String orderItems = tokens[2];

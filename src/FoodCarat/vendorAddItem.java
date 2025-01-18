@@ -31,6 +31,7 @@ public class vendorAddItem extends javax.swing.JFrame {
     private String name = "Vendor";
 //    private String email = User.getSessionEmail();
 //    private String name = User.getSessionName();
+    Item item = new Item();
     Vendor vendor = new Vendor(email);
     
     public vendorAddItem() {
@@ -45,7 +46,7 @@ public class vendorAddItem extends javax.swing.JFrame {
     //function to return latest item ID 
     private void displayID() {
         //call function to return latest row of data and display the latest id + 1 
-        String[] latestItem = vendor.latestItem();
+        String[] latestItem = item.latestItem();
         int newItemID = Integer.parseInt(latestItem[0]) + 1;
         itemIDTxt.setText(String.valueOf(newItemID));
     }
@@ -62,7 +63,7 @@ public class vendorAddItem extends javax.swing.JFrame {
     
     //validate item name duplication
     private boolean duplicateName(String name) {
-        List<String[]> allItems = vendor.getItems();
+        List<String[]> allItems = item.getAllItems();
         for (String[] item : allItems) { 
             if (item[1].equalsIgnoreCase(name) && item[5].equals(email)) { 
                 return true; 
@@ -284,7 +285,8 @@ public class vendorAddItem extends javax.swing.JFrame {
                 //get next ID
                 String[] latestItem = vendor.latestItem();
                 int newItemID = Integer.parseInt(latestItem[0]) + 1;
-                vendor.uploadNewItem(newItemID, name, type, price, newImagePath);
+                Item newItem = new Item(newItemID, itemName, itemType, price, newImagePath, email, "available");
+                newItem.addItem();
                 new vendorMenu().setVisible(true);
                 dispose();
             }

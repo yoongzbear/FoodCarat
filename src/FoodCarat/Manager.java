@@ -22,14 +22,7 @@ import java.util.Set;
  */
 public class Manager extends User{
     private String userFile = "resources/user.txt";
-    
-    //by alya - u shud add functions accessing item, order, etc here instead of at gui
-    //delete item
-    public void deleteItem(int itemID) {
-        Item item = new Item();
-        item.deleteItem(itemID, "manager");
-    }
-    
+        
     //Monitor Runner Performance
     //
     public Map<String, Runner> getRunnerPerformance(String selectedMonth) throws IOException {

@@ -69,8 +69,7 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
     //display new order
     public void displayNewOrder() {
         DecimalFormat df = new DecimalFormat("0.00");
-        Order newOrder = new Order();
-        String[] newOrderInfo = newOrder.getNewOrder(email);
+        String[] newOrderInfo = vendor.getNewOrder();
         //if newOrderInfo is null, display "no new orders"
         if (newOrderInfo==null) {
             orderMessageLabel.setText("No new orders.");
@@ -102,7 +101,7 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
                 int quantity = Integer.parseInt(parts[1]);
 
                 //retrieve item data through Item class
-                String[] itemData = vendor.getSpecificItem(itemID);
+                String[] itemData = new Item().itemData(itemID);
                 if (itemData != null && itemData.length > 3) {
                     String itemName = itemData[1];
                     double price = Double.parseDouble(itemData[3]);
@@ -117,34 +116,31 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         
     //display all current orders 
     public void displayCurrentOrder() {
-        Order orders = new Order();
         //create lists for orders with ordered, in kitchen, and ready statuses
-        List<String[]> ordered = orders.getOrderByStatus(email, "Ordered");
-        List<String[]> inKitchen = orders.getOrderByStatus(email, "In kitchen");
-        List<String[]> ready = orders.getOrderByStatus(email, "Ready");
+        List<String[]> ordered = vendor.getOrderByStatus("Ordered");
+        List<String[]> inKitchen = vendor.getOrderByStatus("In kitchen");
+        List<String[]> ready = vendor.getOrderByStatus("Ready");
 
         DefaultTableModel model = (DefaultTableModel) currentOrderTable.getModel();
         int index = 1;
         model.setRowCount(0);
-        
-        Item item = new Item();
 
         //iterate through each list and add into table model
         for (String[] orderData : ordered) {
             String orderItems = orderData[2].trim();
-            String updatedOrderItems = item.replaceItemIDsWithNames(orderItems);
+            String updatedOrderItems = new Item().replaceItemIDsWithNames(orderItems);
             model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, orderData[1], orderData[3]});
         }
         
         for (String[] orderData : inKitchen) {
             String orderItems = orderData[2].trim();
-            String updatedOrderItems = item.replaceItemIDsWithNames(orderItems);
+            String updatedOrderItems = new Item().replaceItemIDsWithNames(orderItems);
             model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, orderData[1], orderData[3]});
         }
         
         for (String[] orderData : ready) {
             String orderItems = orderData[2].trim();
-            String updatedOrderItems = item.replaceItemIDsWithNames(orderItems);
+            String updatedOrderItems = new Item().replaceItemIDsWithNames(orderItems);
             model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, orderData[1], orderData[3]});
         }
         
@@ -152,66 +148,60 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
     
     //display according to status combo box
     public void displayCurrentOrder(String filter) {
-        Order orders = new Order();
         DefaultTableModel model = (DefaultTableModel) currentOrderTable.getModel();
         int index = 1;
         model.setRowCount(0);
-        Item item = new Item();
 
         if (filter.equalsIgnoreCase("Ordered")) {
-            List<String[]> orderList = orders.getOrderByStatus(email, "Ordered");
+            List<String[]> orderList = vendor.getOrderByStatus("Ordered");
             for (String[] orderData : orderList) {
                 String orderItems = orderData[2].trim();
-                String updatedOrderItems = item.replaceItemIDsWithNames(orderItems); //replace item ID with item names
+                String updatedOrderItems = new Item().replaceItemIDsWithNames(orderItems); //replace item ID with item names
                 model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, orderData[1], orderData[3]});
             }
         } else if (filter.equalsIgnoreCase("In kitchen")) {
-            List<String[]> orderList = orders.getOrderByStatus(email, "In kitchen");
+            List<String[]> orderList = vendor.getOrderByStatus("In kitchen");
             for (String[] orderData : orderList) {
                 String orderItems = orderData[2].trim();
-                String updatedOrderItems = item.replaceItemIDsWithNames(orderItems);
+                String updatedOrderItems = new Item().replaceItemIDsWithNames(orderItems);
                 model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, orderData[1], orderData[3]});
             }
         } else if (filter.equalsIgnoreCase("Ready")) {
-            List<String[]> orderList = orders.getOrderByStatus(email, "Ready");
+            List<String[]> orderList = vendor.getOrderByStatus("Ready");
             for (String[] orderData : orderList) {
                 String orderItems = orderData[2].trim();
-                String updatedOrderItems = item.replaceItemIDsWithNames(orderItems);
+                String updatedOrderItems = new Item().replaceItemIDsWithNames(orderItems);
                 model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, orderData[1], orderData[3]});
             }
         } 
     }
     
     //display searched id in table
-    public void displaySearch(String orderID) {
-        Order order = new Order();
+    public void displaySearch(int orderID) {
         DefaultTableModel model = (DefaultTableModel) currentOrderTable.getModel();
         int index = 1;
         model.setRowCount(0);
-        Item item = new Item();
-        String[] searchedOrder = order.getOrder(orderID);
+        String[] searchedOrder = vendor.getSpecificOrder(orderID);
         if (searchedOrder == null) {
             JOptionPane.showMessageDialog(null, "Order ID cannot be found", "Alert", JOptionPane.WARNING_MESSAGE);
             displayCurrentOrder();
             setPlaceholder(searchOrderIDTxt, "Search Order ID");
         } else {
             String orderItems = searchedOrder[2].trim();
-            String updatedOrderItems = item.replaceItemIDsWithNames(orderItems);
+            String updatedOrderItems = new Item().replaceItemIDsWithNames(orderItems);
             model.addRow(new Object[]{index++, searchedOrder[0], updatedOrderItems, searchedOrder[1], searchedOrder[3]});
         }
     }
     
     //display selected order
-    public void displayOrderDetails(String orderID) {
+    public void displayOrderDetails(int orderID) {
         DecimalFormat df = new DecimalFormat("0.00");
-        Order order = new Order();
-        String[] orderDetails = order.getOrder(orderID);
+        String[] orderDetails = vendor.getSpecificOrder(orderID);
         statusIdTxt.setText(orderDetails[0].trim());
         String orderMethod = orderDetails[1].trim();
         statusMethodTxt.setText(orderMethod);
 
         //display table item
-        Item item = new Item();
         String orderItems = orderDetails[2].trim();
         //remove square brackets and split the items by "|"
         String[] itemDetails = orderItems.replace("[", "").replace("]", "").split("\\|");
@@ -224,7 +214,7 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
             int quantity = Integer.parseInt(parts[1]);
 
             //retrieve item data through Item class
-            String[] itemData = vendor.getSpecificItem(itemID);
+            String[] itemData = new Item().itemData(itemID);
             if (itemData != null && itemData.length > 3) {
                 String itemName = itemData[1];
                 double price = Double.parseDouble(itemData[3]);
@@ -718,7 +708,8 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         //validation to choose a row 
         if (selectedRow >= 0) {            
             Object id = currentOrderTable.getModel().getValueAt(selectedRow, 1);
-            displayOrderDetails(id.toString());
+            int selectID = (int) id;
+            displayOrderDetails(selectID);
         } else { //no row is selected
             JOptionPane.showMessageDialog(null, "Please select a row to view details.", "Alert", JOptionPane.WARNING_MESSAGE);
         }
@@ -727,10 +718,9 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
     private void updateOrderBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateOrderBtnActionPerformed
         int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to update the order's status?", "Update Order Status", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-            String orderID = statusIdTxt.getText();
+            int orderID = Integer.parseInt(statusIdTxt.getText());
             String newStatus = nextStatusTxt.getText();
-            Order order = new Order();
-            order.updateStatus(orderID, newStatus, role);
+            vendor.updateOrderStatus(orderID, newStatus);
             JOptionPane.showMessageDialog(null, "Order " + orderID + "'s status updated successfully!");
             displayCurrentOrder();
 
@@ -749,11 +739,10 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         String orderID = incomingIDLabel.getText();
         String orderMethod = incomingMethodTxt.getText();
         
-        Order order = new Order();
         if (orderMethod.equalsIgnoreCase("delivery")) {
-            order.updateStatus(orderID, "Assigning runner", role);
+            vendor.updateOrderStatus(Integer.parseInt(orderID), "Assigning runner");
         } else {
-            order.updateStatus(orderID, "Ordered", role);
+            vendor.updateOrderStatus(Integer.parseInt(orderID), "Ordered");
         }
         displayNewOrder(); //display next new order 
         displayCurrentOrder(); //refresh current orders table
@@ -762,14 +751,13 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
 
     private void rejectBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rejectBtnActionPerformed
         //update order status to cancelled - not sure if need to include reason
-        String orderID = incomingIDLabel.getText();
+        int orderID = Integer.parseInt(incomingIDLabel.getText());
         String orderMethod = incomingMethodTxt.getText();
         
-        Order order = new Order();
         //may need to add cancellation reason
         int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to reject this order?", "Reject Order", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-            order.updateStatus(orderID, "Canceled", role);
+            vendor.updateOrderStatus(orderID, "Canceled");
             JOptionPane.showMessageDialog(null, "Order " + orderID + " is rejected.");
             displayNewOrder(); //display next new order
         }
@@ -789,7 +777,8 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         if (search.equals("Search Order ID")) {
             JOptionPane.showMessageDialog(null, "Please enter your search.", "Alert", JOptionPane.WARNING_MESSAGE);
         } else {
-            displaySearch(search);
+            int searchID = Integer.parseInt(search);
+            displaySearch(searchID);
         }
     }//GEN-LAST:event_searchBtnActionPerformed
 

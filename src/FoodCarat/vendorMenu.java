@@ -107,7 +107,7 @@ public class vendorMenu extends javax.swing.JFrame {
     //display all items
     public void displayItems() {
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
-        List<String[]> allItems = vendor.getItems();
+        List<String[]> allItems = new Item().getAllItems(email);
         int index = 1;
         model.setRowCount(0);
         itemTable.setRowHeight(100);
@@ -144,7 +144,7 @@ public class vendorMenu extends javax.swing.JFrame {
     //display items based on id
     public void displayItems(int id) {
         //display details
-        String[] details = vendor.getSpecificItem(id);        
+        String[] details = new Item().itemData(id);        
         idLabel.setText(details[0].trim());
         itemNameTxt.setText(details[1].trim());
         typeBox.setSelectedItem(details[2].trim());
@@ -161,7 +161,7 @@ public class vendorMenu extends javax.swing.JFrame {
     //display items based on check boxes
     public void displayItemsFilter(String[] filter) {      
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
-        List<String[]> allItems = vendor.getItems();
+        List<String[]> allItems = new Item().getAllItems(email);
         int index = 1;
         model.setRowCount(0);
         itemTable.setRowHeight(100);
@@ -211,7 +211,7 @@ public class vendorMenu extends javax.swing.JFrame {
     //display items based on search bar
     public void displayItemsSearch(String searchItem) {
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
-        List<String[]> allItems = vendor.getItems();
+        List<String[]> allItems = new Item().getAllItems(email);
         int index = 1;
         model.setRowCount(0);
         itemTable.setRowHeight(100);
