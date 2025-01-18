@@ -4,7 +4,6 @@
  */
 package FoodCarat;
 
-import java.awt.event.KeyEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JOptionPane;
@@ -29,36 +28,10 @@ public class cusRunner1AccInfo extends javax.swing.JFrame {
         ((PlainDocument) nameTF.getDocument()).setDocumentFilter(User.createLengthFilter(20));
         ((PlainDocument) passwordTF.getDocument()).setDocumentFilter(User.createLengthFilter(20));
         ((PlainDocument) contactNoTF.getDocument()).setDocumentFilter(User.createLengthFilter(15));        
-        ((PlainDocument) dobTF.getDocument()).setDocumentFilter(User.createLengthFilter(10));        
     }
     
     private boolean isValidDate(String dateString) {
-    try {
-        String[] dateParts = dateString.split("/");
-        if (dateParts.length != 3) {
-            JOptionPane.showMessageDialog(this, "Invalid date format. Please enter a valid date in dd/MM/yyyy format.", "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-
-        int day = Integer.parseInt(dateParts[0]);
-        int month = Integer.parseInt(dateParts[1]);
-        int year = Integer.parseInt(dateParts[2]);
-
-        if (day < 1 || day > 31) {
-            JOptionPane.showMessageDialog(this, "Day should be between 01 and 31.", "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-
-        if (month < 1 || month > 12) {
-            JOptionPane.showMessageDialog(this, "Month should be between 01 and 12.", "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-
-        if (year < 1900) {
-            JOptionPane.showMessageDialog(this, "Year should not be less than 1900.", "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-
+    try {        
         // Validate the entered date is not in the future
         Date currentDate = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -73,7 +46,6 @@ public class cusRunner1AccInfo extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Invalid date format. Please enter a valid date in dd/MM/yyyy format.", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
-
         return true;
     }
 
@@ -95,10 +67,10 @@ public class cusRunner1AccInfo extends javax.swing.JFrame {
         nameTF = new javax.swing.JTextField();
         passwordTF = new javax.swing.JTextField();
         contactNoTF = new javax.swing.JTextField();
-        dobTF = new javax.swing.JTextField();
         confirmJB = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+        dobJDC = new com.toedter.calendar.JDateChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -153,19 +125,6 @@ public class cusRunner1AccInfo extends javax.swing.JFrame {
             }
         });
 
-        dobTF.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
-        dobTF.setMinimumSize(new java.awt.Dimension(60, 25));
-        dobTF.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                dobTFActionPerformed(evt);
-            }
-        });
-        dobTF.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                dobTFKeyTyped(evt);
-            }
-        });
-
         confirmJB.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
         confirmJB.setText("Confirm");
         confirmJB.setPreferredSize(new java.awt.Dimension(140, 30));
@@ -199,7 +158,7 @@ public class cusRunner1AccInfo extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel4)
                                 .addGap(18, 18, 18)
-                                .addComponent(dobTF, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(dobJDC, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel5)
                                 .addGap(18, 18, 18)
@@ -239,11 +198,11 @@ public class cusRunner1AccInfo extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel3)
                     .addComponent(passwordTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(42, 42, 42)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGap(34, 34, 34)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel4)
-                    .addComponent(dobTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(40, 40, 40)
+                    .addComponent(dobJDC, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(42, 42, 42)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(contactNoTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -257,10 +216,6 @@ public class cusRunner1AccInfo extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void dobTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dobTFActionPerformed
-        
-    }//GEN-LAST:event_dobTFActionPerformed
-
     private void confirmJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmJBActionPerformed
         String email = User.getSessionEmail();
         String role = User.getSessionRole();
@@ -268,14 +223,20 @@ public class cusRunner1AccInfo extends javax.swing.JFrame {
         String name = nameTF.getText().trim();
         String password = passwordTF.getText().trim();
         String contactNumber = contactNoTF.getText().trim();
-        String dateString = dobTF.getText().trim();
+        Date selectedDate = dobJDC.getDate();
 
-        if (name.isEmpty() || password.isEmpty() || contactNumber.isEmpty() || dateString.isEmpty()) {
+        String dob = "";
+        if (selectedDate != null) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            dob = dateFormat.format(selectedDate);
+        }
+
+        if (name.isEmpty() || password.isEmpty() || contactNumber.isEmpty() || dob.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         
-        if (!isValidDate(dateString)) {
+        if (!isValidDate(dob)) {
             return;
         }
 
@@ -298,17 +259,17 @@ public class cusRunner1AccInfo extends javax.swing.JFrame {
         }
         
         User user = new User();
-        System.out.println("Session email:" + email);
+        Runner runner = new Runner();
         
         // If user is a runner, prompt for plate number and validate
         if ("runner".equalsIgnoreCase(role)) {
-            String plateNumber = user.promptAndValidatePlateNumber(this, email);
+            String plateNumber = runner.promptAndValidatePlateNumber(this, email);
             if (plateNumber == null) {
                 return; 
             }
         }
       
-        user.userInfo(email, name, password, contactNumber, dateString);
+        user.userInfo(email, name, password, contactNumber, dob);
         
         String nextPage = user.determinePageAfterLogin(email);
         user.navigateToPage(nextPage, this);
@@ -322,20 +283,6 @@ public class cusRunner1AccInfo extends javax.swing.JFrame {
             evt.consume();
         }
     }//GEN-LAST:event_contactNoTFKeyTyped
-
-    private void dobTFKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_dobTFKeyTyped
-        char c = evt.getKeyChar();
-        String currentText = dobTF.getText();
-
-        if (!Character.isDigit(c) && c != KeyEvent.VK_BACK_SPACE) {
-            evt.consume();
-            return;
-        }
-
-        if (currentText.length() == 2 || currentText.length() == 5) {
-            dobTF.setText(currentText + "/");
-        }
-    }//GEN-LAST:event_dobTFKeyTyped
 
     /**
      * @param args the command line arguments
@@ -382,7 +329,7 @@ public class cusRunner1AccInfo extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton confirmJB;
     private javax.swing.JTextField contactNoTF;
-    private javax.swing.JTextField dobTF;
+    private com.toedter.calendar.JDateChooser dobJDC;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

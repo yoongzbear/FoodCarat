@@ -281,6 +281,7 @@ public class vendor1AccInfo extends javax.swing.JFrame {
         }
         
         User user = new User();
+        //Vendor vendor = new Vendor();
         System.out.println("Session email:" + email);
         
         // Save Picture
@@ -291,7 +292,7 @@ public class vendor1AccInfo extends javax.swing.JFrame {
         }
         
         user.userInfo(email, name, password, contactNumber, date);
-        user.vendorInfo(email, savedPicturePath, cuisine);
+        user.addVendorInfo(email, savedPicturePath, cuisine);
         
         new vendorMain().setVisible(true);
         dispose();

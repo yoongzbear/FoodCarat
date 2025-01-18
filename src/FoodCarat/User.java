@@ -4,7 +4,6 @@
  */
 package FoodCarat;
 
-import java.awt.Component;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -153,6 +152,7 @@ public class User {
     public void incrementOrders() { //for runner and vendor performace
         this.totalOrders++;
     }
+    
     // Log out
     public void logOut() {
         this.name = null;
@@ -373,7 +373,7 @@ public class User {
         }
     }
     
-    // Save Picture to Images/vendors
+    // Save Picture to Images - vendors
     public String savePic(String name, String picturePath){
         try{
             File imageFolder = new File("images/vendors");
@@ -397,7 +397,7 @@ public class User {
     }
     
     // Add vendor Info to vendor.txt for First Login
-    public void vendorInfo(String email, String picturePath, String cuisine) {
+    public void addVendorInfo(String email, String picturePath, String cuisine) {
         List<String> fileContent = new ArrayList<>();
         boolean updated = false;
 
@@ -409,6 +409,8 @@ public class User {
                 if (vendorData.length > 1 && vendorData[0].equalsIgnoreCase(email)) {
                     vendorData[1] = cuisine;
                     vendorData[2] = picturePath;
+                    vendorData[3] = "[]";
+                    vendorData[4] = "0.0";
                     updated = true;
                 }
 
@@ -434,92 +436,7 @@ public class User {
             System.out.println("No matching email found to update.");
         }
     }
-    
-    // Prompt and validate plate number
-    public String promptAndValidatePlateNumber(Component parentComponent, String email) {
-        String plateNumber = null;
-
-        while (true) {
-            plateNumber = JOptionPane.showInputDialog(
-                parentComponent,
-                "Enter your plate number (letters and numbers, max 15 characters):",
-                "Plate Number",
-                JOptionPane.PLAIN_MESSAGE
-            );
-
-            if (plateNumber == null) {
-                JOptionPane.showMessageDialog(parentComponent, "Plate number is required to proceed.", "Error", JOptionPane.ERROR_MESSAGE);
-                return null;
-            }
-
-            plateNumber = plateNumber.trim();
-
-            if (isValidPlateNumber(plateNumber)) {
-                savePlateNumber(email, plateNumber);
-                return plateNumber;
-            } else {
-                JOptionPane.showMessageDialog(parentComponent, "Invalid plate number. Ensure it contains letters, numbers, and is max 15 characters.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
-
-    // Save plate number
-    public void savePlateNumber(String email, String plateNumber) {
-        List<String> fileContent = new ArrayList<>();
-        boolean emailFound = false;
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(runnerFile))) {
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                String[] runnerData = line.split(",");
-                if (runnerData.length > 0 && runnerData[0].equalsIgnoreCase(email)) {
-                    runnerData = new String[]{runnerData[0], plateNumber.toUpperCase()};
-                    emailFound = true;
-                }
-                fileContent.add(String.join(",", runnerData));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Error reading runner.txt: " + e.getMessage());
-        }
-
-        if (emailFound) {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(runnerFile))) {
-                for (String updatedLine : fileContent) {
-                    writer.write(updatedLine);
-                    writer.newLine();
-                }
-                System.out.println("Runner information updated successfully.");
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.out.println("Error writing to runner.txt: " + e.getMessage());
-            }
-            } else {
-        System.out.println("No matching email found to update in runner.txt.");
-        }
-    }
-
-    // Validate plate number
-    private boolean isValidPlateNumber(String plateNumber) {
-        if (plateNumber.length() > 15) {
-            return false;
-        }
-
-        boolean containsLetter = false;
-        boolean containsNumber = false;
-
-        for (char c : plateNumber.toCharArray()) {
-            if (Character.isLetter(c)) {
-                containsLetter = true;
-            } else if (Character.isDigit(c)) {
-                containsNumber = true;
-            }
-        }
-
-        return containsLetter && containsNumber;
-    }
-                        
+                            
     //Check first login for admin before CRUD user(Admin Side)
     public String checkFirstLogin(String email, String userType, String filePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
