@@ -723,13 +723,14 @@ public class vendorMenu extends javax.swing.JFrame {
                 }
    
                 //upload image into menu folder
-                String newImagePath = vendor.getUploadedImagePath(imagePath);
+                String newImagePath = new Item().uploadImage(imagePath);
                 if (newImagePath == null) {
                     JOptionPane.showMessageDialog(null, "Failed to save the image.", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 } else {
                     //function to update items
-                    vendor.updateItemInfo(Integer.parseInt(id), name, type, price, newImagePath, "available");
+                    Item updateItem = new Item(Integer.parseInt(id), name, type, price, newImagePath, email, "available");
+                    updateItem.editItem();
 
                     editBtn.setText("Edit Details");
                     displayItems();
@@ -753,7 +754,7 @@ public class vendorMenu extends javax.swing.JFrame {
             int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to delete this item?", "Delete Item", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 int id = Integer.parseInt(idLabel.getText());
-                vendor.deleteItem(id); 
+                new Item().deleteItem(id, "vendor"); 
                 displayItems();
                 resetDetails();
             }

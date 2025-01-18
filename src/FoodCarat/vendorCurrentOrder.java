@@ -69,7 +69,7 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
     //display new order
     public void displayNewOrder() {
         DecimalFormat df = new DecimalFormat("0.00");
-        String[] newOrderInfo = vendor.getNewOrder();
+        String[] newOrderInfo = new Order().getNewOrder(email);
         //if newOrderInfo is null, display "no new orders"
         if (newOrderInfo==null) {
             orderMessageLabel.setText("No new orders.");
@@ -117,9 +117,10 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
     //display all current orders 
     public void displayCurrentOrder() {
         //create lists for orders with ordered, in kitchen, and ready statuses
-        List<String[]> ordered = vendor.getOrderByStatus("Ordered");
-        List<String[]> inKitchen = vendor.getOrderByStatus("In kitchen");
-        List<String[]> ready = vendor.getOrderByStatus("Ready");
+        Order orders = new Order();
+        List<String[]> ordered = orders.getOrderByStatus(email, "Ordered");
+        List<String[]> inKitchen = orders.getOrderByStatus(email, "In kitchen");
+        List<String[]> ready = orders.getOrderByStatus(email, "Ready");
 
         DefaultTableModel model = (DefaultTableModel) currentOrderTable.getModel();
         int index = 1;
@@ -151,23 +152,24 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) currentOrderTable.getModel();
         int index = 1;
         model.setRowCount(0);
+        Order orders = new Order();
 
         if (filter.equalsIgnoreCase("Ordered")) {
-            List<String[]> orderList = vendor.getOrderByStatus("Ordered");
+            List<String[]> orderList = orders.getOrderByStatus(email, "Ordered");
             for (String[] orderData : orderList) {
                 String orderItems = orderData[2].trim();
                 String updatedOrderItems = new Item().replaceItemIDsWithNames(orderItems); //replace item ID with item names
                 model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, orderData[1], orderData[3]});
             }
         } else if (filter.equalsIgnoreCase("In kitchen")) {
-            List<String[]> orderList = vendor.getOrderByStatus("In kitchen");
+            List<String[]> orderList = orders.getOrderByStatus(email, "In kitchen");
             for (String[] orderData : orderList) {
                 String orderItems = orderData[2].trim();
                 String updatedOrderItems = new Item().replaceItemIDsWithNames(orderItems);
                 model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, orderData[1], orderData[3]});
             }
         } else if (filter.equalsIgnoreCase("Ready")) {
-            List<String[]> orderList = vendor.getOrderByStatus("Ready");
+            List<String[]> orderList = orders.getOrderByStatus(email, "Ready");
             for (String[] orderData : orderList) {
                 String orderItems = orderData[2].trim();
                 String updatedOrderItems = new Item().replaceItemIDsWithNames(orderItems);
@@ -181,7 +183,7 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) currentOrderTable.getModel();
         int index = 1;
         model.setRowCount(0);
-        String[] searchedOrder = vendor.getSpecificOrder(orderID);
+        String[] searchedOrder = new Order().getOrder(orderID);
         if (searchedOrder == null) {
             JOptionPane.showMessageDialog(null, "Order ID cannot be found", "Alert", JOptionPane.WARNING_MESSAGE);
             displayCurrentOrder();
@@ -196,7 +198,7 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
     //display selected order
     public void displayOrderDetails(int orderID) {
         DecimalFormat df = new DecimalFormat("0.00");
-        String[] orderDetails = vendor.getSpecificOrder(orderID);
+        String[] orderDetails = new Order().getOrder(orderID);
         statusIdTxt.setText(orderDetails[0].trim());
         String orderMethod = orderDetails[1].trim();
         statusMethodTxt.setText(orderMethod);
@@ -720,7 +722,7 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         if (confirm == JOptionPane.YES_OPTION) {
             int orderID = Integer.parseInt(statusIdTxt.getText());
             String newStatus = nextStatusTxt.getText();
-            vendor.updateOrderStatus(orderID, newStatus);
+            new Order().updateStatus(orderID, newStatus, "vendor");
             JOptionPane.showMessageDialog(null, "Order " + orderID + "'s status updated successfully!");
             displayCurrentOrder();
 
@@ -738,11 +740,12 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         //update order status to Ordered or Assigning runner
         String orderID = incomingIDLabel.getText();
         String orderMethod = incomingMethodTxt.getText();
+        Order order = new Order();
         
         if (orderMethod.equalsIgnoreCase("delivery")) {
-            vendor.updateOrderStatus(Integer.parseInt(orderID), "Assigning runner");
+            order.updateStatus(Integer.parseInt(orderID), "Assigning runner", "vendor");
         } else {
-            vendor.updateOrderStatus(Integer.parseInt(orderID), "Ordered");
+            order.updateStatus(Integer.parseInt(orderID), "Ordered", "vendor");
         }
         displayNewOrder(); //display next new order 
         displayCurrentOrder(); //refresh current orders table
@@ -757,7 +760,7 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         //may need to add cancellation reason
         int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to reject this order?", "Reject Order", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-            vendor.updateOrderStatus(orderID, "Canceled");
+            new Order().updateStatus(orderID, "Canceled", "vendor");
             JOptionPane.showMessageDialog(null, "Order " + orderID + " is rejected.");
             displayNewOrder(); //display next new order
         }

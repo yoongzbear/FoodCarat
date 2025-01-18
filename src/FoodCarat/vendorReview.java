@@ -41,9 +41,7 @@ public class vendorReview extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) reviewTable.getModel();
         int index = 1;
         model.setRowCount(0);
-        //access vendor orders through vendor class
-        Vendor vendor = new Vendor(email);
-        List<String[]> allReviews = vendor.getAllReviewInfo(email);
+        List<String[]> allReviews = new Review().getAllReviews(email, "vendor");
         System.out.println(email);
         for (String[] reviewData : allReviews) {
                     
@@ -64,8 +62,7 @@ public class vendorReview extends javax.swing.JFrame {
         int index = 1;
         model.setRowCount(0);
         //get the filters
-        Vendor vendor = new Vendor(email);
-        List<String[]> allReviews = vendor.getAllReviewInfo(email);
+        List<String[]> allReviews = new Review().getAllReviews(email, "vendor");
         for (String[] reviewData : allReviews) {
                     
             //0reviewID,1orderID,2reviewType,3rating,4review,5date,6customerEmail
@@ -89,8 +86,7 @@ public class vendorReview extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) reviewTable.getModel();
         int index = 1;
         model.setRowCount(0);
-        Vendor vendor = new Vendor(email);
-        List<String[]> allReviews = vendor.getAllReviewInfo(email);
+        List<String[]> allReviews = new Review().getAllReviews(email, "vendor");
 
         //sorting
         if (sorting.equals("Highest to Lowest")) {
@@ -116,8 +112,7 @@ public class vendorReview extends javax.swing.JFrame {
     public void displaySelectedReview(String reviewID) {
         DecimalFormat df = new DecimalFormat("0.00");
         //review, order, items
-        Vendor vendor = new Vendor(email);
-        String[] details = vendor.getReview(reviewID);
+        String[] details = new Review().getReview(reviewID);
         
         //get items, price, and quantity to display in table
         Item item = new Item();
@@ -728,7 +723,7 @@ public class vendorReview extends javax.swing.JFrame {
         
         Vendor vendor = new Vendor(email);        
         //get rating count
-        int[] ratingsCount = vendor.getVendorRatingCount("weekly", timeRange);
+        int[] ratingsCount = new Review().ratingCount(email, "vendor", "weekly", timeRange);
         
         //pass into chart making function - pie chart
     }//GEN-LAST:event_weeklyChartBtnActionPerformed
@@ -768,7 +763,7 @@ public class vendorReview extends javax.swing.JFrame {
         String timeRange = month + "," + year;
         Vendor vendor = new Vendor(email);        
         //get rating count
-        int[] ratingsCount = vendor.getVendorRatingCount("monthly", timeRange);
+        int[] ratingsCount = new Review().ratingCount(email, "vendor", "monthly", timeRange);
         
         //call method to generate chart - pie chart
     }//GEN-LAST:event_monthlyChartBtnActionPerformed

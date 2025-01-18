@@ -82,7 +82,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     public void displayVendorOrder(int orderID) {
         DecimalFormat df = new DecimalFormat("0.00");
                 
-        String[] details = vendor.getSpecificOrder(orderID);  
+        String[] details = new Order().getOrder(orderID);  
         
         //get items, price, and quantity to display in table
         Item item = new Item();
@@ -119,17 +119,24 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         totalPriceLabel.setText("RM" + details[10].trim());
 
         //view if got feedback for the order
-        String feedback = vendor.orderFeedback(orderID);
-        String[] feedbackParts = feedback.split(",");
-        String orderFeedback = feedbackParts[1];
-        if (!orderFeedback.equals("null")) {
-            //display feedback in feedback text area
-            feedbackTxtArea.setText(orderFeedback);
-        } else {
-            feedbackTxtArea.setText("-");
+        Review orderReview = new Review(orderID);
+        //String reviews = orderReview.getFeedback();
+        Review review = new Review(orderID);
+        try {
+            String feedback = review.getFeedback();
+            String[] feedbackParts = feedback.split(",");
+            String orderFeedback = feedbackParts[1];
+            if (!orderFeedback.equals("null")) {
+                //display feedback in feedback text area
+                feedbackTxtArea.setText(orderFeedback);
+            } else {
+                feedbackTxtArea.setText("-");
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     //display vendor order based on search 
     public void displayOrderSearch(String search) {
         DefaultTableModel model = (DefaultTableModel) orderTable.getModel();

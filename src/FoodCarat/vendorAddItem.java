@@ -277,15 +277,15 @@ public class vendorAddItem extends javax.swing.JFrame {
         }
         else {            
             //upload image into menu folder
-            String newImagePath = vendor.getUploadedImagePath(imagePath);
+            String newImagePath = new Item().uploadImage(imagePath);
             if (newImagePath == null) {
                 JOptionPane.showMessageDialog(null, "Failed to save the image.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             } else {
                 //get next ID
-                String[] latestItem = vendor.latestItem();
+                String[] latestItem = new Item().latestItem();
                 int newItemID = Integer.parseInt(latestItem[0]) + 1;
-                Item newItem = new Item(newItemID, itemName, itemType, price, newImagePath, email, "available");
+                Item newItem = new Item(newItemID, name, type, price, newImagePath, email, "available");
                 newItem.addItem();
                 new vendorMenu().setVisible(true);
                 dispose();
