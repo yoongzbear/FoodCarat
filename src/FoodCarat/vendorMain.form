@@ -386,9 +386,6 @@
             </Property>
             <Property name="text" type="java.lang.String" value="Dine In"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="dineInBoxActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JCheckBox" name="takeawayBox">
           <Properties>
@@ -397,9 +394,6 @@
             </Property>
             <Property name="text" type="java.lang.String" value="Take Away"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="takeawayBoxActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JCheckBox" name="deliveryBox">
           <Properties>
@@ -408,9 +402,6 @@
             </Property>
             <Property name="text" type="java.lang.String" value="Delivery"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deliveryBoxActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="updateMethodBtn">
           <Properties>

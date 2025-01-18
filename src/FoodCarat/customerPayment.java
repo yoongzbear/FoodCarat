@@ -85,7 +85,7 @@ public class customerPayment extends javax.swing.JFrame {
             //split each item to get itemID and quantity
             String[] itemDetails = item.split(";");
             if (itemDetails.length == 2) {
-                String itemID = itemDetails[0];
+                int itemID = Integer.parseInt(itemDetails[0]);
                 String quantity = itemDetails[1];
                 
                 //get item data and calculate total price
@@ -96,7 +96,7 @@ public class customerPayment extends javax.swing.JFrame {
                 double orderItemTotal = Integer.parseInt(quantity) * itemPrice;
                 
                 //set the vendor name using item ID
-                String[] vendorInfo = item1.getVendorInfoByItemID(Integer.parseInt(itemID));
+                String[] vendorInfo = item1.getVendorInfoByItemID(itemID);
                 String vendorName = vendorInfo[1];
                 sVendorName.setText(String.valueOf(vendorName));
 

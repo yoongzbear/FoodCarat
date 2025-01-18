@@ -90,7 +90,6 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
             incomingTotalPriceTxt.setText("RM" + newOrderInfo[10].trim());
             
             //display table item
-            Item item = new Item();
             String orderItems = newOrderInfo[2].trim();
             //remove square brackets and split the items by "|"
             String[] itemDetails = orderItems.replace("[", "").replace("]", "").split("\\|");
@@ -99,11 +98,11 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
 
             for (String detail : itemDetails) {
                 String[] parts = detail.split(";");
-                String itemID = parts[0];
+                int itemID = Integer.parseInt(parts[0]);
                 int quantity = Integer.parseInt(parts[1]);
 
                 //retrieve item data through Item class
-                String[] itemData = item.itemData(itemID);
+                String[] itemData = vendor.getSpecificItem(itemID);
                 if (itemData != null && itemData.length > 3) {
                     String itemName = itemData[1];
                     double price = Double.parseDouble(itemData[3]);
@@ -221,11 +220,11 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
 
         for (String detail : itemDetails) {
             String[] parts = detail.split(";");
-            String itemID = parts[0];
+            int itemID = Integer.parseInt(parts[0]);
             int quantity = Integer.parseInt(parts[1]);
 
             //retrieve item data through Item class
-            String[] itemData = item.itemData(itemID);
+            String[] itemData = vendor.getSpecificItem(itemID);
             if (itemData != null && itemData.length > 3) {
                 String itemName = itemData[1];
                 double price = Double.parseDouble(itemData[3]);

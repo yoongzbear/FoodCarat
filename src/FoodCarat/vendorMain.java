@@ -260,27 +260,12 @@ public class vendorMain extends javax.swing.JFrame {
 
         dineInBox.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         dineInBox.setText("Dine In");
-        dineInBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                dineInBoxActionPerformed(evt);
-            }
-        });
 
         takeawayBox.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         takeawayBox.setText("Take Away");
-        takeawayBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                takeawayBoxActionPerformed(evt);
-            }
-        });
 
         deliveryBox.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         deliveryBox.setText("Delivery");
-        deliveryBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deliveryBoxActionPerformed(evt);
-            }
-        });
 
         updateMethodBtn.setText("Update Methods");
         updateMethodBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -425,7 +410,7 @@ public class vendorMain extends javax.swing.JFrame {
     }//GEN-LAST:event_reviewBtnActionPerformed
 
     private void revenueBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_revenueBtnActionPerformed
-        //new vendorRevenue().setVisible(true);
+        new vendorRevenue().setVisible(true);
         dispose();  
     }//GEN-LAST:event_revenueBtnActionPerformed
 
@@ -438,18 +423,6 @@ public class vendorMain extends javax.swing.JFrame {
         new vendorOrderHistory().setVisible(true);
         dispose(); 
     }//GEN-LAST:event_orderHistoryBtnActionPerformed
-
-    private void dineInBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dineInBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_dineInBoxActionPerformed
-
-    private void takeawayBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_takeawayBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_takeawayBoxActionPerformed
-
-    private void deliveryBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deliveryBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_deliveryBoxActionPerformed
 
     private void updateMethodBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateMethodBtnActionPerformed
         //see which is ticked, rewrite in the text file for the available methods, save as array

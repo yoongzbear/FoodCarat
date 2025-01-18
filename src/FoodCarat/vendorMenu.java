@@ -31,7 +31,6 @@ import javax.swing.table.DefaultTableModel;
  */
 public class vendorMenu extends javax.swing.JFrame {
 
-    Item item = new Item();
     String imagePath = "";
     File imageFile = null;
     //change to userSession 
@@ -39,6 +38,7 @@ public class vendorMenu extends javax.swing.JFrame {
     private String name = "Vendor";
 //    private String email = User.getSessionEmail();
 //    private String name = User.getSessionName();
+    Vendor vendor = new Vendor(email);
     boolean edit = true;
     
     /**
@@ -63,7 +63,6 @@ public class vendorMenu extends javax.swing.JFrame {
         photoLabel.setPreferredSize(new Dimension(175, 164)); 
         photoLabel.setMinimumSize(new Dimension(175, 164));
         photoLabel.setMaximumSize(new Dimension(175, 164));
-
     }
     
     //helper method to adjust search box
@@ -108,7 +107,7 @@ public class vendorMenu extends javax.swing.JFrame {
     //display all items
     public void displayItems() {
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
-        List<String[]> allItems = item.getAllItems(email);
+        List<String[]> allItems = vendor.getItems();
         int index = 1;
         model.setRowCount(0);
         itemTable.setRowHeight(100);
@@ -124,8 +123,7 @@ public class vendorMenu extends javax.swing.JFrame {
             Image img = itemImage.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
             itemImage = new ImageIcon(img);
 
-            model.addRow(
-                    new Object[]{index, itemID, itemImage, itemName, itemType, itemPrice});
+            model.addRow(new Object[]{index, itemID, itemImage, itemName, itemType, itemPrice});
             index++;
         }
         //render image column
@@ -144,9 +142,9 @@ public class vendorMenu extends javax.swing.JFrame {
     }
     
     //display items based on id
-    public void displayItems(String id) {
+    public void displayItems(int id) {
         //display details
-        String[] details = item.itemData(id);        
+        String[] details = vendor.getSpecificItem(id);        
         idLabel.setText(details[0].trim());
         itemNameTxt.setText(details[1].trim());
         typeBox.setSelectedItem(details[2].trim());
@@ -163,7 +161,7 @@ public class vendorMenu extends javax.swing.JFrame {
     //display items based on check boxes
     public void displayItemsFilter(String[] filter) {      
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
-        List<String[]> allItems = item.getAllItems(email);
+        List<String[]> allItems = vendor.getItems();
         int index = 1;
         model.setRowCount(0);
         itemTable.setRowHeight(100);
@@ -213,7 +211,7 @@ public class vendorMenu extends javax.swing.JFrame {
     //display items based on search bar
     public void displayItemsSearch(String searchItem) {
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
-        List<String[]> allItems = item.getAllItems(email);
+        List<String[]> allItems = vendor.getItems();
         int index = 1;
         model.setRowCount(0);
         itemTable.setRowHeight(100);
@@ -662,8 +660,8 @@ public class vendorMenu extends javax.swing.JFrame {
         //have validation to "choose an item in the table"
         if (selectedRow >= 0) {            
             Object id = itemTable.getModel().getValueAt(selectedRow, 1);
-            displayItems(id.toString());                 
-            editBtn.setEnabled(true);
+            int selectID = (int) id;
+            displayItems(selectID);
             deleteBtn.setEnabled(true);
         } else {
             //no row is selected
@@ -711,7 +709,7 @@ public class vendorMenu extends javax.swing.JFrame {
             int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to edit the item's information?", "Edit Item", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 //validate if fields are empty
-                if (name.isEmpty() || type.equals("Select Type") || priceText.isEmpty() || imagePath == "") {
+                if (name.isEmpty() || type.equals("Select Type") || priceText.isEmpty() || imagePath.equals("")) {
                     JOptionPane.showMessageDialog(null, "Please fill in all fields.", "Incomplete Submission", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
@@ -725,14 +723,13 @@ public class vendorMenu extends javax.swing.JFrame {
                 }
    
                 //upload image into menu folder
-                String newImagePath = item.uploadImage(imagePath);
+                String newImagePath = vendor.getUploadedImagePath(imagePath);
                 if (newImagePath == null) {
                     JOptionPane.showMessageDialog(null, "Failed to save the image.", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 } else {
                     //function to update items
-                    Item updateItem = new Item(Integer.parseInt(id), name, type, price, newImagePath, email, "available");
-                    updateItem.editItem();
+                    vendor.updateItemInfo(Integer.parseInt(id), name, type, price, newImagePath, "available");
 
                     editBtn.setText("Edit Details");
                     displayItems();
@@ -755,9 +752,8 @@ public class vendorMenu extends javax.swing.JFrame {
         if (selectedRow >= 0) {
             int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to delete this item?", "Delete Item", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
-                String id = idLabel.getText();
-                item.deleteItem(id, "vendor"); //see if got add user type for session
-                //item.deleteItem(id, User.getSessionRole());
+                int id = Integer.parseInt(idLabel.getText());
+                vendor.deleteItem(id); 
                 displayItems();
                 resetDetails();
             }

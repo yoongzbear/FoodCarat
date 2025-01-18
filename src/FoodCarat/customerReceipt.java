@@ -78,7 +78,7 @@ public class customerReceipt extends javax.swing.JFrame {
             // Split each item by the semicolon to get itemID and quantity
             String[] itemDetails = item.split(";");
             if (itemDetails.length == 2) {
-                String itemID = itemDetails[0];
+                int itemID = Integer.parseInt(itemDetails[0]);
                 String quantity = itemDetails[1];
                 
                 Item item1 = new Item();
@@ -88,7 +88,7 @@ public class customerReceipt extends javax.swing.JFrame {
                 double orderItemTotal = Integer.parseInt(quantity) * itemPrice;
                 subtotal += orderItemTotal;
                 
-                String[] vendorInfo = item1.getVendorInfoByItemID(Integer.parseInt(itemID));
+                String[] vendorInfo = item1.getVendorInfoByItemID(itemID);
                 String vendorName = vendorInfo[1];
                 sVendorName.setText(String.valueOf(vendorName));
 

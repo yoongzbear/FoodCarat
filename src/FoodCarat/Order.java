@@ -253,7 +253,7 @@ public class Order {
                         String[] items = orderItems.split("\\|");
                         for (String item : items) {
                             String[] itemDetails = item.split(";");
-                            String itemID = itemDetails[0];
+                            int itemID = Integer.parseInt(itemDetails[0]);
                             Item item1 = new Item();
                             String[] itemData = item1.itemData(itemID);
                             //currentVendorEmail = itemData[5];
@@ -328,7 +328,7 @@ public class Order {
 
         for (String detail : itemDetails) {
             String[] parts = detail.split(";");
-            String itemID = parts[0];
+            int itemID = Integer.parseInt(parts[0]);
             int quantity = Integer.parseInt(parts[1]);
             //double price = getItemPrice(itemID, vendorItems);
             Item item = new Item();

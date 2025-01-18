@@ -116,8 +116,8 @@ public class vendorReview extends javax.swing.JFrame {
     public void displaySelectedReview(String reviewID) {
         DecimalFormat df = new DecimalFormat("0.00");
         //review, order, items
-        Review selectedReview = new Review();
-        String[] details = selectedReview.getReview(reviewID);
+        Vendor vendor = new Vendor(email);
+        String[] details = vendor.getReview(reviewID);
         
         //get items, price, and quantity to display in table
         Item item = new Item();
@@ -131,7 +131,7 @@ public class vendorReview extends javax.swing.JFrame {
         
         for (String detail : itemDetails) {
             String[] parts = detail.split(";");
-            String itemID = parts[0]; 
+            int itemID = Integer.parseInt(parts[0]); 
             int quantity = Integer.parseInt(parts[1]); 
 
             //retrieve item data through Item class
@@ -152,7 +152,7 @@ public class vendorReview extends javax.swing.JFrame {
         methodLabel.setText(details[8].trim());
         emailLabel.setText(details[6].trim());
         priceLabel.setText("RM"+details[17].trim());
-        ratingLabel.setText(details[3].trim() + " star");
+        ratingLabel.setText(details[3].trim() + " 🌟");
         vendorFeedbackTxtArea.setText(details[4].trim());
     }
     
@@ -160,6 +160,8 @@ public class vendorReview extends javax.swing.JFrame {
     public void generateChart() {
         //placeholder dulu
         //if all rating is 0, show message no ratings received for the week/month
+        
+        //render the chart and display in respective labels
     }
 
     /**
@@ -216,8 +218,8 @@ public class vendorReview extends javax.swing.JFrame {
         jLabel18 = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
         weeklyEndDateTxt = new javax.swing.JLabel();
-        jMonthChooser1 = new com.toedter.calendar.JMonthChooser();
-        jYearChooser1 = new com.toedter.calendar.JYearChooser();
+        chartMonthChooser = new com.toedter.calendar.JMonthChooser();
+        chartYearChooser = new com.toedter.calendar.JYearChooser();
         weeklyChartBtn = new javax.swing.JButton();
         monthlyChartBtn = new javax.swing.JButton();
         jLabel20 = new javax.swing.JLabel();
@@ -396,25 +398,19 @@ public class vendorReview extends javax.swing.JFrame {
         jLabel10.setText("Vendor Rating:");
 
         idLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        idLabel.setText("ID");
 
         dateLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        dateLabel.setText("Date");
 
         emailLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        emailLabel.setText("Email");
 
         methodLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        methodLabel.setText("Method");
 
-        ratingLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        ratingLabel.setText("Rating");
+        ratingLabel.setFont(new java.awt.Font("Segoe UI Emoji", 0, 14)); // NOI18N
 
         jLabel12.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         jLabel12.setText("Total Price: ");
 
         priceLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        priceLabel.setText("RM");
 
         vendorFeedbackTxtArea.setColumns(20);
         vendorFeedbackTxtArea.setRows(5);
@@ -569,10 +565,10 @@ public class vendorReview extends javax.swing.JFrame {
                     .addComponent(jLabel16)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jMonthChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(chartMonthChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(monthlyChartBtn)
                             .addComponent(jLabel20)
-                            .addComponent(jYearChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(chartYearChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(35, 35, 35)
                         .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 374, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(29, 29, 29))
@@ -590,9 +586,9 @@ public class vendorReview extends javax.swing.JFrame {
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addComponent(jLabel20)
                                 .addGap(18, 18, 18)
-                                .addComponent(jMonthChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(chartMonthChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jYearChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(chartYearChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(32, 32, 32)
                                 .addComponent(monthlyChartBtn))))
                     .addGroup(jPanel3Layout.createSequentialGroup()
@@ -624,16 +620,14 @@ public class vendorReview extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addGap(389, 389, 389)
-                        .addComponent(menuBtn)
-                        .addGap(71, 71, 71))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(42, Short.MAX_VALUE))))
+                        .addComponent(menuBtn))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGap(18, 18, 18)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(42, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -732,8 +726,7 @@ public class vendorReview extends javax.swing.JFrame {
         String timeRange = startDate + "," + endDate;
         System.out.println(timeRange);
         
-        Vendor vendor = new Vendor(email);
-        
+        Vendor vendor = new Vendor(email);        
         //get rating count
         int[] ratingsCount = vendor.getVendorRatingCount("weekly", timeRange);
         
@@ -769,8 +762,15 @@ public class vendorReview extends javax.swing.JFrame {
     private void monthlyChartBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_monthlyChartBtnActionPerformed
         //get month and year
         //month index + 1
-        
+        String month = String.valueOf(chartMonthChooser.getMonth() + 1); //index of month + 1 
+        String year = String.valueOf(chartYearChooser.getYear());
         //send to timeRange
+        String timeRange = month + "," + year;
+        Vendor vendor = new Vendor(email);        
+        //get rating count
+        int[] ratingsCount = vendor.getVendorRatingCount("monthly", timeRange);
+        
+        //call method to generate chart - pie chart
     }//GEN-LAST:event_monthlyChartBtnActionPerformed
 
     /**
@@ -809,6 +809,8 @@ public class vendorReview extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.toedter.calendar.JMonthChooser chartMonthChooser;
+    private com.toedter.calendar.JYearChooser chartYearChooser;
     private javax.swing.JLabel dateLabel;
     private javax.swing.JLabel emailLabel;
     private javax.swing.JButton filterBtn;
@@ -832,14 +834,12 @@ public class vendorReview extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private com.toedter.calendar.JMonthChooser jMonthChooser1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane4;
-    private com.toedter.calendar.JYearChooser jYearChooser1;
     private javax.swing.JButton menuBtn;
     private javax.swing.JLabel methodLabel;
     private javax.swing.JButton monthlyChartBtn;

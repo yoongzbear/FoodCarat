@@ -35,6 +35,7 @@ public class managerRmvItem extends javax.swing.JFrame {
     private String name = "Chagee";
 //    private String email = User.getSessionEmail();
 //    private String name = User.getSessionName();
+    //can create manager object
     /**
      * Creates new form managerRmvItem
      */
@@ -133,7 +134,7 @@ public class managerRmvItem extends javax.swing.JFrame {
     }
     
     //display items based on id
-    public void displayItems(String id) {
+    public void displayItems(int id) {
         //display details
         String[] details = item.itemData(id);        
         idLabel.setText(details[0].trim());
@@ -607,7 +608,8 @@ public class managerRmvItem extends javax.swing.JFrame {
         //have validation to "choose an item in the table"
         if (selectedRow >= 0) {
             Object id = itemTable.getModel().getValueAt(selectedRow, 1);
-            displayItems(id.toString());
+            int selectID = (int) id;
+            displayItems(selectID);
             deleteBtn.setEnabled(true);
         } else {
             //no row is selected
@@ -635,9 +637,9 @@ public class managerRmvItem extends javax.swing.JFrame {
         if (selectedRow >= 0) {
             int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to delete this item?", "Delete Item", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
-                String id = idLabel.getText();
-                item.deleteItem(id, "vendor"); //see if got add user type for session
-                //item.deleteItem(id, User.getSessionRole());
+                int id = Integer.parseInt(idLabel.getText());
+                item.deleteItem(id, "vendor"); //call delete item function in manager
+                //manager.deleteItem(id);
                 displayItems();
                 resetDetails();
             }

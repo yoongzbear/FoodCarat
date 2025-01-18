@@ -108,8 +108,7 @@ public class Item {
         return itemStatus;
     }
     
-    public void addItem() {
-        //write into item text file
+    public void addItem() { //write into item text file        
         try {
             FileWriter fw = new FileWriter(itemFile,true);
             BufferedWriter bw = new BufferedWriter(fw);
@@ -154,7 +153,7 @@ public class Item {
     }
     
     //get item data
-    public String[] itemData(String itemID) {
+    public String[] itemData(int itemID) {
         String[] itemInfo = null;
         try {
             FileReader fr = new FileReader(itemFile);
@@ -163,7 +162,8 @@ public class Item {
             
             while ((read = br.readLine()) != null) {
                 String[] parts = read.split(","); 
-                if (parts[0].equals(itemID)) { 
+                int itemPartID = Integer.parseInt(parts[0]);
+                if (itemPartID==itemID) { 
                     itemInfo = parts;
                     break; 
                 }
@@ -253,7 +253,7 @@ public class Item {
         for (int i = 0; i < itemDetails.length; i++) {
             String detail = itemDetails[i];
             String[] parts = detail.split(";");
-            String itemID = parts[0]; // itemID
+            int itemID = Integer.parseInt(parts[0]); // itemID
             int quantity = Integer.parseInt(parts[1]); // quantity
 
             String[] itemData = itemData(itemID);
@@ -310,7 +310,7 @@ public class Item {
     }
     
     //delete item
-    public void deleteItem(String id, String userType) {
+    public void deleteItem(int id, String userType) {
         //get all data
         List<String[]> allItems = new ArrayList<>();
         boolean isDeleted = false;
@@ -333,7 +333,8 @@ public class Item {
             BufferedWriter bw = new BufferedWriter(fw);
 
             for (String[] itemData : allItems) {
-                if (!itemData[0].equals(id)) {
+                int itemDataID = Integer.parseInt(itemData[0]);
+                if (itemDataID != id) {
                     //keep the row if the ID does not match
                     bw.write(String.join(",", itemData));
                     bw.newLine();
@@ -361,7 +362,7 @@ public class Item {
     
     public String[] getVendorInfoByItemID(int itemID) {
         //find the vendor email based on the itemID from item.txt
-        String[] itemData = itemData(String.valueOf(itemID));
+        String[] itemData = itemData(itemID);
         String[] vendorInfo = null;
         
         //if vendor dont have item

@@ -174,6 +174,49 @@ public class Vendor extends User{
         return vendorOrders;
     }
     
+    //items
+    //display all items
+    public List<String[]> getItems() {
+        Item items = new Item();
+        return items.getAllItems(email);
+    }
+    
+    //display selected item
+    public String[] getSpecificItem(int itemID) {
+        Item item = new Item();
+        return item.itemData(itemID);
+    }
+    
+    //insert new item 
+    public void uploadNewItem(int newItemID, String itemName, String itemType, double price, String newImagePath) {
+        Item newItem = new Item(newItemID, itemName, itemType, price, newImagePath, email, "available");
+        newItem.addItem();
+    }
+    
+    //upload item image
+    public String getUploadedImagePath(String imageSource) {
+        Item newItem = new Item();
+        return newItem.uploadImage(imageSource);
+    }
+    
+    //get latest item 
+    public String[] latestItem() {
+        Item item = new Item();
+        return item.latestItem();
+    }
+    
+    //update item information
+    public void updateItemInfo(int itemID, String itemName, String itemType, double itemPrice, String newImagePath, String status) {
+        Item updateItem = new Item(itemID, itemName, itemType, itemPrice, newImagePath, email, status);
+        updateItem.editItem();
+    }
+    
+    //delete item information
+    public void deleteItem(int itemID) {
+        Item item = new Item();
+        item.deleteItem(itemID, "vendor");
+    }
+    
     //accept order status
     //call update order status in order class
     
@@ -181,7 +224,6 @@ public class Vendor extends User{
     //call update order status in order class
     
     //get all reviews + orders + items for the vendor
-    //items txt = calculate price, get vendor email
     public List<String[]> getAllReviewInfo(String venEmail) {
         List<String[]> allReviewInfo = new ArrayList<>();
         
@@ -191,6 +233,12 @@ public class Vendor extends User{
                 
         return allReviewInfo;
     }    
+    
+    //get review based on ID
+    public String[] getReview(String reviewID) {
+        Review review = new Review();
+        return review.getReview(reviewID);
+    }
     
     //get rating count for vendor based on time range
     public int[] getVendorRatingCount(String type, String timeRange) {

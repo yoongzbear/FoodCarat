@@ -183,7 +183,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
                     //Loop through each item in the order and concatenate them with a comma
                     for (int i = 0; i < orderItems.length; i++) {
                         String[] itemDetails = orderItems[i].split(";");
-                        String rOrderItemID = itemDetails[0]; 
+                        int rOrderItemID = Integer.parseInt(itemDetails[0]); 
                         String rItemQuantity = itemDetails[1];
                         //String rItemPrice = itemDetails[2]; //Need to change based on the vendor ori price
                         
@@ -197,7 +197,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
                         String[] vendorInfo = item1.getVendorInfoByItemID(Integer.parseInt(itemID));
                         rVendorName = vendorInfo[1];
                         
-                        orderItemDetails.add(new String[]{rOrderItemID, itemName, rItemQuantity, itemPrice});
+                        orderItemDetails.add(new String[]{String.valueOf(rOrderItemID), itemName, rItemQuantity, itemPrice});
 
                         //Update total price
                         totalPrice = totalPrice + Double.parseDouble(itemPrice) * Integer.parseInt(rItemQuantity);

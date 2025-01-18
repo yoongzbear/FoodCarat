@@ -27,11 +27,11 @@ public class vendorAddItem extends javax.swing.JFrame {
     String imagePath = "";
     File imageFile = null;
     //change to userSession 
-    private String email = "chagee@mail.com";
-    private String name = "Chagee";
+    private String email = "vendor@mail.com";
+    private String name = "Vendor";
 //    private String email = User.getSessionEmail();
 //    private String name = User.getSessionName();
-    Item item = new Item();
+    Vendor vendor = new Vendor(email);
     
     public vendorAddItem() {
         initComponents();
@@ -45,7 +45,7 @@ public class vendorAddItem extends javax.swing.JFrame {
     //function to return latest item ID 
     private void displayID() {
         //call function to return latest row of data and display the latest id + 1 
-        String[] latestItem = item.latestItem();
+        String[] latestItem = vendor.latestItem();
         int newItemID = Integer.parseInt(latestItem[0]) + 1;
         itemIDTxt.setText(String.valueOf(newItemID));
     }
@@ -62,7 +62,7 @@ public class vendorAddItem extends javax.swing.JFrame {
     
     //validate item name duplication
     private boolean duplicateName(String name) {
-        List<String[]> allItems = item.getAllItems();
+        List<String[]> allItems = vendor.getItems();
         for (String[] item : allItems) { 
             if (item[1].equalsIgnoreCase(name) && item[5].equals(email)) { 
                 return true; 
@@ -276,16 +276,15 @@ public class vendorAddItem extends javax.swing.JFrame {
         }
         else {            
             //upload image into menu folder
-            String newImagePath = item.uploadImage(imagePath);
+            String newImagePath = vendor.getUploadedImagePath(imagePath);
             if (newImagePath == null) {
                 JOptionPane.showMessageDialog(null, "Failed to save the image.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             } else {
                 //get next ID
-                String[] latestItem = item.latestItem();
+                String[] latestItem = vendor.latestItem();
                 int newItemID = Integer.parseInt(latestItem[0]) + 1;
-                Item newItem = new Item(newItemID, name, type, price, newImagePath, email, "available");
-                newItem.addItem();
+                vendor.uploadNewItem(newItemID, name, type, price, newImagePath);
                 new vendorMenu().setVisible(true);
                 dispose();
             }

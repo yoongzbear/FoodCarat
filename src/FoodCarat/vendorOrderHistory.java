@@ -96,7 +96,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
 
         for (String detail : itemDetails) {
             String[] parts = detail.split(";");            
-            String itemID = parts[0]; 
+            int itemID = Integer.parseInt(parts[0]); 
             int quantity = Integer.parseInt(parts[1]); 
 
             //retrieve item data through Item class
