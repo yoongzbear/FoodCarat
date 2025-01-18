@@ -52,7 +52,7 @@ public class runnerCusReview extends javax.swing.JFrame {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Customer Review");
 
-        backJB.setText("<  Back To Main");
+        backJB.setText("<  Main Menu");
         backJB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 backJBActionPerformed(evt);
@@ -68,7 +68,7 @@ public class runnerCusReview extends javax.swing.JFrame {
                 .addComponent(backJB)
                 .addGap(132, 132, 132)
                 .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap(185, Short.MAX_VALUE))
+                .addContainerGap(191, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

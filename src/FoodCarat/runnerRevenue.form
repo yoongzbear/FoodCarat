@@ -135,7 +135,7 @@
       <SubComponents>
         <Component class="javax.swing.JButton" name="backJB">
           <Properties>
-            <Property name="text" type="java.lang.String" value="&lt;  Back to Main"/>
+            <Property name="text" type="java.lang.String" value="&lt;  Main Menu"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="backJBActionPerformed"/>
