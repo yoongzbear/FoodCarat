@@ -196,7 +196,7 @@ public class Manager extends User{
         return filteredData;
     }
     
-    public void updateReviewStatus(String reviewID){
+    public void updateReviewStatus(int reviewID){
         Review review = new Review();
         review.updateStatus(reviewID, "resolved");
     }
