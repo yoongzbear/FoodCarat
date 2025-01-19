@@ -507,47 +507,31 @@ public class Review {
     }
 
     // Method to get orderIDs associated with a specific runnerEmail
-    public List<Integer> getOrderIDsByRunnerEmail(String runnerEmail) {
-        List<Integer> orderIDs = new ArrayList<>();
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(orderFileName))) {
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                String currentRunnerEmail = parts[6];  // Assuming runner email is in position 6 (adjust as needed)
-
-                if (currentRunnerEmail.equals(runnerEmail)) {
-                    int orderID = Integer.parseInt(parts[0]);  // Order ID is in position 0
-                    orderIDs.add(orderID);
-                }
-            }
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "as: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-
-        return orderIDs;
-    }
-    
-    // Method to update the status in review.txt
-    public void updateStatus(String reviewID, String newStatus) {
+    public void updateStatus(int reviewID, String newStatus) {
+        File file = new File("review.txt");
         List<String> fileContent = new ArrayList<>();
         boolean updated = false;
 
-        try (BufferedReader br = new BufferedReader(new FileReader(reviewFileName))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts.length > 1 && parts[0].equals(reviewID)) {
-                    parts[7] = newStatus;
-                    updated = true;
+                try {
+                    if (parts.length > 1 && Integer.parseInt(parts[0]) == reviewID) {
+                        parts[7] = newStatus;
+                        updated = true;
+                    }
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                    // Handle invalid data in the file, e.g., skip this line
+                    continue;
                 }
                 fileContent.add(String.join(",", parts));
             }
 
             if (updated) {
                 // Write updated content back to the file
-                try (BufferedWriter bw = new BufferedWriter(new FileWriter(reviewFileName))) {
+                try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
                     for (String content : fileContent) {
                         bw.write(content);
                         bw.newLine();
