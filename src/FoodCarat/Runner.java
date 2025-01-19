@@ -162,4 +162,42 @@ public class Runner extends User{
             }
         }
     }
+    
+   // Simulating a runner's decision to accept or reject the task
+    public static boolean promptRunnerForTask(String[] runnerData, String[] orderData) {
+        // Implement your logic to interact with the runner (e.g., show a prompt or notification)
+        // For now, it will randomly decide if the runner accepts or not.
+        return Math.random() > 0.5;  // 50% chance of accepting
+    }
+
+    // Method to update the runner's availability status
+    public static void updateRunnerStatus(String runnerEmail, String status) {
+        List<String> fileContent = new ArrayList<>();
+        boolean runnerFound = false;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("resources/runner.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] runnerData = line.split(",");
+                if (runnerData[0].equals(runnerEmail)) {
+                    runnerData[2] = status;  // Update runner's status (e.g., available to unavailable)
+                    runnerFound = true;
+                }
+                fileContent.add(String.join(",", runnerData));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (runnerFound) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("resources/runner.txt"))) {
+                for (String updatedLine : fileContent) {
+                    writer.write(updatedLine);
+                    writer.newLine();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

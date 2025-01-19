@@ -422,7 +422,7 @@ public class Order {
                     //if status = canceled and usertype = vendor, add reason id 1 (rejected by vendor)
                     if (newOrderStatus.equalsIgnoreCase("Canceled") && userType.equalsIgnoreCase("vendor")) {                        
                         order[6] = "1"; //reason ID for "rejected by vendor" is 1
-                    }                    
+                    }
                     order[3] = newOrderStatus;
                     String[] updatedOrder = Arrays.copyOf(order, order.length - 1);
                     bw.write(String.join(",", updatedOrder));
@@ -622,5 +622,81 @@ public class Order {
             }
         }
         return deliveryFee;
+    }
+    
+    /**
+    public void updateStatus(int id, String newOrderStatus, String userType) {
+        // Get order info from order.txt using id
+        String[] order = getOrder(id);
+        String method = order[1].trim();
+        String currentStatus = order[3].trim();
+        List<String[]> allOrders = getAllOrders();
+
+        // If the order status is "accepted by vendor", attempt to assign it to a runner
+        if ("accepted by vendor".equalsIgnoreCase(newOrderStatus)) {
+            boolean orderAssigned = Runner.assignOrderToRunner(order);  // Method to assign to available runner
+            if (!orderAssigned) {
+                // If no runner accepts the order, cancel it
+                newOrderStatus = "Canceled";  // Update the status to "Canceled"
+            }
+        }
+
+        try {
+            FileWriter fw = new FileWriter(orderFile);
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            for (String[] orderData : allOrders) {
+                int orderDataID = Integer.parseInt(orderData[0]);
+                if (orderDataID != id) {
+                    // Keep the row if the ID does not match
+                    bw.write(String.join(",", orderData));
+                    bw.newLine();
+                } else {
+                    // Found the row, update it
+                    if (newOrderStatus.equalsIgnoreCase("Canceled") && userType.equalsIgnoreCase("vendor")) {
+                        order[6] = "1"; // Reason ID for "rejected by vendor"
+                    }
+                    if (newOrderStatus.equalsIgnoreCase("Canceled") && userType.equalsIgnoreCase("runner")) {
+                        order[6] = "2"; // Reason ID for "runner canceled"
+                    }
+                    order[3] = newOrderStatus;
+                    String[] updatedOrder = Arrays.copyOf(order, order.length - 1);
+                    bw.write(String.join(",", updatedOrder));
+                    bw.newLine();
+                }
+            }
+            bw.close();
+            fw.close();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Update order status failed: " + e.getMessage());
+        }
+    }
+    **/
+
+    // Assign an order to a runner
+    public boolean assignOrderToRunner(String[] orderData) {
+        boolean runnerAssigned = false;
+
+        try (BufferedReader runnerReader = new BufferedReader(new FileReader("resources/runner.txt"))) {
+            String runnerLine;
+            while ((runnerLine = runnerReader.readLine()) != null) {
+                String[] runnerData = runnerLine.split(",");
+
+                if (runnerData.length > 2 && "available".equals(runnerData[2])) {
+                    // Simulate runner's decision (for example purposes)
+                    boolean runnerAccepts = Runner.promptRunnerForTask(runnerData, orderData);
+                    if (runnerAccepts) {
+                        runnerAssigned = true;
+                        Runner.updateRunnerStatus(runnerData[0], "unavailable");
+                        updateStatus(orderID, "Accepted by runner", "runner");
+                        return runnerAssigned;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return runnerAssigned;
     }
 }
