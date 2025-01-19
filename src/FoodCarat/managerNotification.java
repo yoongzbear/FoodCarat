@@ -47,7 +47,7 @@ public class managerNotification extends javax.swing.JFrame {
                 User user = new User();
                 // Retrieve email and reviewID from the selected row
                 String customerEmail = (String) complaintNotificationtable.getValueAt(selectedRow, 2);
-                String reviewID = (String) complaintNotificationtable.getValueAt(selectedRow, 4);
+                int reviewID = Integer.parseInt(complaintNotificationtable.getValueAt(selectedRow, 4).toString());
 
                 // Update points in the file
                 Manager manager = new Manager();
