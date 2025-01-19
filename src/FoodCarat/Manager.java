@@ -91,7 +91,7 @@ public class Manager extends User{
     public List<String[]> getVendorPerformanceByMonth(String selectedMonth) {
         List<String[]> tableData = new ArrayList<>();
         Map<String, Vendor> vendorData = new HashMap<>();
-        Set<String> processedOrderIDs = new HashSet<>(); // Track processed order IDs
+        Set<Integer> processedOrderIDs = new HashSet<>(); // Track processed order IDs
         
         try {
             // Load customerOrder.txt
@@ -100,7 +100,7 @@ public class Manager extends User{
 
             while ((orderLine = orderReader.readLine()) != null) {
                 String[] orderData = orderLine.split(",");
-                String orderID = orderData[0];
+                int orderID = Integer.parseInt(orderData[0].trim());
                 String orderMonth = getMonthFromOrderOrReview(orderData[8]); // Extract month from orderID or date
 
                 if (orderMonth.equalsIgnoreCase(selectedMonth) && "Completed".equals(orderData[3])) {
