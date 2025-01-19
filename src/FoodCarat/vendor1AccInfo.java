@@ -39,7 +39,7 @@ public class vendor1AccInfo extends javax.swing.JFrame {
         
         LocalDate currentDate = LocalDate.now();
     
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         String formattedDate = currentDate.format(formatter);
 
         dateTF.setText(formattedDate);
@@ -281,8 +281,7 @@ public class vendor1AccInfo extends javax.swing.JFrame {
         }
         
         User user = new User();
-        //Vendor vendor = new Vendor();
-        System.out.println("Session email:" + email);
+        Vendor vendor = new Vendor(email);
         
         // Save Picture
         String savedPicturePath = user.savePic(name, picturePath);
@@ -292,7 +291,7 @@ public class vendor1AccInfo extends javax.swing.JFrame {
         }
         
         user.userInfo(email, name, password, contactNumber, date);
-        user.addVendorInfo(email, savedPicturePath, cuisine);
+        vendor.addVendorInfo(email, savedPicturePath, cuisine);
         
         new vendorMain().setVisible(true);
         dispose();

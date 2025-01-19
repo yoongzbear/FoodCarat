@@ -4,11 +4,15 @@
  */
 package FoodCarat;
 
+import java.awt.Component;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -98,5 +102,81 @@ public class Customer extends User{
     public int calculateEarnablePoints(double payment){
         int earnablePoints = (int) Math.round(payment*0.05);
         return earnablePoints;
+    }
+    
+    // First login
+    public static String deliveryAddress(Component parentComponent, String email) {
+        String address = null;
+
+        while (true) {
+            address = JOptionPane.showInputDialog(
+                parentComponent,
+                "Enter your delivery address (max 255 characters):",
+                "Delivery Address",
+                JOptionPane.PLAIN_MESSAGE
+            );
+
+            if (address == null) {
+                // User canceled input
+                JOptionPane.showMessageDialog(
+                    parentComponent,
+                    "Delivery address is required to proceed.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+                );
+                return null;
+            }
+
+            address = address.trim();
+
+            // Validate the address
+            if (isValidAddress(address)) {
+                saveDeliveryAddress(email, address);
+                return address;
+            } else {
+                JOptionPane.showMessageDialog(
+                    parentComponent,
+                    "Invalid address. Please ensure it is non-empty and under 255 characters.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+                );
+            }
+        }
+    }
+
+    // Validate the address
+    private static boolean isValidAddress(String address) {
+        return address.length() > 20 && address.length() <= 255;
+    }
+
+    // Save the delivery address
+    private static void saveDeliveryAddress(String email, String address) {
+        boolean emailFound = false;
+        List<String> fileContent = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("resources/customer.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+                if (data.length > 0 && data[0].equalsIgnoreCase(email)) {
+                    data = new String[]{data[0], address, "0.0", "0"};
+                    emailFound = true;
+                }
+                fileContent.add(String.join(",", data));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (emailFound) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("resources/customer.txt"))) {
+                for (String updatedLine : fileContent) {
+                    writer.write(updatedLine);
+                    writer.newLine();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

@@ -161,6 +161,46 @@ public class Vendor extends User{
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Failed to write to the file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }   
+    }
     
+    // Add vendor Info to vendor.txt for First Login
+    public void addVendorInfo(String email, String picturePath, String cuisine) {
+        List<String> fileContent = new ArrayList<>();
+        boolean updated = false;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(vendorFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] vendorData = line.split(",");
+
+                if (vendorData.length > 1 && vendorData[0].equalsIgnoreCase(email)) {
+                    vendorData[1] = cuisine;
+                    vendorData[2] = picturePath;
+                    vendorData[3] = "[]";
+                    vendorData[4] = "0.0";
+                    updated = true;
+                }
+
+                fileContent.add(String.join(",", vendorData));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error reading vendor.txt: " + e.getMessage());
+        }
+
+        if (updated) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(vendorFile))) {
+                for (String updatedLine : fileContent) {
+                    writer.write(updatedLine);
+                    writer.newLine();
+                }
+                System.out.println("Vendor information updated successfully.");
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("Error writing to vendor.txt: " + e.getMessage());
+            }
+        } else {
+            System.out.println("No matching email found to update.");
+        }
+    }
 }

@@ -34,7 +34,7 @@ public class cusRunner1AccInfo extends javax.swing.JFrame {
     try {        
         // Validate the entered date is not in the future
         Date currentDate = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         sdf.setLenient(false);
         Date date = sdf.parse(dateString);
         if (date.after(currentDate)) {
@@ -43,7 +43,7 @@ public class cusRunner1AccInfo extends javax.swing.JFrame {
         }
         } catch (Exception ex) {
             // Handle all parsing or validation exceptions in one place
-            JOptionPane.showMessageDialog(this, "Invalid date format. Please enter a valid date in dd/MM/yyyy format.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Invalid date format. Please enter a valid date in yyyy/MM/dd format.", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
         return true;
@@ -227,7 +227,7 @@ public class cusRunner1AccInfo extends javax.swing.JFrame {
 
         String dob = "";
         if (selectedDate != null) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
             dob = dateFormat.format(selectedDate);
         }
 
@@ -266,6 +266,13 @@ public class cusRunner1AccInfo extends javax.swing.JFrame {
             String plateNumber = runner.promptAndValidatePlateNumber(this, email);
             if (plateNumber == null) {
                 return; 
+            }
+        }
+        
+        if("customer".equalsIgnoreCase(role)){
+            String address = Customer.deliveryAddress(this, email);
+            if(address == null){
+                return;
             }
         }
       

@@ -68,7 +68,6 @@ public class Runner extends User{
             }
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Error reading runner.txt: " + e.getMessage());
         }
 
         if (emailFound) {
@@ -77,14 +76,10 @@ public class Runner extends User{
                     writer.write(updatedLine);
                     writer.newLine();
                 }
-                System.out.println("Runner information updated successfully.");
             } catch (IOException e) {
                 e.printStackTrace();
-                System.out.println("Error writing to runner.txt: " + e.getMessage());
             }
-            } else {
-        System.out.println("No matching email found to update in runner.txt.");
-        }
+            }
     }
 
     // Validate plate number
@@ -130,7 +125,6 @@ public class Runner extends User{
             }
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Error reading runner.txt: " + e.getMessage());
         }
         return null;
     }

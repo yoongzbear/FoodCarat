@@ -36,7 +36,7 @@ public class User {
     private String contactNumber;
     
     private String userFile = "resources/user.txt";
-    private String cusFile = "resources/customer.txt";
+    String cusFile = "resources/customer.txt";
     private String vendorFile = "resources/vendor.txt";
     private String runnerFile = "resources/runner.txt";
     
@@ -330,7 +330,7 @@ public class User {
                     }
 
                     if (userData.length > 4) {
-                        // Convert date from dd/MM/yyyy to ddMMyyyy
+                        // Convert date from yyyy/MM/dd to yyyyMMdd
                         String formattedDate = date.replace("/", "");
                         userData[4] = formattedDate;
                     } else {
@@ -353,7 +353,6 @@ public class User {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Error reading user.txt: " + e.getMessage());
         }
 
         if (updated) {
@@ -366,10 +365,7 @@ public class User {
 
             } catch (IOException e) {
                 e.printStackTrace();
-                System.out.println("Error writing to user.txt: " + e.getMessage());
             }
-        } else {
-            System.out.println("No matching email found to update.");
         }
     }
     
@@ -393,47 +389,6 @@ public class User {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
-        }
-    }
-    
-    // Add vendor Info to vendor.txt for First Login
-    public void addVendorInfo(String email, String picturePath, String cuisine) {
-        List<String> fileContent = new ArrayList<>();
-        boolean updated = false;
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(vendorFile))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] vendorData = line.split(",");
-
-                if (vendorData.length > 1 && vendorData[0].equalsIgnoreCase(email)) {
-                    vendorData[1] = cuisine;
-                    vendorData[2] = picturePath;
-                    vendorData[3] = "[]";
-                    vendorData[4] = "0.0";
-                    updated = true;
-                }
-
-                fileContent.add(String.join(",", vendorData));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Error reading vendor.txt: " + e.getMessage());
-        }
-
-        if (updated) {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(vendorFile))) {
-                for (String updatedLine : fileContent) {
-                    writer.write(updatedLine);
-                    writer.newLine();
-                }
-                System.out.println("Vendor information updated successfully.");
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.out.println("Error writing to vendor.txt: " + e.getMessage());
-            }
-        } else {
-            System.out.println("No matching email found to update.");
         }
     }
                             
@@ -470,7 +425,7 @@ public class User {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error reading the file: " + e.getMessage());
+            e.printStackTrace();
         }
         return "notFound"; // Email not found
     }
@@ -497,7 +452,7 @@ public class User {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error reading the file: " + e.getMessage());
+            e.printStackTrace();
         }
         return "Data not found"; // Data not found for the given email and role
     }
