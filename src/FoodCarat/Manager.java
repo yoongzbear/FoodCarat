@@ -27,7 +27,7 @@ public class Manager extends User{
     //
     public Map<String, Runner> getRunnerPerformance(String selectedMonth) throws IOException {
         Map<String, Runner> performanceDataMap = new HashMap<>();
-        Map<String, String> orderToRunnerMap = new HashMap<>();  // Map to store orderID to runnerID mapping
+        Map<Integer, String> orderToRunnerMap = new HashMap<>();  // Map to store orderID to runnerID mapping
 
         // Read the customer order file to map orderID to runnerID
         BufferedReader orderReader = new BufferedReader(new FileReader("customerOrder.txt"));
@@ -38,7 +38,7 @@ public class Manager extends User{
 
             // Check if orderDetails[1] contains "Delivery"
             if (orderDetails.length > 1 && "Delivery".equalsIgnoreCase(orderDetails[1].trim())) {
-                String orderIDinOrder = orderDetails[0].trim();
+                Integer orderIDinOrder = Integer.parseInt(orderDetails[0].trim());
                 String runnerIDinOrder = orderDetails[5].trim();
 
                 // Store the orderID and runnerID mapping
@@ -56,7 +56,14 @@ public class Manager extends User{
 
             if (reviewDetails.length > 5) {
                 String reviewType = reviewDetails[2].trim();
-                String orderID = reviewDetails[1].trim();
+                Integer orderID = null;
+
+                try {
+                    orderID = Integer.parseInt(reviewDetails[1].trim()); // Convert to Integer
+                } catch (NumberFormatException e) {
+                    // Handle invalid orderID format (when the order id is null- this is the review for the foodcourt)
+                    continue;
+                }
 
                 // Check if the review type is "runner" and if orderID exists in the customer orders
                 if ("runner".equalsIgnoreCase(reviewType) && orderToRunnerMap.containsKey(orderID)) {
