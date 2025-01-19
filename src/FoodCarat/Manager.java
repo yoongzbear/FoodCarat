@@ -47,12 +47,12 @@ public class Manager extends User{
         }
         orderReader.close();
 
-        // Read the review file to get review data for "runner" reviewType
-        BufferedReader reviewReader = new BufferedReader(new FileReader("review.txt"));
+        // Get all reviews using the getAllReviews method
+        Review review = new Review();
+        List<String[]> allReviews = review.getAllReviews();
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        while ((line = reviewReader.readLine()) != null) {
-            String[] reviewDetails = line.split(",");
+        for (String[] reviewDetails : allReviews) {
 
             if (reviewDetails.length > 5) {
                 String reviewType = reviewDetails[2].trim();
@@ -77,7 +77,6 @@ public class Manager extends User{
                 }
             }
         }
-        reviewReader.close();
         return performanceDataMap;
     }
 
@@ -163,10 +162,9 @@ public class Manager extends User{
         List<String[]> filteredData = new ArrayList<>();
         int recordNumber = 1;
 
-        try (BufferedReader reader = new BufferedReader(new FileReader("review.txt"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] fields = line.split(","); // Assuming CSV format
+        Review review = new Review();
+        List<String[]> allReviews = review.getAllReviews();
+        for (String[] fields : allReviews) {
                 if (fields.length >= 8) {
                     String date = fields[5];
                     String reviewType = fields[2];
@@ -189,10 +187,6 @@ public class Manager extends User{
                     }
                 }
             }
-        } catch (Exception e) {
-            System.out.println("Error reading file: " + e.getMessage());
-        }
-
         return filteredData;
     }
     
