@@ -168,12 +168,11 @@ public class managerNotification extends javax.swing.JFrame {
 
         // Get the filtered reviews based on the selected month
         List<String[]> complaintData = manager.getFilteredReviews(selectedMonth);
-
+        DefaultTableModel model = (DefaultTableModel) complaintNotificationtable.getModel();
         if (complaintData.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No complaints found for this month.", "Info", JOptionPane.INFORMATION_MESSAGE);
+            model.setRowCount(0);
         } else {
-            DefaultTableModel model = (DefaultTableModel) complaintNotificationtable.getModel();
-            // Clear the existing data in the table
             model.setRowCount(0);
             // Loop through the complaintData and add each row to the table
             for (String[] complaint : complaintData) {
