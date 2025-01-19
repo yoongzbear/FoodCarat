@@ -33,7 +33,6 @@ public class Vendor extends User{
     
     private String vendorFile = "resources/vendor.txt";
     
-    private String vendorName;
     private double totalRevenue;
     
     public Vendor(String email) {
@@ -45,7 +44,7 @@ public class Vendor extends User{
     //constructor for performance tracking
     public Vendor(String vendorName, boolean initializeName) {
         if (initializeName) {
-            this.vendorName = vendorName; // Set vendorName if flag is true
+            this.name = vendorName; // Set vendorName if flag is true
         }
         this.totalRevenue = 0.0;
     }
@@ -93,10 +92,6 @@ public class Vendor extends User{
         return creditBalance;
     }
     
-    public String getVendorName() {
-        return vendorName;
-    }
-
     public double getTotalRevenue() {
         return totalRevenue;
     }

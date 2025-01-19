@@ -149,7 +149,7 @@ public class Manager extends User{
         for (Vendor vp : vendorData.values()) {
             tableData.add(new String[]{
                 String.valueOf(no++),
-                vp.getVendorName(),
+                vp.getName(),
                 String.format("%.2f", vp.getTotalRevenue()),
                 String.valueOf(vp.getTotalOrders()),
                 String.format("%.2f", vp.getAverageValuePerOrder()),
