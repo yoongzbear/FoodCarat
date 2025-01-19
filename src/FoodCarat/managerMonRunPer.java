@@ -4,9 +4,15 @@
  */
 package FoodCarat;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.util.Map;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.general.DefaultPieDataset;
 
 /**
  *
@@ -19,13 +25,14 @@ public class managerMonRunPer extends javax.swing.JFrame {
      */
     public managerMonRunPer() {
         initComponents();
+        totalorderchart.setBackground(new Color(211, 211, 211));// Light gray
+        averagechart.setBackground(new Color(211, 211, 211)); 
     }
 
     private void displayRunnerPerformance(String selectedMonth) throws IOException {
         Manager manager = new Manager();
         Map<String, Runner> performanceDataMap = manager.getRunnerPerformance(selectedMonth);
-
-        // Assuming you have a JTable set up with columns "RunnerID", "Total Orders", and "Average Rating"
+        
         DefaultTableModel model = (DefaultTableModel) runpertable.getModel();
         model.setRowCount(0);  // Clear previous rows
 
@@ -72,6 +79,78 @@ public class managerMonRunPer extends javax.swing.JFrame {
             String.format("%.2f", averageRatingSummary)
         });
     }
+    
+    public void createRunnerPerformancePieChart(Map<String, Runner> performanceDataMap) {
+
+        // Calculate summary values for each metric
+        int totalOrders = 0;
+        double totalAverageRating = 0;
+        
+        // Calculate total orders and total average rating
+        for (Runner data : performanceDataMap.values()) {
+            totalOrders += data.getTotalOrders();  // Total Orders
+            totalAverageRating += data.getAverageRating(); // Total Average Rating
+        }
+
+        // Create datasets for each pie chart
+        DefaultPieDataset ordersDataset = new DefaultPieDataset();
+        DefaultPieDataset avgRatingDataset = new DefaultPieDataset();
+
+        // Add data to each pie chart dataset (showing percentage for each vendor)
+        for (Map.Entry<String, Runner> entry : performanceDataMap.entrySet()) {
+            String runnerID = entry.getKey();
+            Runner data = entry.getValue();        
+            
+            User user = new User();
+            String [] runnerName = user.performSearch(runnerID, "user.txt");
+            String name = runnerName[1];
+            // Calculate percentage of total for each metric
+            ordersDataset.setValue(name, data.getTotalOrders() / (double) totalOrders * 100);
+            avgRatingDataset.setValue(name, data.getAverageRating() / totalAverageRating * 100);
+        }
+
+        // Create pie charts for each metric
+        JFreeChart ordersPieChart = ChartFactory.createPieChart(
+            "Runner Performance - Total Orders",  
+            ordersDataset,                       
+            true,                                
+            true,                                
+            false                                
+        );
+
+        JFreeChart avgOrderValuePieChart = ChartFactory.createPieChart(
+            "Runner Performance - Average Rating", 
+            avgRatingDataset,                     
+            true,                                     
+            true,                                     
+            false                                     
+        );
+
+        // Create chart panels for each pie chart
+        ChartPanel ordersChartPanel = new ChartPanel(ordersPieChart);
+        ordersChartPanel.setPreferredSize(new java.awt.Dimension(325,200));
+
+        ChartPanel avgOrderValueChartPanel = new ChartPanel(avgOrderValuePieChart);
+        avgOrderValueChartPanel.setPreferredSize(new java.awt.Dimension(325,200));
+
+        totalorderchart.removeAll();
+        averagechart.removeAll();
+
+        // Add the new chart panels to the panels
+
+        totalorderchart.setLayout(new java.awt.BorderLayout());
+        totalorderchart.add(ordersChartPanel, java.awt.BorderLayout.CENTER);
+
+        averagechart.setLayout(new java.awt.BorderLayout());
+        averagechart.add(avgOrderValueChartPanel, java.awt.BorderLayout.CENTER);
+
+        totalorderchart.revalidate();
+        totalorderchart.repaint();
+
+        averagechart.revalidate();
+        averagechart.repaint();
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -87,6 +166,10 @@ public class managerMonRunPer extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         runpertable = new javax.swing.JTable();
         monthcbx = new javax.swing.JComboBox<>();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        totalorderchart = new javax.swing.JPanel();
+        averagechart = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -118,51 +201,105 @@ public class managerMonRunPer extends javax.swing.JFrame {
         monthcbx.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
         monthcbx.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Please select", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" }));
 
+        jLabel2.setText("Total Order Chart");
+
+        jLabel3.setText("Average Rating Chart");
+
+        javax.swing.GroupLayout totalorderchartLayout = new javax.swing.GroupLayout(totalorderchart);
+        totalorderchart.setLayout(totalorderchartLayout);
+        totalorderchartLayout.setHorizontalGroup(
+            totalorderchartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 321, Short.MAX_VALUE)
+        );
+        totalorderchartLayout.setVerticalGroup(
+            totalorderchartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 185, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout averagechartLayout = new javax.swing.GroupLayout(averagechart);
+        averagechart.setLayout(averagechartLayout);
+        averagechartLayout.setHorizontalGroup(
+            averagechartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 332, Short.MAX_VALUE)
+        );
+        averagechartLayout.setVerticalGroup(
+            averagechartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 177, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(34, 34, 34)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 630, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(29, 29, 29)
+                        .addComponent(monthcbx, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(43, 43, 43)
+                        .addComponent(bsearch)))
+                .addGap(43, 43, 43)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addComponent(totalorderchart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3)
+                    .addComponent(averagechart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(34, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(Lmonitorrun)
-                .addGap(149, 149, 149))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(56, 56, 56)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 730, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(71, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(67, 67, 67)
-                .addComponent(jLabel1)
-                .addGap(29, 29, 29)
-                .addComponent(monthcbx, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(bsearch)
-                .addGap(94, 94, 94))
+                .addGap(350, 350, 350))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(31, 31, 31)
+                .addGap(28, 28, 28)
                 .addComponent(Lmonitorrun)
-                .addGap(36, 36, 36)
+                .addGap(39, 39, 39)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(bsearch)
-                    .addComponent(monthcbx, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(monthcbx, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(79, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(totalorderchart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(averagechart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(49, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void bsearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bsearchActionPerformed
-        String selectedMonth = monthcbx.getSelectedItem().toString();
 
+        String selectedMonth = monthcbx.getSelectedItem().toString();
+        if (selectedMonth == null || "Please select".equals(selectedMonth)) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Please select a valid month!");
+            return;
+        }
+        
         try {
-            // Call method to display performance data for the selected month
-            displayRunnerPerformance(selectedMonth);
+        // Fetch the performance data
+        Manager manager = new Manager();
+        Map<String, Runner> performanceDataMap = manager.getRunnerPerformance(selectedMonth);
+
+        
+        if (performanceDataMap == null || performanceDataMap.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No data available for the selected month.");
+            return;
+        }
+        // Call the method to create and display the pie charts
+        createRunnerPerformancePieChart(performanceDataMap);
+        // show the data in table
+        displayRunnerPerformance(selectedMonth);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -205,10 +342,14 @@ public class managerMonRunPer extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Lmonitorrun;
+    private javax.swing.JPanel averagechart;
     private javax.swing.JButton bsearch;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JComboBox<String> monthcbx;
     private javax.swing.JTable runpertable;
+    private javax.swing.JPanel totalorderchart;
     // End of variables declaration//GEN-END:variables
 }
