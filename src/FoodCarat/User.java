@@ -30,7 +30,7 @@ import javax.swing.text.DocumentFilter;
 public class User {   
     protected String email;
     private String password;
-    private String name;
+    protected String name;
     private String userType;
     private String birth;
     private String contactNumber;
