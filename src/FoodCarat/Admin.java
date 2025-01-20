@@ -90,40 +90,6 @@ public class Admin extends User {
     }
     
     //Update user info
-    //customize form for vendor, runner and customer in update user info part
-    public static void customizeForm(String role, 
-                                     javax.swing.JComponent[] customerComponents, 
-                                     javax.swing.JComponent[] vendorComponents, 
-                                     javax.swing.JComponent[] runnerComponents) {
-        // Hide all components initially
-        for (javax.swing.JComponent component : concatArrays(customerComponents, vendorComponents,runnerComponents)) {
-            component.setVisible(false);
-        }
-        // Adjust visibility based on the role
-        switch (role) {
-            case "customer":
-                for (javax.swing.JComponent component : customerComponents) {
-                    component.setVisible(true); 
-                }
-                break;
-            case "vendor":
-                for (javax.swing.JComponent component : vendorComponents) {
-                    component.setVisible(true); 
-                }
-                break;
-            case "runner":
-                for (javax.swing.JComponent component : runnerComponents) {
-                    component.setVisible(true); // Show runner-specific components
-                }
-                break;
-        }
-    }
-
-    // Utility method to concatenate multiple arrays of components (used in customize form)
-    private static javax.swing.JComponent[] concatArrays(javax.swing.JComponent[]... arrays) {
-        return java.util.Arrays.stream(arrays).flatMap(java.util.Arrays::stream).toArray(javax.swing.JComponent[]::new);
-    }
-
     //search for update user info
     public void searchUser(String searchEmail, String selectedRole, adminUpdateUser updateUserForm) {
 
