@@ -105,7 +105,6 @@ public class Customer extends User{
         return earnablePoints;
     }
     
-    // First login
     public static String deliveryAddress(Component parentComponent, String email) {
         String address = null;
 
@@ -137,7 +136,7 @@ public class Customer extends User{
             } else {
                 JOptionPane.showMessageDialog(
                     parentComponent,
-                    "Invalid address. Please ensure it is non-empty and under 255 characters.",
+                    "Invalid address. Please ensure it is non-empty, under 255 characters, and only contains letters, numbers, spaces, and commas.",
                     "Error",
                     JOptionPane.ERROR_MESSAGE
                 );
@@ -147,7 +146,10 @@ public class Customer extends User{
 
     // Validate the address
     private static boolean isValidAddress(String address) {
-        return address.length() > 20 && address.length() <= 255;
+        // only letters, numbers, spaces, and commas
+        String regex = "^[a-zA-Z0-9,\\s]+$";
+
+        return address.length() > 20 && address.length() <= 255 && address.matches(regex);
     }
 
     // Save the delivery address
@@ -160,7 +162,7 @@ public class Customer extends User{
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
                 if (data.length > 0 && data[0].equalsIgnoreCase(email)) {
-                    data = new String[]{data[0], "\"" + address + "\"", "0.0", "0"};
+                    data = new String[]{data[0], "[" + address.replace(",", ";") + "]", "0.0", "0"};
                     emailFound = true;
                 }
                 fileContent.add(String.join(",", data));
