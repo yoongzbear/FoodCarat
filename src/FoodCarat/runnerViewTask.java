@@ -4,6 +4,9 @@
  */
 package FoodCarat;
 
+import FoodCarat.User;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Yuna
@@ -17,6 +20,39 @@ public class runnerViewTask extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
     }
+        
+        public void displayOrderForRunner(String[] orderData) {
+            orderIDTF.setText(orderData[0]);
+            storeNameTF.setText(orderData[1]);
+            addressTA.setText(orderData[2].replaceAll("^\"|\"$", ""));
+            cusNameTF.setText(orderData[3]);
+            deFeeTF.setText(orderData[4]);
+
+            acceptJB.setEnabled(true);
+            declineJB.setEnabled(true);
+        }
+        
+        private boolean taskAccepted = false;
+        private boolean decisionMade = false;
+
+        public boolean isTaskAccepted() {
+            return taskAccepted;
+        }
+
+        public boolean isDecisionMade() {
+            return decisionMade;
+        }
+
+        private void clearTaskDetails() {
+            orderIDTF.setText("");
+            storeNameTF.setText("");
+            addressTA.setText("");
+            cusNameTF.setText("");
+            deFeeTF.setText("");
+
+            acceptJB.setEnabled(false);
+            declineJB.setEnabled(false);
+        }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -31,37 +67,37 @@ public class runnerViewTask extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         backJB = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        declineJB = new javax.swing.JButton();
+        acceptJB = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        orderIDTF = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        cusNameTF = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
+        addressTA = new javax.swing.JTextArea();
         jLabel7 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
+        deFeeTF = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
-        jTextField7 = new javax.swing.JTextField();
+        storeNameTF = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        taskJT = new javax.swing.JTable();
         jLabel5 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
+        orderIDTF2 = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox<>();
-        jButton4 = new javax.swing.JButton();
+        statusJCB = new javax.swing.JComboBox<>();
+        updateJB = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
-        jTextField6 = new javax.swing.JTextField();
+        cusNameTF2 = new javax.swing.JTextField();
+        contactNoTF = new javax.swing.JTextField();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        ItemTA = new javax.swing.JTextArea();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTextArea3 = new javax.swing.JTextArea();
+        addressTA2 = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -102,43 +138,62 @@ public class runnerViewTask extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Task Reception Area", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 1, 18))); // NOI18N
+        jPanel2.addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
+                jPanel2AncestorAdded(evt);
+            }
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+            }
+        });
 
-        jButton2.setText("Decline");
+        declineJB.setText("Decline");
+        declineJB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                declineJBActionPerformed(evt);
+            }
+        });
 
-        jButton3.setText("Accept");
+        acceptJB.setText("Accept");
+        acceptJB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                acceptJBActionPerformed(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         jLabel2.setText("Order ID:");
 
-        jTextField1.setEditable(false);
-        jTextField1.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
+        orderIDTF.setEditable(false);
+        orderIDTF.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         jLabel3.setText("Customer Name:");
 
-        jTextField2.setEditable(false);
-        jTextField2.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
+        cusNameTF.setEditable(false);
+        cusNameTF.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
 
         jLabel4.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         jLabel4.setText("Address:");
 
-        jTextArea2.setEditable(false);
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(5);
-        jTextArea2.setPreferredSize(new java.awt.Dimension(300, 100));
-        jScrollPane2.setViewportView(jTextArea2);
+        addressTA.setEditable(false);
+        addressTA.setColumns(20);
+        addressTA.setRows(5);
+        addressTA.setPreferredSize(new java.awt.Dimension(300, 100));
+        jScrollPane2.setViewportView(addressTA);
 
         jLabel7.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         jLabel7.setText("Delivery Fee:");
 
-        jTextField4.setEditable(false);
-        jTextField4.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
+        deFeeTF.setEditable(false);
+        deFeeTF.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
 
         jLabel12.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         jLabel12.setText("Store Name:");
 
-        jTextField7.setEditable(false);
-        jTextField7.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
+        storeNameTF.setEditable(false);
+        storeNameTF.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -150,18 +205,18 @@ public class runnerViewTask extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cusNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(610, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(orderIDTF, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(106, 106, 106)
                                 .addComponent(jLabel7)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(deFeeTF, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel12))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
@@ -171,13 +226,13 @@ public class runnerViewTask extends javax.swing.JFrame {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(acceptJB, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(declineJB, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(28, 28, 28))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(storeNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
         );
         jPanel2Layout.setVerticalGroup(
@@ -188,31 +243,31 @@ public class runnerViewTask extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(orderIDTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel7)
-                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(deFeeTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel12)
-                            .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(storeNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(cusNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton3)
-                        .addComponent(jButton2)))
+                        .addComponent(acceptJB)
+                        .addComponent(declineJB)))
                 .addGap(14, 14, 14))
         );
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Current Task", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 1, 18))); // NOI18N
 
-        jTable2.setAutoCreateColumnsFromModel(false);
-        jTable2.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        taskJT.setAutoCreateColumnsFromModel(false);
+        taskJT.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
+        taskJT.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null}
             },
@@ -235,29 +290,28 @@ public class runnerViewTask extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jTable2.setName(""); // NOI18N
-        jTable2.setRowHeight(25);
-        jTable2.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jTable2.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jTable2.setShowGrid(true);
-        jScrollPane1.setViewportView(jTable2);
-        jTable2.getAccessibleContext().setAccessibleDescription("");
+        taskJT.setName(""); // NOI18N
+        taskJT.setRowHeight(25);
+        taskJT.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        taskJT.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        taskJT.setShowGrid(true);
+        jScrollPane1.setViewportView(taskJT);
+        taskJT.getAccessibleContext().setAccessibleDescription("");
 
         jLabel5.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel5.setText("Oder ID:");
 
-        jTextField3.setEditable(false);
-        jTextField3.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
-        jTextField3.setPreferredSize(new java.awt.Dimension(100, 25));
+        orderIDTF2.setEditable(false);
+        orderIDTF2.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
+        orderIDTF2.setPreferredSize(new java.awt.Dimension(100, 25));
 
         jLabel6.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel6.setText("Oder Status:");
 
-        jComboBox2.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Delivery", "Completed" }));
-        jComboBox2.setSelectedItem(jTable2);
+        statusJCB.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
+        statusJCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pick Up", "Completed" }));
 
-        jButton4.setText("Update");
+        updateJB.setText("Update");
 
         jLabel8.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel8.setText("Customer Name:");
@@ -271,21 +325,21 @@ public class runnerViewTask extends javax.swing.JFrame {
         jLabel11.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel11.setText("Address:");
 
-        jTextField5.setEditable(false);
-        jTextField5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cusNameTF2.setEditable(false);
+        cusNameTF2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        jTextField6.setEditable(false);
-        jTextField6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        contactNoTF.setEditable(false);
+        contactNoTF.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        jTextArea1.setEditable(false);
-        jTextArea1.setColumns(20);
-        jTextArea1.setLineWrap(true);
-        jScrollPane3.setViewportView(jTextArea1);
+        ItemTA.setEditable(false);
+        ItemTA.setColumns(20);
+        ItemTA.setLineWrap(true);
+        jScrollPane3.setViewportView(ItemTA);
 
-        jTextArea3.setEditable(false);
-        jTextArea3.setColumns(20);
-        jTextArea3.setRows(5);
-        jScrollPane4.setViewportView(jTextArea3);
+        addressTA2.setEditable(false);
+        addressTA2.setColumns(20);
+        addressTA2.setRows(5);
+        jScrollPane4.setViewportView(addressTA2);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -300,23 +354,23 @@ public class runnerViewTask extends javax.swing.JFrame {
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(orderIDTF2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(296, 296, 296)
                                 .addComponent(jLabel9))
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addComponent(jLabel6)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(statusJCB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(updateJB, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addComponent(jLabel8)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(cusNameTF2, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addComponent(jLabel10)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(contactNoTF, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addComponent(jLabel11)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -335,16 +389,16 @@ public class runnerViewTask extends javax.swing.JFrame {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel5)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(orderIDTF2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel9))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel8)
-                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(cusNameTF2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel10)
-                            .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(contactNoTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel11)
@@ -352,8 +406,8 @@ public class runnerViewTask extends javax.swing.JFrame {
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton4)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(updateJB)
+                    .addComponent(statusJCB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6))
                 .addGap(18, 18, 18))
         );
@@ -388,6 +442,45 @@ public class runnerViewTask extends javax.swing.JFrame {
         dispose();
         new runnerMain().setVisible(true);
     }//GEN-LAST:event_backJBActionPerformed
+
+    private void acceptJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptJBActionPerformed
+        String orderId = orderIDTF.getText();
+        String runnerEmail = User.getSessionEmail();
+
+        Runner runner = new Runner();
+        new Order().updateStatus(Integer.parseInt(orderId), "Assigning runner", "vendor");
+        runner.updateRunnerStatus(runnerEmail, "unavailable");
+        
+        // Mark task as accepted and notify waiting threads
+        taskAccepted = true; // Mark task as accepted
+        decisionMade = true; // Mark that a decision has been made
+        synchronized (this) {
+            notify(); // Wake up the thread waiting for a decision
+        }
+
+        JOptionPane.showMessageDialog(null, "Task accepted!");
+        acceptJB.setEnabled(false);
+        declineJB.setEnabled(false);
+        clearTaskDetails();
+    }//GEN-LAST:event_acceptJBActionPerformed
+
+    private void declineJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_declineJBActionPerformed
+        String orderId = orderIDTF.getText();
+        
+        int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to reject this task?", "Reject Task", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            new Order().updateStatus(Integer.parseInt(orderId), "Canceled", "runner");
+            JOptionPane.showMessageDialog(null, "Task declined!");
+            
+            acceptJB.setEnabled(false);
+            declineJB.setEnabled(false);
+            clearTaskDetails();
+        }
+    }//GEN-LAST:event_declineJBActionPerformed
+
+    private void jPanel2AncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jPanel2AncestorAdded
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jPanel2AncestorAdded
 
     /**
      * @param args the command line arguments
@@ -425,11 +518,16 @@ public class runnerViewTask extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextArea ItemTA;
+    private javax.swing.JButton acceptJB;
+    private javax.swing.JTextArea addressTA;
+    private javax.swing.JTextArea addressTA2;
     private javax.swing.JButton backJB;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JComboBox<String> jComboBox2;
+    private javax.swing.JTextField contactNoTF;
+    private javax.swing.JTextField cusNameTF;
+    private javax.swing.JTextField cusNameTF2;
+    private javax.swing.JTextField deFeeTF;
+    private javax.swing.JButton declineJB;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -449,16 +547,11 @@ public class runnerViewTask extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JTable jTable2;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextArea jTextArea2;
-    private javax.swing.JTextArea jTextArea3;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
-    private javax.swing.JTextField jTextField7;
+    private javax.swing.JTextField orderIDTF;
+    private javax.swing.JTextField orderIDTF2;
+    private javax.swing.JComboBox<String> statusJCB;
+    private javax.swing.JTextField storeNameTF;
+    private javax.swing.JTable taskJT;
+    private javax.swing.JButton updateJB;
     // End of variables declaration//GEN-END:variables
 }

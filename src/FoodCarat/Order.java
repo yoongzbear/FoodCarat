@@ -39,6 +39,7 @@ public class Order {
     private String orderFile = "resources/customerOrder.txt";
     private String itemFile = "resources/item.txt";
     private String reasonFile = "resources/cancellationReason.txt";
+    private String runnerFile = "resources/runner.txt"; //for assign order
     
     public Order(){ //for deleteIncompleteOrder()
         System.out.println("At order class:" + orderID); //for checking                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
@@ -673,30 +674,35 @@ public class Order {
         }
     }
 
-    // Assign an order to a runner
+    // Assign an order to a runner in runner.txt
     public boolean assignOrderToRunner(String[] orderData) {
         boolean runnerAssigned = false;
+        Runner runner = new Runner();
+        runnerViewTask viewTask = new runnerViewTask();
+        viewTask.setVisible(true);
 
-        try (BufferedReader runnerReader = new BufferedReader(new FileReader("resources/runner.txt"))) {
+        try (BufferedReader runnerReader = new BufferedReader(new FileReader(runnerFile))) {
             String runnerLine;
             while ((runnerLine = runnerReader.readLine()) != null) {
                 String[] runnerData = runnerLine.split(",");
 
                 if (runnerData.length > 2 && "available".equals(runnerData[2])) {
-                    // Simulate runner's decision (for example purposes)
-                    boolean runnerAccepts = Runner.promptRunnerForTask(runnerData, orderData);
+                    boolean runnerAccepts = runner.assignRunnerTask(runnerData, orderData);
+
                     if (runnerAccepts) {
                         runnerAssigned = true;
-                        Runner.updateRunnerStatus(runnerData[0], "unavailable");
-                        updateStatus(orderID, "Accepted by runner", "runner");
-                        return runnerAssigned;
+                        break;
                     }
                 }
             }
+            
+            if (!runnerAssigned) {
+                updateStatus(Integer.parseInt(orderData[0]), "Canceled", "runner");
+            }
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return runnerAssigned;
     }
 }

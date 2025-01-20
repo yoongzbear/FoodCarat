@@ -4,9 +4,9 @@
  */
 package FoodCarat;
 
+import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-import javax.swing.JRadioButton;
 
 /**
  *
@@ -41,17 +41,24 @@ public class runnerMain extends javax.swing.JFrame {
             username.setText(textBuilder.toString());
         }
         
-        /**
         // Status
         String status = runnerDetails[2];
+        ImageIcon icon;
+
         if ("available".equalsIgnoreCase(status)) {
             avaJRB.setSelected(true);
-            statusImage.setIcon(new ImageIcon("images/runner/available.png"));
+            icon = new ImageIcon("images/runner/available.png");
         } else {
             unaJRB.setSelected(true);
-            statusImage.setIcon(new ImageIcon("images/runner/unavailable.png"));
+            icon = new ImageIcon("images/runner/unavailable.jpg");
         }
-        **/
+
+        // Resize the image to 200x200
+        Image scaledImage = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        ImageIcon resizedIcon = new ImageIcon(scaledImage);
+
+        // Set the resized icon
+        statusImage.setIcon(resizedIcon);
     }
 
     /**
@@ -397,9 +404,11 @@ public class runnerMain extends javax.swing.JFrame {
         String status = "available";
         
         Runner runner = new Runner();
-        runner.updateStatus(email, status);
-        
-        //statusImage.setIcon(new ImageIcon("images/runner/available.png"));
+        runner.updateRunnerStatus(email, status);
+
+        ImageIcon icon = new ImageIcon("images/runner/available.png");
+        Image scaledImage = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        statusImage.setIcon(new ImageIcon(scaledImage));
     }//GEN-LAST:event_avaJRBActionPerformed
 
     private void unaJRBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_unaJRBActionPerformed
@@ -407,9 +416,11 @@ public class runnerMain extends javax.swing.JFrame {
         String status = "unavailable";
         
         Runner runner = new Runner();
-        runner.updateStatus(email, status);
+        runner.updateRunnerStatus(email, status);
         
-        //statusImage.setIcon(new ImageIcon("images/runner/unavailable.png"));
+        ImageIcon icon = new ImageIcon("images/runner/unavailable.jpg");
+        Image scaledImage = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        statusImage.setIcon(new ImageIcon(scaledImage));
     }//GEN-LAST:event_unaJRBActionPerformed
 
     /**

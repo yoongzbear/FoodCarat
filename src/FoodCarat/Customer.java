@@ -160,7 +160,7 @@ public class Customer extends User{
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
                 if (data.length > 0 && data[0].equalsIgnoreCase(email)) {
-                    data = new String[]{data[0], address, "0.0", "0"};
+                    data = new String[]{data[0], "\"" + address + "\"", "0.0", "0"};
                     emailFound = true;
                 }
                 fileContent.add(String.join(",", data));
