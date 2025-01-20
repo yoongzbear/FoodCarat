@@ -273,14 +273,16 @@ public class Admin extends User {
     // method for top up credit proccess
     public void processChangesCredit(String email, String name, double currentAmount, double topUpAmount) throws IOException {
         double newAmount = currentAmount + topUpAmount;
-
-        String transactionId = generateTransactionId();
-        String dateTime = getCurrentDateTime();
+        
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String dateTime = formatter.format(new Date());
+        
         // Extract date and time separately
         String[] dateTimeParts = dateTime.split(" ");
         String date = dateTimeParts[0];
         String time = dateTimeParts[1];
-
+        
+        String transactionId ="TXN" + System.currentTimeMillis();
         // Prepare transaction details
         String transactionDetails = String.format(
             "%s;%s;%.2f;%.2f;%s;%s\n",
@@ -288,7 +290,9 @@ public class Admin extends User {
         );
 
         // Save transaction details to the file
-        saveTransactionToFile(transactionDetails);
+        try (FileWriter writer = new FileWriter(cuscreditFile, true)) { // Append mode
+            writer.write(transactionDetails);
+        }
 
         // Update the customer's credit in the file
         super.updateCredit(email, newAmount, cusFile, 2);
@@ -298,24 +302,6 @@ public class Admin extends User {
         // Show receipt UI
         adminCusReceipt receipt = new adminCusReceipt(transactionId, email, name, currentAmount, topUpAmount, newAmount, date, time);
         receipt.setVisible(true);
-    }
-
-    // Generate a unique transaction ID for top up details
-    private String generateTransactionId() {
-        return "TXN" + System.currentTimeMillis();
-    }
-
-    // Get the current date and time for top up details
-    private String getCurrentDateTime() {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return formatter.format(new Date());
-    }
-
-    // Save transaction details to the file
-    private void saveTransactionToFile(String transactionDetails) throws IOException {
-        try (FileWriter writer = new FileWriter(cuscreditFile, true)) { // Append mode
-            writer.write(transactionDetails);
-        }
     }
     
     //Notification
