@@ -62,9 +62,16 @@ public class Admin extends User {
     }
     
     public static String registerUser(String email, String username, String role) throws IOException {
-        String samplePassword = generateSamplePassword(email);
+        // Generate sample password
+        final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%";
+        SecureRandom random = new SecureRandom();
+        StringBuilder samplePassword = new StringBuilder(email.split("@")[0]);
+        for (int i = 0; i < 3; i++) {
+            samplePassword.append(characters.charAt(random.nextInt(characters.length())));
+        }
+        String password = samplePassword.toString();
         String roleFileName = role + ".txt";
-
+        
         // Write to user.txt
         try (FileWriter userWriter = new FileWriter(userFile, true)) {
             userWriter.write(email + "," + username + "," + samplePassword + "," + role + ",,\n");
@@ -79,17 +86,7 @@ public class Admin extends User {
             }
         }
 
-        return samplePassword; // Return the generated password
-    }
-    
-    private static String generateSamplePassword(String email) {
-        final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%";
-        SecureRandom random = new SecureRandom();
-        StringBuilder password = new StringBuilder(email.split("@")[0]);
-        for (int i = 0; i < 3; i++) {
-            password.append(characters.charAt(random.nextInt(characters.length())));
-        }
-        return password.toString();
+        return password; // Return the generated password
     }
     
     //Update user info
@@ -281,6 +278,7 @@ public class Admin extends User {
 
         return false;
     }
+    
     //only remain the email and name in user.txt
     private boolean removeInfoUserFile(String fileName, String email) {
         List<String> fileContent = new ArrayList<>();
