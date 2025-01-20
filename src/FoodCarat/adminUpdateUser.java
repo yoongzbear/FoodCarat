@@ -42,9 +42,43 @@ public class adminUpdateUser extends javax.swing.JFrame {
         javax.swing.JComponent[] runnerComponents = {
             Lplatnum, platnumtxt, LotherInfo
         };
-        Admin.customizeForm(role, customerComponents, vendorComponents, runnerComponents);
+        this.customizeForm(role, customerComponents, vendorComponents, runnerComponents);
     }
     
+    public static void customizeForm(String role, 
+                                     javax.swing.JComponent[] customerComponents, 
+                                     javax.swing.JComponent[] vendorComponents, 
+                                     javax.swing.JComponent[] runnerComponents) {
+        // Concatenate all component arrays into a single array
+        javax.swing.JComponent[] allComponents = 
+            java.util.Arrays.stream(new javax.swing.JComponent[][]{customerComponents, vendorComponents, runnerComponents})
+                            .flatMap(java.util.Arrays::stream)
+                            .toArray(javax.swing.JComponent[]::new);
+
+        // Hide all components initially
+        for (javax.swing.JComponent component : allComponents) {
+            component.setVisible(false);
+        }
+
+        // Adjust visibility based on the role
+        switch (role) {
+            case "customer":
+                for (javax.swing.JComponent component : customerComponents) {
+                    component.setVisible(true);
+                }
+                break;
+            case "vendor":
+                for (javax.swing.JComponent component : vendorComponents) {
+                    component.setVisible(true);
+                }
+                break;
+            case "runner":
+                for (javax.swing.JComponent component : runnerComponents) {
+                    component.setVisible(true);
+                }
+                break;
+        }
+    }
     //set data after performing search at update user
     public void setUserData(String email, String name, String userBirth, String contactNumber, String roleSpecificData) {
         emailtxt.setText(email);
@@ -393,17 +427,34 @@ public class adminUpdateUser extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Please search an email before perform delete");
             return;
         }
-
-        int confirm = JOptionPane.showConfirmDialog(null, 
-            "Are you sure you want to delete this record?", 
-            "Confirm Deletion", 
-            JOptionPane.YES_NO_OPTION);
-
+        
         Admin admin = new Admin();
-        if (confirm == JOptionPane.YES_OPTION) {
-            if (admin.performDelete(email, role)) {
+        int confirmation = JOptionPane.showConfirmDialog(
+                null,
+                "Are you sure you want to delete this record for email: " + email + "?",
+                "Confirm Deletion",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+        );
+
+        if (confirmation == JOptionPane.YES_OPTION) {
+            // Delete from user.txt
+            boolean userDeleted = admin.removeInfoUserFile("user.txt", email);
+
+            // Delete from role-specific file
+            boolean roleDeleted = admin.deleteFromFile(role + ".txt", email);
+
+            // Handle deletion results
+            if (userDeleted && roleDeleted) {
+                JOptionPane.showMessageDialog(null, "Record deleted successfully!");
                 clearFields();
+            } else if (!userDeleted) {
+                JOptionPane.showMessageDialog(null, "Error deleting from user.txt!");
+            } else {
+                JOptionPane.showMessageDialog(null, "Error deleting from " + role + ".txt!");
             }
+        } else {
+            JOptionPane.showMessageDialog(null, "Deletion canceled.", "Canceled", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_bDeleteActionPerformed
 
