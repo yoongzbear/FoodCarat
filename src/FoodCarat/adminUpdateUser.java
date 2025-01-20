@@ -393,17 +393,34 @@ public class adminUpdateUser extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Please search an email before perform delete");
             return;
         }
-
-        int confirm = JOptionPane.showConfirmDialog(null, 
-            "Are you sure you want to delete this record?", 
-            "Confirm Deletion", 
-            JOptionPane.YES_NO_OPTION);
-
+        
         Admin admin = new Admin();
-        if (confirm == JOptionPane.YES_OPTION) {
-            if (admin.performDelete(email, role)) {
+        int confirmation = JOptionPane.showConfirmDialog(
+                null,
+                "Are you sure you want to delete this record for email: " + email + "?",
+                "Confirm Deletion",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+        );
+
+        if (confirmation == JOptionPane.YES_OPTION) {
+            // Delete from user.txt
+            boolean userDeleted = admin.removeInfoUserFile("user.txt", email);
+
+            // Delete from role-specific file
+            boolean roleDeleted = admin.deleteFromFile(role + ".txt", email);
+
+            // Handle deletion results
+            if (userDeleted && roleDeleted) {
+                JOptionPane.showMessageDialog(null, "Record deleted successfully!");
                 clearFields();
+            } else if (!userDeleted) {
+                JOptionPane.showMessageDialog(null, "Error deleting from user.txt!");
+            } else {
+                JOptionPane.showMessageDialog(null, "Error deleting from " + role + ".txt!");
             }
+        } else {
+            JOptionPane.showMessageDialog(null, "Deletion canceled.", "Canceled", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_bDeleteActionPerformed
 
