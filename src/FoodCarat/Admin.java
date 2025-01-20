@@ -221,28 +221,8 @@ public class Admin extends User {
         return true;
     }
     
-    //delete both user and role.txt when admin delete user acc
-    public boolean performDelete(String email, String role) {
-        // Remove info from user.txt left email and name only
-        boolean userDeleted = removeInfoUserFile(userFile, email);
-
-        // Delete from role-specific file
-        boolean roleDeleted = deleteFromFile(role + ".txt", email);
-
-        if (userDeleted && roleDeleted) {
-            JOptionPane.showMessageDialog(null, "Record deleted successfully!");
-            return true;
-        } else if (!userDeleted) {
-            JOptionPane.showMessageDialog(null, "Error deleting from user.txt!");
-        } else {
-            JOptionPane.showMessageDialog(null, "Error deleting from " + role + ".txt!");
-        }
-
-        return false;
-    }
-    
-    //only remain the email and name in user.txt
-    private boolean removeInfoUserFile(String fileName, String email) {
+    // Remain the email and name at user.txt but remove others info (eg.email,name,,,)
+    public boolean removeInfoUserFile(String fileName, String email) {
         List<String> fileContent = new ArrayList<>();
         boolean recordUpdated = false;
 
@@ -273,7 +253,7 @@ public class Admin extends User {
         return writeFile(fileName, fileContent);
     }
     //delete the info in role.txt
-    private boolean deleteFromFile(String fileName, String email) {
+    public boolean deleteFromFile(String fileName, String email) {
         List<String> fileContent = new ArrayList<>();
         boolean recordDeleted = false;
 
