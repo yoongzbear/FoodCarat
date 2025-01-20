@@ -129,58 +129,83 @@ public class Runner extends User{
         return null;
     }
     
-    // Update status
-    public void updateStatus(String email, String status) {
-        List<String> fileContent = new ArrayList<>();
-        boolean emailFound = false;
+    public boolean assignRunnerTask(String[] runnerData, String[] orderData) {
+        String runnerEmail = runnerData[0];
+        String runnerStatus = runnerData[2];
+        
+        if (!"available".equalsIgnoreCase(runnerStatus)) {
+            return false; // Skip if the runner is not available
+        }
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(runnerFile))) {
-            String line;
+        // Display task details for the runner
+        runnerViewTask viewTask = new runnerViewTask();
+        viewTask.displayOrderForRunner(orderData);
 
-            while ((line = reader.readLine()) != null) {
-                String[] runnerData = line.split(",");
+        // Show the JFrame
+        viewTask.setVisible(true);
+        
+        // Wait for user interaction (accept/decline)
+        while (!viewTask.isDecisionMade()) {
+            try {
+                Thread.sleep(100); // Polling to check if the decision has been made
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
-                if (runnerData.length > 2 && runnerData[0].equalsIgnoreCase(email)) {
-                    runnerData[2] = status;
-                    emailFound = true;
+        // Check decision after button click
+        boolean taskAccepted = viewTask.isTaskAccepted();
+
+        if (taskAccepted) {
+            updateRunnerStatus(runnerEmail, "unavailable"); // Update runner status to unavailable
+        }
+        // Close the view after decision
+        viewTask.dispose();
+
+        return taskAccepted;
+    }
+    
+    /**
+    public void assignNextRunner(String orderId) {
+        boolean runnerAssigned = false;
+        String[] orderData = getOrderDeta(orderId); // Get order details
+
+        try (BufferedReader runnerReader = new BufferedReader(new FileReader("resources/runner.txt"))) {
+            String runnerLine;
+
+            while ((runnerLine = runnerReader.readLine()) != null) {
+                String[] runnerData = runnerLine.split(",");
+
+                if (runnerData.length > 2 && "available".equalsIgnoreCase(runnerData[2])) {
+                    // Display the task to the next available runner
+                    return displayOrderForRunner();
+                    runnerAssigned = true;
+                    break;
                 }
-
-                fileContent.add(String.join(",", runnerData));
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        if (emailFound) {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(runnerFile))) {
-                for (String updatedLine : fileContent) {
-                    writer.write(updatedLine);
-                    writer.newLine();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if (!runnerAssigned) {
+            // If no runners are available or all decline, cancel the order
+            new Order().updateStatus(Integer.parseInt(orderId), "Canceled", "runner");
+                JOptionPane.showMessageDialog(null,"No runners accepted the task. Order canceled.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
-   // Simulating a runner's decision to accept or reject the task
-    public static boolean promptRunnerForTask(String[] runnerData, String[] orderData) {
-        // Implement your logic to interact with the runner (e.g., show a prompt or notification)
-        // For now, it will randomly decide if the runner accepts or not.
-        return Math.random() > 0.5;  // 50% chance of accepting
-    }
+    **/
 
     // Method to update the runner's availability status
-    public static void updateRunnerStatus(String runnerEmail, String status) {
+    public void updateRunnerStatus(String runnerEmail, String status) {
         List<String> fileContent = new ArrayList<>();
         boolean runnerFound = false;
 
-        try (BufferedReader reader = new BufferedReader(new FileReader("resources/runner.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(runnerFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] runnerData = line.split(",");
                 if (runnerData[0].equals(runnerEmail)) {
-                    runnerData[2] = status;  // Update runner's status (e.g., available to unavailable)
+                    runnerData[2] = status;  // Update runner's status (available or unavailable)
                     runnerFound = true;
                 }
                 fileContent.add(String.join(",", runnerData));
@@ -190,7 +215,7 @@ public class Runner extends User{
         }
 
         if (runnerFound) {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter("resources/runner.txt"))) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(runnerFile))) {
                 for (String updatedLine : fileContent) {
                     writer.write(updatedLine);
                     writer.newLine();
