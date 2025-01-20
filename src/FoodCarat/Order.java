@@ -397,6 +397,7 @@ public class Order {
         }
     }
     
+    /**
     //update order status 
     //user can manipulate status: vendor, runner (for delivery)
     //parameter: itemID, orderStatus, userType(not sure if needed, leaving it here first)
@@ -436,6 +437,7 @@ public class Order {
             JOptionPane.showMessageDialog(null, "Update order status failed: " + e.getMessage());
         }   
     }
+    **/ 
     
     // Method to add item to cart
     public void addItemToCart(int itemID, String itemName, int quantity, double unitPrice) {
@@ -624,7 +626,6 @@ public class Order {
         return deliveryFee;
     }
     
-    /**
     public void updateStatus(int id, String newOrderStatus, String userType) {
         // Get order info from order.txt using id
         String[] order = getOrder(id);
@@ -634,7 +635,7 @@ public class Order {
 
         // If the order status is "accepted by vendor", attempt to assign it to a runner
         if ("accepted by vendor".equalsIgnoreCase(newOrderStatus)) {
-            boolean orderAssigned = Runner.assignOrderToRunner(order);  // Method to assign to available runner
+            boolean orderAssigned = assignOrderToRunner(order);  // Method to assign to available runner
             if (!orderAssigned) {
                 // If no runner accepts the order, cancel it
                 newOrderStatus = "Canceled";  // Update the status to "Canceled"
@@ -671,7 +672,6 @@ public class Order {
             JOptionPane.showMessageDialog(null, "Update order status failed: " + e.getMessage());
         }
     }
-    **/
 
     // Assign an order to a runner
     public boolean assignOrderToRunner(String[] orderData) {

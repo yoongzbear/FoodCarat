@@ -21,6 +21,7 @@ import javax.swing.JOptionPane;
 public class Customer extends User{
     private int points;
     private String customerFile = "resources/customer.txt";
+    private final static String cusFile = "resources/customer.txt";
     
     public Customer(String email){ //for set points
         super(email);
@@ -154,7 +155,7 @@ public class Customer extends User{
         boolean emailFound = false;
         List<String> fileContent = new ArrayList<>();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader("resources/customer.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(cusFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
