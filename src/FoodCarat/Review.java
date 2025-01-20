@@ -295,7 +295,8 @@ public class Review {
                 "null", 
                 orderFeedback, 
                 reviewDate, 
-                customerEmail
+                customerEmail,
+                "null"
             )).append("\n");
 
             lastFeedback++;
@@ -308,7 +309,8 @@ public class Review {
                 vendorRating, 
                 vendorFeedback, 
                 reviewDate, 
-                customerEmail
+                customerEmail,
+                "null"
             )).append("\n");
 
             lastFeedback++;
@@ -322,7 +324,8 @@ public class Review {
                     runnerRating, 
                     "null", 
                     reviewDate, 
-                    customerEmail
+                    customerEmail,
+                    "null"
                 )).append("\n");
             }
         } 
@@ -335,7 +338,8 @@ public class Review {
                 "null", 
                 foodCourtComplaint, 
                 reviewDate, 
-                customerEmail
+                customerEmail,
+                "unresolved"
             )).append("\n");
         }
 
