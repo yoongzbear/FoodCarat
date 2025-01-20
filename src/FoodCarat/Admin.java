@@ -143,45 +143,7 @@ public class Admin extends User {
         // If the user has completed the first login, update the user data
         updateUserForm.setUserData(getEmail(), getName(), getBirth(), getContactNumber(), result);
         }
-    }
-    
-    //validate fields before performing update and delete
-    public static boolean validateFields(String email, String name, String birthDate, String phone, 
-                                         String role, String additionalField) {
-        if (email.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Email field cannot be empty!");
-            return false;
-        }
-        if (name.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Name field cannot be empty!");
-            return false;
-        }
-        if (birthDate.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Birth date cannot be empty!");
-            return false;
-        } else if (!Pattern.matches("^\\d{4}-\\d{2}-\\d{2}$", birthDate)) {
-            JOptionPane.showMessageDialog(null, "Please enter a valid birth date in the format YYYY-MM-DD!");
-            return false;
-        }
-        if (phone.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Phone number cannot be empty!");
-            return false;
-        } else if (!Pattern.matches("^\\d{3}-\\d{7}$", phone)) {
-            JOptionPane.showMessageDialog(null, "Phone number must be in the format xxx-xxxxxxx!");
-            return false;
-        }
-        if ("customer".equals(role) && additionalField.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Address field cannot be empty for customer!");
-            return false;
-        } else if ("vendor".equals(role) && additionalField.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Cuisine field cannot be empty for vendor!");
-            return false;
-        } else if ("runner".equals(role) && additionalField.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Plat number field cannot be empty for runner!");
-            return false;
-        }
-        return true;
-    }
+    }    
     
     //update both user and role.txt when admin update user info
     public boolean performUpdate(
