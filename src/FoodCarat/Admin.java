@@ -170,10 +170,6 @@ public class Admin extends User {
             return false;
         }
 
-        return writeFile(fileName, fileContent);
-    }
-    
-    private boolean writeFile(String fileName, List<String> fileContent) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName))) {
             for (String line : fileContent) {
                 bw.write(line);
@@ -186,7 +182,7 @@ public class Admin extends User {
 
         return true;
     }
-    
+        
     // Remain the email and name at user.txt but remove others info (eg.email,name,,,)
     public boolean removeInfoUserFile(String fileName, String email) {
         List<String> fileContent = new ArrayList<>();
@@ -216,7 +212,17 @@ public class Admin extends User {
             return false;
         }
 
-        return writeFile(fileName, fileContent);
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName))) {
+            for (String line : fileContent) {
+                bw.write(line);
+                bw.newLine();
+            }
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Error writing to file: " + ex.getMessage());
+            return false;
+        }
+
+        return true;
     }
     //delete the info in role.txt
     public boolean deleteFromFile(String fileName, String email) {
@@ -245,8 +251,17 @@ public class Admin extends User {
             JOptionPane.showMessageDialog(null, "No matching record found in " + fileName + "!");
             return false;
         }
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName))) {
+            for (String line : fileContent) {
+                bw.write(line);
+                bw.newLine();
+            }
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Error writing to file: " + ex.getMessage());
+            return false;
+        }
 
-        return writeFile(fileName, fileContent); // Reuse the writeFile method to save changes
+        return true;
     }
     
     //Top up credit    
