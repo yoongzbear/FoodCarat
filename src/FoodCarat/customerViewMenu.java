@@ -7,6 +7,7 @@ package FoodCarat;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Image;
+import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -38,6 +39,7 @@ public class customerViewMenu extends javax.swing.JFrame {
     private String orderType;
     private Order currentOrder;
     private String selectedVendorEmail;
+    private boolean isViewingVendorMenu = false;
 
     public customerViewMenu(int orderID, String orderType) {
         this.orderID = orderID;
@@ -51,15 +53,37 @@ public class customerViewMenu extends javax.swing.JFrame {
         bSave.setEnabled(false);
         bRemove.setEnabled(false);
         bCheckOut.setEnabled(false);
-        loadVendors("resources/user.txt");
+        loadVendors("resources/user.txt", "");
         tCart.getColumnModel().getColumn(4).setMaxWidth(0);
         tCart.getColumnModel().getColumn(4).setMinWidth(0);
         tCart.getColumnModel().getColumn(4).setPreferredWidth(0);
     }
     
-    private void loadVendors(String userFilePath) {
+    private void onSearch() {
+        String query = searchField.getText().toLowerCase().trim();  // Get and trim the search query
+
+        // Check if query is empty
+        if (query.isEmpty()) {
+            // No filter, show all vendors or menu items depending on the current view
+            if (isViewingVendorMenu) {
+                loadVendorMenu(selectedVendorEmail, null); // Show all items for the selected vendor
+            } else {
+                loadVendors("resources/user.txt", null); // Show all vendors
+            }
+        } else {
+            // Perform the search with the query
+            if (isViewingVendorMenu) {
+                loadVendorMenu(selectedVendorEmail, query); // Filter menu items based on the search query
+            } else {
+                loadVendors("resources/user.txt", query); // Filter vendors based on the search query
+            }
+        }
+    }
+    
+    private void loadVendors(String userFilePath, String searchQuery) {
+        isViewingVendorMenu = false;
+        mainMenuPanel.removeAll();
         mainMenuPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 15, 15));
-        //
         try (BufferedReader reader = new BufferedReader(new FileReader(userFilePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -69,30 +93,27 @@ public class customerViewMenu extends javax.swing.JFrame {
                     String vendorEmail = details[0];
                     String vendorName = details[1];
                     
-                    //get vendor info
-                    Vendor vendor = new Vendor(vendorEmail);
-                    String availableMethods = vendor.getAvailableMethod();
-                    boolean isAvailableForOrderType;
-                    if (availableMethods != null && !availableMethods.isEmpty()) {
-                        String methodsWithoutBrackets = availableMethods.substring(1, availableMethods.length() - 1);
-                        String[] availableMethodsArray = methodsWithoutBrackets.split(";");
+                    if (searchQuery == null || vendorName.toLowerCase().contains(searchQuery)) {
+                        // Existing code to create and add vendor panel
+                        Vendor vendor = new Vendor(vendorEmail);
+                        String availableMethods = vendor.getAvailableMethod();
+                        boolean isAvailableForOrderType;
+                        if (availableMethods != null && !availableMethods.isEmpty()) {
+                            String methodsWithoutBrackets = availableMethods.substring(1, availableMethods.length() - 1);
+                            String[] availableMethodsArray = methodsWithoutBrackets.split(";");
+                            isAvailableForOrderType = Arrays.asList(availableMethodsArray).contains(orderType);
+                        } else {
+                            isAvailableForOrderType = false;
+                        }
+                        String logoPath = vendor.getPhotoLink();
 
-                        isAvailableForOrderType = Arrays.asList(availableMethodsArray).contains(orderType);
-                    } else {
-                        //if vendor have non available methods
-                        isAvailableForOrderType = false;
+                        Review review = new Review();
+                        double vendorRating = review.getAverageRating(vendorEmail, "vendor");
+                        String randomReview = review.getRandomVendorReview(vendorEmail);
+
+                        JPanel vendorPanel = createVendorPanel(vendorName, vendorEmail, logoPath, vendorRating, randomReview, isAvailableForOrderType);
+                        mainMenuPanel.add(vendorPanel);
                     }
-                    String logoPath = vendor.getPhotoLink();
-
-                    // Get average rating and random review
-                    Review review = new Review();
-                    double vendorRating = review.getAverageRating(vendorEmail, "vendor");  // Get average rating
-                    System.out.println("Vendor email in review: " + vendorEmail);
-                    System.out.println("Rate in review: " + vendorRating);
-                    String randomReview = review.getRandomVendorReview(vendorEmail);  // Get random review
-                    
-                    JPanel vendorPanel = createVendorPanel(vendorName, vendorEmail, logoPath, vendorRating, randomReview, isAvailableForOrderType);
-                    mainMenuPanel.add(vendorPanel);
                 }
             }
             mainMenuPanel.revalidate();
@@ -157,7 +178,7 @@ public class customerViewMenu extends javax.swing.JFrame {
         // Add the "View Menu" button
         JButton btnViewMenu = new JButton("View Menu");
         btnViewMenu.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
-        btnViewMenu.addActionListener(e -> loadVendorMenu(vendorEmail)); // Action to load the vendor's menu
+        btnViewMenu.addActionListener(e -> loadVendorMenu(vendorEmail, "")); // Action to load the vendor's menu
 
         // Add components to the panel
         panel.add(logo);
@@ -170,7 +191,8 @@ public class customerViewMenu extends javax.swing.JFrame {
         return panel;
     }
     
-    private void loadVendorMenu(String vendorEmail) {
+    private void loadVendorMenu(String vendorEmail, String searchQuery) {
+        isViewingVendorMenu = true;
         selectedVendorEmail = vendorEmail;
         bBackVendor.setVisible(true);
         mainMenuPanel.removeAll(); //Clear existing menu items
@@ -203,8 +225,10 @@ public class customerViewMenu extends javax.swing.JFrame {
                     String itemPrice = details[3];
                     String imagePath = details[4];
 
-                    JPanel itemPanel = createMenuPanel(itemID, itemName, itemType, itemPrice, imagePath, isAvailableForOrderType);
-                    mainMenuPanel.add(itemPanel);
+                    if (searchQuery == null || itemName.toLowerCase().contains(searchQuery)) {
+                        JPanel itemPanel = createMenuPanel(itemID, itemName, itemType, itemPrice, imagePath, isAvailableForOrderType);
+                        mainMenuPanel.add(itemPanel);
+                    }
                 }
             }
             mainMenuPanel.revalidate();
@@ -389,6 +413,8 @@ public class customerViewMenu extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         mainMenuPanel = new javax.swing.JPanel();
         bBackVendor = new javax.swing.JButton();
+        searchField = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
 
         tbVendorMenu.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -555,6 +581,14 @@ public class customerViewMenu extends javax.swing.JFrame {
             }
         });
 
+        searchField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                searchFieldKeyPressed(evt);
+            }
+        });
+
+        jLabel4.setText("Search:");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -562,17 +596,25 @@ public class customerViewMenu extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(25, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                            .addComponent(jLabel1)
-                            .addComponent(lableChooseVendor))
-                        .addGap(82, 82, 82)
-                        .addComponent(bBack)
-                        .addGap(9, 9, 9))
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(bBackVendor, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(bBackVendor, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                                    .addComponent(jLabel1)
+                                    .addComponent(lableChooseVendor))
+                                .addGap(82, 82, 82))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addGap(17, 17, 17)))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(searchField, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addComponent(bBack)
+                                .addGap(9, 9, 9)))))
                 .addGap(25, 25, 25))
         );
         jPanel2Layout.setVerticalGroup(
@@ -583,10 +625,14 @@ public class customerViewMenu extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lableChooseVendor)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(lableChooseVendor))
                     .addComponent(bBack))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(bBackVendor)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
@@ -668,7 +714,7 @@ public class customerViewMenu extends javax.swing.JFrame {
 
     private void bBackVendorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bBackVendorActionPerformed
         mainMenuPanel.removeAll();
-        loadVendors("resources/user.txt");
+        loadVendors("resources/user.txt", "");
         bBackVendor.setVisible(false);  //hide back button
     }//GEN-LAST:event_bBackVendorActionPerformed
 
@@ -728,6 +774,12 @@ public class customerViewMenu extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_bCheckOutActionPerformed
 
+    private void searchFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchFieldKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            onSearch(); // Call the onSearch method
+        }
+    }//GEN-LAST:event_searchFieldKeyPressed
+
     /**
      * @param args the command line arguments
      */
@@ -772,6 +824,7 @@ public class customerViewMenu extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
@@ -787,6 +840,7 @@ public class customerViewMenu extends javax.swing.JFrame {
     private javax.swing.JLabel lableChooseVendor;
     private javax.swing.JPanel mainMenuPanel;
     private javax.swing.JSpinner sQuantity;
+    private javax.swing.JTextField searchField;
     private javax.swing.JTable tCart;
     private javax.swing.JTable tbVendorMenu;
     // End of variables declaration//GEN-END:variables
