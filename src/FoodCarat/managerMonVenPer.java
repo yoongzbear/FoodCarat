@@ -5,6 +5,7 @@
 package FoodCarat;
 
 import java.awt.Color;
+import java.util.Arrays;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -307,7 +308,15 @@ public class managerMonVenPer extends javax.swing.JFrame {
 
     private void searchbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchbtnActionPerformed
         String selectedMonth = (String) monthcbx.getSelectedItem();
+         // Array of month names to convert to month number (January = 1, February = 2, etc.)
+        String[] monthNames = {
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        };
 
+        // Convert selectedMonth to month number
+        int monthNumber = Arrays.asList(monthNames).indexOf(selectedMonth) + 1;
+        
         // Validate if the user has selected a valid month
         if (selectedMonth == null || "Please select".equals(selectedMonth)) {
             javax.swing.JOptionPane.showMessageDialog(this, "Please select a valid month!");
@@ -315,7 +324,7 @@ public class managerMonVenPer extends javax.swing.JFrame {
         }
         // Call the Manager method to get vendor performance data
         Manager manager = new Manager();
-        List<String[]> vendorData = manager.getVendorPerformanceByMonth(selectedMonth);
+        List<String[]> vendorData = manager.getVendorPerformanceByMonth(monthNumber);
 
         if (vendorData == null || vendorData.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No data available for the selected month.");
