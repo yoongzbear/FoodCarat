@@ -208,31 +208,4 @@ public class Manager extends User{
         Customer customer = new Customer(cusEmail);
         customer.addPoints(50);
     }
-
-    // method to extract month from order data (ven)/review data(runner)
-    private String getMonthFromOrderOrReview(String date) {
-        if (date != null && date.contains("-")) {
-            String[] dateParts = date.split("-");
-            if (dateParts.length >= 2) {
-                int monthNumber = Integer.parseInt(dateParts[1]); // Extract month as number
-                return getMonthName(monthNumber); // Convert number to month name
-            }
-        }
-        return "Invalid Date"; // Return a default value if the date is invalid
-    }
-
-    // method to convert month number to month name
-    private String getMonthName(int monthNumber) {
-        String[] monthNames = {
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-        };
-
-        if (monthNumber >= 1 && monthNumber <= 12) {
-            return monthNames[monthNumber - 1]; // Adjust for 0-based index
-        }
-        return "Invalid Month";
-    }
-    
-    //Manager notification complains
 }
