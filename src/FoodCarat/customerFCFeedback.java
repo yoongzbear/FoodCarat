@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -27,15 +28,15 @@ public class customerFCFeedback extends javax.swing.JFrame {
         populateTable();
     }
     
-    private void populateTable() {
-        DefaultTableModel model = new DefaultTableModel();
+    private void populateTable(){
+        DefaultTableModel model = (DefaultTableModel) tComplaintHistory.getModel();
         model.setRowCount(0);
-        model.setColumnCount(0);
 
         try (BufferedReader reader = new BufferedReader(new FileReader("resources/review.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] record = line.split(",");
+                System.out.println("Record:" + Arrays.toString(record));
                 String rReviewType = record[2];
                 String rUser = record[6];
                 if (rUser.equals(User.getSessionEmail()) && "foodcourt".equals(rReviewType)){
@@ -43,17 +44,16 @@ public class customerFCFeedback extends javax.swing.JFrame {
                     String rComplaint = record[4];
                     String rReviewDate = record[5];
                     String rReviewStatus = record[7];
+                    System.out.println(rReviewType+" "+rUser+" "+rComplaint+" "+rReviewDate+" "+rReviewStatus);
                     
-                    //Add the booking details to the model
                     model.addRow(new Object[]{rReviewDate, rComplaint, rReviewStatus});
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        //Set the model to the table
-        tComplaintHistory.setModel(model);
+        tComplaintHistory.revalidate();
+        tComplaintHistory.repaint();
     }
 
     /**
