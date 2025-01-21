@@ -239,14 +239,15 @@ public class Admin extends User {
     }
     
     //Top up credit    
-    
     // method for top up credit proccess
-    public void processChangesCredit(String email, String name, double currentAmount, double topUpAmount) throws IOException {
-        double newAmount = currentAmount + topUpAmount;
+    public void processChangesCredit(String email, String name, double currentAmount, double changesAmount) throws IOException {
+        String transFilePath = cuscreditFile;
+        String userFilePath = userFile;
+        double newAmount = currentAmount + changesAmount;
         
         //get the next transaction id 
         int transactionId = 1; // Default starting value
-        File transactionFile = new File(cuscreditFile);
+        File transactionFile = new File(transFilePath);
 
         // Check if the file exists
         if (transactionFile.exists()) {
@@ -274,32 +275,52 @@ public class Admin extends User {
             }
         }
         
+        //get current date and time
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String dateTime = formatter.format(new Date());
-        
+        String dateTime = formatter.format(new Date());        
         // Extract date and time separately
         String[] dateTimeParts = dateTime.split(" ");
         String date = dateTimeParts[0];
         String time = dateTimeParts[1];
-        
+
         // Prepare transaction details
         String transactionDetails = String.format(
             "%s,%s,%.2f,%.2f,%s,%s\n",
-            transactionId, email, topUpAmount, newAmount, date, time
+            transactionId, email,  currentAmount, changesAmount, date, time
         );
 
         // Save transaction details to the file
-        try (FileWriter writer = new FileWriter(cuscreditFile, true)) { // Append mode
+        try (FileWriter writer = new FileWriter(transFilePath, true)) { // Append mode
             writer.write(transactionDetails);
         }
-
-        // Update the customer's credit in the file
-        super.updateCredit(email, newAmount, cusFile, 2);
         
-        javax.swing.JOptionPane.showMessageDialog(null, "Top-up completed successfully!\nThe receipt has been sent to the customer.", "Success", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+        // Update the credit in the file base on role
+        User user = new User();
+        String role = user.getRoleByEmail(email, userFile);
+
+        if (role != null) {
+            switch (role.toLowerCase()) {
+                case "vendor":
+                    super.updateCredit(email, newAmount, "vendor.txt", 4);
+                    break;
+                case "runner":
+                    super.updateCredit(email, newAmount, "runner.txt", 3);
+                    break;
+                case "customer":
+                    super.updateCredit(email, newAmount, "customer.txt", 2);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown role: " + role);
+            }
+        } else {
+            throw new IOException("User role not found for email: " + email);
+        }
+        
+        // Notify the user of success
+        javax.swing.JOptionPane.showMessageDialog(null, "Changes completed successfully!\nThe receipt has been sent to the user.", "Success", javax.swing.JOptionPane.INFORMATION_MESSAGE);
         
         // Show receipt UI
-        adminCusReceipt receipt = new adminCusReceipt(transactionId, email, name, currentAmount, topUpAmount, newAmount, date, time);
+        adminCusReceipt receipt = new adminCusReceipt(transactionId, email, name, currentAmount, changesAmount, date, time);
         receipt.setVisible(true);
     }
     

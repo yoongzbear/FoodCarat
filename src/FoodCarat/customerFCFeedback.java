@@ -36,7 +36,6 @@ public class customerFCFeedback extends javax.swing.JFrame {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] record = line.split(",");
-                System.out.println("Record:" + Arrays.toString(record));
                 String rReviewType = record[2];
                 String rUser = record[6];
                 if (rUser.equals(User.getSessionEmail()) && "foodcourt".equals(rReviewType)){
@@ -44,7 +43,6 @@ public class customerFCFeedback extends javax.swing.JFrame {
                     String rComplaint = record[4];
                     String rReviewDate = record[5];
                     String rReviewStatus = record[7];
-                    System.out.println(rReviewType+" "+rUser+" "+rComplaint+" "+rReviewDate+" "+rReviewStatus);
                     
                     model.addRow(new Object[]{rReviewDate, rComplaint, rReviewStatus});
                 }

@@ -51,25 +51,6 @@
                   <Group type="102" attributes="0">
                       <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jLabel10" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="62" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="Lemail" min="-2" max="-2" attributes="0"/>
-                                  <Component id="Lname" min="-2" max="-2" attributes="0"/>
-                                  <Component id="LtransID" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="Lbeforetopup" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="Ltopupnum" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="Laftertopup" alignment="0" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                          </Group>
-                          <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -78,6 +59,26 @@
                               <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
                               <Component id="Ltime" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jLabel10" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel9" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel7" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel8" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="Lemail" min="-2" max="-2" attributes="0"/>
+                                  <Component id="Lname" min="-2" max="-2" attributes="0"/>
+                                  <Component id="LtransID" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="LbeforeChange" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="LchangesNum" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="LafterChange" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -130,17 +131,20 @@
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="Lbeforetopup" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="LbeforeChange" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jLabel9" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="Ltopupnum" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jLabel10" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="Laftertopup" alignment="3" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" attributes="0">
+                      <Component id="LchangesNum" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="LafterChange" min="-2" max="-2" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace pref="78" max="32767" attributes="0"/>
               <Component id="jLabel17" min="-2" max="-2" attributes="0"/>
@@ -163,7 +167,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Cooper Black" size="24" style="0"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Topup Credit Receipt"/>
+        <Property name="text" type="java.lang.String" value="Transaction Receipt"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel3">
@@ -187,7 +191,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Constantia" size="18" style="1"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Customer&apos;s Email:"/>
+        <Property name="text" type="java.lang.String" value="User&apos;s Email:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel6">
@@ -195,7 +199,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Constantia" size="18" style="1"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Customer&apos;s Name:"/>
+        <Property name="text" type="java.lang.String" value="User&apos;s Name:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel7">
@@ -203,7 +207,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Constantia" size="18" style="1"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Payment ID: "/>
+        <Property name="text" type="java.lang.String" value="Transaction ID: "/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel8">
@@ -211,7 +215,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Constantia" size="18" style="1"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Amount Before Topup:"/>
+        <Property name="text" type="java.lang.String" value="Amount Before Change:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel9">
@@ -219,7 +223,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Constantia" size="18" style="1"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Topup Amount:"/>
+        <Property name="text" type="java.lang.String" value="Amount Change:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel10">
@@ -227,7 +231,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Constantia" size="18" style="1"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Amount After Topup: "/>
+        <Property name="text" type="java.lang.String" value="Amount After Change: "/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="Lemail">
@@ -254,7 +258,7 @@
         <Property name="text" type="java.lang.String" value="xxxxx"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="Lbeforetopup">
+    <Component class="javax.swing.JLabel" name="LbeforeChange">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Constantia" size="18" style="1"/>
@@ -262,7 +266,7 @@
         <Property name="text" type="java.lang.String" value="xxxxx"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="Ltopupnum">
+    <Component class="javax.swing.JLabel" name="LchangesNum">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Constantia" size="18" style="1"/>
@@ -270,7 +274,7 @@
         <Property name="text" type="java.lang.String" value="xxxxx"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="Laftertopup">
+    <Component class="javax.swing.JLabel" name="LafterChange">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Constantia" size="18" style="1"/>

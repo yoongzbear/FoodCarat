@@ -11,27 +11,24 @@ package FoodCarat;
 public class adminCusReceipt extends javax.swing.JFrame {
     private int transactionId;
     private String email;
-    private String customerName;
-    private double beforeTopUp;
-    private double topUpAmount;
-    private double afterTopUp;
+    private String name;
+    private double currentAmount;
+    private double amountChanges;
+    private double newCurrentAmount;
     private String datePayment;
     private String timePayment;
     /**
      * Creates new form adminCusReceipt
      */
-    public adminCusReceipt() {
-        initComponents();
-    }
     
-    public adminCusReceipt(int transactionId, String email, String customerName, double beforeTopUp, double topUpAmount, double afterTopUp, String date, String time) {
+    public adminCusReceipt(int transactionId, String email, String name, double currentAmount, double amountChanges, String date, String time) {
         initComponents();
         this.transactionId = transactionId;
         this.email = email;
-        this.customerName = customerName;
-        this.beforeTopUp = beforeTopUp;
-        this.topUpAmount = topUpAmount;
-        this.afterTopUp = afterTopUp;
+        this.name = name;
+        this.currentAmount = currentAmount;
+        this.amountChanges = amountChanges;  
+        this.newCurrentAmount = currentAmount + amountChanges;
         this.datePayment = date;
         this.timePayment = time;
 
@@ -40,10 +37,16 @@ public class adminCusReceipt extends javax.swing.JFrame {
     private void setReceiptDetails() {
         LtransID.setText(Integer.toString(transactionId));
         Lemail.setText(email);
-        Lname.setText(customerName);
-        Lbeforetopup.setText(String.format("%.2f", beforeTopUp));
-        Ltopupnum.setText(String.format("%.2f", topUpAmount));
-        Laftertopup.setText(String.format("%.2f", afterTopUp));
+        Lname.setText(name);
+        LbeforeChange.setText(String.format("%.2f", currentAmount));
+        
+        // Add "+" if amountChanges > 0, otherwise just display the number
+        String formattedAmountChanges = amountChanges > 0
+            ? "+" + String.format("%.2f", amountChanges)
+            : String.format("%.2f", amountChanges);
+        LchangesNum.setText(formattedAmountChanges);
+    
+        LafterChange.setText(String.format("%.2f", newCurrentAmount));
         Ldate.setText(datePayment);
         Ltime.setText(timePayment);
     }
@@ -71,9 +74,9 @@ public class adminCusReceipt extends javax.swing.JFrame {
         Lemail = new javax.swing.JLabel();
         Lname = new javax.swing.JLabel();
         LtransID = new javax.swing.JLabel();
-        Lbeforetopup = new javax.swing.JLabel();
-        Ltopupnum = new javax.swing.JLabel();
-        Laftertopup = new javax.swing.JLabel();
+        LbeforeChange = new javax.swing.JLabel();
+        LchangesNum = new javax.swing.JLabel();
+        LafterChange = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
         Ldate = new javax.swing.JLabel();
         Ltime = new javax.swing.JLabel();
@@ -87,7 +90,7 @@ public class adminCusReceipt extends javax.swing.JFrame {
         jLabel1.setText("Food Carat");
 
         jLabel2.setFont(new java.awt.Font("Cooper Black", 0, 24)); // NOI18N
-        jLabel2.setText("Topup Credit Receipt");
+        jLabel2.setText("Transaction Receipt");
 
         jLabel3.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
         jLabel3.setText("Date: ");
@@ -96,22 +99,22 @@ public class adminCusReceipt extends javax.swing.JFrame {
         jLabel4.setText("Time:");
 
         jLabel5.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
-        jLabel5.setText("Customer's Email:");
+        jLabel5.setText("User's Email:");
 
         jLabel6.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
-        jLabel6.setText("Customer's Name:");
+        jLabel6.setText("User's Name:");
 
         jLabel7.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
-        jLabel7.setText("Payment ID: ");
+        jLabel7.setText("Transaction ID: ");
 
         jLabel8.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
-        jLabel8.setText("Amount Before Topup:");
+        jLabel8.setText("Amount Before Change:");
 
         jLabel9.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
-        jLabel9.setText("Topup Amount:");
+        jLabel9.setText("Amount Change:");
 
         jLabel10.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
-        jLabel10.setText("Amount After Topup: ");
+        jLabel10.setText("Amount After Change: ");
 
         Lemail.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
         Lemail.setText("xxxxx");
@@ -122,14 +125,14 @@ public class adminCusReceipt extends javax.swing.JFrame {
         LtransID.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
         LtransID.setText("xxxxx");
 
-        Lbeforetopup.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
-        Lbeforetopup.setText("xxxxx");
+        LbeforeChange.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        LbeforeChange.setText("xxxxx");
 
-        Ltopupnum.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
-        Ltopupnum.setText("xxxxx");
+        LchangesNum.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        LchangesNum.setText("xxxxx");
 
-        Laftertopup.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
-        Laftertopup.setText("xxxxx");
+        LafterChange.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
+        LafterChange.setText("xxxxx");
 
         jLabel17.setFont(new java.awt.Font("Viner Hand ITC", 2, 18)); // NOI18N
         jLabel17.setText(" ~  Thank you for using Food Carat System  ~");
@@ -168,22 +171,6 @@ public class adminCusReceipt extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(25, 25, 25)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel10)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel5)
-                                    .addComponent(jLabel6))
-                                .addGap(62, 62, 62)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(Lemail)
-                                    .addComponent(Lname)
-                                    .addComponent(LtransID)
-                                    .addComponent(Lbeforetopup)
-                                    .addComponent(Ltopupnum)
-                                    .addComponent(Laftertopup)))
-                            .addComponent(jLabel9)
-                            .addComponent(jLabel7)
-                            .addComponent(jLabel8)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addGap(18, 18, 18)
@@ -191,7 +178,24 @@ public class adminCusReceipt extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel4)
                                 .addGap(28, 28, 28)
-                                .addComponent(Ltime))))
+                                .addComponent(Ltime))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel10)
+                                    .addComponent(jLabel9)
+                                    .addComponent(jLabel5)
+                                    .addComponent(jLabel6)
+                                    .addComponent(jLabel7)
+                                    .addComponent(jLabel8))
+                                .addGap(22, 22, 22)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(Lemail)
+                                    .addComponent(Lname)
+                                    .addComponent(LtransID)
+                                    .addComponent(LbeforeChange)
+                                    .addComponent(LchangesNum)
+                                    .addComponent(LafterChange))
+                                .addGap(0, 0, Short.MAX_VALUE))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(85, 85, 85)
                         .addComponent(jLabel17)))
@@ -230,15 +234,17 @@ public class adminCusReceipt extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
-                    .addComponent(Lbeforetopup))
+                    .addComponent(LbeforeChange))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel9)
-                    .addComponent(Ltopupnum))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel10)
-                    .addComponent(Laftertopup))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel9)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel10))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(LchangesNum)
+                        .addGap(18, 18, 18)
+                        .addComponent(LafterChange)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
                 .addComponent(jLabel17)
                 .addGap(16, 16, 16))
@@ -254,46 +260,46 @@ public class adminCusReceipt extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(adminCusReceipt.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(adminCusReceipt.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(adminCusReceipt.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(adminCusReceipt.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new adminCusReceipt().setVisible(true);
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(adminCusReceipt.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(adminCusReceipt.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(adminCusReceipt.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(adminCusReceipt.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new adminCusReceipt().setVisible(true);
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel Laftertopup;
-    private javax.swing.JLabel Lbeforetopup;
+    private javax.swing.JLabel LafterChange;
+    private javax.swing.JLabel LbeforeChange;
+    private javax.swing.JLabel LchangesNum;
     private javax.swing.JLabel Ldate;
     private javax.swing.JLabel Lemail;
     private javax.swing.JLabel Lname;
     private javax.swing.JLabel Ltime;
-    private javax.swing.JLabel Ltopupnum;
     private javax.swing.JLabel LtransID;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;

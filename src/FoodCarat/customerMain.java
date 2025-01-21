@@ -100,7 +100,12 @@ public class customerMain extends javax.swing.JFrame {
             }
         });
 
-        bCheckPoint.setText("Transaction History");
+        bCheckPoint.setText("Credit Topup History");
+        bCheckPoint.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bCheckPointActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -276,6 +281,12 @@ public class customerMain extends javax.swing.JFrame {
         customerFCFeedback frame = new customerFCFeedback();
         frame.setVisible(true);
     }//GEN-LAST:event_bComplaintFCActionPerformed
+
+    private void bCheckPointActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCheckPointActionPerformed
+        this.dispose();
+        customerTransacHistory frame = new customerTransacHistory();
+        frame.setVisible(true);
+    }//GEN-LAST:event_bCheckPointActionPerformed
 
     /**
      * @param args the command line arguments

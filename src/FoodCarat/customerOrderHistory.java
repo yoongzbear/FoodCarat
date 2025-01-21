@@ -183,6 +183,12 @@ public class customerOrderHistory extends javax.swing.JFrame {
                     String rOrderList = record[2].replace("[", "").replace("]", "");
                     String rVendorName = null;
                     String rCancelReason = record[6]; 
+                    rOrderStatus = rOrderStatus.substring(0, 1).toUpperCase() + rOrderStatus.substring(1).toLowerCase();
+                    if (rCancelReason.equalsIgnoreCase("null") || rCancelReason.equalsIgnoreCase("NULL") || rCancelReason.isEmpty()) {
+                        rCancelReason = "-";
+                    } else {
+                        rCancelReason = rCancelReason.substring(0, 1).toUpperCase() + rCancelReason.substring(1).toLowerCase();
+                    }
                     
                     //Split the order items by semicolon
                     String[] orderItems = rOrderList.split("\\|");
@@ -645,9 +651,14 @@ public class customerOrderHistory extends javax.swing.JFrame {
                 } else if ("pending accept".equals(selectedOrderStatus) && selectedOrderID.equals(orderID)) {
                     int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to cancel order?");
                     if (confirm == JOptionPane.YES_OPTION) {
-                        order.updateStatus(Integer.parseInt(selectedOrderID), "cancelled", "customer");
-                        JOptionPane.showMessageDialog(null, "Your order has been cancelled and refunded");
-                        populateTable();
+                        try {
+                            order.updateStatus(Integer.parseInt(selectedOrderID), "cancelled", "customer");
+                            order.refund(Integer.parseInt(orderID), User.getSessionEmail());
+                            JOptionPane.showMessageDialog(null, "Your order has been cancelled and refunded");
+                            populateTable();
+                        } catch (IOException ex) {
+                            Logger.getLogger(customerOrderHistory.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
                     break;
                 }

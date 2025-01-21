@@ -25,7 +25,7 @@ public class Manager extends User{
         
     //Monitor Runner Performance
     //
-    public Map<String, Runner> getRunnerPerformance(String selectedMonth) throws IOException {
+    public Map<String, Runner> getRunnerPerformance(int selectedMonth) throws IOException {
         Map<String, Runner> performanceDataMap = new HashMap<>();
         Map<Integer, String> orderToRunnerMap = new HashMap<>();  // Map to store orderID to runnerID mapping
 
@@ -51,7 +51,6 @@ public class Manager extends User{
         Review review = new Review();
         List<String[]> allReviews = review.getAllReviews();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         for (String[] reviewDetails : allReviews) {
 
             if (reviewDetails.length > 5) {
@@ -70,16 +69,19 @@ public class Manager extends User{
                     String runnerID = orderToRunnerMap.get(orderID); // Fetch runnerID from the map
 
                     String rating = reviewDetails[3].trim();
-                    String reviewMonth = getMonthFromOrderOrReview(reviewDetails[5]);
-
-                    // Check if the review falls in the selected month
-                    if (reviewMonth.equalsIgnoreCase(selectedMonth)) {
-                        // Add or update performance data for the runner
-                        Runner data = performanceDataMap.getOrDefault(runnerID, new Runner());
-                        int ratingValue = Integer.parseInt(rating);
-                        data.incrementOrders();
-                        data.addRating(ratingValue);
-                        performanceDataMap.put(runnerID, data);
+                    try {
+                       int reviewMonthNumber = Integer.parseInt(reviewDetails[5].split("-")[1]); // Extract month from the date
+                       if (reviewMonthNumber == selectedMonth) {
+                           // Add or update performance data for the runner
+                           Runner data = performanceDataMap.getOrDefault(runnerID, new Runner());
+                           int ratingValue = Integer.parseInt(rating);
+                           data.incrementOrders();
+                           data.addRating(ratingValue);
+                           performanceDataMap.put(runnerID, data);
+                       }
+                    } catch (Exception e) {
+                       // Handle invalid date format or missing month
+                       continue;
                     }
                 }
             }
@@ -88,7 +90,7 @@ public class Manager extends User{
     }
 
     // Method to calculate vendor performance by month
-    public List<String[]> getVendorPerformanceByMonth(String selectedMonth) {
+    public List<String[]> getVendorPerformanceByMonth(int selectedMonth) {
         List<String[]> tableData = new ArrayList<>();
         Map<String, Vendor> vendorData = new HashMap<>();
         Set<Integer> processedOrderIDs = new HashSet<>(); // Track processed order IDs
@@ -101,9 +103,9 @@ public class Manager extends User{
             while ((orderLine = orderReader.readLine()) != null) {
                 String[] orderData = orderLine.split(",");
                 int orderID = Integer.parseInt(orderData[0].trim());
-                String orderMonth = getMonthFromOrderOrReview(orderData[8]); // Extract month from orderID or date
+                int orderMonth = Integer.parseInt(orderData[8].split("-")[1]); // Extract month from orderID or date
 
-                if (orderMonth.equalsIgnoreCase(selectedMonth) && "Completed".equals(orderData[3])) {
+                if (orderMonth == selectedMonth && "Completed".equals(orderData[3])) {
                      // Skip if order ID is already processed
                     if (processedOrderIDs.contains(orderID)) continue;
                     processedOrderIDs.add(orderID); // Mark this order as processed
@@ -165,7 +167,7 @@ public class Manager extends User{
 
         return tableData;
     }
-    public List<String[]> getFilteredReviews(String selectedMonth) {
+    public List<String[]> getFilteredReviews(int selectedMonth) {
         List<String[]> filteredData = new ArrayList<>();
         int recordNumber = 1;
 
@@ -173,7 +175,7 @@ public class Manager extends User{
         List<String[]> allReviews = review.getAllReviews();
         for (String[] fields : allReviews) {
                 if (fields.length >= 8) {
-                    String date = fields[5];
+                    int date = Integer.parseInt(fields[5].split("-")[1]);
                     String reviewType = fields[2];
                     String complaint = fields[4];
                     String email = fields[6];
@@ -184,7 +186,7 @@ public class Manager extends User{
                     String []userDetails = user.performSearch(email, "user.txt");
                     String cusName = userDetails[1];
                     // Check if the month matches and review type is "foodcourt"
-                    if (getMonthFromOrderOrReview(date).equalsIgnoreCase(selectedMonth) &&
+                    if (date == selectedMonth &&
                         reviewType.equalsIgnoreCase("foodcourt") && complaintStatus.equals("unresolved")) {
                         
                         filteredData.add(new String[]{
@@ -206,31 +208,4 @@ public class Manager extends User{
         Customer customer = new Customer(cusEmail);
         customer.addPoints(50);
     }
-
-    // method to extract month from order data (ven)/review data(runner)
-    private String getMonthFromOrderOrReview(String date) {
-        if (date != null && date.contains("-")) {
-            String[] dateParts = date.split("-");
-            if (dateParts.length >= 2) {
-                int monthNumber = Integer.parseInt(dateParts[1]); // Extract month as number
-                return getMonthName(monthNumber); // Convert number to month name
-            }
-        }
-        return "Invalid Date"; // Return a default value if the date is invalid
-    }
-
-    // method to convert month number to month name
-    private String getMonthName(int monthNumber) {
-        String[] monthNames = {
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-        };
-
-        if (monthNumber >= 1 && monthNumber <= 12) {
-            return monthNames[monthNumber - 1]; // Adjust for 0-based index
-        }
-        return "Invalid Month";
-    }
-    
-    //Manager notification complains
 }
