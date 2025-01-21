@@ -376,11 +376,14 @@ public class customerPayment extends javax.swing.JFrame {
                 if (cusOrderID == Integer.parseInt(sOrderID.getText())) {
 
                     double newPaymentTotal = payTotal - redeemAmount + deliveryFee;; //update the payment total
+                    double finalPaidNoDelivery = payTotal - redeemAmount;
                     double updatedCredit = currentBalance - newPaymentTotal;
 
                     //deduct points from the customer
                     Customer customer = new Customer(User.getSessionEmail());
                     customer.deductPoints(redeemPoints);
+                    int earnablePoint = customer.calculateEarnablePoints(finalPaidNoDelivery);
+                    customer.addPoints(earnablePoint);
 
                     //write the payment details to the order
                     Order order = new Order(orderID);
