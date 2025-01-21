@@ -9,7 +9,7 @@ package FoodCarat;
  * @author User
  */
 public class adminCusReceipt extends javax.swing.JFrame {
-    private String transactionId;
+    private int transactionId;
     private String email;
     private String customerName;
     private double beforeTopUp;
@@ -24,7 +24,7 @@ public class adminCusReceipt extends javax.swing.JFrame {
         initComponents();
     }
     
-    public adminCusReceipt(String transactionId, String email, String customerName, double beforeTopUp, double topUpAmount, double afterTopUp, String date, String time) {
+    public adminCusReceipt(int transactionId, String email, String customerName, double beforeTopUp, double topUpAmount, double afterTopUp, String date, String time) {
         initComponents();
         this.transactionId = transactionId;
         this.email = email;
@@ -38,7 +38,7 @@ public class adminCusReceipt extends javax.swing.JFrame {
         setReceiptDetails();
     }
     private void setReceiptDetails() {
-        LtransID.setText(transactionId);
+        LtransID.setText(Integer.toString(transactionId));
         Lemail.setText(email);
         Lname.setText(customerName);
         Lbeforetopup.setText(String.format("%.2f", beforeTopUp));
