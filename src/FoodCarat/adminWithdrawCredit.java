@@ -260,7 +260,7 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
             String afterWithdrawAmountStr= sumtxt.getText().trim();
 
             if (withdrawAmountStr.isEmpty()) {
-                javax.swing.JOptionPane.showMessageDialog(this, "Please enter the top-up amount.", "Input Error", javax.swing.JOptionPane.WARNING_MESSAGE);
+                javax.swing.JOptionPane.showMessageDialog(this, "Please enter the withdraw amount.", "Input Error", javax.swing.JOptionPane.WARNING_MESSAGE);
                 withdrawnumtxt.requestFocus();
                 return;
             }
@@ -271,11 +271,12 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
             }
 
             double currentAmount = Double.parseDouble(currentAmountStr);
-            double topUpAmount = Double.parseDouble(withdrawAmountStr);
-
+            double withdrawAmountWithoutSymbol = Double.parseDouble(withdrawAmountStr);
+            double withdrawAmount = -Math.abs(withdrawAmountWithoutSymbol); // Ensure it's negative
+            
             // Confirm before proceeding
             int option = javax.swing.JOptionPane.showConfirmDialog(this,
-                String.format("Name: %s\nWithdraw Amount: %.2f\nDo you want to proceed?", name, topUpAmount),
+                String.format("Name: %s\nWithdraw Amount: %.2f\nDo you want to proceed?", name, withdrawAmountWithoutSymbol),
                 "Confirm Top-up", javax.swing.JOptionPane.YES_NO_OPTION);
 
             if (option != javax.swing.JOptionPane.YES_OPTION) {
@@ -284,7 +285,7 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
 
             // Process the top-up via Admin class
             Admin admin = new Admin();
-            admin.processChangesCredit(email, name, currentAmount, topUpAmount);
+            admin.processChangesCredit(email, name, currentAmount, withdrawAmount);
 
             // Clear the fields
             clearFields();
