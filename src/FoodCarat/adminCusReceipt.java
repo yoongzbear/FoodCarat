@@ -87,7 +87,7 @@ public class adminCusReceipt extends javax.swing.JFrame {
         jLabel1.setText("Food Carat");
 
         jLabel2.setFont(new java.awt.Font("Cooper Black", 0, 24)); // NOI18N
-        jLabel2.setText("Topup Credit Receipt");
+        jLabel2.setText("Transaction Receipt");
 
         jLabel3.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
         jLabel3.setText("Date: ");
@@ -102,13 +102,13 @@ public class adminCusReceipt extends javax.swing.JFrame {
         jLabel6.setText("Customer's Name:");
 
         jLabel7.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
-        jLabel7.setText("Payment ID: ");
+        jLabel7.setText("Transaction ID: ");
 
         jLabel8.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
         jLabel8.setText("Amount Before Topup:");
 
         jLabel9.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
-        jLabel9.setText("Topup Amount:");
+        jLabel9.setText("Amount Changes:");
 
         jLabel10.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
         jLabel10.setText("Amount After Topup: ");
