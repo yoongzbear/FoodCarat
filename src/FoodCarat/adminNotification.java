@@ -91,7 +91,7 @@ public class adminNotification extends javax.swing.JFrame {
                 String name = customerName[1];
                 
                 // Create and display the receipt window
-                adminCusReceipt receiptWindow = new adminCusReceipt(transID, email, name, topUpAmount, topUpAmount, newAmount, datePayment, timePayment);
+                adminCusReceipt receiptWindow = new adminCusReceipt(Integer.parseInt(transID), email, name, topUpAmount, topUpAmount, newAmount, datePayment, timePayment);
                 receiptWindow.setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(this, "Transaction details not found.", "Error", JOptionPane.ERROR_MESSAGE);
