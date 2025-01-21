@@ -636,15 +636,6 @@ public class Order {
         String currentStatus = order[3].trim();
         List<String[]> allOrders = getAllOrders();
 
-        // If the order status is "accepted by vendor", attempt to assign it to a runner
-        if ("Assigning runner".equalsIgnoreCase(newOrderStatus)) {
-            boolean orderAssigned = assignOrderToRunner(order);  // Method to assign to available runner
-            if (!orderAssigned) {
-                // If no runner accepts the order, cancel it
-                newOrderStatus = "cancelled";  // Update the status to "cancelled"
-            }
-        }
-
         try {
             FileWriter fw = new FileWriter(orderFile);
             BufferedWriter bw = new BufferedWriter(fw);
@@ -676,37 +667,90 @@ public class Order {
             fw.close();
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Update order status failed: " + e.getMessage());
+            return;         
+        }
+        // If the order status is "accepted by vendor", attempt to assign it to a runner
+        if ("Assigning runner".equalsIgnoreCase(newOrderStatus)) {
+            boolean orderAssigned = assignOrderToRunner(order);  // Method to assign to available runner
+            if (!orderAssigned) {
+                // If no runner accepts the order, cancel it
+            updateStatus(id, "cancelled", "runner");  // Recursively update status to "cancelled"
+            }
         }
     }
 
     // Assign an order to a runner in runner.txt
     public boolean assignOrderToRunner(String[] orderData) {
         boolean runnerAssigned = false;
-        Runner runner = new Runner();
 
         try (BufferedReader runnerReader = new BufferedReader(new FileReader(runnerFile))) {
             String runnerLine;
+            
             while ((runnerLine = runnerReader.readLine()) != null) {
                 String[] runnerData = runnerLine.split(",");
 
-                if (runnerData.length > 2 && "available".equals(runnerData[2])) {
-                    boolean runnerAccepts = runner.assignRunnerTask(runnerData, orderData);
+                if (runnerData.length > 2 && "available".equalsIgnoreCase(runnerData[2])) {
+                    // Assign this runner by updating the email in customerOrder.txt
+                    updateRunnerEmailInOrder(orderData[0], runnerData[0]);
+                    
+                    // Wait for runner decision from external button logic
+                    boolean decisionMade = false;
+                    boolean taskAccepted = false;
 
-                    if (runnerAccepts) {
+                    // Simulate waiting for the decision from external buttons
+                    while (!decisionMade) {
+                        try {
+                            Thread.sleep(100); // Pause for 100ms before checking the decision again
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt(); // Restore the interrupted status
+                            JOptionPane.showMessageDialog(null, "Thread was interrupted: " + e.getMessage());
+                        }
+                    }
+
+                    runnerViewTask viewTask = new runnerViewTask();
+                    // Decision variables to be updated externally by button actions
+                    decisionMade = viewTask.getDecisionMade(); // Replace with actual method to check decision
+                    taskAccepted = viewTask.getTaskAccepted(); // Replace with actual method to check acceptance
+
+                    if (taskAccepted) {
+                        // Runner accepted, mark order as "Ordered" and runner as "unavailable"
+                        updateStatus(Integer.parseInt(orderData[0]), "Ordered", "runner");
+                        new Runner().updateRunnerStatus(runnerData[0], "unavailable");
                         runnerAssigned = true;
                         break;
+                    } else {
+                        // Runner rejected the task, continue to the next runner
+                        updateRunnerEmailInOrder(orderData[0], ""); // Clear runner email for rejection
                     }
                 }
             }
             
+            // If no runner accepts, cancel the task
             if (!runnerAssigned) {
                 updateStatus(Integer.parseInt(orderData[0]), "cancelled", "runner");
             }
-            
         } catch (IOException e) {
             e.printStackTrace();
         }
+        
         return runnerAssigned;
+    }
+
+    // Update the runner email in the customerOrder.txt file
+    private void updateRunnerEmailInOrder(String orderID, String runnerEmail) {
+        List<String[]> allOrders = getAllOrders();
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(orderFile))) {
+            for (String[] order : allOrders) {
+                if (order[0].equals(orderID)) {
+                    order[5] = runnerEmail; // Update runner email at index 5
+                }
+                bw.write(String.join(",", order));
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Failed to update runner email: " + e.getMessage());
+        }
     }
     
     public void refund(int orderID, String userEmail) throws IOException {

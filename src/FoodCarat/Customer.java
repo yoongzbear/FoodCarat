@@ -182,4 +182,20 @@ public class Customer extends User{
             }
         }
     }
+    
+    // Get customer address
+    public String getCustomerAddress(String customerEmail) {
+        try (BufferedReader br = new BufferedReader(new FileReader(customerFile))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] customerData = line.split(",");
+                if (customerData[0].equals(customerEmail)) {
+                    return customerData[1];
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "Address not found";
+    }
 }

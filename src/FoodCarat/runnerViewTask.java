@@ -5,6 +5,7 @@
 package FoodCarat;
 
 import FoodCarat.User;
+import java.util.List;
 import javax.swing.JOptionPane;
 
 /**
@@ -19,41 +20,72 @@ public class runnerViewTask extends javax.swing.JFrame {
     public runnerViewTask() {
         initComponents();
         setLocationRelativeTo(null);
+        
+        String runnerEmail = User.getSessionEmail();
+        getRunnerTask(runnerEmail);
     }
-        
-        public void displayOrderForRunner(String[] orderData) {
-            orderIDTF.setText(orderData[0]);
-            storeNameTF.setText(orderData[1]);
-            //addressTA.setText(orderData[2].replaceAll("^\\[|\\]$", "").replace(";", ","));
-            //get customer email and read the customer.txt to get the address in index 1
-            cusNameTF.setText(orderData[3]);
-            deFeeTF.setText(orderData[4]);
+    
+    private void getRunnerTask(String runnerEmail) {
+        // Get all orders by calling the getAllOrders method from the Order class
+        Order order = new Order();
+        List<String[]> allOrders = order.getAllOrders(); // This should work now, as getAllOrders is part of the Order class
+    
+        for (String[] orderData : allOrders) {
+            // Check if the order status is "Assigning runner" and runner email matches
+            if ("Assigning runner".equalsIgnoreCase(orderData[3]) && runnerEmail.equals(orderData[5])) {
+                // Populate the fields in the JFrame with the order data
+                orderIDTF.setText(orderData[0]);
+                
+                String itemID = orderData[2];
+                //get vendor name
+                Item item = new Item();
+                String[] vendorInfo = item.getVendorInfoByItemID(Integer.parseInt(itemID));
+                String vendorName = vendorInfo[1];
+                
+                vendorNameTF.setText(vendorName);
 
-            acceptJB.setEnabled(true);
-            declineJB.setEnabled(true);
+                // Get customer email from the order and find their address in customer.txt
+                String customerEmail = orderData[4];
+                Customer customer = new Customer(customerEmail);
+                String customerAddress = customer.getCustomerAddress(customerEmail); // Assume this method retrieves the customer address
+                addressTA.setText(customerAddress);
+                deFeeTF.setText(orderData[6]);
+
+                // Enable the Accept and Decline buttons
+                acceptJB.setEnabled(true);
+                declineJB.setEnabled(true);
+                break; // Exit after populating the first matching order
+            }
         }
-        
-        private boolean taskAccepted = false;
-        private boolean decisionMade = false;
+    }
+    
+    private volatile boolean decisionMade = false;
+    private volatile boolean taskAccepted = false;
 
-        public boolean isTaskAccepted() {
-            return taskAccepted;
-        }
+    // Methods to update the decision flags from button actions
+    public void setDecision(boolean made, boolean accepted) {
+        this.decisionMade = made;
+        this.taskAccepted = accepted;
+    }
 
-        public boolean isDecisionMade() {
-            return decisionMade;
-        }
+    // Methods to retrieve the decision flags
+    public boolean getDecisionMade() {
+        return decisionMade;
+    }
 
-        private void clearTaskDetails() {
-            orderIDTF.setText("");
-            storeNameTF.setText("");
-            addressTA.setText("");
-            cusNameTF.setText("");
-            deFeeTF.setText("");
+    public boolean getTaskAccepted() {
+        return taskAccepted;
+    }
 
-            acceptJB.setEnabled(false);
-            declineJB.setEnabled(false);
-        }
+    private void clearTaskDetails() {
+        orderIDTF.setText("");
+        vendorNameTF.setText("");
+        addressTA.setText("");
+        deFeeTF.setText("");
+
+        acceptJB.setEnabled(false);
+        declineJB.setEnabled(false);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -73,14 +105,12 @@ public class runnerViewTask extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         orderIDTF = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        cusNameTF = new javax.swing.JTextField();
+        vendorNameTF = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         addressTA = new javax.swing.JTextArea();
         jLabel7 = new javax.swing.JLabel();
         deFeeTF = new javax.swing.JTextField();
-        jLabel12 = new javax.swing.JLabel();
-        storeNameTF = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         taskJT = new javax.swing.JTable();
@@ -161,10 +191,10 @@ public class runnerViewTask extends javax.swing.JFrame {
         orderIDTF.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        jLabel3.setText("Customer Name:");
+        jLabel3.setText("Store Name:");
 
-        cusNameTF.setEditable(false);
-        cusNameTF.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
+        vendorNameTF.setEditable(false);
+        vendorNameTF.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
 
         jLabel4.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         jLabel4.setText("Address:");
@@ -181,12 +211,6 @@ public class runnerViewTask extends javax.swing.JFrame {
         deFeeTF.setEditable(false);
         deFeeTF.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
 
-        jLabel12.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        jLabel12.setText("Store Name:");
-
-        storeNameTF.setEditable(false);
-        storeNameTF.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -197,35 +221,27 @@ public class runnerViewTask extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cusNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(610, Short.MAX_VALUE))
+                        .addComponent(vendorNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(642, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(orderIDTF, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(106, 106, 106)
                                 .addComponent(jLabel7)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(deFeeTF, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel12))
+                                .addComponent(deFeeTF, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel4)
                                 .addGap(18, 18, 18)
                                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 545, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(acceptJB, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(declineJB, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(28, 28, 28))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(storeNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(acceptJB, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(declineJB, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(28, 28, 28))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -237,13 +253,11 @@ public class runnerViewTask extends javax.swing.JFrame {
                             .addComponent(jLabel2)
                             .addComponent(orderIDTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel7)
-                            .addComponent(deFeeTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel12)
-                            .addComponent(storeNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(deFeeTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
-                            .addComponent(cusNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(vendorNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
@@ -436,38 +450,23 @@ public class runnerViewTask extends javax.swing.JFrame {
     }//GEN-LAST:event_backJBActionPerformed
 
     private void acceptJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptJBActionPerformed
-        String orderId = orderIDTF.getText();
-        String runnerEmail = User.getSessionEmail();
+        //String orderId = orderIDTF.getText();
+        //String runnerEmail = User.getSessionEmail();
 
-        Runner runner = new Runner();
-        new Order().updateStatus(Integer.parseInt(orderId), "Ordered", "runner");
-        runner.updateRunnerStatus(runnerEmail, "unavailable");
-        
-        // Mark task as accepted and notify waiting threads
-        taskAccepted = true; // Mark task as accepted
-        decisionMade = true; // Mark that a decision has been made
-        synchronized (this) {
-            notify(); // Wake up the thread waiting for a decision
-        }
-
+        setDecision(true, true); // Decision made and task accepted
         JOptionPane.showMessageDialog(null, "Task accepted!");
-        acceptJB.setEnabled(false);
-        declineJB.setEnabled(false);
+        
         clearTaskDetails();
     }//GEN-LAST:event_acceptJBActionPerformed
 
     private void declineJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_declineJBActionPerformed
-        String orderId = orderIDTF.getText();
+        //String orderId = orderIDTF.getText();
         
         int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to reject this task?", "Reject Task", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             JOptionPane.showMessageDialog(null, "Task declined!");
             
-            acceptJB.setEnabled(false);
-            declineJB.setEnabled(false);
             clearTaskDetails();
-            
-            new Runner().assignNextRunner(orderId);
         }
     }//GEN-LAST:event_declineJBActionPerformed
 
@@ -513,14 +512,12 @@ public class runnerViewTask extends javax.swing.JFrame {
     private javax.swing.JTextArea addressTA2;
     private javax.swing.JButton backJB;
     private javax.swing.JTextField contactNoTF;
-    private javax.swing.JTextField cusNameTF;
     private javax.swing.JTextField cusNameTF2;
     private javax.swing.JTextField deFeeTF;
     private javax.swing.JButton declineJB;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -539,8 +536,8 @@ public class runnerViewTask extends javax.swing.JFrame {
     private javax.swing.JTextField orderIDTF;
     private javax.swing.JTextField orderIDTF2;
     private javax.swing.JComboBox<String> statusJCB;
-    private javax.swing.JTextField storeNameTF;
     private javax.swing.JTable taskJT;
     private javax.swing.JButton updateJB;
+    private javax.swing.JTextField vendorNameTF;
     // End of variables declaration//GEN-END:variables
 }
