@@ -6,6 +6,7 @@ package FoodCarat;
 
 import java.awt.Color;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -29,7 +30,7 @@ public class managerMonRunPer extends javax.swing.JFrame {
         averagechart.setBackground(new Color(211, 211, 211)); 
     }
 
-    private void displayRunnerPerformance(String selectedMonth) throws IOException {
+    private void displayRunnerPerformance(int selectedMonth) throws IOException {
         Manager manager = new Manager();
         Map<String, Runner> performanceDataMap = manager.getRunnerPerformance(selectedMonth);
         
@@ -281,6 +282,15 @@ public class managerMonRunPer extends javax.swing.JFrame {
     private void bsearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bsearchActionPerformed
 
         String selectedMonth = monthcbx.getSelectedItem().toString();
+        // Array of month names
+        String[] monthNames = {
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        };
+
+        // Convert the month name to the month number (1 for January, 2 for February, etc.)
+        int monthNumber = Arrays.asList(monthNames).indexOf(selectedMonth) + 1;
+        
         if (selectedMonth == null || "Please select".equals(selectedMonth)) {
             javax.swing.JOptionPane.showMessageDialog(this, "Please select a valid month!");
             return;
@@ -289,7 +299,7 @@ public class managerMonRunPer extends javax.swing.JFrame {
         try {
         // Fetch the performance data
         Manager manager = new Manager();
-        Map<String, Runner> performanceDataMap = manager.getRunnerPerformance(selectedMonth);
+        Map<String, Runner> performanceDataMap = manager.getRunnerPerformance(monthNumber);
 
         
         if (performanceDataMap == null || performanceDataMap.isEmpty()) {
@@ -299,7 +309,7 @@ public class managerMonRunPer extends javax.swing.JFrame {
         // Call the method to create and display the pie charts
         createRunnerPerformancePieChart(performanceDataMap);
         // show the data in table
-        displayRunnerPerformance(selectedMonth);
+        displayRunnerPerformance(monthNumber);
         } catch (IOException e) {
             e.printStackTrace();
         }
