@@ -52,7 +52,7 @@ public class adminTopupCredit extends javax.swing.JFrame {
             double topUpAmount = topUpAmountStr.isEmpty() ? 0.0 : Double.parseDouble(topUpAmountStr);
 
             // Calculate the new amount
-            double newAmount = Admin.calculateNewAmount(currentAmount, topUpAmount, true);
+            double newAmount = currentAmount + topUpAmount;
 
             // Update the sumtxt field
             sumtxt.setText(String.format("%.2f", newAmount));
