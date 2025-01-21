@@ -36,6 +36,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
         initComponents();
         populateTable();
         addTableListener();
+        bReorder.setEnabled(false);
         bFeedback.setVisible(false);
         lRunnerNameTitle.setVisible(false);
         lRunnerName.setVisible(false);
@@ -79,6 +80,11 @@ public class customerOrderHistory extends javax.swing.JFrame {
                             if ("null".equals(feedbackParts[1]) || "null".equals(feedbackParts[2]) || "null".equals(feedbackParts[3])) {
                                 validFeedback = false;
                             }
+                            
+                            if ("completed".equals(orderStatus)) {
+                                bReorder.setEnabled(true);
+                            }
+                            
                             if ("Delivery".equals(orderType.trim())) {
                                 // Set visibility of components related to the runner
                                 lRunnerNameTitle.setVisible(true);
@@ -165,11 +171,11 @@ public class customerOrderHistory extends javax.swing.JFrame {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] record = line.split(",");
+                String rOrderStatus = record[3];
                 String rUser = record[4];
-                if (rUser.equals(User.getSessionEmail())){
+                if (rUser.equals(User.getSessionEmail()) && rOrderStatus != ""){
                     String rOrderType = record[1];
                     String rOrderList = record[2].replace("[", "").replace("]", "");
-                    String rOrderStatus = record[3];
                     String rVendorName = null;
                     String rCancelReason = record[6]; 
                     
@@ -264,7 +270,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
         lOrderFeedbackTitle = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         taOrderFeedback = new javax.swing.JTextArea();
-        bAction = new javax.swing.JButton();
+        bReorder = new javax.swing.JButton();
         ltotalPrice = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
         tbOrderItem = new javax.swing.JTable();
@@ -352,7 +358,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
         taOrderFeedback.setRows(5);
         jScrollPane2.setViewportView(taOrderFeedback);
 
-        bAction.setText("Reorder");
+        bReorder.setText("Reorder");
 
         ltotalPrice.setText("totalPrice");
 
@@ -415,7 +421,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
                                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 379, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGap(18, 18, 18)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(bAction, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(bReorder, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(18, 18, 18)
@@ -510,7 +516,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
                             .addComponent(lRunnerNameTitle)
                             .addComponent(lRunnerName))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(bAction))
+                        .addComponent(bReorder))
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(lOrderFeedbackSection)
@@ -635,9 +641,9 @@ public class customerOrderHistory extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton bAction;
     private javax.swing.JButton bBack;
     private javax.swing.JButton bFeedback;
+    private javax.swing.JButton bReorder;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JComboBox<String> cbRunnerRating;
     private javax.swing.JComboBox<String> cbVendorRating;

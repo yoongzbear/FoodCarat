@@ -70,7 +70,7 @@
                                   </Group>
                                   <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="bAction" min="-2" pref="222" max="-2" attributes="0"/>
+                                      <Component id="bReorder" min="-2" pref="222" max="-2" attributes="0"/>
                                       <Group type="102" alignment="0" attributes="0">
                                           <Component id="jLabel4" min="-2" pref="90" max="-2" attributes="0"/>
                                           <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -190,7 +190,7 @@
                                   <Component id="lRunnerName" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="32767" attributes="0"/>
-                              <Component id="bAction" min="-2" max="-2" attributes="0"/>
+                              <Component id="bReorder" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Component id="jScrollPane4" min="-2" pref="208" max="-2" attributes="0"/>
                       </Group>
@@ -338,11 +338,11 @@
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                   <StringArray count="6">
                     <StringItem index="0" value="Please Rate"/>
-                    <StringItem index="1" value="1 &#x1F31F;"/>
-                    <StringItem index="2" value="2 &#x1F31F;"/>
-                    <StringItem index="3" value="3 &#x1F31F;"/>
-                    <StringItem index="4" value="4 &#x1F31F;"/>
-                    <StringItem index="5" value="5 &#x1F31F;"/>
+                    <StringItem index="1" value="1 &#xd83c;&#xdf1f;"/>
+                    <StringItem index="2" value="2 &#xd83c;&#xdf1f;"/>
+                    <StringItem index="3" value="3 &#xd83c;&#xdf1f;"/>
+                    <StringItem index="4" value="4 &#xd83c;&#xdf1f;"/>
+                    <StringItem index="5" value="5 &#xd83c;&#xdf1f;"/>
                   </StringArray>
                 </Property>
               </Properties>
@@ -405,7 +405,7 @@
                 </Component>
               </SubComponents>
             </Container>
-            <Component class="javax.swing.JButton" name="bAction">
+            <Component class="javax.swing.JButton" name="bReorder">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Reorder"/>
               </Properties>
@@ -503,11 +503,11 @@
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                   <StringArray count="6">
                     <StringItem index="0" value="Please Rate"/>
-                    <StringItem index="1" value="1 &#x1F31F;"/>
-                    <StringItem index="2" value="2 &#x1F31F;"/>
-                    <StringItem index="3" value="3 &#x1F31F;"/>
-                    <StringItem index="4" value="4 &#x1F31F;"/>
-                    <StringItem index="5" value="5 &#x1F31F;"/>
+                    <StringItem index="1" value="1 &#xd83c;&#xdf1f;"/>
+                    <StringItem index="2" value="2 &#xd83c;&#xdf1f;"/>
+                    <StringItem index="3" value="3 &#xd83c;&#xdf1f;"/>
+                    <StringItem index="4" value="4 &#xd83c;&#xdf1f;"/>
+                    <StringItem index="5" value="5 &#xd83c;&#xdf1f;"/>
                   </StringArray>
                 </Property>
               </Properties>
