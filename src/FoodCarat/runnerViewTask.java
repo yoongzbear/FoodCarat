@@ -4,7 +4,7 @@
  */
 package FoodCarat;
 
-import FoodCarat.User;
+import java.util.Arrays;
 import java.util.List;
 import javax.swing.JOptionPane;
 
@@ -13,51 +13,7 @@ import javax.swing.JOptionPane;
  * @author Yuna
  */
 public class runnerViewTask extends javax.swing.JFrame {
-
-    /**
-     * Creates new form runnerViewTask
-     */
-    public runnerViewTask() {
-        initComponents();
-        setLocationRelativeTo(null);
-        
-        String runnerEmail = User.getSessionEmail();
-        getRunnerTask(runnerEmail);
-    }
-    
-    private void getRunnerTask(String runnerEmail) {
-        // Get all orders by calling the getAllOrders method from the Order class
-        Order order = new Order();
-        List<String[]> allOrders = order.getAllOrders(); // This should work now, as getAllOrders is part of the Order class
-    
-        for (String[] orderData : allOrders) {
-            // Check if the order status is "Assigning runner" and runner email matches
-            if ("Assigning runner".equalsIgnoreCase(orderData[3]) && runnerEmail.equals(orderData[5])) {
-                // Populate the fields in the JFrame with the order data
-                orderIDTF.setText(orderData[0]);
-                
-                String itemID = orderData[2];
-                //get vendor name
-                Item item = new Item();
-                String[] vendorInfo = item.getVendorInfoByItemID(Integer.parseInt(itemID));
-                String vendorName = vendorInfo[1];
-                
-                vendorNameTF.setText(vendorName);
-
-                // Get customer email from the order and find their address in customer.txt
-                String customerEmail = orderData[4];
-                Customer customer = new Customer(customerEmail);
-                String customerAddress = customer.getCustomerAddress(customerEmail); // Assume this method retrieves the customer address
-                addressTA.setText(customerAddress);
-                deFeeTF.setText(orderData[6]);
-
-                // Enable the Accept and Decline buttons
-                acceptJB.setEnabled(true);
-                declineJB.setEnabled(true);
-                break; // Exit after populating the first matching order
-            }
-        }
-    }
+    private final String runnerEmail = "runner2@mail.com";
     
     private volatile boolean decisionMade = false;
     private volatile boolean taskAccepted = false;
@@ -75,6 +31,74 @@ public class runnerViewTask extends javax.swing.JFrame {
 
     public boolean getTaskAccepted() {
         return taskAccepted;
+    }
+
+    /**
+     * Creates new form runnerViewTask
+     */
+    public runnerViewTask() {
+        initComponents();
+        setLocationRelativeTo(null);
+        
+        //String runnerEmail = User.getSessionEmail();
+        getRunnerTask(runnerEmail);
+    }
+    
+    private void getRunnerTask(String runnerEmail) {
+        // Get all orders by calling the getAllOrders method from the Order class
+        Order order = new Order();
+        List<String[]> allOrders = order.getAllOrders();
+        System.out.println("Total orders: " + allOrders.size()); // Debug: Check total orders
+
+        for (String[] orderData : allOrders) {
+            System.out.println("Checking order: " + Arrays.toString(orderData));  // Debug: Print each order
+
+            // Match only if the order status is "Assigning runner" and the runner's email matches
+            if ("Assigning runner".equalsIgnoreCase(orderData[3]) && runnerEmail.equals(orderData[5])) {
+                System.out.println("Found matching order: " + Arrays.toString(orderData));  // Debug: Print matched order
+
+                // Populate the fields in the JFrame with the order data
+                orderIDTF.setText(orderData[0]);
+
+                // Extract the itemIDs (which are in the format [4;1])
+                String itemIDString = orderData[2]; // Format [4;1]
+                itemIDString = itemIDString.replaceAll("[\\[\\]]", ""); // Remove square brackets
+                String[] itemIDs = itemIDString.split(";"); // Split by semicolon
+
+                // Get vendor info for the first item (assuming all items are from the same vendor)
+                String firstItemID = itemIDs[0]; // Take the first item ID
+                System.out.println("Processing item ID: " + firstItemID);  // Debug: Print first item ID
+
+                Item item = new Item();
+                String[] vendorInfo = item.getVendorInfoByItemID(Integer.parseInt(firstItemID.trim()));  // Get vendor info
+                // Print vendorInfo array for debugging (this will show the actual contents of the array)
+                System.out.println("Vendor Info: " + Arrays.toString(vendorInfo));
+
+                // Check if vendor info is not null and contains expected data
+                if (vendorInfo != null && vendorInfo.length > 2) {
+                    String vendorName = vendorInfo[1]; // Vendor's name is at index 2 in the array
+
+                    // Display the vendor name in the vendorNameTF text field
+                    vendorNameTF.setText(vendorName);
+                } else {
+                    System.out.println("Vendor info not found for item ID: " + firstItemID);
+                    vendorNameTF.setText("Vendor not found");
+                }                
+                
+                // Get customer email and retrieve their address
+                String customerEmail = orderData[4];
+                Customer customer = new Customer(customerEmail);
+                String customerAddress = customer.getCustomerAddress(customerEmail); // This method retrieves the customer address
+                addressTA.setText(customerAddress);
+                deFeeTF.setText(orderData[6]);
+
+                // Enable the Accept and Decline buttons
+                acceptJB.setEnabled(true);
+                declineJB.setEnabled(true);
+
+                break; // Exit after populating the first matching order
+            }
+        }
     }
 
     private void clearTaskDetails() {
@@ -189,12 +213,14 @@ public class runnerViewTask extends javax.swing.JFrame {
 
         orderIDTF.setEditable(false);
         orderIDTF.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
+        orderIDTF.setFocusable(false);
 
         jLabel3.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         jLabel3.setText("Store Name:");
 
         vendorNameTF.setEditable(false);
         vendorNameTF.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
+        vendorNameTF.setFocusable(false);
 
         jLabel4.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         jLabel4.setText("Address:");
@@ -202,6 +228,7 @@ public class runnerViewTask extends javax.swing.JFrame {
         addressTA.setEditable(false);
         addressTA.setColumns(20);
         addressTA.setRows(5);
+        addressTA.setFocusable(false);
         addressTA.setPreferredSize(new java.awt.Dimension(300, 100));
         jScrollPane2.setViewportView(addressTA);
 
@@ -210,6 +237,7 @@ public class runnerViewTask extends javax.swing.JFrame {
 
         deFeeTF.setEditable(false);
         deFeeTF.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
+        deFeeTF.setFocusable(false);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -309,6 +337,7 @@ public class runnerViewTask extends javax.swing.JFrame {
 
         orderIDTF2.setEditable(false);
         orderIDTF2.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
+        orderIDTF2.setFocusable(false);
         orderIDTF2.setPreferredSize(new java.awt.Dimension(100, 25));
 
         jLabel6.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
@@ -333,18 +362,22 @@ public class runnerViewTask extends javax.swing.JFrame {
 
         cusNameTF2.setEditable(false);
         cusNameTF2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cusNameTF2.setFocusable(false);
 
         contactNoTF.setEditable(false);
         contactNoTF.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        contactNoTF.setFocusable(false);
 
         ItemTA.setEditable(false);
         ItemTA.setColumns(20);
         ItemTA.setLineWrap(true);
+        ItemTA.setFocusable(false);
         jScrollPane3.setViewportView(ItemTA);
 
         addressTA2.setEditable(false);
         addressTA2.setColumns(20);
         addressTA2.setRows(5);
+        addressTA2.setFocusable(false);
         jScrollPane4.setViewportView(addressTA2);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -452,7 +485,7 @@ public class runnerViewTask extends javax.swing.JFrame {
     private void acceptJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptJBActionPerformed
         //String orderId = orderIDTF.getText();
         //String runnerEmail = User.getSessionEmail();
-
+        
         setDecision(true, true); // Decision made and task accepted
         JOptionPane.showMessageDialog(null, "Task accepted!");
         
@@ -464,6 +497,7 @@ public class runnerViewTask extends javax.swing.JFrame {
         
         int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to reject this task?", "Reject Task", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
+            setDecision(true, false); // Decision made and task rejected
             JOptionPane.showMessageDialog(null, "Task declined!");
             
             clearTaskDetails();
