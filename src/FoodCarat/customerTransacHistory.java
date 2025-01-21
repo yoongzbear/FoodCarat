@@ -1,5 +1,14 @@
 package FoodCarat;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -14,8 +23,38 @@ public class customerTransacHistory extends javax.swing.JFrame {
     /**
      * Creates new form customerTransacHistory
      */
+    private Map<Integer, String[]> rowData = new HashMap<>();
+    
     public customerTransacHistory() {
         initComponents();
+        populateTable();
+    }
+    
+    private void populateTable(){
+        DefaultTableModel model = (DefaultTableModel) tTopup.getModel();
+        model.setRowCount(0);
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("resources/transactionCredit.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] record = line.split(",");
+                String rUser = record[1];
+                if (rUser.equals(User.getSessionEmail())){
+                    String rTransactionID = record[0];
+                    String rPrevBalance = record[2];
+                    String rTopupAmount = record[3];
+                    String rTopupDate = record[4];
+                    String rTopupTime = record[5];
+                    
+                    model.addRow(new Object[]{rTopupDate + " @ " + rTopupTime,"Top Up RM" + rTopupAmount,rTransactionID,rPrevBalance});
+                    rowData.put(tTopup.getRowCount() - 1, new String[]{rTransactionID, rPrevBalance, rTopupAmount, rTopupDate, rTopupTime});
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        tTopup.revalidate();
+        tTopup.repaint();
     }
 
     /**
@@ -30,7 +69,10 @@ public class customerTransacHistory extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tTopup = new javax.swing.JTable();
+        jLabel3 = new javax.swing.JLabel();
+        bBack = new javax.swing.JButton();
+        bReceipt = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -40,45 +82,117 @@ public class customerTransacHistory extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Cooper Black", 0, 24)); // NOI18N
         jLabel2.setText("Credit Reload History");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tTopup.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Date", "Top Up Amount"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        tTopup.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(tTopup);
+        if (tTopup.getColumnModel().getColumnCount() > 0) {
+            tTopup.getColumnModel().getColumn(1).setResizable(false);
+        }
+
+        bBack.setText("Main Menu");
+        bBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bBackActionPerformed(evt);
+            }
+        });
+
+        bReceipt.setText("View Receipt");
+        bReceipt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bReceiptActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 493, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel1)
+                        .addComponent(jLabel2))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3)
+                        .addGap(262, 262, 262)))
+                .addContainerGap(54, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(94, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel1)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(89, 89, 89))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(bBack, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bReceipt, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(55, 55, 55))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(16, 16, 16)
+                .addGap(11, 11, 11)
+                .addComponent(bBack)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(bReceipt)
+                .addContainerGap(32, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void bBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bBackActionPerformed
+        this.dispose();
+        customerMain frame = new customerMain();
+        frame.setVisible(true);
+    }//GEN-LAST:event_bBackActionPerformed
+
+    private void bReceiptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bReceiptActionPerformed
+        int row = tTopup.getSelectedRow();
+        if (row != -1) {
+            //get full topup info for the row selected
+            String[] fullData = rowData.get(row);
+
+            // Full Data
+            String rTransactionID = fullData[0];
+            String rPrevBalance = fullData[1];
+            String rTopupAmount = fullData[2];
+            String rTopupDate = fullData[3];
+            String rTopupTime = fullData[4]; 
+            
+            User user = new User(User.getSessionEmail());
+            String[] userInfo = user.performSearch(User.getSessionEmail(), "resources/user.txt");
+            String userName = userInfo[1];
+
+            //display receipt
+            adminCusReceipt receiptFrame = new adminCusReceipt(
+                Integer.parseInt(rTransactionID),
+                User.getSessionEmail(), 
+                userName,
+                Double.parseDouble(rPrevBalance),
+                Double.parseDouble(rTopupAmount),
+                rTopupDate,
+                rTopupTime
+            );
+
+            receiptFrame.setVisible(true); 
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select a row first.");
+        }
+    }//GEN-LAST:event_bReceiptActionPerformed
 
     /**
      * @param args the command line arguments
@@ -116,9 +230,12 @@ public class customerTransacHistory extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bBack;
+    private javax.swing.JButton bReceipt;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tTopup;
     // End of variables declaration//GEN-END:variables
 }
