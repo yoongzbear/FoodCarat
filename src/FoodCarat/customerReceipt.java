@@ -43,12 +43,14 @@ public class customerReceipt extends javax.swing.JFrame {
         int pointBalance = customer.getPoints();
         String creditBalance = "0";
         User user = new User(User.getSessionEmail());
-        //String userContact = user.;
+        String[] userInfo = user.performSearch(User.getSessionEmail(), "resources/user.txt");
+        String userContact = userInfo[5];
+        
         //Display
         sOrderID.setText(String.valueOf(orderID));
         sOrderDate.setText(orderDate);
         sUsername.setText(User.getSessionName());
-        //sHPNum.setText(userContact);
+        sHPNum.setText(userContact);
         sOrderType.setText(String.valueOf(orderType));
         //calculate redeemed points here
         double deliveryFeeDouble = Double.parseDouble(deliveryFee.replace("RM ", ""));
@@ -267,7 +269,9 @@ public class customerReceipt extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(21, 21, 21)
+                .addGap(10, 10, 10)
+                .addComponent(bBack)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
@@ -317,9 +321,7 @@ public class customerReceipt extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel14)
                     .addComponent(sPayTotal))
-                .addGap(9, 9, 9)
-                .addComponent(bBack)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(11, Short.MAX_VALUE))
         );
 
         pack();
