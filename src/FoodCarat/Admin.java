@@ -241,13 +241,13 @@ public class Admin extends User {
     //Top up credit    
     // method for top up credit proccess
     public void processChangesCredit(String email, String name, double currentAmount, double changesAmount) throws IOException {
-        String transFile = "transactionCredit.txt";
-        String userFile = "user.txt";
+        String transFilePath = cuscreditFile;
+        String userFilePath = userFile;
         double newAmount = currentAmount + changesAmount;
         
         //get the next transaction id 
         int transactionId = 1; // Default starting value
-        File transactionFile = new File(transFile);
+        File transactionFile = new File(transFilePath);
 
         // Check if the file exists
         if (transactionFile.exists()) {
@@ -290,7 +290,7 @@ public class Admin extends User {
         );
 
         // Save transaction details to the file
-        try (FileWriter writer = new FileWriter(transFile, true)) { // Append mode
+        try (FileWriter writer = new FileWriter(transFilePath, true)) { // Append mode
             writer.write(transactionDetails);
         }
         
