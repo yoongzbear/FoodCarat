@@ -4,6 +4,7 @@
  */
 package FoodCarat;
 
+import java.util.Arrays;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -159,6 +160,15 @@ public class managerNotification extends javax.swing.JFrame {
     private void searchbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchbtnActionPerformed
         String selectedMonth = (String) monthcbx.getSelectedItem();
 
+        // Array of month names to convert to month number (January = 1, February = 2, etc.)
+        String[] monthNames = {
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        };
+
+        // Convert selectedMonth to month number
+        int monthNumber = Arrays.asList(monthNames).indexOf(selectedMonth) + 1;
+        
         if (selectedMonth.equals("Please select")) {
             JOptionPane.showMessageDialog(this, "Please enter a valid month.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -167,7 +177,7 @@ public class managerNotification extends javax.swing.JFrame {
         Manager manager = new Manager(); 
 
         // Get the filtered reviews based on the selected month
-        List<String[]> complaintData = manager.getFilteredReviews(selectedMonth);
+        List<String[]> complaintData = manager.getFilteredReviews(monthNumber);
         DefaultTableModel model = (DefaultTableModel) complaintNotificationtable.getModel();
         if (complaintData.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No complaints found for this month.", "Info", JOptionPane.INFORMATION_MESSAGE);
