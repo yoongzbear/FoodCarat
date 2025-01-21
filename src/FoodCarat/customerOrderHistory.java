@@ -645,9 +645,14 @@ public class customerOrderHistory extends javax.swing.JFrame {
                 } else if ("pending accept".equals(selectedOrderStatus) && selectedOrderID.equals(orderID)) {
                     int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to cancel order?");
                     if (confirm == JOptionPane.YES_OPTION) {
-                        order.updateStatus(Integer.parseInt(selectedOrderID), "cancelled", "customer");
-                        JOptionPane.showMessageDialog(null, "Your order has been cancelled and refunded");
-                        populateTable();
+                        try {
+                            order.updateStatus(Integer.parseInt(selectedOrderID), "cancelled", "customer");
+                            order.refund(Integer.parseInt(orderID), User.getSessionEmail());
+                            JOptionPane.showMessageDialog(null, "Your order has been cancelled and refunded");
+                            populateTable();
+                        } catch (IOException ex) {
+                            Logger.getLogger(customerOrderHistory.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
                     break;
                 }
