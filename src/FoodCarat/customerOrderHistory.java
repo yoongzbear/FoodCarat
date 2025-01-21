@@ -36,7 +36,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
         initComponents();
         populateTable();
         addTableListener();
-        bReorder.setEnabled(false);
+        bAction.setEnabled(false);
         bFeedback.setVisible(false);
         lRunnerNameTitle.setVisible(false);
         lRunnerName.setVisible(false);
@@ -71,6 +71,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
                             String vendorFeedback = feedbackParts[3];
                             String runnerRating = feedbackParts[4];
                             //Set the data to text fields
+                            lOrderID.setText(orderID);
                             lOrderType.setText(orderType);
                             ltotalPrice.setText(totalPrice);
                             lVendorName.setText(vendorName);
@@ -82,7 +83,11 @@ public class customerOrderHistory extends javax.swing.JFrame {
                             }
                             
                             if ("completed".equals(orderStatus)) {
-                                bReorder.setEnabled(true);
+                                bAction.setEnabled(true);
+                                bAction.setText("Reorder");
+                            } else if ("pending accept".equals(orderStatus)) {
+                                bAction.setEnabled(true);
+                                bAction.setText("Cancel Order");
                             }
                             
                             if ("Delivery".equals(orderType.trim())) {
@@ -270,7 +275,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
         lOrderFeedbackTitle = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         taOrderFeedback = new javax.swing.JTextArea();
-        bReorder = new javax.swing.JButton();
+        bAction = new javax.swing.JButton();
         ltotalPrice = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
         tbOrderItem = new javax.swing.JTable();
@@ -284,6 +289,8 @@ public class customerOrderHistory extends javax.swing.JFrame {
         cbRunnerRating = new javax.swing.JComboBox<>();
         jLabel13 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        lOrderID = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -358,7 +365,12 @@ public class customerOrderHistory extends javax.swing.JFrame {
         taOrderFeedback.setRows(5);
         jScrollPane2.setViewportView(taOrderFeedback);
 
-        bReorder.setText("Reorder");
+        bAction.setText("Reorder");
+        bAction.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bActionActionPerformed(evt);
+            }
+        });
 
         ltotalPrice.setText("totalPrice");
 
@@ -399,6 +411,10 @@ public class customerOrderHistory extends javax.swing.JFrame {
 
         jLabel15.setText("usedPoint");
 
+        jLabel8.setText("Order ID:");
+
+        lOrderID.setText("orderID");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -421,11 +437,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
                                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 379, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGap(18, 18, 18)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(bReorder, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(lVendorName, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(bAction, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jLabel9)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -443,7 +455,15 @@ public class customerOrderHistory extends javax.swing.JFrame {
                                         .addComponent(jLabel15)
                                         .addGap(38, 38, 38)))
                                 .addComponent(lRunnerNameTitle)
-                                .addComponent(jLabel13)))
+                                .addComponent(jLabel13)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel8))
+                                    .addGap(18, 18, 18)
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(lVendorName, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(lOrderID)))))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -490,8 +510,12 @@ public class customerOrderHistory extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel8)
+                            .addComponent(lOrderID))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
                             .addComponent(lVendorName))
@@ -515,9 +539,9 @@ public class customerOrderHistory extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lRunnerNameTitle)
                             .addComponent(lRunnerName))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(bReorder))
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(27, 27, 27)
+                        .addComponent(bAction))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addComponent(lOrderFeedbackSection)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -584,7 +608,6 @@ public class customerOrderHistory extends javax.swing.JFrame {
 
                 if (selectedRow != -1) {
                     String orderIDString = (String) tOrderHistory.getValueAt(selectedRow, 0);
-                    System.out.println("OrderID: " + orderIDString);
                     int orderID = Integer.parseInt(orderIDString); 
                     String orderFeedback = taOrderFeedback.getText();
                     String selectedVendorRating = (String) cbVendorRating.getSelectedItem();
@@ -604,6 +627,35 @@ public class customerOrderHistory extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Check: Please insert the feedback before saving it.");
         }
     }//GEN-LAST:event_bFeedbackActionPerformed
+
+    private void bActionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bActionActionPerformed
+        Order order = new Order();
+        List<String[]> allOrders = order.getAllOrders();
+        String selectedOrderID = lOrderID.getText();
+        String selectedOrderStatus = lOrderStatus.getText();
+
+        if (!allOrders.isEmpty()) {
+            // Loop through the orders (or access the first one based on your needs)
+            for (String[] orderData : allOrders) {
+                String orderID = orderData[0];
+                String orderStatus = orderData[3];  // Get the status from index 3
+                if ("completed".equals(selectedOrderStatus) && selectedOrderID.equals(orderID)) {
+                    System.out.println("reorder");
+                    break;
+                } else if ("pending accept".equals(selectedOrderStatus) && selectedOrderID.equals(orderID)) {
+                    int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to cancel order?");
+                    if (confirm == JOptionPane.YES_OPTION) {
+                        order.updateStatus(Integer.parseInt(selectedOrderID), "cancelled", "customer");
+                        JOptionPane.showMessageDialog(null, "Your order has been cancelled and refunded");
+                        populateTable();
+                    }
+                    break;
+                }
+            }
+        } else {
+            bAction.setEnabled(false);  // Disable button if no orders are available
+        }
+    }//GEN-LAST:event_bActionActionPerformed
 
     /**
      * @param args the command line arguments
@@ -641,9 +693,9 @@ public class customerOrderHistory extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bAction;
     private javax.swing.JButton bBack;
     private javax.swing.JButton bFeedback;
-    private javax.swing.JButton bReorder;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JComboBox<String> cbRunnerRating;
     private javax.swing.JComboBox<String> cbVendorRating;
@@ -656,6 +708,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JRadioButton jRadioButton1;
@@ -668,6 +721,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JLabel lOrderFeedbackSection;
     private javax.swing.JLabel lOrderFeedbackTitle;
+    private javax.swing.JLabel lOrderID;
     private javax.swing.JLabel lOrderStatus;
     private javax.swing.JLabel lOrderType;
     private javax.swing.JLabel lRunnerName;
