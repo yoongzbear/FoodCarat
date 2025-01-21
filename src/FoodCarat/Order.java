@@ -238,6 +238,7 @@ public class Order {
     }
     
     //get order IDs by vendor/runner email
+    //get order IDs by vendor/runner email
     public List<Integer> getOrderIDsReview(String email, String type) {
         List<Integer> orderIDs = new ArrayList<>();
 
@@ -421,8 +422,8 @@ public class Order {
                     bw.newLine();
                 } else {
                     //found row and rewrite the row without total price
-                    //if status = canceled and usertype = vendor, add reason id 1 (rejected by vendor)
-                    if (newOrderStatus.equalsIgnoreCase("Canceled") && userType.equalsIgnoreCase("vendor")) {                        
+                    //if status = cancelled and usertype = vendor, add reason id 1 (rejected by vendor)
+                    if (newOrderStatus.equalsIgnoreCase("cancelled") && userType.equalsIgnoreCase("vendor")) {                        
                         order[6] = "1"; //reason ID for "rejected by vendor" is 1
                     }
                     order[3] = newOrderStatus;
@@ -639,7 +640,7 @@ public class Order {
             boolean orderAssigned = assignOrderToRunner(order);  // Method to assign to available runner
             if (!orderAssigned) {
                 // If no runner accepts the order, cancel it
-                newOrderStatus = "Canceled";  // Update the status to "Canceled"
+                newOrderStatus = "cancelled";  // Update the status to "cancelled"
             }
         }
 
@@ -655,11 +656,14 @@ public class Order {
                     bw.newLine();
                 } else {
                     // Found the row, update it
-                    if (newOrderStatus.equalsIgnoreCase("Canceled") && userType.equalsIgnoreCase("vendor")) {
-                        order[6] = "1"; // Reason ID for "rejected by vendor"
+                    if (newOrderStatus.equalsIgnoreCase("cancelled") && userType.equalsIgnoreCase("vendor")) {
+                        order[6] = "rejected by vendor";
                     }
-                    if (newOrderStatus.equalsIgnoreCase("Canceled") && userType.equalsIgnoreCase("runner")) {
-                        order[6] = "2"; // Reason ID for "runner canceled"
+                    if (newOrderStatus.equalsIgnoreCase("cancelled") && userType.equalsIgnoreCase("runner")) {
+                        order[6] = "runner cancelled";
+                    }
+                    if (newOrderStatus.equalsIgnoreCase("cancelled") && userType.equalsIgnoreCase("customer")) {
+                        order[6] = "cancelled by customer";
                     }
                     order[3] = newOrderStatus;
                     String[] updatedOrder = Arrays.copyOf(order, order.length - 1);
@@ -697,7 +701,7 @@ public class Order {
             }
             
             if (!runnerAssigned) {
-                updateStatus(Integer.parseInt(orderData[0]), "Canceled", "runner");
+                updateStatus(Integer.parseInt(orderData[0]), "cancelled", "runner");
             }
             
         } catch (IOException e) {
