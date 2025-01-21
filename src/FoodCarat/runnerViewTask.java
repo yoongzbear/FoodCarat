@@ -13,7 +13,9 @@ import javax.swing.JOptionPane;
  * @author Yuna
  */
 public class runnerViewTask extends javax.swing.JFrame {
-    private final String runnerEmail = "runner2@mail.com";
+    private String[] orderData;  // Store the order data for later use
+
+    private final String runnerEmail = "runner4@mail.com";
     
     private volatile boolean decisionMade = false;
     private volatile boolean taskAccepted = false;
@@ -42,6 +44,12 @@ public class runnerViewTask extends javax.swing.JFrame {
         
         //String runnerEmail = User.getSessionEmail();
         getRunnerTask(runnerEmail);
+        
+        
+        if(orderData == null){
+            acceptJB.setEnabled(false);
+            declineJB.setEnabled(false);
+        }
     }
     
     private void getRunnerTask(String runnerEmail) {
@@ -56,6 +64,8 @@ public class runnerViewTask extends javax.swing.JFrame {
             // Match only if the order status is "Assigning runner" and the runner's email matches
             if ("Assigning runner".equalsIgnoreCase(orderData[3]) && runnerEmail.equals(orderData[5])) {
                 System.out.println("Found matching order: " + Arrays.toString(orderData));  // Debug: Print matched order
+                
+                this.orderData = orderData;
 
                 // Populate the fields in the JFrame with the order data
                 orderIDTF.setText(orderData[0]);
@@ -483,10 +493,12 @@ public class runnerViewTask extends javax.swing.JFrame {
     }//GEN-LAST:event_backJBActionPerformed
 
     private void acceptJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptJBActionPerformed
-        //String orderId = orderIDTF.getText();
+        String orderId = orderIDTF.getText();
         //String runnerEmail = User.getSessionEmail();
         
         setDecision(true, true); // Decision made and task accepted
+        new Order().updateStatus(Integer.parseInt(orderId), "Ordered", "runner");
+        new Runner().updateRunnerStatus(runnerEmail, "unavailable");
         JOptionPane.showMessageDialog(null, "Task accepted!");
         
         clearTaskDetails();
@@ -494,13 +506,18 @@ public class runnerViewTask extends javax.swing.JFrame {
 
     private void declineJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_declineJBActionPerformed
         //String orderId = orderIDTF.getText();
-        
-        int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to reject this task?", "Reject Task", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            setDecision(true, false); // Decision made and task rejected
-            JOptionPane.showMessageDialog(null, "Task declined!");
-            
-            clearTaskDetails();
+        // Ensure orderData is available before performing action
+        if (orderData != null) {
+            int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to reject this task?", "Reject Task", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                new Order().assignOrderToRunner(orderData); // Assign order to the next available runner
+                setDecision(true, false); // Decision made and task rejected
+                JOptionPane.showMessageDialog(null, "Task declined!");
+                
+                clearTaskDetails();
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No order data found.");
         }
     }//GEN-LAST:event_declineJBActionPerformed
 
