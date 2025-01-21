@@ -246,32 +246,37 @@ public class Order {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(","); //orderFile
-                if (parts.length < 11) {
+                System.out.println("orderitem:" + parts[2]);
+                if (parts.length < 11 && parts[2] != "") {
                     if (type.equalsIgnoreCase("vendor")) {
                         String orderItems = parts[2];
                         String currentVendorEmail = "";
                         orderItems = orderItems.replace("[", "").replace("]", "");
+                        System.out.println("orderitem:" + orderItems);
                         String[] items = orderItems.split("\\|");
+                        System.out.println("orderitem:" + orderItems);
                         for (String item : items) {
                             String[] itemDetails = item.split(";");
-                            int itemID = Integer.parseInt(itemDetails[0]);
+                            int itemID1 = Integer.parseInt(itemDetails[0]);
+                            System.out.println("itemdetails:" + Arrays.toString(itemDetails));
+                            System.out.println("itemid:" + itemID1);
                             Item item1 = new Item();
-                            String[] itemData = item1.itemData(itemID);
+                            String[] itemData = item1.itemData(itemID1);
                             //currentVendorEmail = itemData[5];
                             if (itemData != null && itemData.length > 5) {
                                 currentVendorEmail = itemData[5];
                             } 
                         }
                         if (currentVendorEmail.equals(email)) {
-                            int orderID = Integer.parseInt(parts[0]);  
-                            orderIDs.add(orderID);
+                            int orderID1 = Integer.parseInt(parts[0]);  
+                            orderIDs.add(orderID1);
                         }
                     } else if (type.equalsIgnoreCase("runner")) {
                         String currentRunnerEmail = parts[6];  
 
                         if (currentRunnerEmail.equals(email)) {
-                            int orderID = Integer.parseInt(parts[0]);  
-                            orderIDs.add(orderID);
+                            int orderID1 = Integer.parseInt(parts[0]);  
+                            orderIDs.add(orderID1);
                         }
                     }
                 }
