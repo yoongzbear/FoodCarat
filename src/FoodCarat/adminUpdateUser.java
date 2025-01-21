@@ -409,15 +409,27 @@ public class adminUpdateUser extends javax.swing.JFrame {
         }
         Admin admin = new Admin();
         if (validateFields(email, name, birthDate, phone, role, additionalField)) {
+           // Update user.txt
+           boolean userUpdated = admin.updateFile("user.txt",
+                   email,
+                   new String[]{name, birthDate, phone},
+                   new int[]{1, 4, 5});
 
-            boolean success = admin.performUpdate(email, name, birthDate, phone, role, additionalField);
+           // Update role-specific file
+           boolean roleUpdated = admin.updateFile(role + ".txt",
+                   email,
+                   new String[]{additionalField},
+                   new int[]{1});
 
-            if (success) {
-                clearFields();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error updating the record!");
-            }
-        }
+           if (userUpdated && roleUpdated) {
+               JOptionPane.showMessageDialog(null, "Record updated successfully!");
+               clearFields();
+           } else if (!userUpdated) {
+               JOptionPane.showMessageDialog(null, "Error updating user.txt!");
+           } else {
+               JOptionPane.showMessageDialog(null, "Error updating " + role + ".txt!");
+           }
+       }
     }//GEN-LAST:event_bUpdateActionPerformed
 
     private void bDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDeleteActionPerformed
