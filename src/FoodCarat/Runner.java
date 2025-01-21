@@ -137,14 +137,11 @@ public class Runner extends User{
             return false; // Skip if the runner is not available
         }
         
-        //if no runner, make cancel or if all runner reject, canceled
+        //if all runner reject or unavailable, update status to cancel
 
         // Display task details for the runner
         runnerViewTask viewTask = new runnerViewTask();
         viewTask.displayOrderForRunner(orderData);
-
-        // Show the JFrame
-        viewTask.setVisible(true);
         
         // Wait for user interaction (accept/decline)
         while (!viewTask.isDecisionMade()) {
@@ -161,18 +158,15 @@ public class Runner extends User{
         if (taskAccepted) {
             updateRunnerStatus(runnerEmail, "unavailable"); // Update runner status to unavailable
         }
-        // Close the view after decision
-        viewTask.dispose();
 
         return taskAccepted;
     }
     
-    /**
     public void assignNextRunner(String orderId) {
         boolean runnerAssigned = false;
-        String[] orderData = getOrderDeta(orderId); // Get order details
+        String[] orderData = new Order().getOrder(Integer.parseInt(orderId)); // Get order details
 
-        try (BufferedReader runnerReader = new BufferedReader(new FileReader("resources/runner.txt"))) {
+        try (BufferedReader runnerReader = new BufferedReader(new FileReader(runnerFile))) {
             String runnerLine;
 
             while ((runnerLine = runnerReader.readLine()) != null) {
@@ -180,7 +174,10 @@ public class Runner extends User{
 
                 if (runnerData.length > 2 && "available".equalsIgnoreCase(runnerData[2])) {
                     // Display the task to the next available runner
-                    return displayOrderForRunner();
+                    // Display task details for the runner
+        runnerViewTask viewTask = new runnerViewTask();
+        viewTask.displayOrderForRunner(orderData);
+        
                     runnerAssigned = true;
                     break;
                 }
@@ -191,11 +188,10 @@ public class Runner extends User{
 
         if (!runnerAssigned) {
             // If no runners are available or all decline, cancel the order
-            new Order().updateStatus(Integer.parseInt(orderId), "Canceled", "runner");
+            new Order().updateStatus(Integer.parseInt(orderId), "cancelled", "runner");
                 JOptionPane.showMessageDialog(null,"No runners accepted the task. Order canceled.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    **/
 
     // Method to update the runner's availability status
     public void updateRunnerStatus(String runnerEmail, String status) {

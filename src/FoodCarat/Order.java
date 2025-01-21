@@ -682,8 +682,6 @@ public class Order {
     public boolean assignOrderToRunner(String[] orderData) {
         boolean runnerAssigned = false;
         Runner runner = new Runner();
-        runnerViewTask viewTask = new runnerViewTask();
-        viewTask.setVisible(true);
 
         try (BufferedReader runnerReader = new BufferedReader(new FileReader(runnerFile))) {
             String runnerLine;

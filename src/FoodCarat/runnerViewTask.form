@@ -116,9 +116,6 @@
           </Border>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="ancestorAdded" listener="javax.swing.event.AncestorListener" parameters="javax.swing.event.AncestorEvent" handler="jPanel2AncestorAdded"/>
-      </Events>
 
       <Layout>
         <DimensionLayout dim="0">

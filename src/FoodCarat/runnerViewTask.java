@@ -25,6 +25,7 @@ public class runnerViewTask extends javax.swing.JFrame {
             orderIDTF.setText(orderData[0]);
             storeNameTF.setText(orderData[1]);
             //addressTA.setText(orderData[2].replaceAll("^\\[|\\]$", "").replace(";", ","));
+            //get customer email and read the customer.txt to get the address in index 1
             cusNameTF.setText(orderData[3]);
             deFeeTF.setText(orderData[4]);
 
@@ -138,15 +139,6 @@ public class runnerViewTask extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Task Reception Area", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 1, 18))); // NOI18N
-        jPanel2.addAncestorListener(new javax.swing.event.AncestorListener() {
-            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
-                jPanel2AncestorAdded(evt);
-            }
-            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
-            }
-            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
-            }
-        });
 
         declineJB.setText("Decline");
         declineJB.addActionListener(new java.awt.event.ActionListener() {
@@ -448,7 +440,7 @@ public class runnerViewTask extends javax.swing.JFrame {
         String runnerEmail = User.getSessionEmail();
 
         Runner runner = new Runner();
-        new Order().updateStatus(Integer.parseInt(orderId), "Assigning runner", "vendor");
+        new Order().updateStatus(Integer.parseInt(orderId), "Ordered", "runner");
         runner.updateRunnerStatus(runnerEmail, "unavailable");
         
         // Mark task as accepted and notify waiting threads
@@ -469,18 +461,15 @@ public class runnerViewTask extends javax.swing.JFrame {
         
         int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to reject this task?", "Reject Task", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-            new Order().updateStatus(Integer.parseInt(orderId), "Canceled", "runner");
             JOptionPane.showMessageDialog(null, "Task declined!");
             
             acceptJB.setEnabled(false);
             declineJB.setEnabled(false);
             clearTaskDetails();
+            
+            new Runner().assignNextRunner(orderId);
         }
     }//GEN-LAST:event_declineJBActionPerformed
-
-    private void jPanel2AncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jPanel2AncestorAdded
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jPanel2AncestorAdded
 
     /**
      * @param args the command line arguments
