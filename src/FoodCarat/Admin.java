@@ -26,7 +26,7 @@ public class Admin extends User {
 
     private static String userFile = "resources/user.txt";
     private String cusFile = "resources/customer.txt";
-    private String cuscreditFile = "resources/customerCredit.txt";
+    private String cuscreditFile = "resources/transactionCredit.txt";
     
     public Admin(){
         
@@ -244,6 +244,36 @@ public class Admin extends User {
     public void processChangesCredit(String email, String name, double currentAmount, double topUpAmount) throws IOException {
         double newAmount = currentAmount + topUpAmount;
         
+        //get the next transaction id 
+        int transactionId = 1; // Default starting value
+        File transactionFile = new File(cuscreditFile);
+
+        // Check if the file exists
+        if (transactionFile.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(transactionFile))) {
+                String line;
+                int maxId = 0;
+
+                // Loop through each line in the file
+                while ((line = reader.readLine()) != null) {
+                    // Identify the first delimiter (comma or semicolon)
+                    String[] parts = line.split("[,;]");
+                    if (parts.length > 0) {
+                        try {
+                            // Parse the first part as an integer (transaction ID)
+                            int currentId = Integer.parseInt(parts[0].trim());
+                            maxId = Math.max(maxId, currentId); // Update max ID
+                        } catch (NumberFormatException e) {
+                            System.err.println("Invalid transaction ID: " + parts[0]);
+                        }
+                    }
+                }
+
+                // Determine the next transaction ID
+                transactionId = maxId + 1;
+            }
+        }
+        
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String dateTime = formatter.format(new Date());
         
@@ -252,10 +282,9 @@ public class Admin extends User {
         String date = dateTimeParts[0];
         String time = dateTimeParts[1];
         
-        String transactionId ="TXN" + System.currentTimeMillis();
         // Prepare transaction details
         String transactionDetails = String.format(
-            "%s;%s;%.2f;%.2f;%s;%s\n",
+            "%s,%s,%.2f,%.2f,%s,%s\n",
             transactionId, email, topUpAmount, newAmount, date, time
         );
 
