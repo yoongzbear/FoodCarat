@@ -74,29 +74,28 @@ public class adminNotification extends javax.swing.JFrame {
             String transactionMessageId = messageParts[messageParts.length - 1].replace(")", "").replace(":", "");
 
             // Retrieve details from the customer credit.txt file
-            User user = new User();
-            String[] customerDetails = user.performSearch(transactionMessageId, cuscreditFile);
+            Admin admin = new Admin();
+            String[] customerDetails = admin.performSearch(transactionMessageId, "transactionCredit.txt");
                     
             if (customerDetails != null) {
                 // Parse details from the file
                 String transID = customerDetails[0];
                 String email = customerDetails[1];
-                double topUpAmount = Double.parseDouble(customerDetails[2]);
-                double newAmount = Double.parseDouble(customerDetails[3]);
+                double currentAmount = Double.parseDouble(customerDetails[2]);
+                double topUpAmount = Double.parseDouble(customerDetails[3]);
                 String datePayment = customerDetails[4];
                 String timePayment = customerDetails[5];
-
+                
                 // Retrieve name of customer user.txt base on text file
-                String [] customerName = user.performSearch(email, userFile);
+                String [] customerName = admin.performSearch(email, "user.txt");
                 String name = customerName[1];
                 
                 // Create and display the receipt window
-                adminCusReceipt receiptWindow = new adminCusReceipt(Integer.parseInt(transID), email, name, topUpAmount, topUpAmount, newAmount, datePayment, timePayment);
+                adminCusReceipt receiptWindow = new adminCusReceipt(Integer.parseInt(transID), email, name, currentAmount, topUpAmount, datePayment, timePayment);
                 receiptWindow.setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(this, "Transaction details not found.", "Error", JOptionPane.ERROR_MESSAGE);
             }
-
         }
     }
     /**
