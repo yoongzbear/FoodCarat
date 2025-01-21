@@ -90,7 +90,7 @@ public class Manager extends User{
     }
 
     // Method to calculate vendor performance by month
-    public List<String[]> getVendorPerformanceByMonth(String selectedMonth) {
+    public List<String[]> getVendorPerformanceByMonth(int selectedMonth) {
         List<String[]> tableData = new ArrayList<>();
         Map<String, Vendor> vendorData = new HashMap<>();
         Set<Integer> processedOrderIDs = new HashSet<>(); // Track processed order IDs
@@ -103,9 +103,9 @@ public class Manager extends User{
             while ((orderLine = orderReader.readLine()) != null) {
                 String[] orderData = orderLine.split(",");
                 int orderID = Integer.parseInt(orderData[0].trim());
-                String orderMonth = getMonthFromOrderOrReview(orderData[8]); // Extract month from orderID or date
+                int orderMonth = Integer.parseInt(orderData[8].split("-")[1]); // Extract month from orderID or date
 
-                if (orderMonth.equalsIgnoreCase(selectedMonth) && "Completed".equals(orderData[3])) {
+                if (orderMonth == selectedMonth && "Completed".equals(orderData[3])) {
                      // Skip if order ID is already processed
                     if (processedOrderIDs.contains(orderID)) continue;
                     processedOrderIDs.add(orderID); // Mark this order as processed
