@@ -183,6 +183,12 @@ public class customerOrderHistory extends javax.swing.JFrame {
                     String rOrderList = record[2].replace("[", "").replace("]", "");
                     String rVendorName = null;
                     String rCancelReason = record[6]; 
+                    rOrderStatus = rOrderStatus.substring(0, 1).toUpperCase() + rOrderStatus.substring(1).toLowerCase();
+                    if (rCancelReason.equalsIgnoreCase("null") || rCancelReason.equalsIgnoreCase("NULL") || rCancelReason.isEmpty()) {
+                        rCancelReason = "-";
+                    } else {
+                        rCancelReason = rCancelReason.substring(0, 1).toUpperCase() + rCancelReason.substring(1).toLowerCase();
+                    }
                     
                     //Split the order items by semicolon
                     String[] orderItems = rOrderList.split("\\|");
