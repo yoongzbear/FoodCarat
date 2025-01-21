@@ -239,10 +239,6 @@ public class Admin extends User {
     }
     
     //Top up credit    
-    // Utility method for calculating new amounts (withdraw or top up)
-    public static double calculateNewAmount(double currentAmount, double amount, boolean isTopUp) {
-        return isTopUp ? currentAmount + amount : currentAmount - amount;
-    }
     
     // method for top up credit proccess
     public void processChangesCredit(String email, String name, double currentAmount, double topUpAmount) throws IOException {
