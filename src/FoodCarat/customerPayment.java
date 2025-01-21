@@ -336,7 +336,7 @@ public class customerPayment extends javax.swing.JFrame {
 
         //retrieve data
         int redeemPoints = (int) tfRedeemPoints.getValue(); 
-        int currentBalance = Integer.parseInt(sCreditBalance.getText()); 
+        double currentBalance = Double.parseDouble(sCreditBalance.getText()); 
         int currentPoints = Integer.parseInt(sPointBalance.getText()); 
         String payTotalStr = sPayTotal.getText().replaceAll("RM ", "");
         double payTotal = Double.parseDouble(payTotalStr); 
