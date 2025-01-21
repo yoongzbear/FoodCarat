@@ -57,7 +57,7 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
             }
             
             // Calculate the new amount
-            double newAmount = Admin.calculateNewAmount(currentAmount, withdrawAmount, false);
+            double newAmount = currentAmount- withdrawAmount;
 
             // Update the sumtxt field
             sumtxt.setText(String.format("%.2f", newAmount));
