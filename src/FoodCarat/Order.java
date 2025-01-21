@@ -40,6 +40,7 @@ public class Order {
     private String itemFile = "resources/item.txt";
     private String reasonFile = "resources/cancellationReason.txt";
     private String runnerFile = "resources/runner.txt"; //for assign order
+    private String customerFile = "resources/customer.txt";
     
     public Order(){ //for deleteIncompleteOrder()
         System.out.println("At order class:" + orderID); //for checking                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
@@ -708,5 +709,35 @@ public class Order {
             e.printStackTrace();
         }
         return runnerAssigned;
+    }
+    
+    public void refund(int orderID, String userEmail) throws IOException {
+        String[] order = getOrder(orderID);
+        String orderEmail = order[0]; 
+        String orderType = order[1]; 
+        String orderItems = order[2]; 
+        String orderStatus = order[3]; 
+        String customerEmail = order[4]; 
+        String runnerEmail = order[5]; 
+        String cancelReason = order[6]; 
+        double deliveryFee = Double.parseDouble(order[7]);
+        double totalPaid = Double.parseDouble(order[8]);
+        String orderDate = order[9]; 
+
+        // Step 4: Calculate the refund amount (for example, 100% refund of total price)
+        double priceExcludeDelivery = totalPaid - deliveryFee;
+        double orderTotalPrice = calculateTotalPrice(orderItems); //calculate original price before delivery fee and redeem points
+        int redeemedPoints = (int) Math.round((orderTotalPrice + deliveryFee - totalPaid) / 0.01); //calculate redeemed points
+        Customer customer = new Customer(userEmail);
+        int earnedPoints = customer.calculateEarnablePoints(priceExcludeDelivery); //calculate earned points from the order
+        customer.addPoints(redeemedPoints); //refund the points redeemed
+        customer.deductPoints(earnedPoints); //deduct the points earned
+        
+        //refund full credit
+        User user = new User();
+        String[] userInfo = user.performSearch(userEmail, customerFile);
+        double currentCredit = Double.parseDouble(userInfo[2]);
+        double updatedCredit = currentCredit + totalPaid;
+        customer.updateCredit(userEmail, updatedCredit, customerFile, 2);
     }
 }
