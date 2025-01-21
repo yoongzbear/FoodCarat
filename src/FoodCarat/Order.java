@@ -635,7 +635,7 @@ public class Order {
         List<String[]> allOrders = getAllOrders();
 
         // If the order status is "accepted by vendor", attempt to assign it to a runner
-        if ("accepted by vendor".equalsIgnoreCase(newOrderStatus)) {
+        if ("Assigning runner".equalsIgnoreCase(newOrderStatus)) {
             boolean orderAssigned = assignOrderToRunner(order);  // Method to assign to available runner
             if (!orderAssigned) {
                 // If no runner accepts the order, cancel it

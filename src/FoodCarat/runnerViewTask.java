@@ -24,7 +24,7 @@ public class runnerViewTask extends javax.swing.JFrame {
         public void displayOrderForRunner(String[] orderData) {
             orderIDTF.setText(orderData[0]);
             storeNameTF.setText(orderData[1]);
-            addressTA.setText(orderData[2].replaceAll("^\\[|\\]$", "").replace(";", ","));
+            //addressTA.setText(orderData[2].replaceAll("^\\[|\\]$", "").replace(";", ","));
             cusNameTF.setText(orderData[3]);
             deFeeTF.setText(orderData[4]);
 

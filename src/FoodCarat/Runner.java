@@ -136,6 +136,8 @@ public class Runner extends User{
         if (!"available".equalsIgnoreCase(runnerStatus)) {
             return false; // Skip if the runner is not available
         }
+        
+        //if no runner, make cancel or if all runner reject, canceled
 
         // Display task details for the runner
         runnerViewTask viewTask = new runnerViewTask();
