@@ -4,7 +4,14 @@
  */
 package FoodCarat;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -17,6 +24,36 @@ public class customerFCFeedback extends javax.swing.JFrame {
      */
     public customerFCFeedback() {
         initComponents();
+        populateTable();
+    }
+    
+    private void populateTable() {
+        DefaultTableModel model = new DefaultTableModel();
+        model.setRowCount(0);
+        model.setColumnCount(0);
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("resources/review.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] record = line.split(",");
+                String rReviewType = record[2];
+                String rUser = record[6];
+                if (rUser.equals(User.getSessionEmail()) && "foodcourt".equals(rReviewType)){
+                    String rReviewID = record[0];
+                    String rComplaint = record[4];
+                    String rReviewDate = record[5];
+                    String rReviewStatus = record[7];
+                    
+                    //Add the booking details to the model
+                    model.addRow(new Object[]{rReviewDate, rComplaint, rReviewStatus});
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //Set the model to the table
+        tComplaintHistory.setModel(model);
     }
 
     /**
@@ -34,6 +71,8 @@ public class customerFCFeedback extends javax.swing.JFrame {
         taComplaint = new javax.swing.JTextArea();
         bBack = new javax.swing.JButton();
         bSubmit = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tComplaintHistory = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -61,25 +100,36 @@ public class customerFCFeedback extends javax.swing.JFrame {
             }
         });
 
+        tComplaintHistory.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Date", "Complaint", "Resolve Status"
+            }
+        ));
+        tComplaintHistory.getTableHeader().setReorderingAllowed(false);
+        jScrollPane2.setViewportView(tComplaintHistory);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(69, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(67, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                             .addComponent(jLabel1)
-                            .addComponent(jLabel2)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 536, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(66, 66, 66))
+                            .addComponent(jLabel2))
+                        .addGap(129, 129, 129))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(bBack, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(71, 71, 71))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(bSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(66, 66, 66))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(bBack, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 533, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 533, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(bSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(71, 71, 71))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -90,11 +140,13 @@ public class customerFCFeedback extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bSubmit)
-                .addContainerGap(287, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -161,6 +213,8 @@ public class customerFCFeedback extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable tComplaintHistory;
     private javax.swing.JTextArea taComplaint;
     // End of variables declaration//GEN-END:variables
 }
