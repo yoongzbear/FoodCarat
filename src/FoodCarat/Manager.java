@@ -25,7 +25,7 @@ public class Manager extends User{
         
     //Monitor Runner Performance
     //
-    public Map<String, Runner> getRunnerPerformance(String selectedMonth) throws IOException {
+    public Map<String, Runner> getRunnerPerformance(int selectedMonth) throws IOException {
         Map<String, Runner> performanceDataMap = new HashMap<>();
         Map<Integer, String> orderToRunnerMap = new HashMap<>();  // Map to store orderID to runnerID mapping
 
@@ -51,7 +51,6 @@ public class Manager extends User{
         Review review = new Review();
         List<String[]> allReviews = review.getAllReviews();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         for (String[] reviewDetails : allReviews) {
 
             if (reviewDetails.length > 5) {
@@ -70,16 +69,19 @@ public class Manager extends User{
                     String runnerID = orderToRunnerMap.get(orderID); // Fetch runnerID from the map
 
                     String rating = reviewDetails[3].trim();
-                    String reviewMonth = getMonthFromOrderOrReview(reviewDetails[5]);
-
-                    // Check if the review falls in the selected month
-                    if (reviewMonth.equalsIgnoreCase(selectedMonth)) {
-                        // Add or update performance data for the runner
-                        Runner data = performanceDataMap.getOrDefault(runnerID, new Runner());
-                        int ratingValue = Integer.parseInt(rating);
-                        data.incrementOrders();
-                        data.addRating(ratingValue);
-                        performanceDataMap.put(runnerID, data);
+                    try {
+                       int reviewMonthNumber = Integer.parseInt(reviewDetails[5].split("-")[1]); // Extract month from the date
+                       if (reviewMonthNumber == selectedMonth) {
+                           // Add or update performance data for the runner
+                           Runner data = performanceDataMap.getOrDefault(runnerID, new Runner());
+                           int ratingValue = Integer.parseInt(rating);
+                           data.incrementOrders();
+                           data.addRating(ratingValue);
+                           performanceDataMap.put(runnerID, data);
+                       }
+                    } catch (Exception e) {
+                       // Handle invalid date format or missing month
+                       continue;
                     }
                 }
             }
