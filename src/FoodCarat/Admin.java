@@ -110,34 +110,8 @@ public class Admin extends User {
         updateUserForm.setUserData(getEmail(), getName(), getBirth(), getContactNumber(), result);
         }
     }    
-    
-    //update both user and role.txt when admin update user info
-    public boolean performUpdate(
-            String email, String name, String birthDate,
-            String phone, String role, String additionalField) {
-
-        boolean userUpdated = updateFile(userFile,
-                email,
-                new String[]{name, birthDate, phone},
-                new int[]{1, 4, 5});
-
-        boolean roleUpdated = updateFile(role + ".txt",
-                email,
-                new String[]{additionalField},
-                new int[]{1});
-
-        if (userUpdated && roleUpdated) {
-            JOptionPane.showMessageDialog(null, "Record updated successfully!");
-            return true;
-        } else if (!userUpdated) {
-            JOptionPane.showMessageDialog(null, "Error updating user.txt!");
-        } else {
-            JOptionPane.showMessageDialog(null, "Error updating " + role + ".txt!");
-        }
-        return false;
-    }
-    
-    private boolean updateFile(String fileName, String email, String[] updatedFields, int[] updateIndices) {
+          
+    public boolean updateFile(String fileName, String email, String[] updatedFields, int[] updateIndices) {
         List<String> fileContent = new ArrayList<>();
         boolean recordUpdated = false;
 
