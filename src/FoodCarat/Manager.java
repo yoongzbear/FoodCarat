@@ -167,7 +167,7 @@ public class Manager extends User{
 
         return tableData;
     }
-    public List<String[]> getFilteredReviews(String selectedMonth) {
+    public List<String[]> getFilteredReviews(int selectedMonth) {
         List<String[]> filteredData = new ArrayList<>();
         int recordNumber = 1;
 
@@ -175,7 +175,7 @@ public class Manager extends User{
         List<String[]> allReviews = review.getAllReviews();
         for (String[] fields : allReviews) {
                 if (fields.length >= 8) {
-                    String date = fields[5];
+                    int date = Integer.parseInt(fields[5].split("-")[1]);
                     String reviewType = fields[2];
                     String complaint = fields[4];
                     String email = fields[6];
@@ -186,7 +186,7 @@ public class Manager extends User{
                     String []userDetails = user.performSearch(email, "user.txt");
                     String cusName = userDetails[1];
                     // Check if the month matches and review type is "foodcourt"
-                    if (getMonthFromOrderOrReview(date).equalsIgnoreCase(selectedMonth) &&
+                    if (date == selectedMonth &&
                         reviewType.equalsIgnoreCase("foodcourt") && complaintStatus.equals("unresolved")) {
                         
                         filteredData.add(new String[]{
