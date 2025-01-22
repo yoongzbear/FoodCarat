@@ -290,7 +290,7 @@ public class vendor1AccInfo extends javax.swing.JFrame {
             return;
         }
         
-        user.userInfo(email, name, password, contactNumber, date);
+        user.addUserInfo(email, name, password, contactNumber, date);
         vendor.addVendorInfo(email, savedPicturePath, cuisine);
         
         new vendorMain().setVisible(true);

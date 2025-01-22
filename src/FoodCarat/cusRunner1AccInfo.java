@@ -277,7 +277,7 @@ public class cusRunner1AccInfo extends javax.swing.JFrame {
                 }
             }
 
-        user.userInfo(email, name, password, contactNumber, dob);
+        user.addUserInfo(email, name, password, contactNumber, dob);
         
         String nextPage = user.determinePageAfterLogin(email);
         user.navigateToPage(nextPage, this);

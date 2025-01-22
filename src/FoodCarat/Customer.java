@@ -194,7 +194,7 @@ public class Customer extends User{
             while ((line = br.readLine()) != null) {
                 String[] customerData = line.split(",");
                 if (customerData[0].equals(customerEmail)) {
-                    return customerData[1];
+                    return customerData[1].replace("[", "").replace("]", "").replace(";", ",");
                 }
             }
         } catch (IOException e) {

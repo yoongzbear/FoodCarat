@@ -302,7 +302,7 @@ public class User {
     }
     
     // Add user data to user.txt for First Login
-    public void userInfo(String email, String name, String password, String contactNumber, String date) {
+    public void addUserInfo(String email, String name, String password, String contactNumber, String date) {
         List<String> fileContent = new ArrayList<>();
         boolean updated = false;
 
@@ -525,5 +525,29 @@ public class User {
             javax.swing.JOptionPane.showMessageDialog(null, "Error reading file: " + ex.getMessage());
         }
         return null; // Return null if no record is found
+    }
+    
+    public String[] getUserInfo(String email) {
+        String[] userInfo = null;
+        try {
+            FileReader fr = new FileReader(userFile);
+            BufferedReader br = new BufferedReader(fr);
+            String read;
+
+            while ((read = br.readLine()) != null) {
+                String[] userParts = read.split(",");
+                String userEmail = userParts[0];
+
+                if (email.equals(userEmail)) {
+                    userInfo = userParts;
+                    break;
+                }
+            }
+            br.close();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Failed to read from the user file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        return userInfo;
     }
 }

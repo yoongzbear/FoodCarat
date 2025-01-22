@@ -6,6 +6,7 @@ package FoodCarat;
 
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -13,20 +14,54 @@ import javax.swing.JOptionPane;
  */
 public class runnerViewTask extends javax.swing.JFrame {
     private String[] orderData;
+    private String runnerEmail = "runner4@mail.com";
+    //private String runnerEmail = User.getSessionEmail();
 
     public runnerViewTask() {
         initComponents();
         setLocationRelativeTo(null);
         
-        String runnerEmail = User.getSessionEmail();
+        //String runnerEmail = User.getSessionEmail();
         getRunnerTask(runnerEmail);
         
         if(orderData == null){
             acceptJB.setEnabled(false);
             declineJB.setEnabled(false);
         }
+        
+        displayCurrentTask(runnerEmail);
+        
+        updateJB.setEnabled(false);
+
+        // Add a listener to the table to handle row selection
+        currentTaskJT.getSelectionModel().addListSelectionListener(event -> {
+            // Ignore updates when the table is still adjusting the selection
+            if (!event.getValueIsAdjusting() && currentTaskJT.getSelectedRow() != -1) {
+                // Get the selected row index
+                int selectedRow = currentTaskJT.getSelectedRow();
+
+                String orderID = currentTaskJT.getValueAt(selectedRow, 0).toString();
+                String vendorName = currentTaskJT.getValueAt(selectedRow, 1).toString();
+                String customerName = currentTaskJT.getValueAt(selectedRow, 2).toString();
+                String item = currentTaskJT.getValueAt(selectedRow, 3).toString();
+                String address = currentTaskJT.getValueAt(selectedRow, 4).toString();
+                String contactNo = currentTaskJT.getValueAt(selectedRow, 5).toString();
+                String deliveryFee = currentTaskJT.getValueAt(selectedRow, 6).toString();
+                String status = currentTaskJT.getValueAt(selectedRow, 7).toString();
+
+                orderIDTF2.setText(orderID);
+                vendorNameTF2.setText(vendorName);
+                cusNameTF2.setText(customerName);
+                itemTA.setText(item);
+                addressTA2.setText(address);
+                contactNoTF.setText(contactNo);
+                deFeeTF2.setText(deliveryFee);
+                statusJCB.setSelectedItem(status);
+            }
+        });
     }
     
+    // Get new task
     private void getRunnerTask(String runnerEmail) {
         Order order = new Order();
         List<String[]> allOrders = order.getAllOrders();
@@ -69,11 +104,90 @@ public class runnerViewTask extends javax.swing.JFrame {
         }
     }
 
+    // For Task reception area
     private void clearTaskDetails() {
         GuiUtility.clearFields(orderIDTF, vendorNameTF, addressTA, deFeeTF);
 
         acceptJB.setEnabled(false);
         declineJB.setEnabled(false);
+    }
+    
+    // Display Current Task in table
+    private void displayCurrentTask(String email) {
+        Order order = new Order();
+        List<String[]> allOrders = order.getAllOrders();
+
+        // Get the table model
+        DefaultTableModel model = (DefaultTableModel) currentTaskJT.getModel();
+
+        // Clear the existing table data
+        model.setRowCount(0);
+
+        for (String[] orderData : allOrders) {
+            if (email.equals(orderData[5]) && !orderData[3].equalsIgnoreCase("assigning runner") && !orderData[3].equalsIgnoreCase("completed")) {
+
+                String orderId = orderData[0];
+                
+                // Get Vendor Name
+                String itemIDString = orderData[2];
+                itemIDString = itemIDString.replaceAll("[\\[\\]]", "");
+                String[] itemIDs = itemIDString.split(";");
+                String firstItemID = itemIDs[0];
+                Item item = new Item();
+                String[] vendorInfo = item.getVendorInfoByItemID(Integer.parseInt(firstItemID.trim()));
+                String vendorName = vendorInfo[1];
+                
+                String[] customerInfo = new User().getUserInfo(orderData[4]);
+                String customerName = customerInfo[1];
+                
+                String items = orderData[0];
+                
+                String address = new Customer().getCustomerAddress(orderData[4]);
+                String contactNumber = customerInfo[5];
+                
+                String deliveryFee = orderData[7];
+                String status = orderData[3].substring(0, 1).toUpperCase() + orderData[3].substring(1).toLowerCase();
+
+                // Add row to the table
+                model.addRow(new Object[]{
+                        orderId, vendorName, customerName, items, address, contactNumber, deliveryFee, status
+                });
+            }
+        }
+        
+        currentTaskJT.getSelectionModel().addListSelectionListener(event -> {
+            if(!event.getValueIsAdjusting()){
+                int selectedRow = currentTaskJT.getSelectedRow();
+                if(selectedRow != -1){
+                    int orderId = Integer.parseInt(model.getValueAt(selectedRow, 0).toString());
+                    String currentStatus = model.getValueAt(selectedRow, 7).toString();
+
+                    statusAndUpdate(orderId, currentStatus);
+                }
+            }
+        });
+    }
+    
+    // Set the model for the statusJCB based on the current status
+    private void statusAndUpdate(int orderId, String currentStatus) {
+        statusJCB.removeAllItems();
+        statusJCB.addItem(currentStatus);
+
+        switch (currentStatus.toLowerCase()) {
+            case "ready":
+                statusJCB.addItem("Picked Up");
+                updateJB.setEnabled(true);
+                break;
+
+            case "picked up":
+                statusJCB.addItem("Completed");
+                updateJB.setEnabled(true);
+                break;
+
+            default:
+                updateJB.setEnabled(false);
+                break;
+        }
     }
 
     /**
@@ -89,8 +203,6 @@ public class runnerViewTask extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         backJB = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        declineJB = new javax.swing.JButton();
-        acceptJB = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         orderIDTF = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
@@ -100,24 +212,30 @@ public class runnerViewTask extends javax.swing.JFrame {
         addressTA = new javax.swing.JTextArea();
         jLabel7 = new javax.swing.JLabel();
         deFeeTF = new javax.swing.JTextField();
+        acceptJB = new javax.swing.JButton();
+        declineJB = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        taskJT = new javax.swing.JTable();
+        currentTaskJT = new javax.swing.JTable();
         jLabel5 = new javax.swing.JLabel();
         orderIDTF2 = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        cusNameTF2 = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        contactNoTF = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        addressTA2 = new javax.swing.JTextArea();
+        jLabel13 = new javax.swing.JLabel();
+        vendorNameTF2 = new javax.swing.JTextField();
+        jLabel12 = new javax.swing.JLabel();
+        deFeeTF2 = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        itemTA = new javax.swing.JTextArea();
         jLabel6 = new javax.swing.JLabel();
         statusJCB = new javax.swing.JComboBox<>();
         updateJB = new javax.swing.JButton();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        cusNameTF2 = new javax.swing.JTextField();
-        contactNoTF = new javax.swing.JTextField();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        ItemTA = new javax.swing.JTextArea();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        addressTA2 = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -159,20 +277,6 @@ public class runnerViewTask extends javax.swing.JFrame {
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Task Reception Area", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 1, 18))); // NOI18N
 
-        declineJB.setText("Decline");
-        declineJB.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                declineJBActionPerformed(evt);
-            }
-        });
-
-        acceptJB.setText("Accept");
-        acceptJB.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                acceptJBActionPerformed(evt);
-            }
-        });
-
         jLabel2.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         jLabel2.setText("Order ID:");
 
@@ -192,7 +296,9 @@ public class runnerViewTask extends javax.swing.JFrame {
 
         addressTA.setEditable(false);
         addressTA.setColumns(20);
+        addressTA.setLineWrap(true);
         addressTA.setRows(5);
+        addressTA.setToolTipText("");
         addressTA.setFocusable(false);
         addressTA.setPreferredSize(new java.awt.Dimension(300, 100));
         jScrollPane2.setViewportView(addressTA);
@@ -204,6 +310,20 @@ public class runnerViewTask extends javax.swing.JFrame {
         deFeeTF.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
         deFeeTF.setFocusable(false);
 
+        acceptJB.setText("Accept");
+        acceptJB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                acceptJBActionPerformed(evt);
+            }
+        });
+
+        declineJB.setText("Decline");
+        declineJB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                declineJBActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -212,20 +332,20 @@ public class runnerViewTask extends javax.swing.JFrame {
                 .addGap(16, 16, 16)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(vendorNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(642, Short.MAX_VALUE))
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(orderIDTF, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(137, 137, 137)
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(deFeeTF, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(orderIDTF, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(106, 106, 106)
-                                .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(deFeeTF, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(vendorNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel4)
                                 .addGap(18, 18, 18)
@@ -239,22 +359,24 @@ public class runnerViewTask extends javax.swing.JFrame {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(13, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(orderIDTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7)
+                    .addComponent(deFeeTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(orderIDTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel7)
-                            .addComponent(deFeeTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
                             .addComponent(vendorNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addGap(35, 35, 35))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(acceptJB)
                         .addComponent(declineJB)))
@@ -264,21 +386,20 @@ public class runnerViewTask extends javax.swing.JFrame {
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Current Task", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 1, 18))); // NOI18N
 
-        taskJT.setAutoCreateColumnsFromModel(false);
-        taskJT.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
-        taskJT.setModel(new javax.swing.table.DefaultTableModel(
+        currentTaskJT.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
+        currentTaskJT.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Order ID.", "Name", "Item", "Address", "Contact No.", "Delivery Fee", "Status"
+                "Order ID.", "Vendor Name", "Name", "Item", "Address", "Contact No.", "Delivery Fee", "Status"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -289,13 +410,15 @@ public class runnerViewTask extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        taskJT.setName(""); // NOI18N
-        taskJT.setRowHeight(25);
-        taskJT.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        taskJT.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        taskJT.setShowGrid(true);
-        jScrollPane1.setViewportView(taskJT);
-        taskJT.getAccessibleContext().setAccessibleDescription("");
+        currentTaskJT.setName(""); // NOI18N
+        currentTaskJT.setOpaque(false);
+        currentTaskJT.setRowHeight(25);
+        currentTaskJT.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        currentTaskJT.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        currentTaskJT.setShowGrid(true);
+        jScrollPane1.setViewportView(currentTaskJT);
+        currentTaskJT.getAccessibleContext().setAccessibleName("");
+        currentTaskJT.getAccessibleContext().setAccessibleDescription("");
 
         jLabel5.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel5.setText("Oder ID:");
@@ -305,113 +428,159 @@ public class runnerViewTask extends javax.swing.JFrame {
         orderIDTF2.setFocusable(false);
         orderIDTF2.setPreferredSize(new java.awt.Dimension(100, 25));
 
-        jLabel6.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        jLabel6.setText("Oder Status:");
-
-        statusJCB.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
-        statusJCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pick Up", "Completed" }));
-
-        updateJB.setText("Update");
-
         jLabel8.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel8.setText("Customer Name:");
-
-        jLabel9.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        jLabel9.setText("Item:");
-
-        jLabel10.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        jLabel10.setText("Contact No. :");
-
-        jLabel11.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        jLabel11.setText("Address:");
 
         cusNameTF2.setEditable(false);
         cusNameTF2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         cusNameTF2.setFocusable(false);
 
+        jLabel10.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        jLabel10.setText("Contact No. :");
+
         contactNoTF.setEditable(false);
         contactNoTF.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        contactNoTF.setFocusable(false);
 
-        ItemTA.setEditable(false);
-        ItemTA.setColumns(20);
-        ItemTA.setLineWrap(true);
-        ItemTA.setFocusable(false);
-        jScrollPane3.setViewportView(ItemTA);
+        jLabel11.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        jLabel11.setText("Address:");
 
         addressTA2.setEditable(false);
         addressTA2.setColumns(20);
+        addressTA2.setLineWrap(true);
         addressTA2.setRows(5);
-        addressTA2.setFocusable(false);
         jScrollPane4.setViewportView(addressTA2);
+
+        jLabel13.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        jLabel13.setText("Vendor Name:");
+
+        vendorNameTF2.setEditable(false);
+        vendorNameTF2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        vendorNameTF2.setFocusable(false);
+
+        jLabel12.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        jLabel12.setText("Delivery Fee:");
+
+        deFeeTF2.setEditable(false);
+        deFeeTF2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        deFeeTF2.setFocusable(false);
+
+        jLabel9.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        jLabel9.setText("Item:");
+
+        itemTA.setEditable(false);
+        itemTA.setColumns(20);
+        itemTA.setLineWrap(true);
+        itemTA.setFocusable(false);
+        jScrollPane3.setViewportView(itemTA);
+
+        jLabel6.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        jLabel6.setText("Oder Status:");
+
+        statusJCB.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
+        statusJCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Row" }));
+
+        updateJB.setText("Update");
+        updateJB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateJBActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(20, 20, 20)
+                .addContainerGap(21, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 843, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(orderIDTF2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(296, 296, 296)
-                                .addComponent(jLabel9))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jLabel6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(statusJCB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(updateJB, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jLabel8)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cusNameTF2, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jLabel10)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(contactNoTF, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jLabel11)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 314, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(jLabel12)
+                                        .addGroup(jPanel3Layout.createSequentialGroup()
+                                            .addComponent(jLabel5)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(orderIDTF2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(jLabel9)))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                                .addGroup(jPanel3Layout.createSequentialGroup()
+                                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanel3Layout.createSequentialGroup()
+                                            .addComponent(jLabel6)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(statusJCB, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(18, 18, 18)
+                                            .addComponent(updateJB, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(jPanel3Layout.createSequentialGroup()
+                                            .addComponent(jLabel10)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(contactNoTF, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(jPanel3Layout.createSequentialGroup()
+                                            .addComponent(jLabel8)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(cusNameTF2, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGap(173, 173, 173)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel3Layout.createSequentialGroup()
+                                        .addComponent(jLabel13)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(vendorNameTF2, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel3Layout.createSequentialGroup()
+                                        .addComponent(jLabel11)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(74, 74, 74)))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 314, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(deFeeTF2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(28, 28, 28)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel5)
+                                    .addComponent(orderIDTF2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel8)
+                                    .addComponent(cusNameTF2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel10)
+                                    .addComponent(contactNoTF, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel3Layout.createSequentialGroup()
+                                        .addComponent(jLabel11)
+                                        .addGap(0, 0, Short.MAX_VALUE))))
+                            .addComponent(jScrollPane3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 87, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
-                            .addComponent(orderIDTF2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel9))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel8)
-                            .addComponent(cusNameTF2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel10)
-                            .addComponent(contactNoTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel11)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+                            .addComponent(deFeeTF2)
+                            .addComponent(vendorNameTF2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel13)
+                            .addComponent(jLabel12))
+                        .addGap(39, 39, 39)))
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(updateJB)
-                    .addComponent(statusJCB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(statusJCB, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6))
                 .addGap(18, 18, 18))
         );
@@ -424,7 +593,7 @@ public class runnerViewTask extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -433,10 +602,10 @@ public class runnerViewTask extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -449,13 +618,13 @@ public class runnerViewTask extends javax.swing.JFrame {
 
     private void acceptJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptJBActionPerformed
         String orderId = orderIDTF.getText();
-        String runnerEmail = User.getSessionEmail();
         
         new Order().updateStatus(Integer.parseInt(orderId), "Ordered", "runner");
         new Runner().updateRunnerStatus(runnerEmail, "unavailable");
         JOptionPane.showMessageDialog(null, "Task accepted!");
         
         clearTaskDetails();
+        displayCurrentTask(runnerEmail);
     }//GEN-LAST:event_acceptJBActionPerformed
 
     private void declineJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_declineJBActionPerformed
@@ -471,6 +640,31 @@ public class runnerViewTask extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_declineJBActionPerformed
+
+    private void updateJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateJBActionPerformed
+        int selectedRow = currentTaskJT.getSelectedRow();
+        if (selectedRow != -1) {
+            int orderId = Integer.parseInt(currentTaskJT.getValueAt(selectedRow, 0).toString());
+            String currentStatus = currentTaskJT.getValueAt(selectedRow, 7).toString();
+
+            String newStatus = (String) statusJCB.getSelectedItem();
+
+            if (newStatus != null && !newStatus.equalsIgnoreCase(currentStatus)) {
+                // Update status
+                Order order = new Order();
+                order.updateStatus(orderId, newStatus.toLowerCase(), "runner");
+
+                JOptionPane.showMessageDialog(null, "Status Updated!");
+
+                // Refresh and Reset
+                displayCurrentTask(runnerEmail);
+                GuiUtility.clearFields(orderIDTF2, cusNameTF2, vendorNameTF2, itemTA, addressTA2, contactNoTF, deFeeTF2);
+                statusJCB.removeAllItems();
+                statusJCB.addItem("Select Row");
+                updateJB.setEnabled(false);
+            }
+        }
+    }//GEN-LAST:event_updateJBActionPerformed
 
     /**
      * @param args the command line arguments
@@ -508,18 +702,22 @@ public class runnerViewTask extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextArea ItemTA;
     private javax.swing.JButton acceptJB;
     private javax.swing.JTextArea addressTA;
     private javax.swing.JTextArea addressTA2;
     private javax.swing.JButton backJB;
     private javax.swing.JTextField contactNoTF;
+    private javax.swing.JTable currentTaskJT;
     private javax.swing.JTextField cusNameTF2;
     private javax.swing.JTextField deFeeTF;
+    private javax.swing.JTextField deFeeTF2;
     private javax.swing.JButton declineJB;
+    private javax.swing.JTextArea itemTA;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -538,8 +736,8 @@ public class runnerViewTask extends javax.swing.JFrame {
     private javax.swing.JTextField orderIDTF;
     private javax.swing.JTextField orderIDTF2;
     private javax.swing.JComboBox<String> statusJCB;
-    private javax.swing.JTable taskJT;
     private javax.swing.JButton updateJB;
     private javax.swing.JTextField vendorNameTF;
+    private javax.swing.JTextField vendorNameTF2;
     // End of variables declaration//GEN-END:variables
 }
