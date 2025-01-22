@@ -63,7 +63,7 @@ public class vendorAddItem extends javax.swing.JFrame {
     
     //validate item name duplication
     private boolean duplicateName(String name) {
-        List<String[]> allItems = item.getAllItems();
+        List<String[]> allItems = item.getAllItems(true); //only items with available status
         for (String[] item : allItems) { 
             if (item[1].equalsIgnoreCase(name) && item[5].equals(email)) { 
                 return true; 

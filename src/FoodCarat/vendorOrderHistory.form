@@ -74,11 +74,10 @@
                   <Component id="menuBtn" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="timeRangeBox" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jPanel1" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
+                      <Component id="timeRangeBox" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -106,8 +105,9 @@
                       </Group>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
+                  <Component id="jPanel1" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -539,18 +539,18 @@
                               <Group type="102" attributes="0">
                                   <Component id="chartWeekRange3" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="jMonthChooser1" min="-2" pref="125" max="-2" attributes="0"/>
+                                  <Component id="chartMonthChooser" min="-2" pref="125" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
                                   <Component id="chartWeekRange4" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="jYearChooser1" min="-2" pref="87" max="-2" attributes="0"/>
+                                  <Component id="chartYearChooser" min="-2" pref="87" max="-2" attributes="0"/>
                               </Group>
                               <Component id="jLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="weeklyChartBtn" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="monthChartBtn" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                                  <Component id="monthlyChartPanel" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="weeklyChartPanel" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="monthlyChartPanel" alignment="0" pref="455" max="32767" attributes="0"/>
+                                  <Component id="weeklyChartPanel" alignment="0" pref="455" max="32767" attributes="0"/>
                               </Group>
                               <Group type="102" attributes="0">
                                   <Component id="chartWeekRange" min="-2" max="-2" attributes="0"/>
@@ -595,8 +595,8 @@
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="chartWeekRange3" min="-2" max="-2" attributes="0"/>
-                              <Component id="jMonthChooser1" min="-2" max="-2" attributes="0"/>
-                              <Component id="jYearChooser1" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="chartMonthChooser" min="-2" max="-2" attributes="0"/>
+                              <Component id="chartYearChooser" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="monthChartBtn" min="-2" max="-2" attributes="0"/>
@@ -639,6 +639,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Generate Chart"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="monthChartBtnActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="chartWeekRange">
           <Properties>
@@ -676,6 +679,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Generate Chart"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="weeklyChartBtnActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="chartWeekRange3">
           <Properties>
@@ -685,7 +691,7 @@
             <Property name="text" type="java.lang.String" value="Month:"/>
           </Properties>
         </Component>
-        <Component class="com.toedter.calendar.JMonthChooser" name="jMonthChooser1">
+        <Component class="com.toedter.calendar.JMonthChooser" name="chartMonthChooser">
         </Component>
         <Component class="javax.swing.JLabel" name="chartWeekRange4">
           <Properties>
@@ -695,9 +701,14 @@
             <Property name="text" type="java.lang.String" value="Year:"/>
           </Properties>
         </Component>
-        <Component class="com.toedter.calendar.JYearChooser" name="jYearChooser1">
+        <Component class="com.toedter.calendar.JYearChooser" name="chartYearChooser">
         </Component>
         <Container class="javax.swing.JPanel" name="weeklyChartPanel">
+          <Properties>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[325, 200]"/>
+            </Property>
+          </Properties>
 
           <Layout>
             <DimensionLayout dim="0">
@@ -707,12 +718,17 @@
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="186" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="200" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
         </Container>
         <Container class="javax.swing.JPanel" name="monthlyChartPanel">
+          <Properties>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[325, 200]"/>
+            </Property>
+          </Properties>
 
           <Layout>
             <DimensionLayout dim="0">
@@ -722,7 +738,7 @@
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="178" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="200" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>

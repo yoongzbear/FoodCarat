@@ -81,7 +81,7 @@ public class vendorMenu extends javax.swing.JFrame {
     //display all items
     public void displayItems() {
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
-        List<String[]> allItems = new Item().getAllItems(email);
+        List<String[]> allItems = new Item().getAllItems(email, true); //items with available status
         int index = 1;
         model.setRowCount(0);
         itemTable.setRowHeight(100);
@@ -135,7 +135,7 @@ public class vendorMenu extends javax.swing.JFrame {
     //display items based on check boxes
     public void displayItemsFilter(String[] filter) {      
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
-        List<String[]> allItems = new Item().getAllItems(email);
+        List<String[]> allItems = new Item().getAllItems(email, true); //item is available 
         int index = 1;
         model.setRowCount(0);
         itemTable.setRowHeight(100);

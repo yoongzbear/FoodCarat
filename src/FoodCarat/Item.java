@@ -32,7 +32,7 @@ public class Item {
     private String venEmail;
     private String itemStatus;
     
-    private String itemFile = "resources/item.txt";
+    private final String itemFile = "resources/item.txt";
 
     //constructor
     public Item() {
@@ -197,8 +197,8 @@ public class Item {
         return latestRow;
     }
         
-    //get data for all available items
-    public List<String[]> getAllItems() { 
+    //get data for all items - either available items only or all including deleted ones
+    public List<String[]> getAllItems(boolean isAvailableOnly) { 
         List<String[]> allItems = new ArrayList<>();
         
         try {
@@ -208,11 +208,16 @@ public class Item {
             
             while ((read = br.readLine()) != null) {
                 String[] itemData = read.split(",");
-                if(itemData[6].equals("available")) {
+                //filter if want all including deleted or only available
+                if (isAvailableOnly) {
+                    if (itemData[6].equals("available")) {
+                        allItems.add(itemData);
+                    }
+                } else {
                     allItems.add(itemData);
                 }
             }
-        } catch(IOException e) {
+        } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Failed to read from the file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
         
@@ -221,7 +226,7 @@ public class Item {
     
     //method overloading
     //get data for all items matching vendor email
-    public List<String[]> getAllItems(String venEmail) { 
+    public List<String[]> getAllItems(String venEmail, boolean isAvailableOnly) { 
         List<String[]> allItems = new ArrayList<>();
         
         try {
@@ -232,8 +237,12 @@ public class Item {
             while ((read = br.readLine()) != null) {
                 //get all rows where vendor email == venEmail
                 String[] itemData = read.split(",");
-                if(itemData[5].equals(venEmail) && itemData[6].equals("available")) {
+                if(isAvailableOnly && itemData[5].equals(venEmail) && itemData[6].equals("available")) {
                     allItems.add(itemData);
+                } else {
+                    if (itemData[5].equals(venEmail)) {
+                        allItems.add(itemData);
+                    }
                 }
             }
         } catch(IOException e) {
@@ -272,14 +281,10 @@ public class Item {
     //return items searched
     public List<String[]> searchItems(String venEmail, String searchItem) {
         List<String[]> searchedItems = new ArrayList<>();
-        List<String[]> allItems = getAllItems(venEmail);
+        List<String[]> allItems = getAllItems(venEmail, true); //for items with available status only 
         
         for (String[] itemData : allItems) {
-            String itemID = itemData[0];
             String itemName = itemData[1];
-            String itemType = itemData[2];
-            String itemPrice = itemData[3];
-            String itemImgPath = itemData[4];
             
             if (itemName.toLowerCase().contains(searchItem.toLowerCase())) {
                 searchedItems.add(itemData);
@@ -292,7 +297,7 @@ public class Item {
     //update item
     public void editItem() {
         //get all data
-        List<String[]> allItems = getAllItems();
+        List<String[]> allItems = getAllItems(true); //for items with available status only
         boolean isEdited = false;
         
         try {

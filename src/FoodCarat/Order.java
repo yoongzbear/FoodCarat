@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -217,7 +218,7 @@ public class Order {
         DecimalFormat df = new DecimalFormat("0.00");
         //get all items from vendor
         Item item = new Item();
-        List<String[]> vendorItems = item.getAllItems(vendorEmail);
+        List<String[]> vendorItems = item.getAllItems(vendorEmail, false); //for all items
         List<String> allItemIDs = vendorItems.stream()
                 .map(data -> data[0]) //get itemID
                 .collect(Collectors.toList());
@@ -237,7 +238,6 @@ public class Order {
         return vendorOrders;
     }
     
-    //get order IDs by vendor/runner email
     //get order IDs by vendor/runner email
     public List<Integer> getOrderIDsReview(String email, String type) {
         List<Integer> orderIDs = new ArrayList<>();
@@ -309,8 +309,70 @@ public class Order {
         }
         return orderData;
     }
+    
+    //count number of items ordered
+    public List<String[]> getOrderedItemQuantities(String vendorEmail, String type, String timeRange) { //type = weekly/month
+        List<String[]> itemQuantities = new ArrayList<>();
+        List<String[]> vendorItems = new Item().getAllItems(vendorEmail, false); //get items from vendor inlcuding deleted ones
+        List<String[]> allOrders = getAllOrders(vendorEmail);
+        
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    //helper method to determine if order contain items from the vendor
+        //get start and end date
+        LocalDate startDate = null, endDate = null;
+        String[] timeRangeParts = timeRange.split(",");
+        try {
+            if (type.equalsIgnoreCase("weekly")) {
+                startDate = LocalDate.parse(timeRangeParts[0], dateFormat); 
+                endDate = LocalDate.parse(timeRangeParts[1], dateFormat);   
+            } else if (type.equalsIgnoreCase("monthly")) {
+                int month = Integer.parseInt(timeRangeParts[0]); 
+                int year = Integer.parseInt(timeRangeParts[1]);  
+                startDate = LocalDate.of(year, month, 1); 
+                endDate = startDate.withDayOfMonth(startDate.lengthOfMonth()); 
+            }
+        } catch (Exception e) {
+            System.err.println("Invalid time range format: " + timeRange);
+            return itemQuantities;
+        }
+        
+        //add initial list of item's ID with 0 quantity
+        for (String[] vendorItem : vendorItems) {
+            itemQuantities.add(new String[]{vendorItem[0], "0"}); //[itemID, quantity]
+        }        
+        
+        for (String[] order : allOrders) {
+            try {
+                LocalDate orderDate = LocalDate.parse(order[9].trim(), dateFormat);
+
+                if ((orderDate.isEqual(startDate) || orderDate.isAfter(startDate))
+                        && (orderDate.isEqual(endDate) || orderDate.isBefore(endDate))) {
+                    String orderItems = order[2];
+                    orderItems = orderItems.replaceAll("[\\[\\]]", ""); //remove [ ]
+
+                    String[] orderItemsArray = orderItems.split("\\|");
+                    for (String orderItem : orderItemsArray) {
+                        String[] itemData = orderItem.split(";");
+                        String itemID = itemData[0];
+                        int quantity = Integer.parseInt(itemData[1]);
+
+                        // Find the corresponding item from the vendor's items and increment its quantity
+                        for (String[] item : itemQuantities) {
+                            if (item[0].equals(itemID)) {
+                                item[1] = String.valueOf(Integer.parseInt(item[1]) + quantity);
+                            }
+                        }
+                    }
+                }
+            } catch (java.time.format.DateTimeParseException e) {
+                System.err.println("Invalid data in order: " + e.getMessage());
+            }
+
+        }
+        return itemQuantities;
+    }
+
+    //to determine if order contain items from the vendor
     private boolean containsVendorItems(String orderItems, List<String> itemIDs) {
         //[itemID;quantity|itemID;quantity]
         String[] itemDetails = orderItems.replace("[", "").replace("]", "").split("\\|");

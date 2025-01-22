@@ -4,6 +4,7 @@
  */
 package FoodCarat;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -11,14 +12,20 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import org.jfree.chart.ChartPanel;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.general.DefaultPieDataset;
 
 /**
  *
@@ -230,6 +237,66 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         }
     }
 
+    //generate chart
+    public void displayChart(String type, String timeRange) {
+        Order order = new Order();
+        List<String[]> orderCount = new  ArrayList<>();
+        //get order count for each item based on time range
+        if (type.equalsIgnoreCase("weekly")) {
+            orderCount = order.getOrderedItemQuantities(email, "weekly", timeRange);
+        } else if (type.equalsIgnoreCase("monthly")) {
+            orderCount = order.getOrderedItemQuantities(email, "monthly", timeRange);
+        }
+
+        //make item names into initials only 
+        Map<String, String> itemIdToNameMap = new HashMap<>();
+        for (String[] itemData : new Item().getAllItems(email, false)) {
+            itemIdToNameMap.put(itemData[0], itemData[1]); //itemID, itemName
+        }
+        
+        //pass into chart making function - bar chart
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        for (String[] item : orderCount) {
+            String itemId = item[0];
+            String itemName = itemIdToNameMap.getOrDefault(itemId, "Unknown");
+            String initials = getInitials(itemName);
+            int count = Integer.parseInt(item[1]);
+
+            dataset.addValue(count, "Orders", initials); //count, series, initials
+        }
+
+        if (type.equalsIgnoreCase("weekly")) {
+            ChartPanel chartPanel = ChartUtility.createBarChart(dataset, "Weekly Orders", "Item", "Count");
+
+            weeklyChartPanel.removeAll();
+            weeklyChartPanel.setLayout(new BorderLayout());
+            weeklyChartPanel.add(chartPanel, BorderLayout.CENTER);
+            weeklyChartPanel.revalidate();
+            weeklyChartPanel.repaint();
+        } else if (type.equalsIgnoreCase("monthly")) {
+            ChartPanel chartPanel = ChartUtility.createBarChart(dataset, "Monthly Orders", "Item", "Count");
+
+            monthlyChartPanel.removeAll();
+            monthlyChartPanel.setLayout(new BorderLayout());
+            monthlyChartPanel.add(chartPanel, BorderLayout.CENTER);
+            monthlyChartPanel.revalidate();
+            monthlyChartPanel.repaint();
+        }
+
+    }
+
+    //helper method to return initials of item name
+    private String getInitials(String name) {
+        String[] words = name.split(" ");
+        StringBuilder initials = new StringBuilder();
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                initials.append(word.charAt(0));
+            }
+        }
+        return initials.toString().toUpperCase();
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -279,9 +346,9 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         weeklyEndDateTxt = new javax.swing.JLabel();
         weeklyChartBtn = new javax.swing.JButton();
         chartWeekRange3 = new javax.swing.JLabel();
-        jMonthChooser1 = new com.toedter.calendar.JMonthChooser();
+        chartMonthChooser = new com.toedter.calendar.JMonthChooser();
         chartWeekRange4 = new javax.swing.JLabel();
-        jYearChooser1 = new com.toedter.calendar.JYearChooser();
+        chartYearChooser = new com.toedter.calendar.JYearChooser();
         weeklyChartPanel = new javax.swing.JPanel();
         monthlyChartPanel = new javax.swing.JPanel();
         dateChooser = new com.toedter.calendar.JDateChooser();
@@ -503,6 +570,11 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         jLabel6.setText("Monthly");
 
         monthChartBtn.setText("Generate Chart");
+        monthChartBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                monthChartBtnActionPerformed(evt);
+            }
+        });
 
         chartWeekRange.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         chartWeekRange.setText("Start Date:");
@@ -521,12 +593,19 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         weeklyEndDateTxt.setText("yyyy-MM-dd");
 
         weeklyChartBtn.setText("Generate Chart");
+        weeklyChartBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                weeklyChartBtnActionPerformed(evt);
+            }
+        });
 
         chartWeekRange3.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         chartWeekRange3.setText("Month:");
 
         chartWeekRange4.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         chartWeekRange4.setText("Year:");
+
+        weeklyChartPanel.setPreferredSize(new java.awt.Dimension(325, 200));
 
         javax.swing.GroupLayout weeklyChartPanelLayout = new javax.swing.GroupLayout(weeklyChartPanel);
         weeklyChartPanel.setLayout(weeklyChartPanelLayout);
@@ -536,8 +615,10 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         );
         weeklyChartPanelLayout.setVerticalGroup(
             weeklyChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 186, Short.MAX_VALUE)
+            .addGap(0, 200, Short.MAX_VALUE)
         );
+
+        monthlyChartPanel.setPreferredSize(new java.awt.Dimension(325, 200));
 
         javax.swing.GroupLayout monthlyChartPanelLayout = new javax.swing.GroupLayout(monthlyChartPanel);
         monthlyChartPanel.setLayout(monthlyChartPanelLayout);
@@ -547,7 +628,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         );
         monthlyChartPanelLayout.setVerticalGroup(
             monthlyChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 178, Short.MAX_VALUE)
+            .addGap(0, 200, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -566,17 +647,17 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(chartWeekRange3)
                                 .addGap(18, 18, 18)
-                                .addComponent(jMonthChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(chartMonthChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(34, 34, 34)
                                 .addComponent(chartWeekRange4)
                                 .addGap(18, 18, 18)
-                                .addComponent(jYearChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(chartYearChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jLabel4)
                             .addComponent(weeklyChartBtn)
                             .addComponent(monthChartBtn)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(monthlyChartPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(weeklyChartPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(monthlyChartPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 455, Short.MAX_VALUE)
+                                .addComponent(weeklyChartPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 455, Short.MAX_VALUE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(chartWeekRange)
                                 .addGap(18, 18, 18)
@@ -612,8 +693,8 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(chartWeekRange3)
-                            .addComponent(jMonthChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jYearChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(chartMonthChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(chartYearChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addComponent(monthChartBtn))
                     .addComponent(chartWeekRange4))
@@ -676,11 +757,10 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                     .addComponent(jLabel1)
                     .addComponent(menuBtn))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(timeRangeBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(timeRangeBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -700,8 +780,9 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                                     .addComponent(dateChooser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(selectDateLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addComponent(yearChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -814,6 +895,28 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jDateChooserInput
 
+    private void weeklyChartBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_weeklyChartBtnActionPerformed
+        //get start date and end date, combine into a string and call ratingCount in review class
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date chosenDate = weeklyDateChooser.getDate();
+        if (chosenDate == null) {
+            JOptionPane.showMessageDialog(null, "Please select a date.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            String startDate = dateFormat.format(chosenDate);
+            String endDate = weeklyEndDateTxt.getText();
+            String timeRange = startDate + "," + endDate;
+            displayChart("weekly", timeRange);
+        }
+    }//GEN-LAST:event_weeklyChartBtnActionPerformed
+
+    private void monthChartBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_monthChartBtnActionPerformed
+        //get month and year
+        String month = String.valueOf(chartMonthChooser.getMonth() + 1); //index of month + 1
+        String year = String.valueOf(chartYearChooser.getYear());
+        String timeRange = month + "," + year;
+        displayChart("monthly", timeRange);
+    }//GEN-LAST:event_monthChartBtnActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -850,10 +953,12 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.toedter.calendar.JMonthChooser chartMonthChooser;
     private javax.swing.JLabel chartWeekRange;
     private javax.swing.JLabel chartWeekRange1;
     private javax.swing.JLabel chartWeekRange3;
     private javax.swing.JLabel chartWeekRange4;
+    private com.toedter.calendar.JYearChooser chartYearChooser;
     private com.toedter.calendar.JDateChooser dateChooser;
     private javax.swing.JLabel dateLabel;
     private javax.swing.JLabel emailLabel;
@@ -873,13 +978,11 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel9;
-    private com.toedter.calendar.JMonthChooser jMonthChooser1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane5;
-    private com.toedter.calendar.JYearChooser jYearChooser1;
     private javax.swing.JButton menuBtn;
     private javax.swing.JLabel methodLabel;
     private javax.swing.JButton monthChartBtn;

@@ -382,7 +382,7 @@ public class Review {
             try {
                 int rating = Integer.parseInt(review[3]); 
                 LocalDate reviewDate = LocalDate.parse(review[5], dateFormat); 
-
+                
                 if ((reviewDate.isEqual(startDate) || reviewDate.isAfter(startDate))
                         && (reviewDate.isEqual(endDate) || reviewDate.isBefore(endDate))) {
                     if (rating >= 1 && rating <= 5) {

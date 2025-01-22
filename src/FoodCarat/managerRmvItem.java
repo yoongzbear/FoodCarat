@@ -98,7 +98,7 @@ public class managerRmvItem extends javax.swing.JFrame {
     //display all items
     public void displayItems() {
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
-        List<String[]> allItems = item.getAllItems(email);
+        List<String[]> allItems = item.getAllItems(email, true); //items with available status
         int index = 1;
         model.setRowCount(0);
         itemTable.setRowHeight(100);
@@ -153,7 +153,7 @@ public class managerRmvItem extends javax.swing.JFrame {
     //display items based on check boxes
     public void displayItemsFilter(String[] filter) {      
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
-        List<String[]> allItems = item.getAllItems(email);
+        List<String[]> allItems = item.getAllItems(email, true); //items with available status only
         int index = 1;
         model.setRowCount(0);
         itemTable.setRowHeight(100);
@@ -203,7 +203,7 @@ public class managerRmvItem extends javax.swing.JFrame {
     //display items based on search bar
     public void displayItemsSearch(String searchItem) {
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
-        List<String[]> allItems = item.getAllItems(email);
+        List<String[]> allItems = item.getAllItems(email, true); //items with available status
         int index = 1;
         model.setRowCount(0);
         itemTable.setRowHeight(100);
