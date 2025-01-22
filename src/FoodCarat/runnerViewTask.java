@@ -14,14 +14,13 @@ import javax.swing.table.DefaultTableModel;
  */
 public class runnerViewTask extends javax.swing.JFrame {
     private String[] orderData;
-    private String runnerEmail = "runner4@mail.com";
     //private String runnerEmail = User.getSessionEmail();
+    private String runnerEmail = "runner3@mail.com";
 
     public runnerViewTask() {
         initComponents();
         setLocationRelativeTo(null);
         
-        //String runnerEmail = User.getSessionEmail();
         getRunnerTask(runnerEmail);
         
         if(orderData == null){
@@ -140,13 +139,30 @@ public class runnerViewTask extends javax.swing.JFrame {
                 String[] customerInfo = new User().getUserInfo(orderData[4]);
                 String customerName = customerInfo[1];
                 
-                String items = orderData[0];
+                String items = item.replaceItemIDsWithNames(itemIDString);
                 
                 String address = new Customer().getCustomerAddress(orderData[4]);
                 String contactNumber = customerInfo[5];
                 
                 String deliveryFee = orderData[7];
-                String status = orderData[3].substring(0, 1).toUpperCase() + orderData[3].substring(1).toLowerCase();
+                String rawStatus = orderData[3]; // Get the raw status from data
+                String status;
+                // Map raw status to user-friendly display status
+                switch (rawStatus) {
+                    case "picked up by runner":
+                        status = "Picked Up";
+                        break;
+                    case "completed":
+                        status = "Completed";
+                        break;
+                    case "ready":
+                        status = "Ready";
+                        break;
+                    default:
+                        // Fallback to default capitalization logic
+                        status = rawStatus.substring(0, 1).toUpperCase() + orderData[3].substring(1).toLowerCase();
+                        break;
+                }
 
                 // Add row to the table
                 model.addRow(new Object[]{
@@ -159,17 +175,16 @@ public class runnerViewTask extends javax.swing.JFrame {
             if(!event.getValueIsAdjusting()){
                 int selectedRow = currentTaskJT.getSelectedRow();
                 if(selectedRow != -1){
-                    int orderId = Integer.parseInt(model.getValueAt(selectedRow, 0).toString());
                     String currentStatus = model.getValueAt(selectedRow, 7).toString();
 
-                    statusAndUpdate(orderId, currentStatus);
+                    statusAndUpdate(currentStatus);
                 }
             }
         });
     }
     
     // Set the model for the statusJCB based on the current status
-    private void statusAndUpdate(int orderId, String currentStatus) {
+    private void statusAndUpdate(String currentStatus) {
         statusJCB.removeAllItems();
         statusJCB.addItem(currentStatus);
 
@@ -628,8 +643,6 @@ public class runnerViewTask extends javax.swing.JFrame {
     }//GEN-LAST:event_acceptJBActionPerformed
 
     private void declineJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_declineJBActionPerformed
-        String runnerEmail = User.getSessionEmail();
-
         if (orderData != null) {
             int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to reject this task?", "Reject Task", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
@@ -650,11 +663,27 @@ public class runnerViewTask extends javax.swing.JFrame {
             String newStatus = (String) statusJCB.getSelectedItem();
 
             if (newStatus != null && !newStatus.equalsIgnoreCase(currentStatus)) {
+                String fileStatus;
+                    switch (newStatus) {
+                        case "Picked Up":
+                            fileStatus = "picked up by runner";
+                            break;
+                        case "Completed":
+                            fileStatus = "completed";
+                            break;
+                        default:
+                            fileStatus = newStatus.toLowerCase(); // Use as-is for other statuses
+                            break;
+                    }
                 // Update status
                 Order order = new Order();
-                order.updateStatus(orderId, newStatus.toLowerCase(), "runner");
+                order.updateStatus(orderId, fileStatus, "runner");
 
                 JOptionPane.showMessageDialog(null, "Status Updated!");
+                
+                if ("completed".equals(fileStatus)){
+                    new Runner().updateRunnerStatus(runnerEmail, "available");
+                }
 
                 // Refresh and Reset
                 displayCurrentTask(runnerEmail);
