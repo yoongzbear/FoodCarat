@@ -28,8 +28,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
     }
     
     private void clearFields() {
-        Admin.clearFields(emailtxt, nametxt, userbirthtxt, phonetxt, platnumtxt, addresstxta, cuisinecbx
-        );
+        GuiUtility.clearFields(emailtxt, nametxt, userbirthtxt, phonetxt, platnumtxt, addresstxta, cuisinecbx);
     }
     
     private void customizeForm() {

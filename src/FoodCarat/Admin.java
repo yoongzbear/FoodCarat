@@ -31,16 +31,7 @@ public class Admin extends User {
     public Admin(){
         
     }
-    //clear fields after register, delete, update performed....
-    public static void clearFields(java.awt.Component... components) {
-        for (java.awt.Component component : components) {
-            if (component instanceof javax.swing.text.JTextComponent) {
-                ((javax.swing.text.JTextComponent) component).setText(""); // Clear text fields
-            } else if (component instanceof javax.swing.JComboBox) {
-                ((javax.swing.JComboBox<?>) component).setSelectedIndex(-1); // Clear combo box selection
-            }
-        }
-    }
+    
     //Registration
     //validate email is registered for Registration
     public static boolean isEmailRegistered(String email, String filename) {

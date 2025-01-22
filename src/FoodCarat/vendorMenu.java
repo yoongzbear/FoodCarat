@@ -55,7 +55,7 @@ public class vendorMenu extends javax.swing.JFrame {
         enableTextField();
         
         //set the placeholder for search box
-        setPlaceholder(searchTxt, "Search Item Name");
+        GuiUtility.setPlaceholder(searchTxt, "Search item name");
         editBtn.setEnabled(false);
         deleteBtn.setEnabled(false);
         
@@ -63,32 +63,6 @@ public class vendorMenu extends javax.swing.JFrame {
         photoLabel.setPreferredSize(new Dimension(175, 164)); 
         photoLabel.setMinimumSize(new Dimension(175, 164));
         photoLabel.setMaximumSize(new Dimension(175, 164));
-    }
-    
-    //helper method to adjust search box
-    public void setPlaceholder(JTextField textField, String placeholder) {
-        textField.setText(placeholder);
-        textField.setForeground(Color.GRAY);  
-
-        textField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                //if the text field contains the placeholder, clear it when the clicked
-                if (textField.getText().equals(placeholder)) {
-                    textField.setText("");
-                    textField.setForeground(Color.BLACK);  
-                }
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                //if the text field is empty, show the placeholder again
-                if (textField.getText().isEmpty()) {
-                    textField.setText(placeholder);
-                    textField.setForeground(Color.GRAY);
-                }
-            }
-        });
     }
     
     //reset details section
@@ -211,36 +185,31 @@ public class vendorMenu extends javax.swing.JFrame {
     //display items based on search bar
     public void displayItemsSearch(String searchItem) {
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
-        List<String[]> allItems = new Item().getAllItems(email);
+        List<String[]> searchedItems = new Item().searchItems(email, searchItem);
         int index = 1;
         model.setRowCount(0);
         itemTable.setRowHeight(100);
   
-        for (String[] itemData : allItems) {
+        for (String[] itemData : searchedItems) {
             String itemID = itemData[0];
             String itemName = itemData[1];
             String itemType = itemData[2];
             String itemPrice = itemData[3];
             String itemImgPath = itemData[4];
 
-            //check if item type matches the filter
-            boolean isFound = false;
-            if (itemName.toLowerCase().contains(searchItem.toLowerCase())) {
-                //image icon
-                ImageIcon itemImage = new ImageIcon(itemImgPath);
-                Image img = itemImage.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-                itemImage = new ImageIcon(img);
+            //image icon
+            ImageIcon itemImage = new ImageIcon(itemImgPath);
+            Image img = itemImage.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+            itemImage = new ImageIcon(img);
 
-                model.addRow(
-                        new Object[]{index, itemID, itemImage, itemName, itemType, itemPrice});
-                index++;
-            }
+            model.addRow(new Object[]{index, itemID, itemImage, itemName, itemType, itemPrice});
+            index++;
         }
         //render image column
         itemTable.getColumnModel().getColumn(2).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-                                                           boolean hasFocus, int row, int column) {
+                    boolean hasFocus, int row, int column) {
                 if (value instanceof ImageIcon) {
                     JLabel label = new JLabel((ImageIcon) value);
                     label.setHorizontalAlignment(SwingConstants.CENTER);
@@ -384,11 +353,6 @@ public class vendorMenu extends javax.swing.JFrame {
         jLabel5.setText("Item Type:");
 
         typeBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item Type", "Food", "Beverage", "Dessert", "Set" }));
-        typeBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                typeBoxActionPerformed(evt);
-            }
-        });
 
         jLabel6.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel6.setText("Item Price (RM):");
@@ -509,11 +473,6 @@ public class vendorMenu extends javax.swing.JFrame {
         });
 
         searchTxt.setText("Search Item Name");
-        searchTxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                searchTxtActionPerformed(evt);
-            }
-        });
 
         searchBtn.setText("Search");
         searchBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -531,32 +490,12 @@ public class vendorMenu extends javax.swing.JFrame {
         });
 
         foodBox.setText("Food");
-        foodBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                foodBoxActionPerformed(evt);
-            }
-        });
 
         beverageBox.setText("Beverage");
-        beverageBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                beverageBoxActionPerformed(evt);
-            }
-        });
 
         dessertBox.setText("Dessert");
-        dessertBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                dessertBoxActionPerformed(evt);
-            }
-        });
 
         setBox.setText("Set");
-        setBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                setBoxActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -644,10 +583,6 @@ public class vendorMenu extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_addBtnActionPerformed
 
-    private void typeBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_typeBoxActionPerformed
-
     private void menuBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBtnActionPerformed
         new vendorMain().setVisible(true);
         dispose();
@@ -671,7 +606,6 @@ public class vendorMenu extends javax.swing.JFrame {
 
     private void filterBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterBtnActionPerformed
         //filter table based on the selected ticked box
-        //get checked boxes
         String[] selectedFilter = new String[3];
         int index = 0;
 
@@ -786,37 +720,22 @@ public class vendorMenu extends javax.swing.JFrame {
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
         //search based on item name
         String searchItem = searchTxt.getText();
-        displayItemsSearch(searchItem);
+        if (searchItem.equals("Search item name")) { //if vendor doesn't enter any input in the search box
+            JOptionPane.showMessageDialog(null, "Please enter item name to search.", "Alert", JOptionPane.WARNING_MESSAGE);
+            displayItems();
+        } else {
+            displayItemsSearch(searchItem);
+        }           
     }//GEN-LAST:event_searchBtnActionPerformed
-
-    private void searchTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchTxtActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_searchTxtActionPerformed
 
     private void revertBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_revertBtnActionPerformed
         displayItems();
-        setPlaceholder(searchTxt, "Search Item Name");
+        GuiUtility.setPlaceholder(searchTxt, "Search item name");
         foodBox.setSelected(false);
         beverageBox.setSelected(false);
         dessertBox.setSelected(false);
         setBox.setSelected(false);
     }//GEN-LAST:event_revertBtnActionPerformed
-
-    private void foodBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_foodBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_foodBoxActionPerformed
-
-    private void beverageBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_beverageBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_beverageBoxActionPerformed
-
-    private void dessertBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dessertBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_dessertBoxActionPerformed
-
-    private void setBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_setBoxActionPerformed
 
     /**
      * @param args the command line arguments

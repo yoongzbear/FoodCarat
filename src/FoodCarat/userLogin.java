@@ -23,8 +23,8 @@ public class userLogin extends javax.swing.JFrame {
         
         User user = new User();
         // Set the document filter for emailField and passwordField
-        ((PlainDocument) emailTf.getDocument()).setDocumentFilter(user.createLengthFilter(30));
-        ((PlainDocument) lPasswordField.getDocument()).setDocumentFilter(user.createLengthFilter(20));
+        ((PlainDocument) emailTf.getDocument()).setDocumentFilter(GuiUtility.createLengthFilter(30));
+        ((PlainDocument) lPasswordField.getDocument()).setDocumentFilter(GuiUtility.createLengthFilter(20));
     }
     
      @Override

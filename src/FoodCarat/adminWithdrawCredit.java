@@ -36,11 +36,9 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
     }
 
     private void clearFields() {
-        Admin.clearFields(
-            emailtxt, nametxt, currentamounttxt, withdrawnumtxt, sumtxt
-        );
+        GuiUtility.clearFields(emailtxt, nametxt, currentamounttxt, withdrawnumtxt, sumtxt);
     }
-    
+
     private void updateNewAmount() {
         try {
             // Get the current amount and top-up amount

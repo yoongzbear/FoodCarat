@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
  */
 public class Vendor extends User{
     //constructor    
-    private String email;
     //super(email,password,name);
             
     private String cuisine;
@@ -36,8 +35,7 @@ public class Vendor extends User{
     private double totalRevenue;
     
     public Vendor(String email) {
-        //super(email)
-        this.email = email;
+        super(email);
         getVendorInfo(email);
     }
     

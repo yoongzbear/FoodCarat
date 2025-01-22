@@ -122,11 +122,6 @@ public class vendorAddItem extends javax.swing.JFrame {
         jLabel5.setText("Item Price (RM):");
 
         typeBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Type", "Food", "Beverage", "Dessert", "Set" }));
-        typeBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                typeBoxActionPerformed(evt);
-            }
-        });
 
         addBtn.setText("Add");
         addBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -247,7 +242,6 @@ public class vendorAddItem extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
-        //do data validation, check if vendor has same menu name - call method 
         //data validation for price
         String name = nameTxt.getText().trim();
         String type = typeBox.getSelectedItem().toString().trim();
@@ -295,8 +289,11 @@ public class vendorAddItem extends javax.swing.JFrame {
 
     private void cancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtnActionPerformed
         //ask if want to cancel or not
-        new vendorMenu().setVisible(true);
-        dispose();
+        int confirm = JOptionPane.showConfirmDialog(null, "Cancel add new item?", "Cancel Add", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            new vendorMenu().setVisible(true);
+            dispose();
+        }
     }//GEN-LAST:event_cancelBtnActionPerformed
 
     private void menuBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBtnActionPerformed
@@ -322,10 +319,6 @@ public class vendorAddItem extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_selectImgBtnActionPerformed
-
-    private void typeBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_typeBoxActionPerformed
 
     /**
      * @param args the command line arguments

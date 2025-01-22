@@ -269,6 +269,26 @@ public class Item {
         return updatedItems.toString();
     }
     
+    //return items searched
+    public List<String[]> searchItems(String venEmail, String searchItem) {
+        List<String[]> searchedItems = new ArrayList<>();
+        List<String[]> allItems = getAllItems(venEmail);
+        
+        for (String[] itemData : allItems) {
+            String itemID = itemData[0];
+            String itemName = itemData[1];
+            String itemType = itemData[2];
+            String itemPrice = itemData[3];
+            String itemImgPath = itemData[4];
+            
+            if (itemName.toLowerCase().contains(searchItem.toLowerCase())) {
+                searchedItems.add(itemData);
+            }
+        }
+        
+        return searchedItems;
+    }
+    
     //update item
     public void editItem() {
         //get all data

@@ -174,7 +174,7 @@ public class adminRegister extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(null, 
             "Successfully registered as " + role + "!\nYour sample password is: " + samplePassword,
             "Registration Successful", JOptionPane.INFORMATION_MESSAGE);
-            Admin.clearFields(emailtxt,usernametxt);
+            GuiUtility.clearFields(emailtxt,usernametxt);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
         }

@@ -529,25 +529,4 @@ public class User {
         }
         return null; // Return null if no record is found
     }
-    
-     // Set the input not > max length
-    public static DocumentFilter createLengthFilter(int maxLength) {
-        return new DocumentFilter() {
-            @Override
-            public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) 
-                    throws BadLocationException {
-                if (fb.getDocument().getLength() + string.length() <= maxLength) {
-                    super.insertString(fb, offset, string, attr);
-                }
-            }
-
-            @Override
-            public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) 
-                    throws BadLocationException {
-                if (fb.getDocument().getLength() - length + text.length() <= maxLength) {
-                    super.replace(fb, offset, length, text, attrs);
-                }
-            }
-        };
-    }
 }

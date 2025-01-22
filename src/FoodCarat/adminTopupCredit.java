@@ -38,8 +38,7 @@ public class adminTopupCredit extends javax.swing.JFrame {
     }
     
     private void clearFields() {
-        Admin.clearFields(emailtxt, nametxt, currentamounttxt, toupnumtxt, sumtxt
-        );
+        GuiUtility.clearFields(emailtxt, nametxt, currentamounttxt, toupnumtxt, sumtxt);
     }
     
     private void updateNewAmount() {

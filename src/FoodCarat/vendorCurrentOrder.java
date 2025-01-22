@@ -706,12 +706,16 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
     }//GEN-LAST:event_menuBtnActionPerformed
 
     private void selectBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectBtnActionPerformed
-        int selectedRow = currentOrderTable.getSelectedRow();        
+        int selectedRow = currentOrderTable.getSelectedRow();
         //validation to choose a row 
-        if (selectedRow >= 0) {            
+        if (selectedRow >= 0) {
             Object id = currentOrderTable.getModel().getValueAt(selectedRow, 1);
-            int selectID = (int) id;
-            displayOrderDetails(selectID);
+            try {
+                int selectID = Integer.parseInt(id.toString()); //convert the object to string and parse as int
+                displayOrderDetails(selectID);
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "The selected ID is not a valid number.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         } else { //no row is selected
             JOptionPane.showMessageDialog(null, "Please select a row to view details.", "Alert", JOptionPane.WARNING_MESSAGE);
         }
@@ -727,12 +731,9 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
             displayCurrentOrder();
 
             //reset order details section
-            statusIdTxt.setText("");
-            statusMethodTxt.setText("");
+            GuiUtility.clearFields(statusIdTxt, statusMethodTxt, currentStatusTxt, nextStatusTxt);
             DefaultTableModel model = (DefaultTableModel) updateOrderTable.getModel();
             model.setRowCount(0);
-            currentStatusTxt.setText("");
-            nextStatusTxt.setText("");
         }
     }//GEN-LAST:event_updateOrderBtnActionPerformed
 
@@ -787,12 +788,9 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
 
     private void cancelUpdateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelUpdateBtnActionPerformed
         //reset order details section
-        statusIdTxt.setText("");
-        statusMethodTxt.setText("");
+        GuiUtility.clearFields(statusIdTxt, statusMethodTxt, currentStatusTxt, nextStatusTxt);
         DefaultTableModel model = (DefaultTableModel) updateOrderTable.getModel();
         model.setRowCount(0);
-        currentStatusTxt.setText("");
-        nextStatusTxt.setText("");
     }//GEN-LAST:event_cancelUpdateBtnActionPerformed
 
     /**

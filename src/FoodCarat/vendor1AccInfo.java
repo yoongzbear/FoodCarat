@@ -33,9 +33,9 @@ public class vendor1AccInfo extends javax.swing.JFrame {
         nameTF.setText(User.getSessionName());
         passwordTF.setText(User.getSessionPassword());
         
-        ((PlainDocument) nameTF.getDocument()).setDocumentFilter(User.createLengthFilter(20));
-        ((PlainDocument) passwordTF.getDocument()).setDocumentFilter(User.createLengthFilter(20));
-        ((PlainDocument) contactNoTF.getDocument()).setDocumentFilter(User.createLengthFilter(15));
+        ((PlainDocument) nameTF.getDocument()).setDocumentFilter(GuiUtility.createLengthFilter(20));
+        ((PlainDocument) passwordTF.getDocument()).setDocumentFilter(GuiUtility.createLengthFilter(20));
+        ((PlainDocument) contactNoTF.getDocument()).setDocumentFilter(GuiUtility.createLengthFilter(15));
         
         LocalDate currentDate = LocalDate.now();
     
