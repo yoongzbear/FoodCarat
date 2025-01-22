@@ -21,7 +21,7 @@ import javax.swing.JOptionPane;
 public class Customer extends User{
     private int points;
     private String customerFile = "resources/customer.txt";
-    private final static String cusFile = "resources/customer.txt";
+    private String cusFile = "resources/customer.txt";
     
     public Customer(String email){ //for set points
         super(email);
@@ -105,7 +105,11 @@ public class Customer extends User{
         return earnablePoints;
     }
     
-    public static String deliveryAddress(Component parentComponent, String email) {
+    public Customer(){
+        // for contrustor
+    }
+    
+    public String deliveryAddress(Component parentComponent, String email) {
         String address = null;
 
         while (true) {
@@ -136,7 +140,7 @@ public class Customer extends User{
             } else {
                 JOptionPane.showMessageDialog(
                     parentComponent,
-                    "Invalid address. Please ensure it is non-empty, under 255 characters, and only contains letters, numbers, spaces, and commas.",
+                    "Invalid address. Please ensure it is non-empty, under 255 characters, and only contains letters, numbers, spaces, commas or hyphens.",
                     "Error",
                     JOptionPane.ERROR_MESSAGE
                 );
@@ -145,15 +149,15 @@ public class Customer extends User{
     }
 
     // Validate the address
-    private static boolean isValidAddress(String address) {
-        // only letters, numbers, spaces, and commas
-        String regex = "^[a-zA-Z0-9,\\s]+$";
+    private boolean isValidAddress(String address) {
+        // Allow letters, numbers, spaces, commas, and hyphens
+        String regex = "^[a-zA-Z0-9,\\s-]+$";
 
         return address.length() > 20 && address.length() <= 255 && address.matches(regex);
     }
 
     // Save the delivery address
-    private static void saveDeliveryAddress(String email, String address) {
+    private void saveDeliveryAddress(String email, String address) {
         boolean emailFound = false;
         List<String> fileContent = new ArrayList<>();
 
@@ -172,7 +176,7 @@ public class Customer extends User{
         }
 
         if (emailFound) {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter("resources/customer.txt"))) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(customerFile))) {
                 for (String updatedLine : fileContent) {
                     writer.write(updatedLine);
                     writer.newLine();

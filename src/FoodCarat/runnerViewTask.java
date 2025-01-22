@@ -70,10 +70,7 @@ public class runnerViewTask extends javax.swing.JFrame {
     }
 
     private void clearTaskDetails() {
-        orderIDTF.setText("");
-        vendorNameTF.setText("");
-        addressTA.setText("");
-        deFeeTF.setText("");
+        GuiUtility.clearFields(orderIDTF, vendorNameTF, addressTA, deFeeTF);
 
         acceptJB.setEnabled(false);
         declineJB.setEnabled(false);

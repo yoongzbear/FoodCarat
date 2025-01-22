@@ -269,13 +269,14 @@ public class cusRunner1AccInfo extends javax.swing.JFrame {
             }
         }
         
-        if("customer".equalsIgnoreCase(role)){
-            String address = Customer.deliveryAddress(this, email);
-            if(address == null){
-                return;
+            if("customer".equalsIgnoreCase(role)){
+                Customer customer = new Customer();
+                String address = customer.deliveryAddress(this, email);
+                if(address == null){
+                    return;
+                }
             }
-        }
-      
+
         user.userInfo(email, name, password, contactNumber, dob);
         
         String nextPage = user.determinePageAfterLogin(email);

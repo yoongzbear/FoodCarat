@@ -19,9 +19,6 @@ import java.util.Arrays;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DocumentFilter;
 
 /**
  *
@@ -36,7 +33,7 @@ public class User {
     private String contactNumber;
     
     private String userFile = "resources/user.txt";
-    String cusFile = "resources/customer.txt";
+    private String cusFile = "resources/customer.txt";
     private String vendorFile = "resources/vendor.txt";
     private String runnerFile = "resources/runner.txt";
     
