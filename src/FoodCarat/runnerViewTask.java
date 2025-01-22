@@ -4,7 +4,6 @@
  */
 package FoodCarat;
 
-import java.util.Arrays;
 import java.util.List;
 import javax.swing.JOptionPane;
 
@@ -13,38 +12,14 @@ import javax.swing.JOptionPane;
  * @author Yuna
  */
 public class runnerViewTask extends javax.swing.JFrame {
-    private String[] orderData;  // Store the order data for later use
+    private String[] orderData;
 
-    private final String runnerEmail = "runner4@mail.com";
-    
-    private volatile boolean decisionMade = false;
-    private volatile boolean taskAccepted = false;
-
-    // Methods to update the decision flags from button actions
-    public void setDecision(boolean made, boolean accepted) {
-        this.decisionMade = made;
-        this.taskAccepted = accepted;
-    }
-
-    // Methods to retrieve the decision flags
-    public boolean getDecisionMade() {
-        return decisionMade;
-    }
-
-    public boolean getTaskAccepted() {
-        return taskAccepted;
-    }
-
-    /**
-     * Creates new form runnerViewTask
-     */
     public runnerViewTask() {
         initComponents();
         setLocationRelativeTo(null);
         
-        //String runnerEmail = User.getSessionEmail();
+        String runnerEmail = User.getSessionEmail();
         getRunnerTask(runnerEmail);
-        
         
         if(orderData == null){
             acceptJB.setEnabled(false);
@@ -53,60 +28,43 @@ public class runnerViewTask extends javax.swing.JFrame {
     }
     
     private void getRunnerTask(String runnerEmail) {
-        // Get all orders by calling the getAllOrders method from the Order class
         Order order = new Order();
         List<String[]> allOrders = order.getAllOrders();
-        System.out.println("Total orders: " + allOrders.size()); // Debug: Check total orders
 
         for (String[] orderData : allOrders) {
-            System.out.println("Checking order: " + Arrays.toString(orderData));  // Debug: Print each order
-
-            // Match only if the order status is "Assigning runner" and the runner's email matches
-            if ("Assigning runner".equalsIgnoreCase(orderData[3]) && runnerEmail.equals(orderData[5])) {
-                System.out.println("Found matching order: " + Arrays.toString(orderData));  // Debug: Print matched order
+            if ("assigning runner".equalsIgnoreCase(orderData[3]) && runnerEmail.equals(orderData[5])) {
                 
                 this.orderData = orderData;
 
-                // Populate the fields in the JFrame with the order data
                 orderIDTF.setText(orderData[0]);
 
-                // Extract the itemIDs (which are in the format [4;1])
-                String itemIDString = orderData[2]; // Format [4;1]
-                itemIDString = itemIDString.replaceAll("[\\[\\]]", ""); // Remove square brackets
-                String[] itemIDs = itemIDString.split(";"); // Split by semicolon
+                // Extract the itemIDs
+                String itemIDString = orderData[2];
+                itemIDString = itemIDString.replaceAll("[\\[\\]]", "");
+                String[] itemIDs = itemIDString.split(";");
 
-                // Get vendor info for the first item (assuming all items are from the same vendor)
-                String firstItemID = itemIDs[0]; // Take the first item ID
-                System.out.println("Processing item ID: " + firstItemID);  // Debug: Print first item ID
+                // Get vendor info for the first item
+                String firstItemID = itemIDs[0];
 
                 Item item = new Item();
-                String[] vendorInfo = item.getVendorInfoByItemID(Integer.parseInt(firstItemID.trim()));  // Get vendor info
-                // Print vendorInfo array for debugging (this will show the actual contents of the array)
-                System.out.println("Vendor Info: " + Arrays.toString(vendorInfo));
+                String[] vendorInfo = item.getVendorInfoByItemID(Integer.parseInt(firstItemID.trim()));
 
-                // Check if vendor info is not null and contains expected data
                 if (vendorInfo != null && vendorInfo.length > 2) {
-                    String vendorName = vendorInfo[1]; // Vendor's name is at index 2 in the array
-
-                    // Display the vendor name in the vendorNameTF text field
+                    String vendorName = vendorInfo[1];
                     vendorNameTF.setText(vendorName);
-                } else {
-                    System.out.println("Vendor info not found for item ID: " + firstItemID);
-                    vendorNameTF.setText("Vendor not found");
-                }                
+                }             
                 
                 // Get customer email and retrieve their address
                 String customerEmail = orderData[4];
                 Customer customer = new Customer(customerEmail);
-                String customerAddress = customer.getCustomerAddress(customerEmail); // This method retrieves the customer address
+                String customerAddress = customer.getCustomerAddress(customerEmail);
                 addressTA.setText(customerAddress);
                 deFeeTF.setText(orderData[6]);
 
-                // Enable the Accept and Decline buttons
                 acceptJB.setEnabled(true);
                 declineJB.setEnabled(true);
 
-                break; // Exit after populating the first matching order
+                break;
             }
         }
     }
@@ -494,9 +452,8 @@ public class runnerViewTask extends javax.swing.JFrame {
 
     private void acceptJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptJBActionPerformed
         String orderId = orderIDTF.getText();
-        //String runnerEmail = User.getSessionEmail();
+        String runnerEmail = User.getSessionEmail();
         
-        setDecision(true, true); // Decision made and task accepted
         new Order().updateStatus(Integer.parseInt(orderId), "Ordered", "runner");
         new Runner().updateRunnerStatus(runnerEmail, "unavailable");
         JOptionPane.showMessageDialog(null, "Task accepted!");
@@ -505,19 +462,16 @@ public class runnerViewTask extends javax.swing.JFrame {
     }//GEN-LAST:event_acceptJBActionPerformed
 
     private void declineJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_declineJBActionPerformed
-        //String orderId = orderIDTF.getText();
-        // Ensure orderData is available before performing action
+        String runnerEmail = User.getSessionEmail();
+
         if (orderData != null) {
             int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to reject this task?", "Reject Task", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
-                new Order().assignOrderToRunner(orderData); // Assign order to the next available runner
-                setDecision(true, false); // Decision made and task rejected
+                new Order().assignOrderToRunner(orderData, runnerEmail); // Assign order to the next available runner
                 JOptionPane.showMessageDialog(null, "Task declined!");
                 
                 clearTaskDetails();
             }
-        } else {
-            JOptionPane.showMessageDialog(null, "No order data found.");
         }
     }//GEN-LAST:event_declineJBActionPerformed
 
