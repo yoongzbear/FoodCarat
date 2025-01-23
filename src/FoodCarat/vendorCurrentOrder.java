@@ -32,6 +32,7 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
     public vendorCurrentOrder() {
         initComponents();
         getContentPane().setBackground(new java.awt.Color(186,85,211)); //setting background color of frame
+        setLocationRelativeTo(null);
         
         //display new order and current orders
         displayNewOrder();

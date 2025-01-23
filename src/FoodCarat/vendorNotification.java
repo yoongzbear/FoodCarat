@@ -16,6 +16,7 @@ public class vendorNotification extends javax.swing.JFrame {
     public vendorNotification() {
         initComponents();
         getContentPane().setBackground(new java.awt.Color(186,85,211)); //setting background color of frame
+        setLocationRelativeTo(null);
     }
     
     //display all activities

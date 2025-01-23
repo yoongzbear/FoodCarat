@@ -44,6 +44,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     public vendorOrderHistory() {
         initComponents();
         getContentPane().setBackground(new java.awt.Color(186,85,211)); //setting background color of frame
+        setLocationRelativeTo(null);
         
         //test if it works
         displayVendorOrder();
