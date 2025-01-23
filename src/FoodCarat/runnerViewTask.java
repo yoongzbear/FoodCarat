@@ -14,8 +14,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class runnerViewTask extends javax.swing.JFrame {
     private String[] orderData;
-    //private String runnerEmail = User.getSessionEmail();
-    private String runnerEmail = "runner3@mail.com";
+    private String runnerEmail = User.getSessionEmail();
 
     public runnerViewTask() {
         initComponents();
@@ -42,7 +41,24 @@ public class runnerViewTask extends javax.swing.JFrame {
                 String orderID = currentTaskJT.getValueAt(selectedRow, 0).toString();
                 String vendorName = currentTaskJT.getValueAt(selectedRow, 1).toString();
                 String customerName = currentTaskJT.getValueAt(selectedRow, 2).toString();
-                String item = currentTaskJT.getValueAt(selectedRow, 3).toString();
+                
+                String items = currentTaskJT.getValueAt(selectedRow, 3).toString();
+                String[] itemEntries = items.split(",");
+
+                DefaultTableModel model = (DefaultTableModel) itemJT.getModel();
+                model.setRowCount(0);
+
+                // Iterate over each item and quantity
+                for (String entry : itemEntries) {
+                    String[] itemParts = entry.split("\\[");
+                    if (itemParts.length == 2) {
+                        String itemName = itemParts[0].trim();
+                        String quantity = itemParts[1].replace("]", "").trim();
+
+                        model.addRow(new Object[]{itemName, quantity});
+                    }
+                }
+                
                 String address = currentTaskJT.getValueAt(selectedRow, 4).toString();
                 String contactNo = currentTaskJT.getValueAt(selectedRow, 5).toString();
                 String deliveryFee = currentTaskJT.getValueAt(selectedRow, 6).toString();
@@ -51,7 +67,6 @@ public class runnerViewTask extends javax.swing.JFrame {
                 orderIDTF2.setText(orderID);
                 vendorNameTF2.setText(vendorName);
                 cusNameTF2.setText(customerName);
-                itemTA.setText(item);
                 addressTA2.setText(address);
                 contactNoTF.setText(contactNo);
                 deFeeTF2.setText(deliveryFee);
@@ -105,7 +120,7 @@ public class runnerViewTask extends javax.swing.JFrame {
 
     // For Task reception area
     private void clearTaskDetails() {
-        GuiUtility.clearFields(orderIDTF, vendorNameTF, addressTA, deFeeTF);
+        GuiUtility.clearFields(orderIDTF, vendorNameTF, itemJT, addressTA, deFeeTF);
 
         acceptJB.setEnabled(false);
         declineJB.setEnabled(false);
@@ -127,20 +142,47 @@ public class runnerViewTask extends javax.swing.JFrame {
 
                 String orderId = orderData[0];
                 
-                // Get Vendor Name
+                Item item = new Item();
+                // Get Vendor Name/get items
+                /**
                 String itemIDString = orderData[2];
                 itemIDString = itemIDString.replaceAll("[\\[\\]]", "");
                 String[] itemIDs = itemIDString.split(";");
                 String firstItemID = itemIDs[0];
-                Item item = new Item();
+                String quantityItemID = itemIDs[1];
+                
+                String itemName = item.replaceItemIDsWithNames(firstItemID);
                 String[] vendorInfo = item.getVendorInfoByItemID(Integer.parseInt(firstItemID.trim()));
                 String vendorName = vendorInfo[1];
-                
+                **/
+                String itemIDString = orderData[2].replaceAll("[\\[\\]]", "");
+                String[] itemDetails = itemIDString.split("\\|");
+                StringBuilder formattedItems = new StringBuilder();
+
+                for (int i = 0; i < itemDetails.length; i++) {
+                    String[] parts = itemDetails[i].split(";");
+                    int itemID = Integer.parseInt(parts[0]); // Item ID
+                    int quantity = Integer.parseInt(parts[1]); // Quantity
+
+                    // Get item name from Item class
+                    String[] itemData = item.itemData(itemID);
+                    String itemName = itemData != null && itemData.length > 1 ? itemData[1] : "Unknown Item";
+
+                    // Format item and quantity
+                    if (i > 0) {
+                        formattedItems.append(", ");
+                    }
+                    formattedItems.append(itemName).append("[").append(quantity).append("]");
+                }
+
+                String items = formattedItems.toString(); // Combine all items into a single string
+
+                String[] vendorInfo = item.getVendorInfoByItemID(Integer.parseInt(itemDetails[0].split(";")[0].trim()));
+                String vendorName = vendorInfo[1];
+            
                 String[] customerInfo = new User().getUserInfo(orderData[4]);
                 String customerName = customerInfo[1];
-                
-                String items = item.replaceItemIDsWithNames(itemIDString);
-                
+
                 String address = new Customer().getCustomerAddress(orderData[4]);
                 String contactNumber = customerInfo[5];
                 
@@ -246,11 +288,11 @@ public class runnerViewTask extends javax.swing.JFrame {
         jLabel12 = new javax.swing.JLabel();
         deFeeTF2 = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        itemTA = new javax.swing.JTextArea();
         jLabel6 = new javax.swing.JLabel();
         statusJCB = new javax.swing.JComboBox<>();
         updateJB = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        itemJT = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -407,7 +449,7 @@ public class runnerViewTask extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Order ID.", "Vendor Name", "Name", "Item", "Address", "Contact No.", "Delivery Fee", "Status"
+                "Order ID.", "Vendor Name", "Name", "Item(s)", "Address", "Contact No.", "Delivery Fee", "Status"
             }
         ) {
             Class[] types = new Class [] {
@@ -432,6 +474,16 @@ public class runnerViewTask extends javax.swing.JFrame {
         currentTaskJT.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         currentTaskJT.setShowGrid(true);
         jScrollPane1.setViewportView(currentTaskJT);
+        if (currentTaskJT.getColumnModel().getColumnCount() > 0) {
+            currentTaskJT.getColumnModel().getColumn(0).setPreferredWidth(5);
+            currentTaskJT.getColumnModel().getColumn(1).setPreferredWidth(40);
+            currentTaskJT.getColumnModel().getColumn(2).setPreferredWidth(40);
+            currentTaskJT.getColumnModel().getColumn(3).setPreferredWidth(130);
+            currentTaskJT.getColumnModel().getColumn(4).setPreferredWidth(180);
+            currentTaskJT.getColumnModel().getColumn(5).setPreferredWidth(50);
+            currentTaskJT.getColumnModel().getColumn(6).setPreferredWidth(30);
+            currentTaskJT.getColumnModel().getColumn(7).setPreferredWidth(15);
+        }
         currentTaskJT.getAccessibleContext().setAccessibleName("");
         currentTaskJT.getAccessibleContext().setAccessibleDescription("");
 
@@ -482,12 +534,6 @@ public class runnerViewTask extends javax.swing.JFrame {
         jLabel9.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel9.setText("Item:");
 
-        itemTA.setEditable(false);
-        itemTA.setColumns(20);
-        itemTA.setLineWrap(true);
-        itemTA.setFocusable(false);
-        jScrollPane3.setViewportView(itemTA);
-
         jLabel6.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel6.setText("Oder Status:");
 
@@ -500,6 +546,40 @@ public class runnerViewTask extends javax.swing.JFrame {
                 updateJBActionPerformed(evt);
             }
         });
+
+        itemJT.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        itemJT.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Item(s)", "Quantity"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Integer.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        itemJT.setRequestFocusEnabled(false);
+        itemJT.setRowHeight(25);
+        itemJT.setRowSelectionAllowed(false);
+        itemJT.setShowGrid(true);
+        jScrollPane3.setViewportView(itemJT);
+        if (itemJT.getColumnModel().getColumnCount() > 0) {
+            itemJT.getColumnModel().getColumn(0).setPreferredWidth(200);
+            itemJT.getColumnModel().getColumn(1).setPreferredWidth(10);
+        }
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -550,49 +630,45 @@ public class runnerViewTask extends javax.swing.JFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(74, 74, 74)))
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 314, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(deFeeTF2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(deFeeTF2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(214, 214, 214))
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))))
                 .addContainerGap(22, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(14, 14, 14)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(28, 28, 28)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel5)
-                                    .addComponent(orderIDTF2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel8)
-                                    .addComponent(cusNameTF2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel10)
-                                    .addComponent(contactNoTF, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(jPanel3Layout.createSequentialGroup()
-                                        .addComponent(jLabel11)
-                                        .addGap(0, 0, Short.MAX_VALUE))))
-                            .addComponent(jScrollPane3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 87, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(deFeeTF2)
-                            .addComponent(vendorNameTF2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel13)
-                            .addComponent(jLabel12))
-                        .addGap(39, 39, 39)))
+                            .addComponent(jLabel5)
+                            .addComponent(orderIDTF2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel9))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel8)
+                            .addComponent(cusNameTF2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel10)
+                            .addComponent(contactNoTF, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel11)))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(deFeeTF2)
+                    .addComponent(vendorNameTF2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel13)
+                    .addComponent(jLabel12))
+                .addGap(39, 39, 39)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(updateJB)
                     .addComponent(statusJCB, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -687,7 +763,7 @@ public class runnerViewTask extends javax.swing.JFrame {
 
                 // Refresh and Reset
                 displayCurrentTask(runnerEmail);
-                GuiUtility.clearFields(orderIDTF2, cusNameTF2, vendorNameTF2, itemTA, addressTA2, contactNoTF, deFeeTF2);
+                GuiUtility.clearFields(orderIDTF2, cusNameTF2, vendorNameTF2, itemJT, addressTA2, contactNoTF, deFeeTF2);
                 statusJCB.removeAllItems();
                 statusJCB.addItem("Select Row");
                 updateJB.setEnabled(false);
@@ -741,7 +817,7 @@ public class runnerViewTask extends javax.swing.JFrame {
     private javax.swing.JTextField deFeeTF;
     private javax.swing.JTextField deFeeTF2;
     private javax.swing.JButton declineJB;
-    private javax.swing.JTextArea itemTA;
+    private javax.swing.JTable itemJT;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

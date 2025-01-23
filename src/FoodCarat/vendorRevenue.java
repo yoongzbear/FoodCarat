@@ -47,7 +47,7 @@ public class vendorRevenue extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap(277, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(286, 286, 286)
@@ -64,7 +64,7 @@ public class vendorRevenue extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(19, 19, 19)
                         .addComponent(jLabel1)))
-                .addContainerGap(403, Short.MAX_VALUE))
+                .addContainerGap(445, Short.MAX_VALUE))
         );
 
         pack();
