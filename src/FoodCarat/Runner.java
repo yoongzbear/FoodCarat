@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
  */
 public class Runner extends User{
     private String runnerFile = "resources/runner.txt";
+    private String cusOrderFile = "resources/customerOrder.txt";
     
     // Prompt and validate plate number
     public String promptAndValidatePlateNumber(Component parentComponent, String email) {
@@ -159,4 +160,23 @@ public class Runner extends User{
             }
         }
     }
+    
+    public List<String[]> getCompletedTask(String runnerEmail) {
+        List<String[]> completedTasks = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(cusOrderFile))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] taskData = line.split(",");
+                if (taskData.length > 5 && taskData[5].equals(runnerEmail) && taskData[3].equals("completed")) {
+                    completedTasks.add(taskData);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return completedTasks;
+    }
+
 }

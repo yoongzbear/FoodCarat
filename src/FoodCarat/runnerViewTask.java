@@ -97,11 +97,8 @@ public class runnerViewTask extends javax.swing.JFrame {
 
                 Item item = new Item();
                 String[] vendorInfo = item.getVendorInfoByItemID(Integer.parseInt(firstItemID.trim()));
-
-                if (vendorInfo != null && vendorInfo.length > 2) {
-                    String vendorName = vendorInfo[1];
-                    vendorNameTF.setText(vendorName);
-                }             
+                String vendorName = vendorInfo[1];
+                vendorNameTF.setText(vendorName);
                 
                 // Get customer email and retrieve their address
                 String customerEmail = orderData[4];
@@ -143,26 +140,14 @@ public class runnerViewTask extends javax.swing.JFrame {
                 String orderId = orderData[0];
                 
                 Item item = new Item();
-                // Get Vendor Name/get items
-                /**
-                String itemIDString = orderData[2];
-                itemIDString = itemIDString.replaceAll("[\\[\\]]", "");
-                String[] itemIDs = itemIDString.split(";");
-                String firstItemID = itemIDs[0];
-                String quantityItemID = itemIDs[1];
-                
-                String itemName = item.replaceItemIDsWithNames(firstItemID);
-                String[] vendorInfo = item.getVendorInfoByItemID(Integer.parseInt(firstItemID.trim()));
-                String vendorName = vendorInfo[1];
-                **/
                 String itemIDString = orderData[2].replaceAll("[\\[\\]]", "");
                 String[] itemDetails = itemIDString.split("\\|");
                 StringBuilder formattedItems = new StringBuilder();
 
                 for (int i = 0; i < itemDetails.length; i++) {
                     String[] parts = itemDetails[i].split(";");
-                    int itemID = Integer.parseInt(parts[0]); // Item ID
-                    int quantity = Integer.parseInt(parts[1]); // Quantity
+                    int itemID = Integer.parseInt(parts[0]);
+                    int quantity = Integer.parseInt(parts[1]);
 
                     // Get item name from Item class
                     String[] itemData = item.itemData(itemID);
