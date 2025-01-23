@@ -801,8 +801,12 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         //have validation to "choose an item in the table"
         if (selectedRow >= 0) {
             Object id = orderTable.getModel().getValueAt(selectedRow, 1);
-            int selectID = (int) id;
-            displayVendorOrder(selectID);
+            try {
+                int selectID = Integer.parseInt(id.toString()); //convert the object to string and parse as int
+                displayVendorOrder(selectID);
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "The selected ID is not a valid number.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         } else {
             //no row is selected
             JOptionPane.showMessageDialog(null, "Please select a row to view details.", "Alert", JOptionPane.WARNING_MESSAGE);
