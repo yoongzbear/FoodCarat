@@ -4,6 +4,9 @@
  */
 package FoodCarat;
 
+import java.util.Arrays;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author mastu
@@ -17,15 +20,31 @@ public class vendorNotification extends javax.swing.JFrame {
         initComponents();
         getContentPane().setBackground(new java.awt.Color(186,85,211)); //setting background color of frame
         setLocationRelativeTo(null);
+        
+        //displayActivities(["new", "status", "item", "review"]);
     }
     
-    //display all activities
-    //new order + changed order status + review + item (if got deleted by manager)
-    //get based on dates la
+    //display all activities    
+//    Display urgent stuff first 
+//    New order > order status > item > review
+    public void displayActivities(String[] filters) {
+        DefaultTableModel model = (DefaultTableModel) notificationTable.getModel();
+        model.setRowCount(0);
+        
+        //New order - Display for the same day only, display the oldest order with status pending accept and date = current date
+        
+        //Order status - Display for same day only 
+        
+        //Item - deleted by vendor, item added (latest item by vendor)
+        
+        //Review - if got review for order from that vendor on the date
+    }
     
-    //display based on time range
+//    Automatically call the panel and populate the details part
     
-    //view details --> display the GUI based on that idk how but can la hadahha
+    public void displayDetails() {
+        //call panel based on type then populate with info (idk can or not)
+    }
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -39,7 +58,7 @@ public class vendorNotification extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         menuBtn = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        orderTable = new javax.swing.JTable();
+        notificationTable = new javax.swing.JTable();
         filterBtn = new javax.swing.JButton();
         newOrderChkBox = new javax.swing.JCheckBox();
         orderStatusChkBox = new javax.swing.JCheckBox();
@@ -59,30 +78,32 @@ public class vendorNotification extends javax.swing.JFrame {
             }
         });
 
-        orderTable.setModel(new javax.swing.table.DefaultTableModel(
+        notificationTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Type", "Activity"
+                "Type", "ID", "Activity"
             }
         ));
-        jScrollPane1.setViewportView(orderTable);
-        if (orderTable.getColumnModel().getColumnCount() > 0) {
-            orderTable.getColumnModel().getColumn(0).setResizable(false);
-            orderTable.getColumnModel().getColumn(0).setPreferredWidth(10);
-            orderTable.getColumnModel().getColumn(1).setResizable(false);
-            orderTable.getColumnModel().getColumn(1).setPreferredWidth(500);
+        jScrollPane1.setViewportView(notificationTable);
+        if (notificationTable.getColumnModel().getColumnCount() > 0) {
+            notificationTable.getColumnModel().getColumn(0).setResizable(false);
+            notificationTable.getColumnModel().getColumn(0).setPreferredWidth(20);
+            notificationTable.getColumnModel().getColumn(1).setResizable(false);
+            notificationTable.getColumnModel().getColumn(1).setPreferredWidth(10);
+            notificationTable.getColumnModel().getColumn(2).setResizable(false);
+            notificationTable.getColumnModel().getColumn(2).setPreferredWidth(500);
         }
 
         filterBtn.setText("Filter");
-
-        newOrderChkBox.setText("New Order");
-        newOrderChkBox.addActionListener(new java.awt.event.ActionListener() {
+        filterBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newOrderChkBoxActionPerformed(evt);
+                filterBtnActionPerformed(evt);
             }
         });
+
+        newOrderChkBox.setText("New Order");
 
         orderStatusChkBox.setText("Order Status");
 
@@ -96,11 +117,6 @@ public class vendorNotification extends javax.swing.JFrame {
         });
 
         itemChkBox.setText("Item");
-        itemChkBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemChkBoxActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -114,21 +130,21 @@ public class vendorNotification extends javax.swing.JFrame {
                         .addGap(191, 191, 191)
                         .addComponent(menuBtn)
                         .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(viewBtn)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 827, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addComponent(itemChkBox)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(newOrderChkBox)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(orderStatusChkBox)
+                                    .addGap(12, 12, 12)
+                                    .addComponent(itemChkBox)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(reviewChkBox)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(filterBtn))
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 827, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(filterBtn))))
                         .addGap(46, 46, 46))))
         );
         layout.setVerticalGroup(
@@ -141,10 +157,10 @@ public class vendorNotification extends javax.swing.JFrame {
                 .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(newOrderChkBox)
-                    .addComponent(orderStatusChkBox)
                     .addComponent(reviewChkBox)
                     .addComponent(filterBtn)
-                    .addComponent(itemChkBox))
+                    .addComponent(itemChkBox)
+                    .addComponent(orderStatusChkBox))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 509, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -160,18 +176,34 @@ public class vendorNotification extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_menuBtnActionPerformed
 
-    private void newOrderChkBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newOrderChkBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_newOrderChkBoxActionPerformed
-
     private void viewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewBtnActionPerformed
         // TODO add your handling code here:
         //call respective GUI classes hehe
     }//GEN-LAST:event_viewBtnActionPerformed
 
-    private void itemChkBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemChkBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_itemChkBoxActionPerformed
+    private void filterBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterBtnActionPerformed
+//        String[] selectedFilter = new String[5];
+//        int index = 0;
+//        
+//        if (ratingOneChkBox.isSelected()) {
+//            selectedFilter[index++] = "1";
+//        }
+//        if (ratingTwoChkBox.isSelected()) {
+//            selectedFilter[index++] = "2";
+//        } 
+//        if (ratingThreeChkBox.isSelected()) {
+//            selectedFilter[index++] = "3";
+//        } 
+//        if (ratingFourChkBox.isSelected()) {
+//            selectedFilter[index++] = "4";
+//        } 
+//        if (ratingFiveChkBox.isSelected()) {
+//            selectedFilter[index++] = "5";
+//        }
+//        selectedFilter = Arrays.copyOf(selectedFilter, index); //adjust the size of array
+//        //call displayreview filter
+//        displayReviews(selectedFilter);
+    }//GEN-LAST:event_filterBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -215,8 +247,8 @@ public class vendorNotification extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton menuBtn;
     private javax.swing.JCheckBox newOrderChkBox;
+    private javax.swing.JTable notificationTable;
     private javax.swing.JCheckBox orderStatusChkBox;
-    private javax.swing.JTable orderTable;
     private javax.swing.JCheckBox reviewChkBox;
     private javax.swing.JButton viewBtn;
     // End of variables declaration//GEN-END:variables
