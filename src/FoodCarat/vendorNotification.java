@@ -40,12 +40,10 @@ public class vendorNotification extends javax.swing.JFrame {
         menuBtn = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         orderTable = new javax.swing.JTable();
-        rangeBox = new javax.swing.JComboBox<>();
         filterBtn = new javax.swing.JButton();
         newOrderChkBox = new javax.swing.JCheckBox();
         orderStatusChkBox = new javax.swing.JCheckBox();
         reviewChkBox = new javax.swing.JCheckBox();
-        viewTimeBtn = new javax.swing.JButton();
         viewBtn = new javax.swing.JButton();
         itemChkBox = new javax.swing.JCheckBox();
 
@@ -72,10 +70,10 @@ public class vendorNotification extends javax.swing.JFrame {
         jScrollPane1.setViewportView(orderTable);
         if (orderTable.getColumnModel().getColumnCount() > 0) {
             orderTable.getColumnModel().getColumn(0).setResizable(false);
-            orderTable.getColumnModel().getColumn(0).setPreferredWidth(30);
+            orderTable.getColumnModel().getColumn(0).setPreferredWidth(10);
+            orderTable.getColumnModel().getColumn(1).setResizable(false);
+            orderTable.getColumnModel().getColumn(1).setPreferredWidth(500);
         }
-
-        rangeBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Time Range", "Daily", "Weekly", "Monthly" }));
 
         filterBtn.setText("Filter");
 
@@ -89,8 +87,6 @@ public class vendorNotification extends javax.swing.JFrame {
         orderStatusChkBox.setText("Order Status");
 
         reviewChkBox.setText("Review");
-
-        viewTimeBtn.setText("View");
 
         viewBtn.setText("View Details");
         viewBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -121,8 +117,8 @@ public class vendorNotification extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(viewBtn)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                     .addComponent(itemChkBox)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(newOrderChkBox)
@@ -131,11 +127,7 @@ public class vendorNotification extends javax.swing.JFrame {
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(reviewChkBox)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(filterBtn)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(rangeBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(viewTimeBtn))
+                                    .addComponent(filterBtn))
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 827, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(46, 46, 46))))
         );
@@ -148,15 +140,13 @@ public class vendorNotification extends javax.swing.JFrame {
                     .addComponent(jLabel1))
                 .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rangeBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(newOrderChkBox)
                     .addComponent(orderStatusChkBox)
                     .addComponent(reviewChkBox)
                     .addComponent(filterBtn)
-                    .addComponent(viewTimeBtn)
                     .addComponent(itemChkBox))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 509, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(viewBtn)
                 .addGap(18, 18, 18))
@@ -227,9 +217,7 @@ public class vendorNotification extends javax.swing.JFrame {
     private javax.swing.JCheckBox newOrderChkBox;
     private javax.swing.JCheckBox orderStatusChkBox;
     private javax.swing.JTable orderTable;
-    private javax.swing.JComboBox<String> rangeBox;
     private javax.swing.JCheckBox reviewChkBox;
     private javax.swing.JButton viewBtn;
-    private javax.swing.JButton viewTimeBtn;
     // End of variables declaration//GEN-END:variables
 }
