@@ -4,15 +4,27 @@
  */
 package FoodCarat;
 
-import java.awt.image.BufferedImage;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.time.LocalDate;
+import java.time.Month;
+import java.time.YearMonth;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
-import javax.swing.ImageIcon;
+import java.util.Map;
+import java.util.TreeMap;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.NumberTickUnit;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 /**
@@ -30,136 +42,184 @@ public class runnerTaskHistory extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         
-        fetchAllData(); // Show all data on startup
-    
+        fetchFilteredData(null,null); // Show all data on startup
+        chartAllData();
     }
-
-    private void fetchAllData() {
+    
+    // Update the table
+    private void fetchFilteredData(LocalDate startDate, LocalDate endDate) {
         Runner runner = new Runner();
         List<String[]> completedTasks = runner.getCompletedTask(runnerEmail);
-        
         completedTasks.sort((task1, task2) -> task2[9].compareTo(task1[9]));
-            
+
         DefaultTableModel model = (DefaultTableModel) taskHistoryJT.getModel();
         model.setRowCount(0);
-            
+
         for (String[] task : completedTasks) {
-            String orderId = task[0]; 
-            String cusEmail = task[4];
-            String[] cusInfo = new User().getUserInfo(cusEmail);
-            String cusName = cusInfo[1];
-
-            String itemIDString = task[2]; 
-            // Extract the itemIDs
-            itemIDString = itemIDString.replaceAll("[\\[\\]]", "");
-            String[] itemIDs = itemIDString.split(";");
-
-            // Get vendor info
-            String firstItemID = itemIDs[0];
-
-            Item item = new Item();
-            String[] vendorInfo = item.getVendorInfoByItemID(Integer.parseInt(firstItemID.trim()));
-            String vendorName = vendorInfo[1];
-
-            String deliveryFee = task[7]; 
             String orderDate = task[9];
+            LocalDate taskDate = LocalDate.parse(orderDate);
 
+            if ((startDate == null || !taskDate.isBefore(startDate)) &&
+                (endDate == null || !taskDate.isAfter(endDate))) {
 
-            model.addRow(new Object[]{
+                String orderId = task[0];
+                String cusEmail = task[4];
+                String[] cusInfo = new User().getUserInfo(cusEmail);
+                String cusName = cusInfo[1];
+
+                String itemIDString = task[2];
+                itemIDString = itemIDString.replaceAll("[\\[\\]]", "");
+                String[] itemIDs = itemIDString.split(";");
+
+                String firstItemID = itemIDs[0];
+                Item item = new Item();
+                String[] vendorInfo = item.getVendorInfoByItemID(Integer.parseInt(firstItemID.trim()));
+                String vendorName = vendorInfo[1];
+
+                String deliveryFee = task[7];
+
+                model.addRow(new Object[]{
                     orderId, cusName, vendorName, orderDate, deliveryFee
-            });
-            
-            barAllData();
+                });
+            }
         }
     }
 
-    private void barAllData() {
+    private void chartAllData() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         DefaultTableModel model = (DefaultTableModel) taskHistoryJT.getModel();
 
         LocalDate currentDate = LocalDate.now();
-        LocalDate startDate = currentDate.minusMonths(5);
+        LocalDate startDate = currentDate.minusMonths(4); // Start from the 5th month before the current month
 
+        // Create a map to store counts for each of the last 5 months
+        Map<Month, Integer> taskCounts = new LinkedHashMap<>();
+
+        // Initialize the map with the last 5 months
+        for (int i = 0; i < 5; i++) {
+            Month month = startDate.plusMonths(i).getMonth();
+            taskCounts.put(month, 0);
+        }
+
+        // Iterate through the table rows and populate the task counts
         for (int i = 0; i < model.getRowCount(); i++) {
-            String dateString = (String) model.getValueAt(i, 3); // Date column in yyyy-MM-dd format
+            String dateString = (String) model.getValueAt(i, 3);
             LocalDate taskDate = LocalDate.parse(dateString);
+            Month taskMonth = taskDate.getMonth();
 
-            if (!taskDate.isBefore(startDate)) {
-                String month = taskDate.getMonth().name(); // Get month name
-                dataset.addValue(1, "Tasks", month); // Increment task count for each month
+            if (taskCounts.containsKey(taskMonth)) {
+                taskCounts.put(taskMonth, taskCounts.get(taskMonth) + 1);
             }
         }
 
-        displayBarChart(dataset, "Tasks Over Last 5 Months", "Month", "Total Tasks");
+        // Add data to dataset
+        for (Map.Entry<Month, Integer> entry : taskCounts.entrySet()) {
+            String monthLabel = entry.getKey().name(); // Get month name
+            dataset.addValue(entry.getValue(), "Tasks", monthLabel);
+        }
+
+        displayBarChart(dataset, "Tasks Over Last 5 Months", "Months", "Number of Tasks");
     }
 
-
-    // Generate daily bar chart
     private void generateDailyBarChart(LocalDate startDate, LocalDate endDate) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         DefaultTableModel model = (DefaultTableModel) taskHistoryJT.getModel();
 
+        // Store task counts for each day
+        Map<LocalDate, Integer> taskCountMap = new TreeMap<>();
+
+        // Count tasks for each date
         for (int i = 0; i < model.getRowCount(); i++) {
-            String dateString = (String) model.getValueAt(i, 3); // Date column in yyyy-MM-dd format
+            String dateString = (String) model.getValueAt(i, 3);
             LocalDate taskDate = LocalDate.parse(dateString);
 
             if (!taskDate.isBefore(startDate) && !taskDate.isAfter(endDate)) {
-                String day = taskDate.toString(); // Use full date for daily
-                dataset.addValue(1, "Tasks", day); // Increment task count for each day
+                taskCountMap.put(taskDate, taskCountMap.getOrDefault(taskDate, 0) + 1);
             }
         }
 
-        displayBarChart(dataset, "Tasks per Day", "Date", "Total Tasks");
+        for (Map.Entry<LocalDate, Integer> entry : taskCountMap.entrySet()) {
+            String day = entry.getKey().toString();
+            dataset.addValue(entry.getValue(), "Tasks", day);
+        }
+
+        displayBarChart(dataset, "Number of Tasks from " + startDate + " to " + endDate, "Date", "Number of Tasks");
     }
 
     // Generate monthly bar chart
-    private void generateMonthlyBarChart(int startMonth, int endMonth) {
+    private void generateMonthlyBarChart(LocalDate startDate, LocalDate endDate) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         DefaultTableModel model = (DefaultTableModel) taskHistoryJT.getModel();
 
-        for (int i = 0; i < model.getRowCount(); i++) {
-            String dateString = (String) model.getValueAt(i, 3); // Date column in yyyy-MM-dd format
-            LocalDate taskDate = LocalDate.parse(dateString);
-            int taskMonth = taskDate.getMonthValue();
+        Map<YearMonth, Integer> taskCounts = new TreeMap<>();
 
-            if (taskMonth >= startMonth && taskMonth <= endMonth) {
-                String month = taskDate.getMonth().name(); // Get month name
-                dataset.addValue(1, "Tasks", month); // Increment task count for each month
+        for (int i = 0; i < model.getRowCount(); i++) {
+            String dateString = (String) model.getValueAt(i, 3);
+            LocalDate taskDate = LocalDate.parse(dateString);
+
+            // Check if the taskDate is within the selected date range
+            if (!taskDate.isBefore(startDate) && !taskDate.isAfter(endDate)) {
+                YearMonth taskYearMonth = YearMonth.from(taskDate);
+
+                // Increment task count for this year-month
+                taskCounts.put(taskYearMonth, taskCounts.getOrDefault(taskYearMonth, 0) + 1);
             }
         }
 
-        displayBarChart(dataset, "Tasks per Month", "Month", "Total Tasks");
+        for (Map.Entry<YearMonth, Integer> entry : taskCounts.entrySet()) {
+            String monthLabel = entry.getKey().getMonth() + " " + entry.getKey().getYear(); // Format: "Month Year"
+            dataset.addValue(entry.getValue(), "Tasks", monthLabel);
+        }
+
+        displayBarChart(dataset, "Number of Tasks from " + startDate + " to " + endDate, "Months", "Number of Tasks");
     }
 
     // Generate yearly bar chart
     private void generateYearlyBarChart(int startYear, int endYear) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         DefaultTableModel model = (DefaultTableModel) taskHistoryJT.getModel();
+        Map<Integer, Integer> taskCounts = new TreeMap<>();
 
         for (int i = 0; i < model.getRowCount(); i++) {
-            String dateString = (String) model.getValueAt(i, 3); // Date column in yyyy-MM-dd format
+            String dateString = (String) model.getValueAt(i, 3);
             LocalDate taskDate = LocalDate.parse(dateString);
             int taskYear = taskDate.getYear();
 
             if (taskYear >= startYear && taskYear <= endYear) {
-                String year = String.valueOf(taskYear); // Use year as label
-                dataset.addValue(1, "Tasks", year); // Increment task count for each year
+                taskCounts.put(taskYear, taskCounts.getOrDefault(taskYear, 0) + 1); // Increment task count for each year
             }
         }
 
-        displayBarChart(dataset, "Tasks per Year", "Year", "Total Tasks");
+        for (Map.Entry<Integer, Integer> entry : taskCounts.entrySet()) {
+            String yearLabel = String.valueOf(entry.getKey());
+            dataset.addValue(entry.getValue(), "Tasks", yearLabel);
+        }
+
+        displayBarChart(dataset, "Number of Tasks from " + startYear + " to " + endYear, "Years", "Number of Tasks");
     }
 
     // Display the bar chart
-    private void displayBarChart(DefaultCategoryDataset dataset, String title, String xAxis, String yAxis) {
-        ChartUtility chartUtility = new ChartUtility();
-        ChartPanel chartPanel = chartUtility.createBarChart(dataset, title, xAxis, yAxis);
+    private void displayBarChart(DefaultCategoryDataset dataset, String title, String xAxisLabel, String yAxisLabel) {
+        JFreeChart barChart = ChartFactory.createBarChart(
+            title, xAxisLabel, yAxisLabel, dataset, PlotOrientation.VERTICAL, true, true, false);
 
-        // Convert ChartPanel to ImageIcon for JLabel
-        BufferedImage chartImage = chartPanel.getChart().createBufferedImage(800, 600);
-        barChartJL.setIcon(new ImageIcon(chartImage));
+        CategoryPlot plot = barChart.getCategoryPlot();
+        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+        rangeAxis.setTickUnit(new NumberTickUnit(10)); // Set y-axis tick unit
+
+        ChartPanel chartPanel = new ChartPanel(barChart);
+        chartPanel.setPreferredSize(new Dimension(800, 600));
+
+        chartPanel.setMouseWheelEnabled(false);// Disable zooming with mouse wheel
+        chartPanel.setDomainZoomable(false);// Disable domain zooming (x-axis)
+        chartPanel.setRangeZoomable(false);// Disable range zooming (y-axis)
+        chartPanel.setPopupMenu(null);// Remove the right-click menu
+
+        barChartJL.removeAll();
+        barChartJL.setLayout(new BorderLayout());
+        barChartJL.add(chartPanel, BorderLayout.CENTER);
+        barChartJL.validate();
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -182,10 +242,10 @@ public class runnerTaskHistory extends javax.swing.JFrame {
         startDateChooser = new com.toedter.calendar.JDateChooser();
         jLabel3 = new javax.swing.JLabel();
         monthJP = new javax.swing.JPanel();
-        jMonthChooser1 = new com.toedter.calendar.JMonthChooser();
-        jMonthChooser2 = new com.toedter.calendar.JMonthChooser();
         MgenerateJB = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
+        endMonthChooser = new com.toedter.calendar.JDateChooser();
+        startMonthChooser = new com.toedter.calendar.JDateChooser();
         yearJP = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         jYearChooser1 = new com.toedter.calendar.JYearChooser();
@@ -193,7 +253,6 @@ public class runnerTaskHistory extends javax.swing.JFrame {
         YgenerateJB = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         barChartJL = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         allJB = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -331,28 +390,25 @@ public class runnerTaskHistory extends javax.swing.JFrame {
         monthJPLayout.setHorizontalGroup(
             monthJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(monthJPLayout.createSequentialGroup()
-                .addContainerGap(65, Short.MAX_VALUE)
-                .addComponent(jMonthChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(43, Short.MAX_VALUE)
+                .addComponent(startMonthChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jMonthChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(endMonthChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(MgenerateJB)
-                .addGap(38, 38, 38))
+                .addGap(32, 32, 32))
         );
         monthJPLayout.setVerticalGroup(
             monthJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, monthJPLayout.createSequentialGroup()
-                .addContainerGap(16, Short.MAX_VALUE)
+                .addContainerGap(17, Short.MAX_VALUE)
                 .addGroup(monthJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(monthJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jMonthChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel4)
-                        .addComponent(jMonthChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(monthJPLayout.createSequentialGroup()
-                        .addComponent(MgenerateJB)
-                        .addGap(3, 3, 3)))
+                    .addComponent(MgenerateJB)
+                    .addComponent(startMonthChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(endMonthChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(8, 8, 8))
         );
 
@@ -410,30 +466,20 @@ public class runnerTaskHistory extends javax.swing.JFrame {
         barChartJL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         barChartJL.setText("Bar Chart");
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel2.setText("Title of Chart");
-
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(barChartJL, javax.swing.GroupLayout.PREFERRED_SIZE, 830, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(37, 37, 37)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 782, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap()
+                .addComponent(barChartJL, javax.swing.GroupLayout.PREFERRED_SIZE, 830, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(9, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+            .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(barChartJL, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(barChartJL, javax.swing.GroupLayout.DEFAULT_SIZE, 315, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -492,9 +538,13 @@ public class runnerTaskHistory extends javax.swing.JFrame {
         Date startDate = startDateChooser.getDate();
         Date endDate = endDateChooser.getDate();
 
-        // Ensure both dates are selected
         if (startDate == null || endDate == null) {
             JOptionPane.showMessageDialog(this, "Please select both start and end dates.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+         if (endDate.before(startDate)) {
+            JOptionPane.showMessageDialog(this, "End date cannot be earlier than start date.", "Invalid Date Range", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
@@ -502,24 +552,59 @@ public class runnerTaskHistory extends javax.swing.JFrame {
         LocalDate startLocalDate = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         LocalDate endLocalDate = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-        // Call the method to generate the bar chart
+        fetchFilteredData(startLocalDate, endLocalDate);
         generateDailyBarChart(startLocalDate, endLocalDate);
     }//GEN-LAST:event_DgenerateJBActionPerformed
 
     private void MgenerateJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MgenerateJBActionPerformed
-        int startMonth = jMonthChooser1.getMonth() + 1; // MonthChooser uses 0-based indexing
-        int endMonth = jMonthChooser2.getMonth() + 1;
-        generateMonthlyBarChart(startMonth, endMonth);
+        Date start = startMonthChooser.getDate();
+        Date end = endMonthChooser.getDate();
+        
+        if (start == null || end == null) {
+            JOptionPane.showMessageDialog(this, "Please select both start and end dates.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+         if (end.before(start)) {
+            JOptionPane.showMessageDialog(this, "End date cannot be earlier than start date.", "Invalid Date Range", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        LocalDate startLocalDate = start.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate endLocalDate = end.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        // Adjust the start and end date
+        startLocalDate = startLocalDate.withDayOfMonth(1);
+        endLocalDate = endLocalDate.withDayOfMonth(endLocalDate.lengthOfMonth());
+
+        fetchFilteredData(startLocalDate, endLocalDate);
+        generateMonthlyBarChart(startLocalDate, endLocalDate);
     }//GEN-LAST:event_MgenerateJBActionPerformed
 
     private void YgenerateJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_YgenerateJBActionPerformed
         int startYear = jYearChooser1.getYear();
         int endYear = jYearChooser2.getYear();
+        
+        if (startYear == 0 || endYear == 0) {
+            JOptionPane.showMessageDialog(this, "Please select both start and end dates.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+         if (startYear > endYear) {
+            JOptionPane.showMessageDialog(this, "End date cannot be earlier than start date.", "Invalid Date Range", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        // Convert the start and end years to LocalDate (start of the year and end of the year)
+        LocalDate startLocalDate = LocalDate.of(startYear, 1, 1);
+        LocalDate endLocalDate = LocalDate.of(endYear, 12, 31);
+ 
+        fetchFilteredData(startLocalDate, endLocalDate);
         generateYearlyBarChart(startYear, endYear);
     }//GEN-LAST:event_YgenerateJBActionPerformed
 
     private void allJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_allJBActionPerformed
-        fetchAllData();
+        fetchFilteredData(null, null);
+        chartAllData();
     }//GEN-LAST:event_allJBActionPerformed
 
     /**
@@ -566,13 +651,11 @@ public class runnerTaskHistory extends javax.swing.JFrame {
     private javax.swing.JLabel barChartJL;
     private javax.swing.JPanel dayJP;
     private com.toedter.calendar.JDateChooser endDateChooser;
+    private com.toedter.calendar.JDateChooser endMonthChooser;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private com.toedter.calendar.JMonthChooser jMonthChooser1;
-    private com.toedter.calendar.JMonthChooser jMonthChooser2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
@@ -581,6 +664,7 @@ public class runnerTaskHistory extends javax.swing.JFrame {
     private com.toedter.calendar.JYearChooser jYearChooser2;
     private javax.swing.JPanel monthJP;
     private com.toedter.calendar.JDateChooser startDateChooser;
+    private com.toedter.calendar.JDateChooser startMonthChooser;
     private javax.swing.JTable taskHistoryJT;
     private javax.swing.JPanel yearJP;
     // End of variables declaration//GEN-END:variables
