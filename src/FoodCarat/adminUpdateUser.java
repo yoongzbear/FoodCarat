@@ -21,6 +21,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
     }
     public adminUpdateUser(String role){
         initComponents();
+        setLocationRelativeTo(null);
         this.role = role;
         Lrole.setText(role);        
         emailtxt.setEditable(false); 

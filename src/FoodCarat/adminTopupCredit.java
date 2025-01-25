@@ -19,6 +19,7 @@ public class adminTopupCredit extends javax.swing.JFrame {
      */
     public adminTopupCredit() {
         initComponents();
+        setLocationRelativeTo(null);
         toupnumtxt.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
             public void insertUpdate(javax.swing.event.DocumentEvent e) {
                 updateNewAmount();

@@ -17,6 +17,7 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
      */
     public adminWithdrawCredit() {
         initComponents();
+        setLocationRelativeTo(null);
         withdrawnumtxt.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
             public void insertUpdate(javax.swing.event.DocumentEvent e) {
                 updateNewAmount();
