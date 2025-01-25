@@ -67,40 +67,9 @@ public class managerMonVenPer extends javax.swing.JFrame {
             avgOrderValueDataset.setValue(vendorName, vendorAvgOrderValue / totalAverageOrderValue * 100);
         }
 
-        // Create pie charts for each metric
-        JFreeChart revenuePieChart = ChartFactory.createPieChart(
-            "Vendor Performance - Total Revenue", 
-            revenueDataset,                     
-            true,                                
-            true,                                
-            false                                
-        );
-
-        JFreeChart ordersPieChart = ChartFactory.createPieChart(
-            "Vendor Performance - Total Orders",  
-            ordersDataset,                       
-            true,                                
-            true,                                
-            false                                
-        );
-
-        JFreeChart avgOrderValuePieChart = ChartFactory.createPieChart(
-            "Vendor Performance - Average Order Value", 
-            avgOrderValueDataset,                     
-            true,                                     
-            true,                                     
-            false                                     
-        );
-
-        // Create chart panels for each pie chart
-        ChartPanel revenueChartPanel = new ChartPanel(revenuePieChart);
-        revenueChartPanel.setPreferredSize(new java.awt.Dimension(325,200));
-
-        ChartPanel ordersChartPanel = new ChartPanel(ordersPieChart);
-        ordersChartPanel.setPreferredSize(new java.awt.Dimension(325,200));
-
-        ChartPanel avgOrderValueChartPanel = new ChartPanel(avgOrderValuePieChart);
-        avgOrderValueChartPanel.setPreferredSize(new java.awt.Dimension(325,200));
+        ChartPanel revenueChartPanel = ChartUtility.createPieChart(revenueDataset, "Vendor Performance - Total Revenue");
+        ChartPanel ordersChartPanel = ChartUtility.createPieChart(ordersDataset, "Vendor Performance - Total Orders");
+        ChartPanel avgOrderValueChartPanel = ChartUtility.createPieChart(avgOrderValueDataset, "Vendor Performance - Average Order Value");
 
         totalrevenuechart.removeAll();  // Clear any existing content
         totalorderchart.removeAll();
