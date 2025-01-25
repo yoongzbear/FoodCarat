@@ -22,6 +22,7 @@ public class adminNotification extends javax.swing.JFrame {
      */
     public adminNotification() {
         initComponents();
+        setLocationRelativeTo(null);
         // Initialize the table model and set it to the table
         tableModel = (DefaultTableModel) notificationtable.getModel();
         
