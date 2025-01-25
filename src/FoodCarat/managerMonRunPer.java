@@ -26,6 +26,7 @@ public class managerMonRunPer extends javax.swing.JFrame {
      */
     public managerMonRunPer() {
         initComponents();
+        setLocationRelativeTo(null);
         totalorderchart.setBackground(new Color(211, 211, 211));// Light gray
         averagechart.setBackground(new Color(211, 211, 211)); 
     }

@@ -25,6 +25,7 @@ public class managerMonVenPer extends javax.swing.JFrame {
      */
     public managerMonVenPer() {
         initComponents();
+        setLocationRelativeTo(null);
         totalrevenuechart.setBackground(new Color(211, 211, 211));// Light gray
         totalorderchart.setBackground(new Color(211, 211, 211));
         averagechart.setBackground(new Color(211, 211, 211)); 

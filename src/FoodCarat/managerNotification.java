@@ -20,6 +20,7 @@ public class managerNotification extends javax.swing.JFrame {
      */
     public managerNotification() {
         initComponents();
+        setLocationRelativeTo(null);
         complaintNotificationtable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 handleTableClick(evt);
