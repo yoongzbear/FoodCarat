@@ -20,11 +20,13 @@ public class adminRegister extends javax.swing.JFrame {
     public adminRegister() {
         this("customer");  // Default to "customer" role
         initComponents();
+        setLocationRelativeTo(null);
     }
     public adminRegister(String role) {
         this.role=role;
         initComponents();
         Lrole.setText(role);
+        setLocationRelativeTo(null);
     }
 
     /**
