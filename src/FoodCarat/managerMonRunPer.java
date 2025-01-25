@@ -110,29 +110,8 @@ public class managerMonRunPer extends javax.swing.JFrame {
             avgRatingDataset.setValue(name, data.getAverageRating() / totalAverageRating * 100);
         }
 
-        // Create pie charts for each metric
-        JFreeChart ordersPieChart = ChartFactory.createPieChart(
-            "Runner Performance - Total Orders",  
-            ordersDataset,                       
-            true,                                
-            true,                                
-            false                                
-        );
-
-        JFreeChart avgOrderValuePieChart = ChartFactory.createPieChart(
-            "Runner Performance - Average Rating", 
-            avgRatingDataset,                     
-            true,                                     
-            true,                                     
-            false                                     
-        );
-
-        // Create chart panels for each pie chart
-        ChartPanel ordersChartPanel = new ChartPanel(ordersPieChart);
-        ordersChartPanel.setPreferredSize(new java.awt.Dimension(325,200));
-
-        ChartPanel avgOrderValueChartPanel = new ChartPanel(avgOrderValuePieChart);
-        avgOrderValueChartPanel.setPreferredSize(new java.awt.Dimension(325,200));
+        ChartPanel ordersChartPanel = ChartUtility.createPieChart(ordersDataset, "Runner Performance - Total Orders");
+        ChartPanel avgRatingChartPanel = ChartUtility.createPieChart(avgRatingDataset, "Runner Performance - Average Rating");
 
         totalorderchart.removeAll();
         averagechart.removeAll();
@@ -143,7 +122,7 @@ public class managerMonRunPer extends javax.swing.JFrame {
         totalorderchart.add(ordersChartPanel, java.awt.BorderLayout.CENTER);
 
         averagechart.setLayout(new java.awt.BorderLayout());
-        averagechart.add(avgOrderValueChartPanel, java.awt.BorderLayout.CENTER);
+        averagechart.add(avgRatingChartPanel, java.awt.BorderLayout.CENTER);
 
         totalorderchart.revalidate();
         totalorderchart.repaint();
