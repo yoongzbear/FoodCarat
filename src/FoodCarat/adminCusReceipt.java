@@ -33,6 +33,7 @@ public class adminCusReceipt extends javax.swing.JFrame {
         this.timePayment = time;
 
         setReceiptDetails();
+        setLocationRelativeTo(null);
     }
     private void setReceiptDetails() {
         LtransID.setText(Integer.toString(transactionId));
