@@ -369,15 +369,22 @@ public class Review {
             } else if (type.equalsIgnoreCase("monthly")) {
                 int month = Integer.parseInt(timeRangeParts[0]); 
                 int year = Integer.parseInt(timeRangeParts[1]);  
-                startDate = LocalDate.of(year, month, 1); 
-                endDate = startDate.withDayOfMonth(startDate.lengthOfMonth()); 
+                startDate = LocalDate.of(year, month, 1);
+                endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+            } else if (type.equalsIgnoreCase("quarterly")) {
+                startDate = LocalDate.parse(timeRangeParts[0], dateFormat);
+                endDate = LocalDate.parse(timeRangeParts[1], dateFormat);
+            } else if (type.equalsIgnoreCase("yearly")) {
+                int year = Integer.parseInt(timeRange); 
+                startDate = LocalDate.of(year, 1, 1); //year-01-01
+                endDate = LocalDate.of(year, 12, 31); //year-12-31
             }
         } catch (Exception e) {
             System.err.println("Invalid time range format: " + timeRange);
             return totalCount;
         }
 
-        //count ratings based on timeRange (weekly or monthly)
+        //count ratings based on timeRange
         for (String[] review : reviews) {
             try {
                 int rating = Integer.parseInt(review[3]); 

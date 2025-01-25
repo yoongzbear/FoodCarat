@@ -11,6 +11,7 @@ import java.awt.event.FocusListener;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,13 +72,14 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             String orderMethod = orderData[1];
             String orderItems = orderData[2];
             String orderStatus = orderData[3];
+            orderStatus = orderStatus.substring(0, 1).toUpperCase() + orderStatus.substring(1).toLowerCase();
             String customerEmail = orderData[4];
             String orderTotal = orderData[8];
 
             String updatedOrderItems = item.replaceItemIDsWithNames(orderItems);
 
             //if status = pending accept, dont show
-            if (orderStatus.equalsIgnoreCase("Pending accept") || orderStatus.equalsIgnoreCase("Canceled")) {
+            if (orderStatus.equalsIgnoreCase("Pending accept") || orderStatus.equalsIgnoreCase("Canceled") || orderStatus.equalsIgnoreCase("Assigning runner")) {
                 continue;
             } else {
                 model.addRow(new Object[]{index++, orderID, customerEmail, orderMethod, updatedOrderItems, orderStatus});
@@ -120,7 +122,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
 
         idLabel.setText(details[0].trim());
         methodLabel.setText(details[1].trim());
-        statusLabel.setText(details[3].trim());
+        statusLabel.setText(details[3].trim().substring(0, 1).toUpperCase() + details[3].trim().substring(1).toLowerCase());
         emailLabel.setText(details[4].trim());
         dateLabel.setText(details[9].trim());
         totalPriceLabel.setText("RM" + details[10].trim());
@@ -159,6 +161,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             String orderMethod = orderData[1];
             String orderItems = orderData[2];
             String orderStatus = orderData[3];
+            orderStatus = orderStatus.substring(0, 1).toUpperCase() + orderStatus.substring(1).toLowerCase();
             String customerEmail = orderData[4];
             String orderTotal = orderData[7];
 
@@ -172,7 +175,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             boolean matchesItems = updatedOrderItems.toLowerCase().contains(lowerSearch);
             boolean matchesStatus = orderStatus.toLowerCase().contains(lowerSearch);
 
-            if (matchesOrderID || matchesMethod || matchesEmail || matchesItems) {
+            if (matchesOrderID || matchesMethod || matchesEmail || matchesItems || matchesStatus) {
                 model.addRow(new Object[]{index++, orderID, customerEmail, orderMethod, updatedOrderItems, orderStatus});
             }
         }
@@ -197,6 +200,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             String orderMethod = orderData[1];
             String orderItems = orderData[2];
             String orderStatus = orderData[3];
+            orderStatus = orderStatus.substring(0, 1).toUpperCase() + orderStatus.substring(1).toLowerCase();
             String customerEmail = orderData[4];
             String orderTotal = orderData[8];
             String orderDate = orderData[9];
@@ -246,6 +250,40 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             orderCount = order.getOrderedItemQuantities(email, "weekly", timeRange);
         } else if (type.equalsIgnoreCase("monthly")) {
             orderCount = order.getOrderedItemQuantities(email, "monthly", timeRange);
+        } else if (type.equalsIgnoreCase("quarterly")) {
+            orderCount = order.getOrderedItemQuantities(email, "quarterly", timeRange);
+        }
+
+        // Check if all items have 0 quantity
+        boolean allZero = true;
+        for (String[] item : orderCount) {
+            int quantity = Integer.parseInt(item[1]);
+            if (quantity > 0) {
+                allZero = false;
+                break;
+            }
+        }
+
+        //display message and clear chart if all items is 0 
+        if (allZero) {
+            JOptionPane.showMessageDialog(null, "No items were sold for the period.", "No Sales Data", JOptionPane.INFORMATION_MESSAGE);
+            if (type.equalsIgnoreCase("weekly")) {                
+                weeklyChartPanel.removeAll();
+                weeklyChartPanel.setLayout(new BorderLayout());
+                weeklyChartPanel.revalidate();
+                weeklyChartPanel.repaint();
+            } else if (type.equalsIgnoreCase("monthly")) {
+                monthlyChartPanel.removeAll();
+                monthlyChartPanel.setLayout(new BorderLayout());
+                monthlyChartPanel.revalidate();
+                monthlyChartPanel.repaint();
+            } else if (type.equalsIgnoreCase("quarterly")) {
+                quarterlyChartPanel.removeAll();
+                quarterlyChartPanel.setLayout(new BorderLayout());
+                quarterlyChartPanel.revalidate();
+                quarterlyChartPanel.repaint();
+            }
+            return;
         }
 
         //make item names into initials only 
@@ -253,7 +291,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         for (String[] itemData : new Item().getAllItems(email, false)) {
             itemIdToNameMap.put(itemData[0], itemData[1]); //itemID, itemName
         }
-        
+
         //pass into chart making function - bar chart
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (String[] item : orderCount) {
@@ -266,7 +304,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         }
 
         if (type.equalsIgnoreCase("weekly")) {
-            ChartPanel chartPanel = ChartUtility.createBarChart(dataset, "Weekly Orders", "Item", "Count");
+            ChartPanel chartPanel = ChartUtility.createBarChart(dataset, "Weekly Ordered Items", "Item", "Count");
 
             weeklyChartPanel.removeAll();
             weeklyChartPanel.setLayout(new BorderLayout());
@@ -274,13 +312,21 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             weeklyChartPanel.revalidate();
             weeklyChartPanel.repaint();
         } else if (type.equalsIgnoreCase("monthly")) {
-            ChartPanel chartPanel = ChartUtility.createBarChart(dataset, "Monthly Orders", "Item", "Count");
+            ChartPanel chartPanel = ChartUtility.createBarChart(dataset, "Monthly Ordered Items", "Item", "Count");
 
             monthlyChartPanel.removeAll();
             monthlyChartPanel.setLayout(new BorderLayout());
             monthlyChartPanel.add(chartPanel, BorderLayout.CENTER);
             monthlyChartPanel.revalidate();
             monthlyChartPanel.repaint();
+        } else if (type.equalsIgnoreCase("quarterly")) {
+            ChartPanel chartPanel = ChartUtility.createBarChart(dataset, "Quarterly Ordered Items", "Item", "Count");
+
+            quarterlyChartPanel.removeAll();
+            quarterlyChartPanel.setLayout(new BorderLayout());
+            quarterlyChartPanel.add(chartPanel, BorderLayout.CENTER);
+            quarterlyChartPanel.revalidate();
+            quarterlyChartPanel.repaint();
         }
 
     }
@@ -353,6 +399,16 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         monthChartBtn = new javax.swing.JButton();
         monthlyChartPanel = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
+        chartWeekRange5 = new javax.swing.JLabel();
+        chartQuarterYearChooser = new com.toedter.calendar.JYearChooser();
+        quarterChartBtn = new javax.swing.JButton();
+        quarterlyChartPanel = new javax.swing.JPanel();
+        chartWeekRange6 = new javax.swing.JLabel();
+        quarterChartBox = new javax.swing.JComboBox<>();
+        chartWeekRange7 = new javax.swing.JLabel();
+        startDateQuarterLabel = new javax.swing.JLabel();
+        endDateQuarterLabel = new javax.swing.JLabel();
+        chartWeekRange8 = new javax.swing.JLabel();
         dateChooser = new com.toedter.calendar.JDateChooser();
         selectDateLabel = new javax.swing.JLabel();
         monthChooser = new com.toedter.calendar.JMonthChooser();
@@ -568,7 +624,6 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         chartWeekRange.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         chartWeekRange.setText("Start Date:");
 
-        weeklyDateChooser.setDateFormatString("yyyy-MM-dd");
         weeklyDateChooser.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 weeklyDateChooserjDateChooserInput(evt);
@@ -579,7 +634,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         chartWeekRange1.setText("End Date:");
 
         weeklyEndDateTxt.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        weeklyEndDateTxt.setText("yyyy-MM-dd");
+        weeklyEndDateTxt.setText("dd MMM yyyy");
 
         weeklyChartBtn.setText("Generate Chart");
         weeklyChartBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -715,18 +770,114 @@ public class vendorOrderHistory extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Monthly", jPanel4);
 
+        chartWeekRange5.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
+        chartWeekRange5.setText("Year:");
+
+        chartQuarterYearChooser.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                displayYear(evt);
+            }
+        });
+
+        quarterChartBtn.setText("Generate Chart");
+        quarterChartBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                quarterChartBtnActionPerformed(evt);
+            }
+        });
+
+        quarterlyChartPanel.setMaximumSize(new java.awt.Dimension(325, 200));
+        quarterlyChartPanel.setMinimumSize(new java.awt.Dimension(325, 200));
+
+        javax.swing.GroupLayout quarterlyChartPanelLayout = new javax.swing.GroupLayout(quarterlyChartPanel);
+        quarterlyChartPanel.setLayout(quarterlyChartPanelLayout);
+        quarterlyChartPanelLayout.setHorizontalGroup(
+            quarterlyChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 453, Short.MAX_VALUE)
+        );
+        quarterlyChartPanelLayout.setVerticalGroup(
+            quarterlyChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 200, Short.MAX_VALUE)
+        );
+
+        chartWeekRange6.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
+        chartWeekRange6.setText("Quarter:");
+
+        quarterChartBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Quarter", "Q1", "Q2", "Q3", "Q4" }));
+        quarterChartBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chooseQuarter(evt);
+            }
+        });
+
+        chartWeekRange7.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
+        chartWeekRange7.setText("Start Date:");
+
+        startDateQuarterLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
+        startDateQuarterLabel.setText("Start Date");
+
+        endDateQuarterLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
+        endDateQuarterLabel.setText("End Date");
+
+        chartWeekRange8.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
+        chartWeekRange8.setText("End Date:");
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 483, Short.MAX_VALUE)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(quarterChartBtn)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGap(8, 8, 8)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(chartWeekRange6)
+                                    .addComponent(chartWeekRange5))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(quarterChartBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(chartQuarterYearChooser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(55, 55, 55)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(chartWeekRange7)
+                                    .addComponent(chartWeekRange8))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(startDateQuarterLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+                                    .addComponent(endDateQuarterLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addComponent(quarterlyChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 622, Short.MAX_VALUE)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(chartWeekRange6)
+                    .addComponent(quarterChartBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(chartWeekRange7)
+                    .addComponent(startDateQuarterLabel))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(chartQuarterYearChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(chartWeekRange5)
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(chartWeekRange8)
+                        .addComponent(endDateQuarterLabel)))
+                .addGap(33, 33, 33)
+                .addComponent(quarterChartBtn)
+                .addGap(50, 50, 50)
+                .addComponent(quarterlyChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(232, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Yearly", jPanel5);
+        jTabbedPane1.addTab("Quarterly", jPanel5);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -923,7 +1074,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     }//GEN-LAST:event_searchBtnActionPerformed
 
     private void weeklyDateChooserjDateChooserInput(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_weeklyDateChooserjDateChooserInput
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy");
         Date chosenDate = weeklyDateChooser.getDate();
         if (chosenDate != null) {
             //set the date to the monday of the week
@@ -949,15 +1100,22 @@ public class vendorOrderHistory extends javax.swing.JFrame {
 
     private void weeklyChartBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_weeklyChartBtnActionPerformed
         //get start date and end date, combine into a string and call ratingCount in review class
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat oldDateFormat = new SimpleDateFormat("dd MMM yyyy");
+        SimpleDateFormat newDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date chosenDate = weeklyDateChooser.getDate();
         if (chosenDate == null) {
             JOptionPane.showMessageDialog(null, "Please select a date.", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
-            String startDate = dateFormat.format(chosenDate);
-            String endDate = weeklyEndDateTxt.getText();
-            String timeRange = startDate + "," + endDate;
-            displayChart("weekly", timeRange);
+            try {
+                String startDate = newDateFormat.format(chosenDate);
+                //convert end date format
+                Date endDate = oldDateFormat.parse(weeklyEndDateTxt.getText());
+                String formatEndDate = newDateFormat.format(endDate);
+                String timeRange = startDate + "," + formatEndDate;
+                displayChart("weekly", timeRange);
+            } catch (ParseException e) {
+                JOptionPane.showMessageDialog(null, "Invalid end date format.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }//GEN-LAST:event_weeklyChartBtnActionPerformed
 
@@ -968,6 +1126,76 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         String timeRange = month + "," + year;
         displayChart("monthly", timeRange);
     }//GEN-LAST:event_monthChartBtnActionPerformed
+
+    private void quarterChartBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quarterChartBtnActionPerformed
+        //get quarter and year        
+        String quarter = quarterChartBox.getSelectedItem().toString();
+        String year = String.valueOf(chartQuarterYearChooser.getYear());
+        String timeRange = "";
+        if (quarter.equalsIgnoreCase("Quarter")) {
+            JOptionPane.showMessageDialog(null, "Please select a quarter", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            if (quarter.equalsIgnoreCase("Q1")) {
+                timeRange = year + "-01-01," + year + "-03-31"; //January 1 – March 31
+            } else if (quarter.equalsIgnoreCase("Q2")) {
+                timeRange = year + "-04-01," + year + "-06-30"; //April 1 – June 30
+            } else if (quarter.equalsIgnoreCase("Q3")) {
+                timeRange = year + "-07-01," + year + "-09-30"; //July 1 – September 30
+            } else if (quarter.equalsIgnoreCase("Q4")) {
+                timeRange = year + "-10-01," + year + "-12-31"; //October 1 – December 31
+            }
+            displayChart("quarterly", timeRange);
+        }
+    }//GEN-LAST:event_quarterChartBtnActionPerformed
+
+    private void chooseQuarter(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseQuarter
+        //display start and end date
+        String quarter = quarterChartBox.getSelectedItem().toString();
+        String year = String.valueOf(chartQuarterYearChooser.getYear());
+        if (quarter.equalsIgnoreCase("Q1")) {
+            //January 1 – March 31
+            startDateQuarterLabel.setText("1 Jan " + year);
+            endDateQuarterLabel.setText("31 Mar " + year);
+        } else if (quarter.equalsIgnoreCase("Q2")) {
+            //April 1 – June 30
+            startDateQuarterLabel.setText("1 Apr " + year);
+            endDateQuarterLabel.setText("3  Jun" + year);
+        } else if (quarter.equalsIgnoreCase("Q3")) {
+            //July 1 – September 30
+            startDateQuarterLabel.setText("1 Jul " + year);
+            endDateQuarterLabel.setText("30 Sep " + year);
+        } else if (quarter.equalsIgnoreCase("Q4")) {
+            //October 1 – December 31
+            startDateQuarterLabel.setText("1 Oct " + year);
+            endDateQuarterLabel.setText("31 Dec " + year);
+        } else {
+            GuiUtility.clearFields(startDateQuarterLabel, endDateQuarterLabel);
+        }
+    }//GEN-LAST:event_chooseQuarter
+
+    private void displayYear(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_displayYear
+        String quarter = quarterChartBox.getSelectedItem().toString();
+        String year = String.valueOf(chartQuarterYearChooser.getYear());
+        if (!quarter.equalsIgnoreCase("Quarter") && year.length() == 4) {
+            if (quarter.equalsIgnoreCase("Q1")) {
+                //January 1 – March 31
+                startDateQuarterLabel.setText("1 Jan " + year);
+                endDateQuarterLabel.setText("31 Mar " + year);
+            } else if (quarter.equalsIgnoreCase("Q2")) {
+                //April 1 – June 30
+                startDateQuarterLabel.setText("1 Apr " + year);
+                endDateQuarterLabel.setText("3  Jun" + year);
+            } else if (quarter.equalsIgnoreCase("Q3")) {
+                //July 1 – September 30
+                startDateQuarterLabel.setText("1 Jul " + year);
+                endDateQuarterLabel.setText("30 Sep " + year);
+            } else if (quarter.equalsIgnoreCase("Q4")) {
+                //October 1 – December 31
+                startDateQuarterLabel.setText("1 Oct " + year);
+                endDateQuarterLabel.setText("31 Dec " + year);
+            }
+        }
+    }//GEN-LAST:event_displayYear
 
     /**
      * @param args the command line arguments
@@ -1006,14 +1234,20 @@ public class vendorOrderHistory extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.toedter.calendar.JMonthChooser chartMonthChooser;
+    private com.toedter.calendar.JYearChooser chartQuarterYearChooser;
     private javax.swing.JLabel chartWeekRange;
     private javax.swing.JLabel chartWeekRange1;
     private javax.swing.JLabel chartWeekRange3;
     private javax.swing.JLabel chartWeekRange4;
+    private javax.swing.JLabel chartWeekRange5;
+    private javax.swing.JLabel chartWeekRange6;
+    private javax.swing.JLabel chartWeekRange7;
+    private javax.swing.JLabel chartWeekRange8;
     private com.toedter.calendar.JYearChooser chartYearChooser;
     private com.toedter.calendar.JDateChooser dateChooser;
     private javax.swing.JLabel dateLabel;
     private javax.swing.JLabel emailLabel;
+    private javax.swing.JLabel endDateQuarterLabel;
     private javax.swing.JLabel feedbackLabel;
     private javax.swing.JTextArea feedbackTxtArea;
     private javax.swing.JLabel idLabel;
@@ -1043,10 +1277,14 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     private com.toedter.calendar.JMonthChooser monthChooser;
     private javax.swing.JPanel monthlyChartPanel;
     private javax.swing.JTable orderTable;
+    private javax.swing.JComboBox<String> quarterChartBox;
+    private javax.swing.JButton quarterChartBtn;
+    private javax.swing.JPanel quarterlyChartPanel;
     private javax.swing.JButton rangeBtn;
     private javax.swing.JButton searchBtn;
     private javax.swing.JTextField searchTxt;
     private javax.swing.JLabel selectDateLabel;
+    private javax.swing.JLabel startDateQuarterLabel;
     private javax.swing.JLabel statusLabel;
     private javax.swing.JComboBox<String> timeRangeBox;
     private javax.swing.JLabel totalPriceLabel;

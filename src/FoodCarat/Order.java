@@ -303,7 +303,7 @@ public class Order {
         List<String[]> orderData = new ArrayList<>();
         List<String[]> vendorOrders = getAllOrders(vendorEmail); //get all orders containing items from vendor
         for (String[] order : vendorOrders) { //filter orders containing items from vendor
-            if (orderStatus.equals(order[3])) {
+            if (orderStatus.equalsIgnoreCase(order[3])) {
                 orderData.add(order);
             }
         }
@@ -311,7 +311,7 @@ public class Order {
     }
     
     //count number of items ordered
-    public List<String[]> getOrderedItemQuantities(String vendorEmail, String type, String timeRange) { //type = weekly/month
+    public List<String[]> getOrderedItemQuantities(String vendorEmail, String type, String timeRange) { //type = weekly/month/quarter
         List<String[]> itemQuantities = new ArrayList<>();
         List<String[]> vendorItems = new Item().getAllItems(vendorEmail, false); //get items from vendor inlcuding deleted ones
         List<String[]> allOrders = getAllOrders(vendorEmail);
@@ -330,6 +330,9 @@ public class Order {
                 int year = Integer.parseInt(timeRangeParts[1]);  
                 startDate = LocalDate.of(year, month, 1); 
                 endDate = startDate.withDayOfMonth(startDate.lengthOfMonth()); 
+            } else if (type.equalsIgnoreCase("quarterly")) {
+                startDate = LocalDate.parse(timeRangeParts[0], dateFormat); 
+                endDate = LocalDate.parse(timeRangeParts[1], dateFormat); 
             }
         } catch (Exception e) {
             System.err.println("Invalid time range format: " + timeRange);

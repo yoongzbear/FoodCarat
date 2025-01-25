@@ -66,9 +66,9 @@ public class vendorMain extends javax.swing.JFrame {
         methods = methods.substring(1, methods.length() - 1); //remove the square brackets
         String[] methodList = methods.split(";");
         //display checkboxes based on method saved
-        dineInBox.setSelected(Arrays.asList(methodList).contains("Dine In"));
-        takeawayBox.setSelected(Arrays.asList(methodList).contains("Take Away"));
-        deliveryBox.setSelected(Arrays.asList(methodList).contains("Delivery"));
+        dineInBox.setSelected(Arrays.asList(methodList).contains("dine in"));
+        takeawayBox.setSelected(Arrays.asList(methodList).contains("take away"));
+        deliveryBox.setSelected(Arrays.asList(methodList).contains("delivery"));
     }
 
     /**
@@ -438,13 +438,13 @@ public class vendorMain extends javax.swing.JFrame {
             }
         } else {
             if (dineInBox.isSelected()) {
-                selectedMethod[index++] = "Dine In";
+                selectedMethod[index++] = "dine in";
             }
             if (takeawayBox.isSelected()) {
-                selectedMethod[index++] = "Take Away";
+                selectedMethod[index++] = "take away";
             }
             if (deliveryBox.isSelected()) {
-                selectedMethod[index++] = "Delivery";
+                selectedMethod[index++] = "delivery";
             }
 
             selectedMethod = Arrays.copyOf(selectedMethod, index); //adjust the size of array
@@ -460,7 +460,7 @@ public class vendorMain extends javax.swing.JFrame {
         //add all methods
         int confirm = JOptionPane.showConfirmDialog(null, "Open all methods?", "Open All Methods", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-            String methodString = "[Dine In;Take Away;Delivery]";
+            String methodString = "[dine in;take away;delivery]";
             vendor.updateMethodAvailable(methodString);
             vendor.setAvailableMethod(methodString);
             displayInfo(); //refresh info

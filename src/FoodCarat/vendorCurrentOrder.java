@@ -38,33 +38,7 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         displayNewOrder();
         displayCurrentOrder();
         
-        setPlaceholder(searchOrderIDTxt, "Search Order ID"); //set placeholder for search
-    }
-    
-    //helper method to adjust search box
-    public void setPlaceholder(JTextField textField, String placeholder) {
-        textField.setText(placeholder);
-        textField.setForeground(Color.GRAY);  
-
-        textField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                //if the text field contains the placeholder, clear it when the clicked
-                if (textField.getText().equals(placeholder)) {
-                    textField.setText("");
-                    textField.setForeground(Color.BLACK);  
-                }
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                //if the text field is empty, show the placeholder again
-                if (textField.getText().isEmpty()) {
-                    textField.setText(placeholder);
-                    textField.setForeground(Color.GRAY);
-                }
-            }
-        });
+        GuiUtility.setPlaceholder(searchOrderIDTxt, "Search Order ID"); //set placeholder for search
     }
     
     //display new order
@@ -119,9 +93,9 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
     public void displayCurrentOrder() {
         //create lists for orders with ordered, in kitchen, and ready statuses
         Order orders = new Order();
-        List<String[]> ordered = orders.getOrderByStatus(email, "Ordered");
-        List<String[]> inKitchen = orders.getOrderByStatus(email, "In kitchen");
-        List<String[]> ready = orders.getOrderByStatus(email, "Ready");
+        List<String[]> ordered = orders.getOrderByStatus(email, "ordered");
+        List<String[]> inKitchen = orders.getOrderByStatus(email, "in kitchen");
+        List<String[]> ready = orders.getOrderByStatus(email, "ready");
 
         DefaultTableModel model = (DefaultTableModel) currentOrderTable.getModel();
         int index = 1;
@@ -131,19 +105,25 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         for (String[] orderData : ordered) {
             String orderItems = orderData[2].trim();
             String updatedOrderItems = new Item().replaceItemIDsWithNames(orderItems);
-            model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, orderData[1], orderData[3]});
+            String orderStatus = orderData[3];
+            orderStatus = orderStatus.substring(0, 1).toUpperCase() + orderStatus.substring(1).toLowerCase();
+            model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, orderData[1], orderStatus});
         }
         
         for (String[] orderData : inKitchen) {
             String orderItems = orderData[2].trim();
             String updatedOrderItems = new Item().replaceItemIDsWithNames(orderItems);
-            model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, orderData[1], orderData[3]});
+            String orderStatus = orderData[3];
+            orderStatus = orderStatus.substring(0, 1).toUpperCase() + orderStatus.substring(1).toLowerCase();
+            model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, orderData[1], orderStatus});
         }
         
         for (String[] orderData : ready) {
             String orderItems = orderData[2].trim();
             String updatedOrderItems = new Item().replaceItemIDsWithNames(orderItems);
-            model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, orderData[1], orderData[3]});
+            String orderStatus = orderData[3];
+            orderStatus = orderStatus.substring(0, 1).toUpperCase() + orderStatus.substring(1).toLowerCase();
+            model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, orderData[1], orderStatus});
         }
         
     }
@@ -156,27 +136,33 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         Order orders = new Order();
 
         if (filter.equalsIgnoreCase("Ordered")) {
-            List<String[]> orderList = orders.getOrderByStatus(email, "Ordered");
+            List<String[]> orderList = orders.getOrderByStatus(email, "ordered");
             for (String[] orderData : orderList) {
                 String orderItems = orderData[2].trim();
                 String updatedOrderItems = new Item().replaceItemIDsWithNames(orderItems); //replace item ID with item names
-                model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, orderData[1], orderData[3]});
+                String orderStatus = orderData[3];
+                orderStatus = orderStatus.substring(0, 1).toUpperCase() + orderStatus.substring(1).toLowerCase();
+                model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, orderData[1], orderStatus});
             }
         } else if (filter.equalsIgnoreCase("In kitchen")) {
-            List<String[]> orderList = orders.getOrderByStatus(email, "In kitchen");
+            List<String[]> orderList = orders.getOrderByStatus(email, "in kitchen");
             for (String[] orderData : orderList) {
                 String orderItems = orderData[2].trim();
                 String updatedOrderItems = new Item().replaceItemIDsWithNames(orderItems);
-                model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, orderData[1], orderData[3]});
+                String orderStatus = orderData[3];
+                orderStatus = orderStatus.substring(0, 1).toUpperCase() + orderStatus.substring(1).toLowerCase();
+                model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, orderData[1], orderStatus});
             }
         } else if (filter.equalsIgnoreCase("Ready")) {
-            List<String[]> orderList = orders.getOrderByStatus(email, "Ready");
+            List<String[]> orderList = orders.getOrderByStatus(email, "ready");
             for (String[] orderData : orderList) {
                 String orderItems = orderData[2].trim();
                 String updatedOrderItems = new Item().replaceItemIDsWithNames(orderItems);
-                model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, orderData[1], orderData[3]});
+                String orderStatus = orderData[3];
+                orderStatus = orderStatus.substring(0, 1).toUpperCase() + orderStatus.substring(1).toLowerCase();
+                model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, orderData[1], orderStatus});
             }
-        } 
+        }
     }
     
     //display searched id in table
@@ -188,11 +174,13 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         if (searchedOrder == null) {
             JOptionPane.showMessageDialog(null, "Order ID cannot be found", "Alert", JOptionPane.WARNING_MESSAGE);
             displayCurrentOrder();
-            setPlaceholder(searchOrderIDTxt, "Search Order ID");
+            GuiUtility.setPlaceholder(searchOrderIDTxt, "Search Order ID");
         } else {
             String orderItems = searchedOrder[2].trim();
             String updatedOrderItems = new Item().replaceItemIDsWithNames(orderItems);
-            model.addRow(new Object[]{index++, searchedOrder[0], updatedOrderItems, searchedOrder[1], searchedOrder[3]});
+            String orderStatus = searchedOrder[3];
+            orderStatus = orderStatus.substring(0, 1).toUpperCase() + orderStatus.substring(1).toLowerCase();
+            model.addRow(new Object[]{index++, searchedOrder[0], updatedOrderItems, searchedOrder[1], orderStatus});
         }
     }
     
@@ -227,24 +215,25 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
                 model.addRow(new Object[]{"Unknown item (ID: " + itemID + ")", quantity});
             }
         }
-        
+
         //get current status and display next status 
         String currentStatus = orderDetails[3].trim();
+        currentStatus = currentStatus.substring(0, 1).toUpperCase() + currentStatus.substring(1).toLowerCase();
         currentStatusTxt.setText(currentStatus);
         if (orderMethod.equalsIgnoreCase("Delivery")) {
-            if (currentStatus.equalsIgnoreCase("Ordered")) {
+            if (currentStatus.equalsIgnoreCase("ordered")) {
                 nextStatusTxt.setText("In kitchen");
-            } else if (currentStatus.equalsIgnoreCase("In kitchen")) {
+            } else if (currentStatus.equalsIgnoreCase("in kitchen")) {
                 nextStatusTxt.setText("Ready");
-            } else if (currentStatus.equalsIgnoreCase("Ready")) {
+            } else if (currentStatus.equalsIgnoreCase("ready")) {
                 nextStatusTxt.setText("Picked up by runner");
             }
         } else {
-            if (currentStatus.equalsIgnoreCase("Ordered")) {
+            if (currentStatus.equalsIgnoreCase("ordered")) {
                 nextStatusTxt.setText("In kitchen");
-            } else if (currentStatus.equalsIgnoreCase("In kitchen")) {
+            } else if (currentStatus.equalsIgnoreCase("in kitchen")) {
                 nextStatusTxt.setText("Ready");
-            } else if (currentStatus.equalsIgnoreCase("Ready")) {
+            } else if (currentStatus.equalsIgnoreCase("ready")) {
                 nextStatusTxt.setText("Completed");
             }
         }
@@ -499,7 +488,7 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
                         .addGroup(jPanel2Layout.createSequentialGroup()
                             .addComponent(filterStatusBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(searchOrderIDTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(searchOrderIDTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(searchBtn))
                         .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 745, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -726,7 +715,7 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to update the order's status?", "Update Order Status", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             int orderID = Integer.parseInt(statusIdTxt.getText());
-            String newStatus = nextStatusTxt.getText();
+            String newStatus = nextStatusTxt.getText().toLowerCase();
             new Order().updateStatus(orderID, newStatus, "vendor");
             JOptionPane.showMessageDialog(null, "Order " + orderID + "'s status updated successfully!");
             displayCurrentOrder();
@@ -745,9 +734,9 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         Order order = new Order();
         
         if (orderMethod.equalsIgnoreCase("delivery")) {
-            order.updateStatus(Integer.parseInt(orderID), "Assigning runner", "vendor");
+            order.updateStatus(Integer.parseInt(orderID), "assigning runner", "vendor");
         } else {
-            order.updateStatus(Integer.parseInt(orderID), "Ordered", "vendor");
+            order.updateStatus(Integer.parseInt(orderID), "ordered", "vendor");
         }
         displayNewOrder(); //display next new order 
         displayCurrentOrder(); //refresh current orders table
@@ -762,7 +751,7 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         //may need to add cancellation reason
         int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to reject this order?", "Reject Order", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-            new Order().updateStatus(orderID, "Canceled", "vendor");
+            new Order().updateStatus(orderID, "cancelled", "vendor");
             JOptionPane.showMessageDialog(null, "Order " + orderID + " is rejected.");
             displayNewOrder(); //display next new order
         }
