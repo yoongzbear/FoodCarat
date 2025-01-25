@@ -4,11 +4,35 @@
  */
 package FoodCarat;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.NumberTickUnit;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
+
 /**
  *
  * @author Yuna
  */
 public class runnerCusReview extends javax.swing.JFrame {
+    //private String runnerEmail = User.getSessionEmail();
+    private String runnerEmail = "runner3@mail.com";
 
     /**
      * Creates new form runnerCusReview
@@ -16,6 +40,171 @@ public class runnerCusReview extends javax.swing.JFrame {
     public runnerCusReview() {
         initComponents();
         setLocationRelativeTo(null);
+        
+        fetchFilteredData(null,null);
+        //chartAllData();
+    }
+    
+    // Update the table
+    private void fetchFilteredData(LocalDate startDate, LocalDate endDate) {
+        List<String[]> cusReview = new Review().getAllReviews(runnerEmail, "runner");
+        cusReview.sort((review1, review2) -> review2[5].compareTo(review1[5]));
+
+        DefaultTableModel model = (DefaultTableModel) cusReviewJT.getModel();
+        model.setRowCount(0);
+
+        for (String[] reviewInfo : cusReview) {
+            String reviewDate = reviewInfo[5];
+            LocalDate Date = LocalDate.parse(reviewDate);
+
+            if ((startDate == null || !Date.isBefore(startDate)) &&
+                (endDate == null || !Date.isAfter(endDate))) {
+
+                String reviewId = reviewInfo[0];
+                String rank = reviewInfo[3];
+                String review = reviewInfo[4];
+
+                model.addRow(new Object[]{
+                    reviewId, rank, review, reviewDate
+                });
+            }
+        }
+    }
+
+    private void chartAllData() {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        DefaultTableModel model = (DefaultTableModel) cusReviewJT.getModel();
+
+        LocalDate currentDate = LocalDate.now();
+        LocalDate startDate = currentDate.minusMonths(4); // Start from the 5th month before the current month
+
+        // Create a map to store counts for each of the last 5 months
+        Map<Month, Integer> reviewCounts = new LinkedHashMap<>();
+
+        // Initialize the map with the last 5 months
+        for (int i = 0; i < 5; i++) {
+            Month month = startDate.plusMonths(i).getMonth();
+            reviewCounts.put(month, 0);
+        }
+
+        // Iterate through the table rows and populate the task counts
+        for (int i = 0; i < model.getRowCount(); i++) {
+            String dateString = (String) model.getValueAt(i, 2);
+            LocalDate taskDate = LocalDate.parse(dateString);
+            Month taskMonth = taskDate.getMonth();
+
+            if (reviewCounts.containsKey(taskMonth)) {
+                reviewCounts.put(taskMonth, reviewCounts.get(taskMonth) + 1);
+            }
+        }
+
+        // Add data to dataset
+        for (Map.Entry<Month, Integer> entry : reviewCounts.entrySet()) {
+            String monthLabel = entry.getKey().name(); // Get month name
+            dataset.addValue(entry.getValue(), "Rantings", monthLabel);
+        }
+
+        displayBarChart(dataset, "Rantings Over Last 5 Months", "Months", "Number of Rantings");
+    }
+
+    private void generateDailyBarChart(LocalDate startDate, LocalDate endDate) {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        DefaultTableModel model = (DefaultTableModel) cusReviewJT.getModel();
+
+        // Store task counts for each day
+        Map<LocalDate, Integer> reviewCountMap = new TreeMap<>();
+
+        // Count tasks for each date
+        for (int i = 0; i < model.getRowCount(); i++) {
+            String dateString = (String) model.getValueAt(i, 2);
+            LocalDate taskDate = LocalDate.parse(dateString);
+
+            if (!taskDate.isBefore(startDate) && !taskDate.isAfter(endDate)) {
+                reviewCountMap.put(taskDate, reviewCountMap.getOrDefault(taskDate, 0) + 1);
+            }
+        }
+
+        for (Map.Entry<LocalDate, Integer> entry : reviewCountMap.entrySet()) {
+            String day = entry.getKey().toString();
+            dataset.addValue(entry.getValue(), "Rantings", day);
+        }
+
+        displayBarChart(dataset, "Rantings from " + startDate + " to " + endDate, "Date", "Number of Rantings");
+    }
+
+    // Generate monthly bar chart
+    private void generateMonthlyBarChart(LocalDate startDate, LocalDate endDate) {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        DefaultTableModel model = (DefaultTableModel) cusReviewJT.getModel();
+
+        Map<YearMonth, Integer> reviewCount = new TreeMap<>();
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            String dateString = (String) model.getValueAt(i, 2);
+            LocalDate taskDate = LocalDate.parse(dateString);
+
+            // Check if the taskDate is within the selected date range
+            if (!taskDate.isBefore(startDate) && !taskDate.isAfter(endDate)) {
+                YearMonth taskYearMonth = YearMonth.from(taskDate);
+
+                // Increment task count for this year-month
+                reviewCount.put(taskYearMonth, reviewCount.getOrDefault(taskYearMonth, 0) + 1);
+            }
+        }
+
+        for (Map.Entry<YearMonth, Integer> entry : reviewCount.entrySet()) {
+            String monthLabel = entry.getKey().getMonth() + " " + entry.getKey().getYear();
+            dataset.addValue(entry.getValue(), "Rantings", monthLabel);
+        }
+
+        displayBarChart(dataset, "Number of Rantings from " + startDate + " to " + endDate, "Months", "Number of Rantings");
+    }
+
+    // Generate yearly bar chart
+    private void generateYearlyBarChart(int startYear, int endYear) {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        DefaultTableModel model = (DefaultTableModel) cusReviewJT.getModel();
+        Map<Integer, Integer> reviewCount = new TreeMap<>();
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            String dateString = (String) model.getValueAt(i, 2);
+            LocalDate taskDate = LocalDate.parse(dateString);
+            int taskYear = taskDate.getYear();
+
+            if (taskYear >= startYear && taskYear <= endYear) {
+                reviewCount.put(taskYear, reviewCount.getOrDefault(taskYear, 0) + 1); // Increment task count for each year
+            }
+        }
+
+        for (Map.Entry<Integer, Integer> entry : reviewCount.entrySet()) {
+            String yearLabel = String.valueOf(entry.getKey());
+            dataset.addValue(entry.getValue(), "Rantings", yearLabel);
+        }
+
+        displayBarChart(dataset, "Number of Rantings from " + startYear + " to " + endYear, "Years", "Number of Rantings");
+    }
+
+    // Display the bar chart
+    private void displayBarChart(DefaultCategoryDataset dataset, String title, String xAxisLabel, String yAxisLabel) {
+        JFreeChart barChart = ChartFactory.createBarChart(
+            title, xAxisLabel, yAxisLabel, dataset, PlotOrientation.VERTICAL, true, true, false);
+
+        CategoryPlot plot = barChart.getCategoryPlot();
+        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+        rangeAxis.setTickUnit(new NumberTickUnit(10)); // Set y-axis tick unit
+
+        ChartPanel chartPanel = new ChartPanel(barChart);
+        chartPanel.setPreferredSize(new Dimension(800, 600));
+
+        chartPanel.setMouseWheelEnabled(false);// Disable zooming with mouse wheel
+        chartPanel.setDomainZoomable(false);// Disable domain zooming (x-axis)
+        chartPanel.setRangeZoomable(false);// Disable range zooming (y-axis)
+        chartPanel.setPopupMenu(null);// Remove the right-click menu
+
+        barChartJL.removeAll();
+        barChartJL.setLayout(new BorderLayout());
+        barChartJL.add(chartPanel, BorderLayout.CENTER);
+        barChartJL.validate();
     }
 
     /**
@@ -27,24 +216,176 @@ public class runnerCusReview extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        dayJP = new javax.swing.JPanel();
+        endDateChooser = new com.toedter.calendar.JDateChooser();
+        DgenerateJB = new javax.swing.JButton();
+        startDateChooser = new com.toedter.calendar.JDateChooser();
+        jLabel3 = new javax.swing.JLabel();
+        monthJP = new javax.swing.JPanel();
+        MgenerateJB = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        endMonthChooser = new com.toedter.calendar.JDateChooser();
+        startMonthChooser = new com.toedter.calendar.JDateChooser();
+        yearJP = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        jYearChooser1 = new com.toedter.calendar.JYearChooser();
+        jYearChooser2 = new com.toedter.calendar.JYearChooser();
+        YgenerateJB = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         backJB = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        cusReviewJT = new javax.swing.JTable();
         jCheckBox1 = new javax.swing.JCheckBox();
         jLabel2 = new javax.swing.JLabel();
         jCheckBox2 = new javax.swing.JCheckBox();
         jCheckBox3 = new javax.swing.JCheckBox();
         jCheckBox4 = new javax.swing.JCheckBox();
         jCheckBox5 = new javax.swing.JCheckBox();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jComboBox2 = new javax.swing.JComboBox<>();
-        jComboBox3 = new javax.swing.JComboBox<>();
-        jButton2 = new javax.swing.JButton();
+        jPanel5 = new javax.swing.JPanel();
+        barChartJL = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
+
+        jTabbedPane1.setBackground(new java.awt.Color(255, 255, 255));
+
+        dayJP.setBackground(new java.awt.Color(255, 255, 255));
+        dayJP.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        DgenerateJB.setText("Generate");
+        DgenerateJB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DgenerateJBActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel3.setText("-");
+
+        javax.swing.GroupLayout dayJPLayout = new javax.swing.GroupLayout(dayJP);
+        dayJP.setLayout(dayJPLayout);
+        dayJPLayout.setHorizontalGroup(
+            dayJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dayJPLayout.createSequentialGroup()
+                .addContainerGap(39, Short.MAX_VALUE)
+                .addComponent(startDateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(endDateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32)
+                .addComponent(DgenerateJB)
+                .addGap(22, 22, 22))
+        );
+        dayJPLayout.setVerticalGroup(
+            dayJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dayJPLayout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addGroup(dayJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(dayJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(startDateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3)
+                        .addComponent(endDateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(dayJPLayout.createSequentialGroup()
+                        .addComponent(DgenerateJB)
+                        .addGap(3, 3, 3)))
+                .addContainerGap(7, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Daily", dayJP);
+
+        monthJP.setBackground(new java.awt.Color(255, 255, 255));
+        monthJP.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        MgenerateJB.setText("Generate");
+        MgenerateJB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MgenerateJBActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel4.setText("-");
+
+        javax.swing.GroupLayout monthJPLayout = new javax.swing.GroupLayout(monthJP);
+        monthJP.setLayout(monthJPLayout);
+        monthJPLayout.setHorizontalGroup(
+            monthJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(monthJPLayout.createSequentialGroup()
+                .addContainerGap(43, Short.MAX_VALUE)
+                .addComponent(startMonthChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(endMonthChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(MgenerateJB)
+                .addGap(32, 32, 32))
+        );
+        monthJPLayout.setVerticalGroup(
+            monthJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, monthJPLayout.createSequentialGroup()
+                .addContainerGap(17, Short.MAX_VALUE)
+                .addGroup(monthJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(MgenerateJB)
+                    .addComponent(startMonthChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(endMonthChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(8, 8, 8))
+        );
+
+        jTabbedPane1.addTab("Monthly", monthJP);
+
+        yearJP.setBackground(new java.awt.Color(255, 255, 255));
+        yearJP.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel5.setText("-");
+
+        YgenerateJB.setText("Generate");
+        YgenerateJB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                YgenerateJBActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout yearJPLayout = new javax.swing.GroupLayout(yearJP);
+        yearJP.setLayout(yearJPLayout);
+        yearJPLayout.setHorizontalGroup(
+            yearJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(yearJPLayout.createSequentialGroup()
+                .addGap(127, 127, 127)
+                .addComponent(jYearChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jYearChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(YgenerateJB)
+                .addContainerGap(68, Short.MAX_VALUE))
+        );
+        yearJPLayout.setVerticalGroup(
+            yearJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(yearJPLayout.createSequentialGroup()
+                .addGap(11, 11, 11)
+                .addGroup(yearJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(yearJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jYearChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel5)
+                        .addComponent(jYearChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(yearJPLayout.createSequentialGroup()
+                        .addGap(3, 3, 3)
+                        .addComponent(YgenerateJB)))
+                .addContainerGap(13, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Yearly", yearJP);
 
         jPanel1.setBackground(new java.awt.Color(153, 255, 153));
 
@@ -67,8 +408,8 @@ public class runnerCusReview extends javax.swing.JFrame {
                 .addGap(17, 17, 17)
                 .addComponent(backJB)
                 .addGap(132, 132, 132)
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap(191, Short.MAX_VALUE))
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 389, Short.MAX_VALUE)
+                .addContainerGap(257, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -80,30 +421,36 @@ public class runnerCusReview extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(14, 14, 14)
                         .addComponent(backJB)))
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTable1.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        cusReviewJT.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
+        cusReviewJT.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Date", "Rank", "Review"
+                "Review ID", "Rank (1 - 5)", "Review", "Date"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(cusReviewJT);
+        if (cusReviewJT.getColumnModel().getColumnCount() > 0) {
+            cusReviewJT.getColumnModel().getColumn(0).setPreferredWidth(10);
+            cusReviewJT.getColumnModel().getColumn(1).setPreferredWidth(20);
+            cusReviewJT.getColumnModel().getColumn(2).setPreferredWidth(500);
+            cusReviewJT.getColumnModel().getColumn(3).setPreferredWidth(100);
+        }
 
         jCheckBox1.setText("1 🌟");
 
@@ -123,13 +470,30 @@ public class runnerCusReview extends javax.swing.JFrame {
 
         jCheckBox5.setText("5 🌟");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Day" }));
+        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel5.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Month" }));
+        barChartJL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        barChartJL.setText("Bar Chart");
 
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Year" }));
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(barChartJL, javax.swing.GroupLayout.PREFERRED_SIZE, 830, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(barChartJL, javax.swing.GroupLayout.DEFAULT_SIZE, 315, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
-        jButton2.setText("Search");
+        jButton1.setText("Show All");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -137,53 +501,56 @@ public class runnerCusReview extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1)
-                .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(22, 22, 22)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jCheckBox1)
-                        .addGap(18, 18, 18)
-                        .addComponent(jCheckBox2)
-                        .addGap(18, 18, 18)
-                        .addComponent(jCheckBox3)
-                        .addGap(18, 18, 18)
-                        .addComponent(jCheckBox4)
-                        .addGap(18, 18, 18)
-                        .addComponent(jCheckBox5)
-                        .addGap(116, 116, 116)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(22, 22, 22)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jCheckBox1)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jCheckBox2)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jCheckBox3)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jCheckBox4)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jCheckBox5))
+                                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 887, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
-                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jCheckBox1)
+                            .addComponent(jCheckBox2)
+                            .addComponent(jCheckBox3)
+                            .addComponent(jCheckBox4)
+                            .addComponent(jCheckBox5)))
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBox1)
-                    .addComponent(jCheckBox2)
-                    .addComponent(jCheckBox3)
-                    .addComponent(jCheckBox4)
-                    .addComponent(jCheckBox5)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -197,6 +564,74 @@ public class runnerCusReview extends javax.swing.JFrame {
         dispose();
         new runnerMain().setVisible(true);
     }//GEN-LAST:event_backJBActionPerformed
+
+    private void DgenerateJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DgenerateJBActionPerformed
+        Date startDate = startDateChooser.getDate();
+        Date endDate = endDateChooser.getDate();
+
+        if (startDate == null || endDate == null) {
+            JOptionPane.showMessageDialog(this, "Please select both start and end dates.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (endDate.before(startDate)) {
+            JOptionPane.showMessageDialog(this, "End date cannot be earlier than start date.", "Invalid Date Range", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Convert to LocalDate for compatibility with the generateDailyBarChart method
+        LocalDate startLocalDate = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate endLocalDate = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        fetchFilteredData(startLocalDate, endLocalDate);
+        generateDailyBarChart(startLocalDate, endLocalDate);
+    }//GEN-LAST:event_DgenerateJBActionPerformed
+
+    private void MgenerateJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MgenerateJBActionPerformed
+        Date start = startMonthChooser.getDate();
+        Date end = endMonthChooser.getDate();
+
+        if (start == null || end == null) {
+            JOptionPane.showMessageDialog(this, "Please select both start and end dates.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (end.before(start)) {
+            JOptionPane.showMessageDialog(this, "End date cannot be earlier than start date.", "Invalid Date Range", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        LocalDate startLocalDate = start.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate endLocalDate = end.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        // Adjust the start and end date
+        startLocalDate = startLocalDate.withDayOfMonth(1);
+        endLocalDate = endLocalDate.withDayOfMonth(endLocalDate.lengthOfMonth());
+
+        fetchFilteredData(startLocalDate, endLocalDate);
+        generateMonthlyBarChart(startLocalDate, endLocalDate);
+    }//GEN-LAST:event_MgenerateJBActionPerformed
+
+    private void YgenerateJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_YgenerateJBActionPerformed
+        int startYear = jYearChooser1.getYear();
+        int endYear = jYearChooser2.getYear();
+
+        if (startYear == 0 || endYear == 0) {
+            JOptionPane.showMessageDialog(this, "Please select both start and end dates.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (startYear > endYear) {
+            JOptionPane.showMessageDialog(this, "End date cannot be earlier than start date.", "Invalid Date Range", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Convert the start and end years to LocalDate (start of the year and end of the year)
+        LocalDate startLocalDate = LocalDate.of(startYear, 1, 1);
+        LocalDate endLocalDate = LocalDate.of(endYear, 12, 31);
+
+        fetchFilteredData(startLocalDate, endLocalDate);
+        generateYearlyBarChart(startYear, endYear);
+    }//GEN-LAST:event_YgenerateJBActionPerformed
 
     /**
      * @param args the command line arguments
@@ -234,20 +669,35 @@ public class runnerCusReview extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton DgenerateJB;
+    private javax.swing.JButton MgenerateJB;
+    private javax.swing.JButton YgenerateJB;
     private javax.swing.JButton backJB;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JLabel barChartJL;
+    private javax.swing.JTable cusReviewJT;
+    private javax.swing.JPanel dayJP;
+    private com.toedter.calendar.JDateChooser endDateChooser;
+    private com.toedter.calendar.JDateChooser endMonthChooser;
+    private javax.swing.JButton jButton1;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JCheckBox jCheckBox3;
     private javax.swing.JCheckBox jCheckBox4;
     private javax.swing.JCheckBox jCheckBox5;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
-    private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTabbedPane jTabbedPane1;
+    private com.toedter.calendar.JYearChooser jYearChooser1;
+    private com.toedter.calendar.JYearChooser jYearChooser2;
+    private javax.swing.JPanel monthJP;
+    private com.toedter.calendar.JDateChooser startDateChooser;
+    private com.toedter.calendar.JDateChooser startMonthChooser;
+    private javax.swing.JPanel yearJP;
     // End of variables declaration//GEN-END:variables
 }

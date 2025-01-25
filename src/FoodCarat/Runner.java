@@ -160,23 +160,4 @@ public class Runner extends User{
             }
         }
     }
-    
-    public List<String[]> getCompletedTask(String runnerEmail) {
-        List<String[]> completedTasks = new ArrayList<>();
-
-        try (BufferedReader br = new BufferedReader(new FileReader(cusOrderFile))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] taskData = line.split(",");
-                if (taskData.length > 5 && taskData[5].equals(runnerEmail) && taskData[3].equals("completed")) {
-                    completedTasks.add(taskData);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return completedTasks;
-    }
-
 }

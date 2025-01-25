@@ -209,8 +209,8 @@ public class Review {
                     String reviewType = reviewData[2];
                     if (reviewType.equalsIgnoreCase("runner")) {
                         List<Integer> runnerOrderIDs = orders.getOrderIDsReview(email, role);
-                        int orderID = Integer.parseInt(reviewData[1]);
-                        if (runnerOrderIDs.contains(orderID)) {
+                        int orderIDs = Integer.parseInt(reviewData[1]);
+                        if (runnerOrderIDs.contains(orderIDs)) {
                             //add all info of review into the list
                             reviews.add(reviewData);
                         }

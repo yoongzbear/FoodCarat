@@ -11,7 +11,6 @@ import java.time.Month;
 import java.time.YearMonth;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,8 +31,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
  * @author Yuna
  */
 public class runnerTaskHistory extends javax.swing.JFrame {
-    //private String runnerEmail = User.getSessionEmail();
-    private String runnerEmail = "runner3@mail.com";
+    private String runnerEmail = User.getSessionEmail();
 
     /**
      * Creates new form runnerTaskHistory
@@ -48,8 +46,7 @@ public class runnerTaskHistory extends javax.swing.JFrame {
     
     // Update the table
     private void fetchFilteredData(LocalDate startDate, LocalDate endDate) {
-        Runner runner = new Runner();
-        List<String[]> completedTasks = runner.getCompletedTask(runnerEmail);
+        List<String[]> completedTasks = new Order().getCompletedTask(runnerEmail);
         completedTasks.sort((task1, task2) -> task2[9].compareTo(task1[9]));
 
         DefaultTableModel model = (DefaultTableModel) taskHistoryJT.getModel();
@@ -167,7 +164,7 @@ public class runnerTaskHistory extends javax.swing.JFrame {
         }
 
         for (Map.Entry<YearMonth, Integer> entry : taskCounts.entrySet()) {
-            String monthLabel = entry.getKey().getMonth() + " " + entry.getKey().getYear(); // Format: "Month Year"
+            String monthLabel = entry.getKey().getMonth() + " " + entry.getKey().getYear();
             dataset.addValue(entry.getValue(), "Tasks", monthLabel);
         }
 

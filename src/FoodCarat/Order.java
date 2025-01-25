@@ -268,7 +268,7 @@ public class Order {
                             orderIDs.add(orderID1);
                         }
                     } else if (type.equalsIgnoreCase("runner")) {
-                        String currentRunnerEmail = parts[6];  
+                        String currentRunnerEmail = parts[5];  
 
                         if (currentRunnerEmail.equals(email)) {
                             int orderID1 = Integer.parseInt(parts[0]);  
@@ -816,6 +816,24 @@ public class Order {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    public List<String[]> getCompletedTask(String runnerEmail) {
+        List<String[]> completedTasks = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(orderFile))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] taskData = line.split(",");
+                if (taskData.length > 5 && taskData[5].equals(runnerEmail) && taskData[3].equals("completed")) {
+                    completedTasks.add(taskData);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return completedTasks;
     }
     
     public void refund(int orderID, String userEmail) throws IOException {
