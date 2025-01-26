@@ -265,7 +265,7 @@ public class customerMain extends javax.swing.JFrame {
 
             //View menu
             this.dispose();
-            customerViewMenu frame = new customerViewMenu(orderID, choice);
+            customerViewMenu frame = new customerViewMenu(orderID, choice.toLowerCase());
             frame.setVisible(true);
         }
     }//GEN-LAST:event_bOrderActionPerformed
