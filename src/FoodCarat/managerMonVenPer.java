@@ -32,6 +32,7 @@ public class managerMonVenPer extends javax.swing.JFrame {
         totalrevenuechart.setBackground(new Color(211, 211, 211));// Light gray
         totalorderchart.setBackground(new Color(211, 211, 211));
         averagechart.setBackground(new Color(211, 211, 211)); 
+        getContentPane().setBackground(new Color(252, 204, 196));
     }
     
     private void displayVendorPerformance(int selectedMonth) throws IOException {

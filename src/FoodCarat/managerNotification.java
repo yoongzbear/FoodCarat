@@ -4,6 +4,7 @@
  */
 package FoodCarat;
 
+import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -31,6 +32,7 @@ public class managerNotification extends javax.swing.JFrame {
         complaintNotificationtable.getColumnModel().getColumn(4).setMaxWidth(0);
         complaintNotificationtable.getColumnModel().getColumn(4).setWidth(0);
         complaintNotificationtable.getColumnModel().getColumn(4).setPreferredWidth(0);
+        getContentPane().setBackground(new Color(252, 204, 196));
     }
     
     private void handleTableClick(java.awt.event.MouseEvent evt) {

@@ -30,6 +30,7 @@ public class managerMonRunPer extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         totalorderchart.setBackground(new Color(211, 211, 211));// Light gray
         averagechart.setBackground(new Color(211, 211, 211)); 
+        getContentPane().setBackground(new Color(252, 204, 196));
     }
 
     private void displayRunnerPerformance(int selectedMonth) throws IOException {

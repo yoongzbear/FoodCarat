@@ -56,7 +56,7 @@ public class managerRmvItem extends javax.swing.JFrame {
         photoLabel.setPreferredSize(new Dimension(175, 164)); 
         photoLabel.setMinimumSize(new Dimension(175, 164));
         photoLabel.setMaximumSize(new Dimension(175, 164));
-
+        getContentPane().setBackground(new Color(252, 204, 196));
     }
     
     public void setPlaceholder(JTextField textField, String placeholder) {
