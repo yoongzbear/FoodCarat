@@ -4,7 +4,14 @@
  */
 package FoodCarat;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -13,6 +20,12 @@ import javax.swing.table.DefaultTableModel;
  */
 public class vendorNotification extends javax.swing.JFrame {
 
+    private String email = "vendor@mail.com";
+    private String role = "vendor";
+//    private String email = User.getSessionEmail();
+//    private String email = User.getSessionRole();
+    Vendor vendor = new Vendor(email);
+
     /**
      * Creates new form vendorNotification
      */
@@ -20,28 +33,135 @@ public class vendorNotification extends javax.swing.JFrame {
         initComponents();
         getContentPane().setBackground(new java.awt.Color(186,85,211)); //setting background color of frame
         setLocationRelativeTo(null);
-        
-        //displayActivities(["new", "status", "item", "review"]);
+        String[] filters = {"new", "status", "review", "item"};
+        displayActivities(filters);
     }
     
     //display all activities    
 //    Display urgent stuff first 
-//    New order > order status > item > review
+//    New order > order status > review > item
     public void displayActivities(String[] filters) {
         DefaultTableModel model = (DefaultTableModel) notificationTable.getModel();
         model.setRowCount(0);
         
-        //New order - Display for the same day only, display the oldest order with status pending accept and date = current date
+        //get current date in yyyy-MM-dd
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate currentDate = LocalDate.now();
+        System.out.println(currentDate);
         
-        //Order status - Display for same day only 
+        Order orders = new Order();
         
-        //Item - deleted by vendor, item added (latest item by vendor)
-        
-        //Review - if got review for order from that vendor on the date
+        for (String filter : filters) {
+            if (filter.equalsIgnoreCase("new")) {
+                //New order - Display for the same day only, display the oldest order with status pending accept and date = current date
+                List<String[]> newOrder = orders.getOrderByStatus(email, "pending accept");
+                for (String[] order : newOrder) {
+                    try {
+                        LocalDate orderDate = LocalDate.parse(order[9].trim(), dateFormat); 
+                        if (orderDate.isEqual(currentDate)) {
+                            int orderID = Integer.parseInt(order[0].trim());
+                            String message = "A new order is waiting for your approval. Please check as soon as possible. (Order ID: " + orderID + ")";
+                            model.addRow(new Object[]{"New Order", orderID, message});
+                        }
+                    } catch (DateTimeParseException e) {
+                        System.err.println("Invalid date format for order ID " + order[0] + ": " + e.getMessage());
+                    }
+                }
+            } else if (filter.equalsIgnoreCase("status")) {
+                //Order status - Display for same day only 
+                List<String[]> allOrders = orders.getAllOrders();
+                //same day, status != cancelled, pending accept, assigning runner, completed
+                for (String[] order : allOrders) {
+                    try {
+                        LocalDate orderDate = LocalDate.parse(order[9].trim(), dateFormat);
+                        String orderStatus = order[3].trim();
+                        int orderID = Integer.parseInt(order[0].trim());
+                        if (orderDate.isEqual(currentDate) && !orderStatus.equalsIgnoreCase("cancelled") && !orderStatus.equalsIgnoreCase("assigning runner") && !orderStatus.equalsIgnoreCase("pending accept")) {
+                            String message = "An order has changed its status to \"" + orderStatus.substring(0, 1).toUpperCase() + orderStatus.substring(1).toLowerCase() + "\" (Order ID: " + orderID + ")";
+                            model.addRow(new Object[]{"Order Status", orderID, message});
+                        } 
+                    } catch (DateTimeParseException e) {
+                        System.err.println("Invalid date format for order ID " + order[0] + ": " + e.getMessage());
+                    }
+                }
+                
+            } else if (filter.equalsIgnoreCase("review")) {
+                //Review - if got review for order from that vendor on the date
+                //order review
+                Review reviews = new Review();
+                List<String[]> vendorReview = reviews.getAllReviews(email, "vendor");
+                List<String[]> orderReview = reviews.getAllReviews(email, "order");
+                
+                System.out.println(orderReview.size());
+
+                for (String[] review : vendorReview) {
+                    try {
+                        LocalDate reviewDate = LocalDate.parse(review[5].trim(), dateFormat);
+                        int reviewID = Integer.parseInt(review[0].trim());
+                        
+                        if (reviewDate.isEqual(currentDate)) {
+                            String message = "You received a new review as a vendor! " + " (Review ID: " + reviewID + ")";
+                            model.addRow(new Object[]{"Vendor Review", reviewID, message});
+                        }
+                    } catch (DateTimeParseException e) {
+                        System.err.println("Invalid date format for review ID " + review[0] + ": " + e.getMessage());
+                    }
+                }
+                
+                for (String[] review : orderReview) {
+                    try {
+                        LocalDate reviewDate = LocalDate.parse(review[5].trim(), dateFormat);
+                        int reviewID = Integer.parseInt(review[0].trim());
+                        
+                        if (reviewDate.isEqual(currentDate)) {
+                            String message = "You received a new review for an order! " + " (Review ID: " + reviewID + ")";
+                            model.addRow(new Object[]{"Order Review", reviewID, message});
+                        }
+                    } catch (DateTimeParseException e) {
+                        System.err.println("Invalid date format for review ID " + review[0] + ": " + e.getMessage());
+                    }
+                }
+                
+            } else if (filter.equalsIgnoreCase("item")) {
+                //Item - deleted by vendor, item added (latest item by vendor) - show up to 10 records
+                Item items = new Item();
+                List<String[]> itemNotify = items.getAllItems(email, false);
+                List<String[]> newItems = new ArrayList<>();
+                List<String[]> deletedItems = new ArrayList<>();
+                for (String[] item : itemNotify) {
+                    String itemStatus = item[6].trim();
+                    if (itemStatus.equalsIgnoreCase("available")) {
+                        newItems.add(item);
+                    } else if (itemStatus.equalsIgnoreCase("deleted by vendor") || itemStatus.equalsIgnoreCase("deleted by manager")) {
+                        deletedItems.add(item);
+                    }
+                }
+
+                //sort items based on latest to oldest
+                newItems.sort((a, b) -> Integer.compare(Integer.parseInt(b[0]), Integer.parseInt(a[0])));
+                deletedItems.sort((a, b) -> Integer.compare(Integer.parseInt(b[0]), Integer.parseInt(a[0])));
+
+                for (String[] addedItem : newItems) {
+                    String message = "New " + addedItem[2] + " item added: \"" + addedItem[1] + "\" (Item ID: " + addedItem[0] + ")";
+                    model.addRow(new Object[]{"Item Added", addedItem[0], message});
+                }
+
+                // Add deleted items to the table
+                for (String[] deletedItem : deletedItems) {
+                    String message = "";
+                    if (deletedItem[6].equalsIgnoreCase("deleted by vendor")) { 
+                        message = "Item \"" + deletedItem[1] + "\" was deleted by you (Item ID: " + deletedItem[0] + ")";
+                    } else if (deletedItem[6].equalsIgnoreCase("deleted by manager")) {
+                        message = "Item \"" + deletedItem[1] + "\" was deleted by FoodCarat Manager (Item ID: " + deletedItem[0] + ")";
+                    }
+                    model.addRow(new Object[]{"Item Deleted", deletedItem[0], message});
+                }
+            }
+        }
     }
-    
+
 //    Automatically call the panel and populate the details part
-    
+
     public void displayDetails() {
         //call panel based on type then populate with info (idk can or not)
     }
@@ -86,6 +206,7 @@ public class vendorNotification extends javax.swing.JFrame {
                 "Type", "ID", "Activity"
             }
         ));
+        notificationTable.setRowHeight(35);
         jScrollPane1.setViewportView(notificationTable);
         if (notificationTable.getColumnModel().getColumnCount() > 0) {
             notificationTable.getColumnModel().getColumn(0).setResizable(false);
@@ -139,11 +260,11 @@ public class vendorNotification extends javax.swing.JFrame {
                                     .addComponent(newOrderChkBox)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(orderStatusChkBox)
-                                    .addGap(12, 12, 12)
-                                    .addComponent(itemChkBox)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(reviewChkBox)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(itemChkBox)
+                                    .addGap(18, 18, 18)
                                     .addComponent(filterBtn))))
                         .addGap(46, 46, 46))))
         );
@@ -159,8 +280,8 @@ public class vendorNotification extends javax.swing.JFrame {
                     .addComponent(newOrderChkBox)
                     .addComponent(reviewChkBox)
                     .addComponent(filterBtn)
-                    .addComponent(itemChkBox)
-                    .addComponent(orderStatusChkBox))
+                    .addComponent(orderStatusChkBox)
+                    .addComponent(itemChkBox))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 509, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -182,27 +303,24 @@ public class vendorNotification extends javax.swing.JFrame {
     }//GEN-LAST:event_viewBtnActionPerformed
 
     private void filterBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterBtnActionPerformed
-//        String[] selectedFilter = new String[5];
-//        int index = 0;
-//        
-//        if (ratingOneChkBox.isSelected()) {
-//            selectedFilter[index++] = "1";
-//        }
-//        if (ratingTwoChkBox.isSelected()) {
-//            selectedFilter[index++] = "2";
-//        } 
-//        if (ratingThreeChkBox.isSelected()) {
-//            selectedFilter[index++] = "3";
-//        } 
-//        if (ratingFourChkBox.isSelected()) {
-//            selectedFilter[index++] = "4";
-//        } 
-//        if (ratingFiveChkBox.isSelected()) {
-//            selectedFilter[index++] = "5";
-//        }
-//        selectedFilter = Arrays.copyOf(selectedFilter, index); //adjust the size of array
-//        //call displayreview filter
-//        displayReviews(selectedFilter);
+        String[] selectedFilter = new String[5];
+        int index = 0;
+        
+        if (newOrderChkBox.isSelected()) {
+            selectedFilter[index++] = "new";
+        }
+        if (orderStatusChkBox.isSelected()) {
+            selectedFilter[index++] = "status";
+        } 
+        if (reviewChkBox.isSelected()) {
+            selectedFilter[index++] = "review";
+        } 
+        if (itemChkBox.isSelected()) {
+            selectedFilter[index++] = "item";
+        } 
+        selectedFilter = Arrays.copyOf(selectedFilter, index); //adjust the size of array
+        //call filter
+        displayActivities(selectedFilter);
     }//GEN-LAST:event_filterBtnActionPerformed
 
     /**
