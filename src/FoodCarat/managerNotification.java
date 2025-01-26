@@ -63,6 +63,21 @@ public class managerNotification extends javax.swing.JFrame {
             }
         }
     }
+    
+    private void fillEmptyRowSpace() {   
+        DefaultTableModel tableModel = (DefaultTableModel) complaintNotificationtable.getModel();        
+        int rowCount = tableModel.getRowCount(); // Current row count in the table
+        int tableHeight = complaintNotificationtable.getParent().getHeight(); // Get the height of the table's parent container
+        int rowHeight= complaintNotificationtable.getRowHeight();
+
+        int targetRowCount = tableHeight / rowHeight; // Calculate how many rows fit in the visible area
+
+        // Add empty rows if needed to reach the target row count
+        int emptyRowsNeeded = targetRowCount - rowCount;
+        for (int i = 0; i < emptyRowsNeeded; i++) {
+            tableModel.addRow(new Object[]{"", ""});  // Adding empty rows based on the column structure
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -206,6 +221,7 @@ public class managerNotification extends javax.swing.JFrame {
             for (String[] complaint : complaintData) {
                 model.addRow(complaint);
             }
+            fillEmptyRowSpace();
         }
     }//GEN-LAST:event_searchbtnActionPerformed
 
