@@ -41,9 +41,7 @@ public class User {
     private static String sessionEmail;
     private static String sessionName;
     private static String sessionRole;
-    private static String sessionPassword;
-    
-    private int totalOrders = 0;
+    private static String sessionPassword;    
 
     public User(String email, String password, String name, String userType, String birth, String contactNumber) {
         this.email = email;
@@ -140,14 +138,6 @@ public class User {
 
     public void setContactNumber(String contactNumber) {
         this.contactNumber = contactNumber;
-    }
-    
-    public int getTotalOrders() { //for runner and vendor performace
-        return totalOrders;
-    }
-    
-    public void incrementOrders() { //for runner and vendor performace
-        this.totalOrders++;
     }
     
     // Log out
