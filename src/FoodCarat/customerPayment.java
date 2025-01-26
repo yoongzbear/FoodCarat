@@ -26,7 +26,7 @@ public class customerPayment extends javax.swing.JFrame {
     private String orderType;
     
     public customerPayment(int orderID, String orderType) {
-        this.orderType = orderType;
+        this.orderType = orderType.toLowerCase();
         this.orderID = orderID;
         initComponents();
         displayOrderDetails();
