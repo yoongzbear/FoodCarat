@@ -115,9 +115,6 @@ public class adminNotification extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         notificationtable = new javax.swing.JTable();
         backbtn = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        searchbtn = new javax.swing.JButton();
-        monthcbx = new javax.swing.JComboBox<>();
 
         jButton2.setText("jButton2");
 
@@ -145,39 +142,23 @@ public class adminNotification extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
-        jLabel1.setText("Month: ");
-
-        searchbtn.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
-        searchbtn.setText("Search");
-
-        monthcbx.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
-        monthcbx.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Please select", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" }));
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(backbtn)
+                .addGap(27, 27, 27))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(455, 455, 455)
                         .addComponent(Lnotification))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(34, 34, 34)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(18, 18, 18)
-                                .addComponent(monthcbx, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(searchbtn))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1099, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(39, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(backbtn)
-                .addGap(27, 27, 27))
+                        .addGap(28, 28, 28)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1099, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(45, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -186,14 +167,9 @@ public class adminNotification extends javax.swing.JFrame {
                 .addComponent(backbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(2, 2, 2)
                 .addComponent(Lnotification)
-                .addGap(25, 25, 25)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(searchbtn)
-                    .addComponent(monthcbx, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addGap(37, 37, 37)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(23, 23, 23))
+                .addGap(58, 58, 58))
         );
 
         pack();
@@ -243,10 +219,7 @@ public class adminNotification extends javax.swing.JFrame {
     private javax.swing.JLabel Lnotification;
     private javax.swing.JButton backbtn;
     private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JComboBox<String> monthcbx;
     private javax.swing.JTable notificationtable;
-    private javax.swing.JButton searchbtn;
     // End of variables declaration//GEN-END:variables
 }
