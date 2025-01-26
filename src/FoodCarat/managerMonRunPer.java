@@ -354,7 +354,6 @@ public class managerMonRunPer extends javax.swing.JFrame {
         
         if (selectedMonth == null || "Please select".equals(selectedMonth)) {
             javax.swing.JOptionPane.showMessageDialog(this, "Please select a valid month!");
-            model.setRowCount(0);
             return;
         }
         
