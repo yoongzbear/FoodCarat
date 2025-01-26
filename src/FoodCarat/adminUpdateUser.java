@@ -257,7 +257,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
         Lrole.setText("xxxxxx");
 
         cuisinecbx.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
-        cuisinecbx.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Please select", "Food", "Beverages", "Restaurant", "Dessert", "Cafe", "Western", "Malaysian", "Chinese", "Please select", "Asian", "Korean", "Fast Food", "BBQ", "French", "Italian", "Thai", "Mexican", "Japanese", "Indian", "Vietnamese", "Vegetarian" }));
+        cuisinecbx.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Please select", "Food", "Beverages", "Restaurant", "Dessert", "Cafe", "Western", "Malaysian", "Chinese", "Asian", "Korean", "Fast Food", "BBQ", "French", "Italian", "Thai", "Mexican", "Japanese", "Indian", "Vietnamese", "Vegetarian" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -402,6 +402,10 @@ public class adminUpdateUser extends javax.swing.JFrame {
         // Get the additional field value based on the role
         if ("customer".equals(role)) {
             additionalField = addresstxta.getText().trim();
+            // Replace all commas with semicolons
+            additionalField = additionalField.replace(",", ";");    
+            // Wrap the modified text in square brackets
+            additionalField = "[" + additionalField + "]";
         } else if ("vendor".equals(role)) {
             additionalField = (String) cuisinecbx.getSelectedItem();
         } else if ("runner".equals(role)) {

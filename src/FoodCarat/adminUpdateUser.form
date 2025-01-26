@@ -381,7 +381,7 @@
           <Font name="Constantia" size="18" style="0"/>
         </Property>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="22">
+          <StringArray count="21">
             <StringItem index="0" value="Please select"/>
             <StringItem index="1" value="Food"/>
             <StringItem index="2" value="Beverages"/>
@@ -391,19 +391,18 @@
             <StringItem index="6" value="Western"/>
             <StringItem index="7" value="Malaysian"/>
             <StringItem index="8" value="Chinese"/>
-            <StringItem index="9" value="Please select"/>
-            <StringItem index="10" value="Asian"/>
-            <StringItem index="11" value="Korean"/>
-            <StringItem index="12" value="Fast Food"/>
-            <StringItem index="13" value="BBQ"/>
-            <StringItem index="14" value="French"/>
-            <StringItem index="15" value="Italian"/>
-            <StringItem index="16" value="Thai"/>
-            <StringItem index="17" value="Mexican"/>
-            <StringItem index="18" value="Japanese"/>
-            <StringItem index="19" value="Indian"/>
-            <StringItem index="20" value="Vietnamese"/>
-            <StringItem index="21" value="Vegetarian"/>
+            <StringItem index="9" value="Asian"/>
+            <StringItem index="10" value="Korean"/>
+            <StringItem index="11" value="Fast Food"/>
+            <StringItem index="12" value="BBQ"/>
+            <StringItem index="13" value="French"/>
+            <StringItem index="14" value="Italian"/>
+            <StringItem index="15" value="Thai"/>
+            <StringItem index="16" value="Mexican"/>
+            <StringItem index="17" value="Japanese"/>
+            <StringItem index="18" value="Indian"/>
+            <StringItem index="19" value="Vietnamese"/>
+            <StringItem index="20" value="Vegetarian"/>
           </StringArray>
         </Property>
       </Properties>
