@@ -86,7 +86,13 @@ public class Admin extends User {
 
         // Check the login status, role match, and email match
         String result = checkFirstLogin(searchEmail, selectedRole, userFile);
-
+        //get the customer address by remove the [] and change ; to ,
+        if ("customer".equals(selectedRole)) {
+                    Customer customer = new Customer(searchEmail);
+                    String customerAddress = customer.getCustomerAddress(searchEmail);
+                    result = customerAddress;
+        }
+        
         // Handle based on the result of checkFirstLogin
         if (result.equals("notFound")) {
             JOptionPane.showMessageDialog(null, "Email not found. Please check the entered email.");
