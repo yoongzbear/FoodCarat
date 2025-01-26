@@ -47,7 +47,6 @@ public class managerMonVenPer extends javax.swing.JFrame {
         Manager manager = new Manager();
         Map<String, String> performanceDataMap = manager.getVendorPerformanceByMonth(selectedMonth);
 
-        // Assuming you have a JTable set up with columns "Num", "Vendor Name", "Total Revenue", "Total Orders", and "Average Value Per Order"
         DefaultTableModel model = (DefaultTableModel) VenPertable.getModel();
         model.setRowCount(0); // Clear previous rows
 
@@ -76,6 +75,53 @@ public class managerMonVenPer extends javax.swing.JFrame {
 
             rowNumber++;
         }
+        
+        double totalRevenue = 0;
+        int totalOrders = 0;
+        double totalAvgOrderValue = 0;
+        int rowCount = model.getRowCount();
+        
+        for (int i = 0; i < rowCount; i++) {
+            totalRevenue += Double.parseDouble(model.getValueAt(i, 2).toString());
+            totalOrders += Integer.parseInt(model.getValueAt(i, 3).toString());
+            totalAvgOrderValue += Double.parseDouble(model.getValueAt(i, 4).toString());
+        }
+
+        double summaryAvgOrderValue = rowCount > 0 ? totalAvgOrderValue / rowCount : 0.0;
+
+         // Highlight the total row
+        int tableHeight = VenPertable.getParent().getHeight();
+        int rowHeight = VenPertable.getRowHeight();
+        int targetRowCount = tableHeight / rowHeight;
+
+        // Add empty rows if needed to reach the target row count
+        int emptyRowsNeeded = targetRowCount - (rowCount+1);
+        for (int i = 0; i < emptyRowsNeeded; i++) {
+            model.addRow(new Object[]{"", "", "", ""});
+        }
+        
+        model.addRow(new Object[]{
+            "Total:", 
+            "", 
+            String.format("%.2f", totalRevenue), 
+            totalOrders, 
+            String.format("%.2f", summaryAvgOrderValue)
+        });
+        
+        // Highlight the total row
+        rowCount = model.getRowCount(); // Update rowCount after adding empty rows
+        VenPertable.getSelectionModel().addSelectionInterval(rowCount - 1, rowCount - 1);
+
+        VenPertable.setSelectionBackground(new Color(64, 64, 64)); 
+        
+        int remainingHeight = tableHeight - ((rowCount-1) * rowHeight);
+        if (remainingHeight > 0) {
+            VenPertable.setRowHeight(rowCount - 1, remainingHeight); 
+        } else {
+            VenPertable.setRowHeight(rowCount - 1, rowHeight);
+        }
+
+        VenPertable.setRowHeight(rowCount, 1); // This hides the next row
     }
     
     public void createVendorPerformancePieChart(Map<String, String> performanceDataMap) {
@@ -164,25 +210,7 @@ public class managerMonVenPer extends javax.swing.JFrame {
         averagechart.revalidate();
         averagechart.repaint();
     }
-    private void addTotalRow(List<String[]> vendorData) {
-        double totalRevenue = 0;
-        int totalOrders = 0;
-        double totalAvgOrderValue = 0;
 
-        // Loop through the data and sum up the values
-        for (String[] data : vendorData) {
-            totalRevenue += Double.parseDouble(data[2]); // Total Revenue
-            totalOrders += Integer.parseInt(data[3]);    // Total Orders
-            totalAvgOrderValue += Double.parseDouble(data[4]); // Average Value Per Order
-        }
-
-        // Calculate the average order value if there are multiple vendors
-        double avgOrderValue = (vendorData.size() > 0) ? totalAvgOrderValue / vendorData.size() : 0;
-        avgOrderValue = Double.parseDouble(String.format("%.2f", avgOrderValue));
-        // Add the total row to the table
-        DefaultTableModel model = (DefaultTableModel) VenPertable.getModel();
-        model.addRow(new Object[]{"Total:", "", totalRevenue, totalOrders, avgOrderValue});
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.
