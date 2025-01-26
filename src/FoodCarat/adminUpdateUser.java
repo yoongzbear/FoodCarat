@@ -118,7 +118,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
         if ("customer".equals(role) && additionalField.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Address field cannot be empty for customer!");
             return false;
-        } else if ("vendor".equals(role) && additionalField.isEmpty()) {
+        } else if ("vendor".equals(role) && additionalField.equals("Please select")) {
             JOptionPane.showMessageDialog(null, "Cuisine field cannot be empty for vendor!");
             return false;
         } else if ("runner".equals(role) && additionalField.isEmpty()) {
