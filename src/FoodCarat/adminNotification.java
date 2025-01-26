@@ -6,6 +6,7 @@ package FoodCarat;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -30,7 +31,6 @@ public class adminNotification extends javax.swing.JFrame {
         
         setColumnWidths();
         setRowHeight();
-        populateTransactionData();
         
         // Add row selection listener to show receipt on row click
         notificationtable.getSelectionModel().addListSelectionListener(e -> {
@@ -40,18 +40,6 @@ public class adminNotification extends javax.swing.JFrame {
         });
     }
     
-     // Method to populate the table with transaction data
-    private void populateTransactionData() {
-        Admin admin = new Admin();
-        ArrayList<String> transactionMessages = admin.getTransactionMessages();
-
-        // Add the transaction messages to the table
-        int transactionNumber = 1;
-        for (String message : transactionMessages) {
-            tableModel.addRow(new Object[]{transactionNumber++, message});
-        }
-    }
-
     private void setColumnWidths() {
         TableColumn column = null;
         column = notificationtable.getColumnModel().getColumn(0);
@@ -101,6 +89,20 @@ public class adminNotification extends javax.swing.JFrame {
             }
         }
     }
+    
+    private void fillEmptyRowSpace() {           
+        int rowCount = tableModel.getRowCount(); // Current row count in the table
+        int tableHeight = notificationtable.getParent().getHeight(); // Get the height of the table's parent container
+        int rowHeight= notificationtable.getRowHeight();
+
+        int targetRowCount = tableHeight / rowHeight; // Calculate how many rows fit in the visible area
+
+        // Add empty rows if needed to reach the target row count
+        int emptyRowsNeeded = targetRowCount - rowCount;
+        for (int i = 0; i < emptyRowsNeeded; i++) {
+            tableModel.addRow(new Object[]{"", ""});  // Adding empty rows based on the column structure
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -115,6 +117,9 @@ public class adminNotification extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         notificationtable = new javax.swing.JTable();
         backbtn = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        monthcbx = new javax.swing.JComboBox<>();
+        searchbtn = new javax.swing.JButton();
 
         jButton2.setText("jButton2");
 
@@ -142,6 +147,20 @@ public class adminNotification extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
+        jLabel1.setText("Month:");
+
+        monthcbx.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
+        monthcbx.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Please select", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" }));
+
+        searchbtn.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
+        searchbtn.setText("Search");
+        searchbtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchbtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -156,20 +175,32 @@ public class adminNotification extends javax.swing.JFrame {
                         .addGap(455, 455, 455)
                         .addComponent(Lnotification))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1099, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(45, Short.MAX_VALUE))
+                        .addGap(25, 25, 25)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(56, 56, 56)
+                                .addComponent(monthcbx, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(searchbtn))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1099, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(48, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(13, Short.MAX_VALUE)
+                .addContainerGap(7, Short.MAX_VALUE)
                 .addComponent(backbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(2, 2, 2)
                 .addComponent(Lnotification)
-                .addGap(37, 37, 37)
+                .addGap(27, 27, 27)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(monthcbx, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(searchbtn))
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(58, 58, 58))
+                .addGap(27, 27, 27))
         );
 
         pack();
@@ -179,6 +210,40 @@ public class adminNotification extends javax.swing.JFrame {
         this.dispose();
         new adminMain().setVisible(true);
     }//GEN-LAST:event_backbtnActionPerformed
+
+    private void searchbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchbtnActionPerformed
+        String selectedMonth = monthcbx.getSelectedItem().toString();
+        // Array of month names
+        String[] monthNames = {
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        };
+
+        // Convert the month name to the month number (1 for January, 2 for February, etc.)
+        int monthNumber = Arrays.asList(monthNames).indexOf(selectedMonth) + 1;
+        
+        if (selectedMonth == null || "Please select".equals(selectedMonth)) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Please select a valid month!");
+            tableModel.setRowCount(0);
+            return;
+        }
+        Admin admin = new Admin();
+        ArrayList<String> transactionMessages = admin.getTransactionMessages(monthNumber);
+
+        tableModel.setRowCount(0);
+
+        // If there are no transactions, show a message and return
+        if (transactionMessages.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No data available for the selected month.");
+            return;
+        }
+        // Add the transaction messages to the table
+        int transactionNumber = 1;
+        for (String message : transactionMessages) {
+            tableModel.addRow(new Object[]{transactionNumber++, message});
+        }
+        fillEmptyRowSpace();
+    }//GEN-LAST:event_searchbtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -219,7 +284,10 @@ public class adminNotification extends javax.swing.JFrame {
     private javax.swing.JLabel Lnotification;
     private javax.swing.JButton backbtn;
     private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JComboBox<String> monthcbx;
     private javax.swing.JTable notificationtable;
+    private javax.swing.JButton searchbtn;
     // End of variables declaration//GEN-END:variables
 }

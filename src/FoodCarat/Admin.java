@@ -15,7 +15,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 
 /**
@@ -323,7 +322,7 @@ public class Admin extends User {
     
     //Notification
     // Method to retrieve the list of transaction messages
-    public ArrayList<String> getTransactionMessages() {
+    public ArrayList<String> getTransactionMessages(int month) {
         ArrayList<String> transactionMessages = new ArrayList<>();
         String filePath = cuscreditFile;
         
@@ -337,24 +336,28 @@ public class Admin extends User {
                     String transactionId = parts[0];
                     String email = parts[1];
                     double topUpAmount = Double.parseDouble(parts[2]);
-                    double newAmount = Double.parseDouble(parts[3]);
                     String date = parts[4];
                     String time = parts[5];
 
-                    // Create the message in the required format
-                    String message = String.format(
-                        "Top-up amount %.2f has been successfully credited into %s's account at %s %s (transaction id: %s)",
-                        topUpAmount, email, date, time, transactionId
-                    );
+                    // Split the date and extract the month
+                    String[] dateParts = date.split("-");
+                    int transactionMonth = Integer.parseInt(dateParts[1]);
 
-                    // Add message to the list
-                    transactionMessages.add(message);
+                    // If the month matches the provided month, create the message
+                    if (transactionMonth==month) {
+                        // Create the message in the required format
+                        String message = String.format(
+                            "Top-up amount %.2f has been successfully credited into %s's account at %s %s (transaction id: %s)",
+                            topUpAmount, email, date, time, transactionId
+                        );
+                        // Add message to the list
+                        transactionMessages.add(message);
+                    }
                 }
             }
         } catch (IOException e) {
             javax.swing.JOptionPane.showMessageDialog(null, "Error reading file: " + e.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
         }
-        
         return transactionMessages;
     }
 }
