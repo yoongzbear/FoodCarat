@@ -5,8 +5,11 @@
 package FoodCarat;
 
 import java.awt.Color;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import org.jfree.chart.ChartFactory;
@@ -31,52 +34,109 @@ public class managerMonVenPer extends javax.swing.JFrame {
         averagechart.setBackground(new Color(211, 211, 211)); 
     }
     
-    public void createVendorPerformancePieChart(List<String[]> vendorData) {
+    private void displayVendorPerformance(int selectedMonth) throws IOException {
+        Manager manager = new Manager();
+        Map<String, String> performanceDataMap = manager.getVendorPerformanceByMonth(selectedMonth);
 
-        // Calculate summary values for each metric
+        // Assuming you have a JTable set up with columns "Num", "Vendor Name", "Total Revenue", "Total Orders", and "Average Value Per Order"
+        DefaultTableModel model = (DefaultTableModel) VenPertable.getModel();
+        model.setRowCount(0); // Clear previous rows
+
+        int rowNumber = 1;
+        for (Map.Entry<String, String> entry : performanceDataMap.entrySet()) {
+            String vendorEmail = entry.getKey();
+            String performanceData = entry.getValue(); // performanceData is in the format "totalOrders,totalRevenue,avgOrderValue"
+            String[] performanceValues = performanceData.split(",");
+
+            int totalOrders = Integer.parseInt(performanceValues[0]);
+            double totalRevenue = Double.parseDouble(performanceValues[1]);
+            double avgOrderValue = Double.parseDouble(performanceValues[2]);
+
+            User user = new User();
+            String[] venName = user.performSearch(vendorEmail, "user.txt");
+            String vendorName = venName[1];
+
+            // Add row data to the table
+            model.addRow(new Object[] {
+                rowNumber,
+                vendorName,
+                String.format("%.2f", totalRevenue),
+                totalOrders,
+                String.format("%.2f", avgOrderValue)
+            });
+
+            rowNumber++;
+        }
+    }
+    
+    public void createVendorPerformancePieChart(Map<String, String> performanceDataMap) {
         double totalRevenue = 0;
         int totalOrders = 0;
-        double totalAverageOrderValue = 0;
+        double totalAverageValue = 0;
 
-        for (String[] data : vendorData) {
-            totalRevenue += Double.parseDouble(data[2]);
-            totalOrders += Integer.parseInt(data[3]);
-            totalAverageOrderValue += Double.parseDouble(data[4]);
+        // Create maps to store individual vendor data
+        Map<String, Double> revenueMap = new HashMap<>();
+        Map<String, Integer> ordersMap = new HashMap<>();
+        Map<String, Double> avgValueMap = new HashMap<>();
+
+        // Parse the performance data map and calculate totals
+        for (Map.Entry<String, String> entry : performanceDataMap.entrySet()) {
+            String vendorID = entry.getKey();
+            String[] performanceData = entry.getValue().split(",");
+
+            double vendorRevenue = Double.parseDouble(performanceData[1]);
+            int vendorOrders = Integer.parseInt(performanceData[0]);
+            double vendorAvgValue = Double.parseDouble(performanceData[2]);
+
+            revenueMap.put(vendorID, vendorRevenue);
+            ordersMap.put(vendorID, vendorOrders);
+            avgValueMap.put(vendorID, vendorAvgValue);
+
+            totalRevenue += vendorRevenue;
+            totalOrders += vendorOrders;
+            totalAverageValue += vendorAvgValue;
         }
 
-        // Calculate the average value per order if there are multiple vendors
-        if (vendorData.size() > 0) {
-            totalAverageOrderValue /= vendorData.size();
-        }
-
-        // Create datasets for each pie chart
+        // Create datasets for pie charts
         DefaultPieDataset revenueDataset = new DefaultPieDataset();
         DefaultPieDataset ordersDataset = new DefaultPieDataset();
-        DefaultPieDataset avgOrderValueDataset = new DefaultPieDataset();
+        DefaultPieDataset avgValueDataset = new DefaultPieDataset();
 
-        // Add data to each pie chart dataset (showing percentage for each vendor)
-        for (String[] data : vendorData) {
-            String vendorName = data[1];
+        // Add data to the datasets
+        for (String vendorID : performanceDataMap.keySet()) {
+            double vendorRevenue = revenueMap.get(vendorID);
+            int vendorOrders = ordersMap.get(vendorID);
+            double vendorAvgValue = avgValueMap.get(vendorID);
 
-            // Calculate percentage of total for each metric
-            double vendorRevenue = Double.parseDouble(data[2]);
-            int vendorOrders = Integer.parseInt(data[3]);
-            double vendorAvgOrderValue = Double.parseDouble(data[4]);
+            // Fetch runner name using the user utility
+            User user = new User();
+            String[] vendorDetails = user.performSearch(vendorID, "user.txt");
+            String vendorName = vendorDetails.length > 1 ? vendorDetails[1] : vendorID;
 
-            revenueDataset.setValue(vendorName, vendorRevenue / totalRevenue * 100);
-            ordersDataset.setValue(vendorName, vendorOrders / (double) totalOrders * 100);
-            avgOrderValueDataset.setValue(vendorName, vendorAvgOrderValue / totalAverageOrderValue * 100);
+            // Calculate and add percentages
+            if (totalRevenue > 0) {
+                revenueDataset.setValue(vendorName, vendorRevenue / totalRevenue * 100);
+            }
+
+            if (totalOrders > 0) {
+                ordersDataset.setValue(vendorName, vendorOrders / (double) totalOrders * 100);
+            }
+
+            if (totalAverageValue > 0) {
+                avgValueDataset.setValue(vendorName, vendorAvgValue / totalAverageValue * 100);
+            }
         }
 
+        // Create pie charts
         ChartPanel revenueChartPanel = ChartUtility.createPieChart(revenueDataset, "Vendor Performance - Total Revenue");
         ChartPanel ordersChartPanel = ChartUtility.createPieChart(ordersDataset, "Vendor Performance - Total Orders");
-        ChartPanel avgOrderValueChartPanel = ChartUtility.createPieChart(avgOrderValueDataset, "Vendor Performance - Average Order Value");
+        ChartPanel avgValueChartPanel = ChartUtility.createPieChart(avgValueDataset, "Vendor Performance - Average Order Value");
 
-        totalrevenuechart.removeAll();  // Clear any existing content
+        // Clear and update chart panels
+        totalrevenuechart.removeAll();
         totalorderchart.removeAll();
         averagechart.removeAll();
 
-        // Add the new chart panels to the panels
         totalrevenuechart.setLayout(new java.awt.BorderLayout());
         totalrevenuechart.add(revenueChartPanel, java.awt.BorderLayout.CENTER);
 
@@ -84,7 +144,7 @@ public class managerMonVenPer extends javax.swing.JFrame {
         totalorderchart.add(ordersChartPanel, java.awt.BorderLayout.CENTER);
 
         averagechart.setLayout(new java.awt.BorderLayout());
-        averagechart.add(avgOrderValueChartPanel, java.awt.BorderLayout.CENTER);
+        averagechart.add(avgValueChartPanel, java.awt.BorderLayout.CENTER);
 
         totalrevenuechart.revalidate();
         totalrevenuechart.repaint();
@@ -292,26 +352,23 @@ public class managerMonVenPer extends javax.swing.JFrame {
             javax.swing.JOptionPane.showMessageDialog(this, "Please select a valid month!");
             return;
         }
+        
+        try {
         // Call the Manager method to get vendor performance data
         Manager manager = new Manager();
-        List<String[]> vendorData = manager.getVendorPerformanceByMonth(monthNumber);
+        Map<String, String> performanceDataMap = manager.getVendorPerformanceByMonth(monthNumber);
 
-        if (vendorData == null || vendorData.isEmpty()) {
+        if (performanceDataMap == null || performanceDataMap.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No data available for the selected month.");
             return;
         }
-        
-        // Populate the VenPertable
-        javax.swing.table.DefaultTableModel tableModel = (javax.swing.table.DefaultTableModel) VenPertable.getModel();
-        tableModel.setRowCount(0); // Clear existing rows
-
-        for (Object[] rowData : vendorData) {
-            tableModel.addRow(rowData);
-        }
-        addTotalRow(vendorData);
         // Create and display the pie chart with the data
-        createVendorPerformancePieChart(vendorData);
+        createVendorPerformancePieChart(performanceDataMap);
+        displayVendorPerformance(monthNumber);
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_searchbtnActionPerformed
 
     /**
