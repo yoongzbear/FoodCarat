@@ -162,23 +162,30 @@ public class managerMonVenPer extends javax.swing.JFrame {
             double vendorRevenue = revenueMap.get(vendorID);
             int vendorOrders = ordersMap.get(vendorID);
             double vendorAvgValue = avgValueMap.get(vendorID);
+            try {
+                // Fetch runner name using the user utility
+                User user = new User();
+                String[] vendorDetails = user.performSearch(vendorID, "user.txt");
+                String vendorName = vendorDetails.length > 1 ? vendorDetails[1] : vendorID;
 
-            // Fetch runner name using the user utility
-            User user = new User();
-            String[] vendorDetails = user.performSearch(vendorID, "user.txt");
-            String vendorName = vendorDetails.length > 1 ? vendorDetails[1] : vendorID;
+                // Calculate and add percentages
+                if (totalRevenue > 0) {
+                    revenueDataset.setValue(vendorName, vendorRevenue / totalRevenue * 100);
+                }
 
-            // Calculate and add percentages
-            if (totalRevenue > 0) {
-                revenueDataset.setValue(vendorName, vendorRevenue / totalRevenue * 100);
-            }
+                if (totalOrders > 0) {
+                    ordersDataset.setValue(vendorName, vendorOrders / (double) totalOrders * 100);
+                }
 
-            if (totalOrders > 0) {
-                ordersDataset.setValue(vendorName, vendorOrders / (double) totalOrders * 100);
-            }
-
-            if (totalAverageValue > 0) {
-                avgValueDataset.setValue(vendorName, vendorAvgValue / totalAverageValue * 100);
+                if (totalAverageValue > 0) {
+                    avgValueDataset.setValue(vendorName, vendorAvgValue / totalAverageValue * 100);
+                }
+            }catch (NullPointerException e) {
+            // Show a user-friendly error message
+                JOptionPane.showMessageDialog(null, 
+                    "An error occurred while fetching vendor details for vendor ID: " + vendorID, 
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE);
             }
         }
 
