@@ -182,7 +182,7 @@ public class Review {
     }
     
     //get all reviews for vendor/runner
-    public List<String[]> getAllReviews(String email, String role) {
+    public List<String[]> getAllReviews(String email, String type) {
         List<String[]> reviews = new ArrayList<>();
         
         Order orders = new Order();
@@ -195,22 +195,32 @@ public class Review {
             while ((read = br.readLine()) != null) {
                 String[] reviewData = read.split(",");
                 //vendor
-                if (role.equals("vendor")) {
+                if (type.equals("vendor")) {
                     String reviewType = reviewData[2];
                     if (reviewType.equalsIgnoreCase("vendor")) {
-                        List<Integer> vendorOrderIDs = orders.getOrderIDsReview(email, role);
+                        List<Integer> vendorOrderIDs = orders.getOrderIDsReview(email, type);
                         int orderID = Integer.parseInt(reviewData[1]);
                         if (vendorOrderIDs.contains(orderID)) {
                             //add all info of review into the list
                             reviews.add(reviewData);
                         }
                     }
-                } else if (role.equals("runner")) {
+                } else if (type.equals("runner")) {
                     String reviewType = reviewData[2];
                     if (reviewType.equalsIgnoreCase("runner")) {
-                        List<Integer> runnerOrderIDs = orders.getOrderIDsReview(email, role);
+                        List<Integer> runnerOrderIDs = orders.getOrderIDsReview(email, type);
                         int orderIDs = Integer.parseInt(reviewData[1]);
                         if (runnerOrderIDs.contains(orderIDs)) {
+                            //add all info of review into the list
+                            reviews.add(reviewData);
+                        }
+                    }
+                } else if (type.equals("order")) {
+                    String reviewType = reviewData[2];
+                    if (reviewType.equalsIgnoreCase("order")) {
+                        List<Integer> vendorOrderIDs = orders.getOrderIDsReview(email, "vendor");
+                        int orderIDs = Integer.parseInt(reviewData[1]);
+                        if (vendorOrderIDs.contains(orderIDs)) {
                             //add all info of review into the list
                             reviews.add(reviewData);
                         }
