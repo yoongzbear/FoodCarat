@@ -4,6 +4,7 @@
  */
 package FoodCarat;
 
+import java.awt.Color;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 
@@ -26,6 +27,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
         Lrole.setText(role);        
         emailtxt.setEditable(false); 
         customizeForm();
+        getContentPane().setBackground(new Color(255, 255, 204));
     }
     
     private void clearFields() {

@@ -4,6 +4,7 @@
  */
 package FoodCarat;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -22,6 +23,7 @@ public class adminNotification extends javax.swing.JFrame {
      */
     public adminNotification() {
         initComponents();
+        getContentPane().setBackground(new Color(255, 255, 204));
         setLocationRelativeTo(null);
         // Initialize the table model and set it to the table
         tableModel = (DefaultTableModel) notificationtable.getModel();

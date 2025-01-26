@@ -4,6 +4,7 @@
  */
 package FoodCarat;
 
+import java.awt.Color;
 import java.io.IOException;
 
 /**
@@ -34,6 +35,7 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
         emailtxt.setEditable(false);
         nametxt.setEditable(false);
         currentamounttxt.setEditable(false);
+        getContentPane().setBackground(new Color(255, 255, 204));
     }
 
     private void clearFields() {

@@ -4,6 +4,7 @@
  */
 package FoodCarat;
 
+import java.awt.Color;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 
@@ -21,12 +22,14 @@ public class adminRegister extends javax.swing.JFrame {
         this("customer");  // Default to "customer" role
         initComponents();
         setLocationRelativeTo(null);
+        getContentPane().setBackground(new Color(255, 255, 204));
     }
     public adminRegister(String role) {
         this.role=role;
         initComponents();
         Lrole.setText(role);
         setLocationRelativeTo(null);
+        getContentPane().setBackground(new Color(255, 255, 204));
     }
 
     /**
@@ -109,8 +112,8 @@ public class adminRegister extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(229, 229, 229)
                         .addComponent(jLabel1)
-                        .addGap(59, 59, 59)
-                        .addComponent(Lrole)))
+                        .addGap(49, 49, 49)
+                        .addComponent(Lrole, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(196, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
