@@ -93,14 +93,6 @@ public class Vendor extends User{
     public double getTotalRevenue() {
         return totalRevenue;
     }
-
-    public double getAverageValuePerOrder() {
-         return getTotalOrders() == 0 ? 0.0 : totalRevenue / getTotalOrders();
-    }
-
-    public void addRevenue(double revenue) {
-        this.totalRevenue += revenue; // Increment revenue only
-    }
     
     //methods
     //setting vendor info
