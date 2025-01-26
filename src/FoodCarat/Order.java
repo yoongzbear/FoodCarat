@@ -871,7 +871,7 @@ public class Order {
         double totalPaid = Double.parseDouble(order[8]);
         String orderDate = order[9]; 
 
-        // Step 4: Calculate the refund amount (for example, 100% refund of total price)
+        // Calculate the refund amount (for example, 100% refund of total price)
         double priceExcludeDelivery = totalPaid - deliveryFee;
         double orderTotalPrice = calculateTotalPrice(orderItems); //calculate original price before delivery fee and redeem points
         int redeemedPoints = (int) Math.round((orderTotalPrice + deliveryFee - totalPaid) / 0.01); //calculate redeemed points
