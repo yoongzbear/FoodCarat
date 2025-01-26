@@ -198,7 +198,7 @@ public class Order {
         
         this.orderID = lastOrder;
         //write order with orderID, orderType and customerEmail
-        String newLine = lastOrder + "," + orderType + ",,," + customerEmail + ",null,null,0.0,0.0,null";
+        String newLine = lastOrder + "," + orderType.toLowerCase() + ",,," + customerEmail + ",null,null,0.0,0.0,null";
         try {
             FileWriter fw = new FileWriter(orderFile, true); //true is use for appending data in new line
             fw.write(newLine + "\n");
@@ -206,7 +206,6 @@ public class Order {
             if ("Delivery".equals(orderType)){
                 JOptionPane.showMessageDialog(null, "Please take note that additional charges will be imposed as delivery fee.");
             }
-            JOptionPane.showMessageDialog(null, "Order placed successfully! Please wait for Vendor and Runner to accept.");
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
@@ -586,7 +585,7 @@ public class Order {
                     // Calculate the total price and delivery fee
                     double originalPrice = getTotalPrice(cart);  // Get the original total price from the cart
                     double deliveryFee = 0.0;
-                    if ("Delivery".equals(currentOrderType)){
+                    if ("delivery".equals(currentOrderType)){
                         deliveryFee = calculateDeliveryFee(originalPrice);
                     }
                     double totalPaid = originalPrice + deliveryFee;
@@ -699,7 +698,7 @@ public class Order {
     
     private double calculateDeliveryFee(double originalPrice) {
         double deliveryFee = 0.0;
-        if ("Delivery".equals(orderType)) {
+        if ("delivery".equals(orderType)) {
             //calculate 15% of the total order amount
             double calculatedFee = originalPrice * 0.15;
 
