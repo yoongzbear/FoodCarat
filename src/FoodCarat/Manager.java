@@ -124,7 +124,7 @@ public class Manager extends User{
                                     // Aggregate vendor data using Order class
                                     Order order = vendorOrders.getOrDefault(vendorEmail, new Order());
                                     order.incrementOrders();
-                                    order.addRevenue(revenue);
+                                    order.incrementRevenue(revenue);
                                     vendorOrders.put(vendorEmail, order);
 
                                     uniqueVendorsInOrder.add(vendorEmail); // Track unique vendors for this order
