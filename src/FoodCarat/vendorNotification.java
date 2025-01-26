@@ -260,11 +260,11 @@ public class vendorNotification extends javax.swing.JFrame {
                                     .addComponent(newOrderChkBox)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(orderStatusChkBox)
-                                    .addGap(12, 12, 12)
-                                    .addComponent(itemChkBox)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(reviewChkBox)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(itemChkBox)
+                                    .addGap(18, 18, 18)
                                     .addComponent(filterBtn))))
                         .addGap(46, 46, 46))))
         );
@@ -280,8 +280,8 @@ public class vendorNotification extends javax.swing.JFrame {
                     .addComponent(newOrderChkBox)
                     .addComponent(reviewChkBox)
                     .addComponent(filterBtn)
-                    .addComponent(itemChkBox)
-                    .addComponent(orderStatusChkBox))
+                    .addComponent(orderStatusChkBox)
+                    .addComponent(itemChkBox))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 509, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -303,27 +303,24 @@ public class vendorNotification extends javax.swing.JFrame {
     }//GEN-LAST:event_viewBtnActionPerformed
 
     private void filterBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterBtnActionPerformed
-//        String[] selectedFilter = new String[5];
-//        int index = 0;
-//        
-//        if (ratingOneChkBox.isSelected()) {
-//            selectedFilter[index++] = "1";
-//        }
-//        if (ratingTwoChkBox.isSelected()) {
-//            selectedFilter[index++] = "2";
-//        } 
-//        if (ratingThreeChkBox.isSelected()) {
-//            selectedFilter[index++] = "3";
-//        } 
-//        if (ratingFourChkBox.isSelected()) {
-//            selectedFilter[index++] = "4";
-//        } 
-//        if (ratingFiveChkBox.isSelected()) {
-//            selectedFilter[index++] = "5";
-//        }
-//        selectedFilter = Arrays.copyOf(selectedFilter, index); //adjust the size of array
-//        //call displayreview filter
-//        displayReviews(selectedFilter);
+        String[] selectedFilter = new String[5];
+        int index = 0;
+        
+        if (newOrderChkBox.isSelected()) {
+            selectedFilter[index++] = "new";
+        }
+        if (orderStatusChkBox.isSelected()) {
+            selectedFilter[index++] = "status";
+        } 
+        if (reviewChkBox.isSelected()) {
+            selectedFilter[index++] = "review";
+        } 
+        if (itemChkBox.isSelected()) {
+            selectedFilter[index++] = "item";
+        } 
+        selectedFilter = Arrays.copyOf(selectedFilter, index); //adjust the size of array
+        //call filter
+        displayActivities(selectedFilter);
     }//GEN-LAST:event_filterBtnActionPerformed
 
     /**
