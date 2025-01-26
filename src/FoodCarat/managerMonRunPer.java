@@ -7,6 +7,7 @@ package FoodCarat;
 import java.awt.Color;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -33,35 +34,39 @@ public class managerMonRunPer extends javax.swing.JFrame {
 
     private void displayRunnerPerformance(int selectedMonth) throws IOException {
         Manager manager = new Manager();
-        Map<String, Runner> performanceDataMap = manager.getRunnerPerformance(selectedMonth);
-        
+        Map<String, String> performanceDataMap = manager.getRunnerPerformance(selectedMonth);
+
+        // Assuming you have a JTable set up with columns "RunnerID", "Total Orders", and "Average Rating"
         DefaultTableModel model = (DefaultTableModel) runpertable.getModel();
         model.setRowCount(0);  // Clear previous rows
 
-        for (Map.Entry<String, Runner> entry : performanceDataMap.entrySet()) {
+        // Create a map to store total orders for each runner
+        int rowNumber = 1;
+        for (Map.Entry<String, String> entry : performanceDataMap.entrySet()) {
             String runnerID = entry.getKey();
-            Runner data = entry.getValue();
-        }
-        // Populate the table with the new data
-        int rowNumber= 1;
-        for (Map.Entry<String, Runner> entry : performanceDataMap.entrySet()) {
-            String runnerID = entry.getKey();
-            Runner data = entry.getValue();            
-            
+            String performanceData = entry.getValue(); // performanceData is in the format "totalOrders,averageRating"
+            String[] performanceValues = performanceData.split(",");
+
+            int totalOrders = Integer.parseInt(performanceValues[0]);
+            Review review = new Review();
+            double averageRating = review.getAverageRating(runnerID, "runner");
+
             User user = new User();
-            String [] runnerName = user.performSearch(runnerID, "user.txt");
+            String[] runnerName = user.performSearch(runnerID, "user.txt");
             String name = runnerName[1];
-            
+
+            // Add row data to the table
             model.addRow(new Object[] {
                 rowNumber,
                 name,
-                data.getTotalOrders(),
-                String.format("%.2f", data.getAverageRating())
+                totalOrders,
+                String.format("%.2f", averageRating)
             });
+
             rowNumber++;
         }
-        
-         // Calculate summary total orders and average rating
+
+        // Calculate summary total orders and average rating
         int totalOrders = 0;
         double totalAverageRating = 0.0;
         int rowCount = model.getRowCount();
@@ -82,42 +87,60 @@ public class managerMonRunPer extends javax.swing.JFrame {
         });
     }
     
-    public void createRunnerPerformancePieChart(Map<String, Runner> performanceDataMap) {
-
-        // Calculate summary values for each metric
+    public void createRunnerPerformancePieChart(Map<String, String> performanceDataMap) {
         int totalOrders = 0;
         double totalAverageRating = 0;
-        
+
         // Calculate total orders and total average rating
-        for (Runner data : performanceDataMap.values()) {
-            totalOrders += data.getTotalOrders();  // Total Orders
-            totalAverageRating += data.getAverageRating(); // Total Average Rating
+        Map<String, Integer> totalOrdersMap = new HashMap<>();
+
+        for (Map.Entry<String, String> entry : performanceDataMap.entrySet()) {
+            String runnerID = entry.getKey();
+            String[] performanceData = entry.getValue().split(",");
+
+            int runnerTotalOrders = Integer.parseInt(performanceData[0]);
+            double avgRating = Double.parseDouble(performanceData[1]);
+
+            totalOrdersMap.put(runnerID, runnerTotalOrders);
+            Review review = new Review();
+            double averageRating = review.getAverageRating(runnerID, "runner");
+
+            totalOrders += runnerTotalOrders; // Total orders
+            totalAverageRating += averageRating; // Total average rating
         }
 
-        // Create datasets for each pie chart
+        // Create datasets for pie charts
         DefaultPieDataset ordersDataset = new DefaultPieDataset();
         DefaultPieDataset avgRatingDataset = new DefaultPieDataset();
 
-        // Add data to each pie chart dataset (showing percentage for each vendor)
-        for (Map.Entry<String, Runner> entry : performanceDataMap.entrySet()) {
-            String runnerID = entry.getKey();
-            Runner data = entry.getValue();        
-            
+        // Add data to the datasets
+        for (String runnerID : performanceDataMap.keySet()) {
+            int runnerTotalOrders = totalOrdersMap.get(runnerID);
+            Review review = new Review();
+            double averageRating = review.getAverageRating(runnerID, "runner");
+
+            // Fetch runner name using the user utility
             User user = new User();
-            String [] runnerName = user.performSearch(runnerID, "user.txt");
-            String name = runnerName[1];
-            // Calculate percentage of total for each metric
-            ordersDataset.setValue(name, data.getTotalOrders() / (double) totalOrders * 100);
-            avgRatingDataset.setValue(name, data.getAverageRating() / totalAverageRating * 100);
+            String[] runnerDetails = user.performSearch(runnerID, "user.txt");
+            String runnerName = runnerDetails.length > 1 ? runnerDetails[1] : runnerID;
+
+            // Calculate and add percentages
+            if (totalOrders > 0) {
+                ordersDataset.setValue(runnerName, runnerTotalOrders / (double) totalOrders * 100);
+            }
+
+            if (totalAverageRating > 0) {
+                avgRatingDataset.setValue(runnerName, averageRating / totalAverageRating * 100);
+            }
         }
 
+        // Create pie charts
         ChartPanel ordersChartPanel = ChartUtility.createPieChart(ordersDataset, "Runner Performance - Total Orders");
         ChartPanel avgRatingChartPanel = ChartUtility.createPieChart(avgRatingDataset, "Runner Performance - Average Rating");
 
+        // Clear and update chart panels
         totalorderchart.removeAll();
         averagechart.removeAll();
-
-        // Add the new chart panels to the panels
 
         totalorderchart.setLayout(new java.awt.BorderLayout());
         totalorderchart.add(ordersChartPanel, java.awt.BorderLayout.CENTER);
@@ -279,7 +302,7 @@ public class managerMonRunPer extends javax.swing.JFrame {
         try {
         // Fetch the performance data
         Manager manager = new Manager();
-        Map<String, Runner> performanceDataMap = manager.getRunnerPerformance(monthNumber);
+        Map<String, String> performanceDataMap = manager.getRunnerPerformance(monthNumber);
 
         
         if (performanceDataMap == null || performanceDataMap.isEmpty()) {
