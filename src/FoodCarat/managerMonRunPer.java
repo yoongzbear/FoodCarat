@@ -44,7 +44,6 @@ public class managerMonRunPer extends javax.swing.JFrame {
         Manager manager = new Manager();
         Map<String, String> performanceDataMap = manager.getRunnerPerformance(selectedMonth);
 
-        // Assuming you have a JTable set up with columns "RunnerID", "Total Orders", and "Average Rating"
         DefaultTableModel model = (DefaultTableModel) runpertable.getModel();
         model.setRowCount(0);  // Clear previous rows
 
@@ -86,6 +85,17 @@ public class managerMonRunPer extends javax.swing.JFrame {
 
         double averageRatingSummary = rowCount > 0 ? totalAverageRating / rowCount : 0.0;
 
+        //Fill up the remainning row if the record is less
+        int tableHeight = runpertable.getParent().getHeight(); // Get the height of the table's parent container
+        int rowHeight = runpertable.getRowHeight();
+        int targetRowCount = tableHeight / rowHeight; // Calculate how many rows fit in the visible area
+
+        // Add empty rows if needed to reach the target row count
+        int emptyRowsNeeded = targetRowCount - (rowCount+1);
+        for (int i = 0; i < emptyRowsNeeded; i++) {
+            model.addRow(new Object[]{"", "", "", ""});
+        }
+        
         // Add the summary row
         model.addRow(new Object[]{
             "Total:",
@@ -93,6 +103,21 @@ public class managerMonRunPer extends javax.swing.JFrame {
             totalOrders,
             String.format("%.2f", averageRatingSummary)
         });
+        
+        // Highlight the total row
+        rowCount = model.getRowCount(); // Update rowCount after adding empty rows
+        runpertable.getSelectionModel().addSelectionInterval(rowCount - 1, rowCount - 1);
+
+        runpertable.setSelectionBackground(new Color(64, 64, 64));
+
+        int remainingHeight = tableHeight - ((rowCount-1) * rowHeight); // Remaining height
+        if (remainingHeight > 0) {
+            runpertable.setRowHeight(rowCount - 1, remainingHeight); // Set the height of the last row to the remaining height
+        } else {
+            runpertable.setRowHeight(rowCount - 1, rowHeight);
+        }
+
+        runpertable.setRowHeight(rowCount, 1); // This hides the next row
     }
     
     public void createRunnerPerformancePieChart(Map<String, String> performanceDataMap) {
@@ -316,7 +341,7 @@ public class managerMonRunPer extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bsearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bsearchActionPerformed
-
+        DefaultTableModel model = (DefaultTableModel) runpertable.getModel();
         String selectedMonth = monthcbx.getSelectedItem().toString();
         // Array of month names
         String[] monthNames = {
@@ -329,6 +354,7 @@ public class managerMonRunPer extends javax.swing.JFrame {
         
         if (selectedMonth == null || "Please select".equals(selectedMonth)) {
             javax.swing.JOptionPane.showMessageDialog(this, "Please select a valid month!");
+            model.setRowCount(0);
             return;
         }
         
@@ -337,14 +363,14 @@ public class managerMonRunPer extends javax.swing.JFrame {
         Manager manager = new Manager();
         Map<String, String> performanceDataMap = manager.getRunnerPerformance(monthNumber);
 
+        model.setRowCount(0);
         
         if (performanceDataMap == null || performanceDataMap.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No data available for the selected month.");
             return;
         }
-        // Call the method to create and display the pie charts
+        
         createRunnerPerformancePieChart(performanceDataMap);
-        // show the data in table
         displayRunnerPerformance(monthNumber);
         } catch (IOException e) {
             e.printStackTrace();
