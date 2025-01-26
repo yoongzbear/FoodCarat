@@ -174,6 +174,7 @@ public class managerMonRunPer extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         totalorderchart = new javax.swing.JPanel();
         averagechart = new javax.swing.JPanel();
+        backbtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -231,6 +232,14 @@ public class managerMonRunPer extends javax.swing.JFrame {
             .addGap(0, 177, Short.MAX_VALUE)
         );
 
+        backbtn.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
+        backbtn.setText("Main Menu");
+        backbtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backbtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -257,13 +266,20 @@ public class managerMonRunPer extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(Lmonitorrun)
-                .addGap(350, 350, 350))
+                .addGap(245, 245, 245)
+                .addComponent(backbtn)
+                .addGap(22, 22, 22))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addComponent(Lmonitorrun)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(28, 28, 28)
+                        .addComponent(Lmonitorrun))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addComponent(backbtn)))
                 .addGap(39, 39, 39)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
@@ -318,6 +334,11 @@ public class managerMonRunPer extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_bsearchActionPerformed
 
+    private void backbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backbtnActionPerformed
+        this.dispose();
+        new managerMain().setVisible(true);
+    }//GEN-LAST:event_backbtnActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -356,6 +377,7 @@ public class managerMonRunPer extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Lmonitorrun;
     private javax.swing.JPanel averagechart;
+    private javax.swing.JButton backbtn;
     private javax.swing.JButton bsearch;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
