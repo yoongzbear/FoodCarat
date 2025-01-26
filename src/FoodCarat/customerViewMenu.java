@@ -84,6 +84,10 @@ public class customerViewMenu extends javax.swing.JFrame {
         isViewingVendorMenu = false;
         mainMenuPanel.removeAll();
         mainMenuPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 15, 15));
+        
+        java.util.List<JPanel> availableVendorPanels = new java.util.ArrayList<>();
+        java.util.List<JPanel> unavailableVendorPanels = new java.util.ArrayList<>();
+    
         try (BufferedReader reader = new BufferedReader(new FileReader(userFilePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -97,11 +101,13 @@ public class customerViewMenu extends javax.swing.JFrame {
                         // Existing code to create and add vendor panel
                         Vendor vendor = new Vendor(vendorEmail);
                         String availableMethods = vendor.getAvailableMethod();
+                        System.out.println(availableMethods);
                         boolean isAvailableForOrderType;
                         if (availableMethods != null && !availableMethods.isEmpty()) {
                             String methodsWithoutBrackets = availableMethods.substring(1, availableMethods.length() - 1);
                             String[] availableMethodsArray = methodsWithoutBrackets.split(";");
                             isAvailableForOrderType = Arrays.asList(availableMethodsArray).contains(orderType);
+                            System.out.println(orderType);
                         } else {
                             isAvailableForOrderType = false;
                         }
@@ -112,10 +118,23 @@ public class customerViewMenu extends javax.swing.JFrame {
                         String randomReview = review.getRandomVendorReview(vendorEmail);
 
                         JPanel vendorPanel = createVendorPanel(vendorName, vendorEmail, logoPath, vendorRating, randomReview, isAvailableForOrderType);
-                        mainMenuPanel.add(vendorPanel);
+                        if (isAvailableForOrderType) {
+                            availableVendorPanels.add(vendorPanel);
+                        } else {
+                            unavailableVendorPanels.add(vendorPanel);
+                        }
                     }
                 }
             }
+            for (JPanel vendorPanel : availableVendorPanels) {
+                mainMenuPanel.add(vendorPanel);
+            }
+
+            // Then add unavailable vendors
+            for (JPanel vendorPanel : unavailableVendorPanels) {
+                mainMenuPanel.add(vendorPanel);
+            }
+            
             mainMenuPanel.revalidate();
             mainMenuPanel.repaint();
         } catch (IOException e) {
