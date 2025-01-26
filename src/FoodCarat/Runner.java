@@ -103,18 +103,6 @@ public class Runner extends User{
         return containsLetter && containsNumber;
     }
 
-    //Manager Monitor Runner Performance
-    private int totalRating = 0;
-    
-    public void addRating(int rating) {
-        this.totalRating += rating;
-    }
-
-    public double getAverageRating() {
-        if (getTotalOrders() == 0) return 0; // Avoid division by zero
-        return (double) totalRating / getTotalOrders();
-    }
-    
     public String[] getRunnerDetails(String email) {
         try (BufferedReader reader = new BufferedReader(new FileReader(runnerFile))) {
             String line;

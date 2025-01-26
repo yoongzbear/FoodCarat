@@ -4,6 +4,7 @@
  */
 package FoodCarat;
 
+import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -31,6 +32,7 @@ public class managerNotification extends javax.swing.JFrame {
         complaintNotificationtable.getColumnModel().getColumn(4).setMaxWidth(0);
         complaintNotificationtable.getColumnModel().getColumn(4).setWidth(0);
         complaintNotificationtable.getColumnModel().getColumn(4).setPreferredWidth(0);
+        getContentPane().setBackground(new Color(252, 204, 196));
     }
     
     private void handleTableClick(java.awt.event.MouseEvent evt) {
@@ -61,6 +63,21 @@ public class managerNotification extends javax.swing.JFrame {
             }
         }
     }
+    
+    private void fillEmptyRowSpace() {   
+        DefaultTableModel tableModel = (DefaultTableModel) complaintNotificationtable.getModel();        
+        int rowCount = tableModel.getRowCount(); // Current row count in the table
+        int tableHeight = complaintNotificationtable.getParent().getHeight(); // Get the height of the table's parent container
+        int rowHeight= complaintNotificationtable.getRowHeight();
+
+        int targetRowCount = tableHeight / rowHeight; // Calculate how many rows fit in the visible area
+
+        // Add empty rows if needed to reach the target row count
+        int emptyRowsNeeded = targetRowCount - rowCount;
+        for (int i = 0; i < emptyRowsNeeded; i++) {
+            tableModel.addRow(new Object[]{"", ""});  // Adding empty rows based on the column structure
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -78,6 +95,7 @@ public class managerNotification extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         monthcbx = new javax.swing.JComboBox<>();
         searchbtn = new javax.swing.JButton();
+        backbtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -111,6 +129,14 @@ public class managerNotification extends javax.swing.JFrame {
             }
         });
 
+        backbtn.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
+        backbtn.setText("Main Menu");
+        backbtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backbtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -133,17 +159,23 @@ public class managerNotification extends javax.swing.JFrame {
                                 .addComponent(searchbtn))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 776, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(56, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(backbtn)
+                .addGap(16, 16, 16))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(47, 47, 47)
+                .addGap(9, 9, 9)
+                .addComponent(backbtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(Lnotification)
                 .addGap(19, 19, 19)
                 .addComponent(jLabel1)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 352, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(17, 17, 17))
                     .addGroup(layout.createSequentialGroup()
@@ -189,8 +221,14 @@ public class managerNotification extends javax.swing.JFrame {
             for (String[] complaint : complaintData) {
                 model.addRow(complaint);
             }
+            fillEmptyRowSpace();
         }
     }//GEN-LAST:event_searchbtnActionPerformed
+
+    private void backbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backbtnActionPerformed
+        this.dispose();
+        new managerMain().setVisible(true);
+    }//GEN-LAST:event_backbtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -229,6 +267,7 @@ public class managerNotification extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Lnotification;
+    private javax.swing.JButton backbtn;
     private javax.swing.JTable complaintNotificationtable;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

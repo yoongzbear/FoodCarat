@@ -4,6 +4,7 @@
  */
 package FoodCarat;
 
+import java.awt.Color;
 import java.io.IOException;
 
 /**
@@ -36,6 +37,7 @@ public class adminTopupCredit extends javax.swing.JFrame {
         emailtxt.setEditable(false);
         nametxt.setEditable(false);
         currentamounttxt.setEditable(false);
+        getContentPane().setBackground(new Color(255, 255, 204));
     }
     
     private void clearFields() {
@@ -142,7 +144,7 @@ public class adminTopupCredit extends javax.swing.JFrame {
         });
 
         bback.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
-        bback.setText("Back");
+        bback.setText("Main Menu");
         bback.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bbackActionPerformed(evt);
@@ -161,6 +163,12 @@ public class adminTopupCredit extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(306, 306, 306)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(bback)
+                .addGap(33, 33, 33))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -194,20 +202,20 @@ public class adminTopupCredit extends javax.swing.JFrame {
                                         .addGap(32, 32, 32)
                                         .addComponent(nametxt, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(245, 245, 245)
-                        .addComponent(btopup)
-                        .addGap(248, 248, 248)
-                        .addComponent(bback))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(306, 306, 306)
-                        .addComponent(jLabel1)))
-                .addContainerGap(114, Short.MAX_VALUE))
+                        .addGap(365, 365, 365)
+                        .addComponent(btopup, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(57, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(jLabel1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(26, 26, 26)
+                        .addComponent(jLabel1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addComponent(bback)))
                 .addGap(49, 49, 49)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Lsearch)
@@ -231,11 +239,9 @@ public class adminTopupCredit extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Lsum)
                     .addComponent(sumtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(51, 51, 51)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btopup)
-                    .addComponent(bback))
-                .addGap(35, 35, 35))
+                .addGap(44, 44, 44)
+                .addComponent(btopup)
+                .addGap(42, 42, 42))
         );
 
         pack();

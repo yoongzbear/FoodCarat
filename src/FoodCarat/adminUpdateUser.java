@@ -4,6 +4,7 @@
  */
 package FoodCarat;
 
+import java.awt.Color;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 
@@ -26,6 +27,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
         Lrole.setText(role);        
         emailtxt.setEditable(false); 
         customizeForm();
+        getContentPane().setBackground(new Color(255, 255, 204));
     }
     
     private void clearFields() {
@@ -118,7 +120,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
         if ("customer".equals(role) && additionalField.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Address field cannot be empty for customer!");
             return false;
-        } else if ("vendor".equals(role) && additionalField.isEmpty()) {
+        } else if ("vendor".equals(role) && additionalField.equals("Please select")) {
             JOptionPane.showMessageDialog(null, "Cuisine field cannot be empty for vendor!");
             return false;
         } else if ("runner".equals(role) && additionalField.isEmpty()) {
@@ -245,7 +247,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
         });
 
         bBack.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
-        bBack.setText("Back");
+        bBack.setText("Main Menu");
         bBack.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         bBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -257,27 +259,12 @@ public class adminUpdateUser extends javax.swing.JFrame {
         Lrole.setText("xxxxxx");
 
         cuisinecbx.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
-        cuisinecbx.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Please select", "Food", "Beverages", "Restaurant", "Dessert", "Cafe", "Western", "Malaysian", "Chinese", "Please select", "Asian", "Korean", "Fast Food", "BBQ", "French", "Italian", "Thai", "Mexican", "Japanese", "Indian", "Vietnamese", "Vegetarian" }));
+        cuisinecbx.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Please select", "Food", "Beverages", "Restaurant", "Dessert", "Cafe", "Western", "Malaysian", "Chinese", "Asian", "Korean", "Fast Food", "BBQ", "French", "Italian", "Thai", "Mexican", "Japanese", "Indian", "Vietnamese", "Vegetarian" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(261, 261, 261)
-                        .addComponent(bUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(88, 88, 88)
-                        .addComponent(bDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(87, 87, 87)
-                        .addComponent(bBack, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(178, 178, 178)
-                        .addComponent(jLabel1)
-                        .addGap(36, 36, 36)
-                        .addComponent(Lrole)))
-                .addGap(76, 261, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGap(82, 82, 82)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -327,15 +314,34 @@ public class adminUpdateUser extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(LotherInfo)
                         .addGap(341, 341, 341))))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(178, 178, 178)
+                .addComponent(jLabel1)
+                .addGap(36, 36, 36)
+                .addComponent(Lrole)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(bBack, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(15, 15, 15))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(bUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(88, 88, 88)
+                .addComponent(bDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(355, 355, 355))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(32, 32, 32)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(Lrole))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(bBack))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(34, 34, 34)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(Lrole))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Lsearch)
                     .addComponent(searchtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -372,12 +378,11 @@ public class adminUpdateUser extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Laddress))
-                .addGap(60, 60, 60)
+                .addGap(33, 33, 33)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(bBack)
                     .addComponent(bDelete)
                     .addComponent(bUpdate))
-                .addGap(36, 36, 36))
+                .addGap(41, 41, 41))
         );
 
         pack();
@@ -402,6 +407,10 @@ public class adminUpdateUser extends javax.swing.JFrame {
         // Get the additional field value based on the role
         if ("customer".equals(role)) {
             additionalField = addresstxta.getText().trim();
+            // Replace all commas with semicolons
+            additionalField = additionalField.replace(",", ";");    
+            // Wrap the modified text in square brackets
+            additionalField = "[" + additionalField + "]";
         } else if ("vendor".equals(role)) {
             additionalField = (String) cuisinecbx.getSelectedItem();
         } else if ("runner".equals(role)) {

@@ -35,6 +35,8 @@ public class Order {
     private String customerEmail;
     private String runnerEmail;
     private int reasonID;
+    private int totalOrders = 0;
+    private double totalRevenue;
     
     private List<String[]> cart;
     private String orderFile = "resources/customerOrder.txt";
@@ -133,6 +135,26 @@ public class Order {
         this.reasonID = reasonID;
     }
     
+    public int getTotalOrders() {
+        return totalOrders;
+    }
+    
+    public void incrementOrders() {
+        this.totalOrders++;
+    }
+    
+    public double getTotalRevenue() {
+        return totalRevenue;
+    }
+    
+    public void incrementRevenue(double revenue) {
+        this.totalRevenue += revenue; // Increment revenue only
+    }
+    
+    public double getAverageValuePerOrder() {
+        return getTotalOrders() == 0 ? 0.0 : totalRevenue / getTotalOrders();
+    }
+    
     //get reason based on reason ID
     public String getReason(int reasonID) {
         String reason = "";
@@ -176,7 +198,7 @@ public class Order {
         
         this.orderID = lastOrder;
         //write order with orderID, orderType and customerEmail
-        String newLine = lastOrder + "," + orderType + ",,," + customerEmail + ",null,null,0.0,0.0,null";
+        String newLine = lastOrder + "," + orderType.toLowerCase() + ",,," + customerEmail + ",null,null,0.0,0.0,null";
         try {
             FileWriter fw = new FileWriter(orderFile, true); //true is use for appending data in new line
             fw.write(newLine + "\n");
@@ -184,7 +206,6 @@ public class Order {
             if ("Delivery".equals(orderType)){
                 JOptionPane.showMessageDialog(null, "Please take note that additional charges will be imposed as delivery fee.");
             }
-            JOptionPane.showMessageDialog(null, "Order placed successfully! Please wait for Vendor and Runner to accept.");
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
@@ -564,7 +585,7 @@ public class Order {
                     // Calculate the total price and delivery fee
                     double originalPrice = getTotalPrice(cart);  // Get the original total price from the cart
                     double deliveryFee = 0.0;
-                    if ("Delivery".equals(currentOrderType)){
+                    if ("delivery".equals(currentOrderType)){
                         deliveryFee = calculateDeliveryFee(originalPrice);
                     }
                     double totalPaid = originalPrice + deliveryFee;
@@ -677,7 +698,7 @@ public class Order {
     
     private double calculateDeliveryFee(double originalPrice) {
         double deliveryFee = 0.0;
-        if ("Delivery".equals(orderType)) {
+        if ("delivery".equals(orderType)) {
             //calculate 15% of the total order amount
             double calculatedFee = originalPrice * 0.15;
 
@@ -849,7 +870,7 @@ public class Order {
         double totalPaid = Double.parseDouble(order[8]);
         String orderDate = order[9]; 
 
-        // Step 4: Calculate the refund amount (for example, 100% refund of total price)
+        // Calculate the refund amount (for example, 100% refund of total price)
         double priceExcludeDelivery = totalPaid - deliveryFee;
         double orderTotalPrice = calculateTotalPrice(orderItems); //calculate original price before delivery fee and redeem points
         int redeemedPoints = (int) Math.round((orderTotalPrice + deliveryFee - totalPaid) / 0.01); //calculate redeemed points

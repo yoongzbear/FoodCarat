@@ -7,9 +7,12 @@ package FoodCarat;
 import java.awt.Color;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
@@ -124,8 +127,7 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
             String orderStatus = orderData[3];
             orderStatus = orderStatus.substring(0, 1).toUpperCase() + orderStatus.substring(1).toLowerCase();
             model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, orderData[1], orderStatus});
-        }
-        
+        }        
     }
     
     //display according to status combo box
@@ -236,6 +238,21 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
             } else if (currentStatus.equalsIgnoreCase("ready")) {
                 nextStatusTxt.setText("Completed");
             }
+        }
+    }
+    
+    public void refundOrder(int orderID) {
+        Order order = new Order();
+        //get order info - customer email
+        String[] cancelOrder = order.getOrder(orderID);
+        String cusEmail = cancelOrder[4]; //index 4
+        try {
+            order.updateStatus(orderID, "cancelled", "vendor");
+            order.refund(orderID, cusEmail);
+            JOptionPane.showMessageDialog(null, "Order " + orderID + " is rejected.");
+            displayNewOrder(); //display next new order
+        } catch (IOException ex) {
+            Logger.getLogger(customerOrderHistory.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -744,16 +761,14 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
     }//GEN-LAST:event_acceptBtnActionPerformed
 
     private void rejectBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rejectBtnActionPerformed
-        //update order status to cancelled - not sure if need to include reason
+        //update order status to cancelled
         int orderID = Integer.parseInt(incomingIDLabel.getText());
         String orderMethod = incomingMethodTxt.getText();
         
         //may need to add cancellation reason
         int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to reject this order?", "Reject Order", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-            new Order().updateStatus(orderID, "cancelled", "vendor");
-            JOptionPane.showMessageDialog(null, "Order " + orderID + " is rejected.");
-            displayNewOrder(); //display next new order
+            refundOrder(orderID);
         }
     }//GEN-LAST:event_rejectBtnActionPerformed
 

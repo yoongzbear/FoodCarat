@@ -25,148 +25,136 @@ public class Manager extends User{
         
     //Monitor Runner Performance
     //
-    public Map<String, Runner> getRunnerPerformance(int selectedMonth) throws IOException {
-        Map<String, Runner> performanceDataMap = new HashMap<>();
-        Map<Integer, String> orderToRunnerMap = new HashMap<>();  // Map to store orderID to runnerID mapping
+    public Map<String, String> getRunnerPerformance(int selectedMonth) throws IOException {
+        Map<String, Order> orderMap = new HashMap<>();
+        Map<Integer, String> orderToRunnerMap = new HashMap<>();
 
-        // Read the customer order file to map orderID to runnerID
         BufferedReader orderReader = new BufferedReader(new FileReader("customerOrder.txt"));
         String line;
 
         while ((line = orderReader.readLine()) != null) {
             String[] orderDetails = line.split(",");
-
-            // Check if orderDetails[1] contains "Delivery"
             if (orderDetails.length > 1 && "Delivery".equalsIgnoreCase(orderDetails[1].trim())) {
                 Integer orderIDinOrder = Integer.parseInt(orderDetails[0].trim());
                 String runnerIDinOrder = orderDetails[5].trim();
-
-                // Store the orderID and runnerID mapping
                 orderToRunnerMap.put(orderIDinOrder, runnerIDinOrder);
             }
         }
         orderReader.close();
 
-        // Get all reviews using the getAllReviews method
-        Review review = new Review();
-        List<String[]> allReviews = review.getAllReviews();
+            // Get all reviews using the getAllReviews method
+            Review review = new Review();
+            List<String[]> allReviews = review.getAllReviews();
 
-        for (String[] reviewDetails : allReviews) {
+            for (String[] reviewDetails : allReviews) {
+                if (reviewDetails.length > 5) {
+                    String reviewType = reviewDetails[2].trim();
+                    Integer orderID = null;
 
-            if (reviewDetails.length > 5) {
-                String reviewType = reviewDetails[2].trim();
-                Integer orderID = null;
-
-                try {
-                    orderID = Integer.parseInt(reviewDetails[1].trim()); // Convert to Integer
-                } catch (NumberFormatException e) {
-                    // Handle invalid orderID format (when the order id is null- this is the review for the foodcourt)
-                    continue;
-                }
-
-                // Check if the review type is "runner" and if orderID exists in the customer orders
-                if ("runner".equalsIgnoreCase(reviewType) && orderToRunnerMap.containsKey(orderID)) {
-                    String runnerID = orderToRunnerMap.get(orderID); // Fetch runnerID from the map
-
-                    String rating = reviewDetails[3].trim();
                     try {
-                       int reviewMonthNumber = Integer.parseInt(reviewDetails[5].split("-")[1]); // Extract month from the date
-                       if (reviewMonthNumber == selectedMonth) {
-                           // Add or update performance data for the runner
-                           Runner data = performanceDataMap.getOrDefault(runnerID, new Runner());
-                           int ratingValue = Integer.parseInt(rating);
-                           data.incrementOrders();
-                           data.addRating(ratingValue);
-                           performanceDataMap.put(runnerID, data);
-                       }
-                    } catch (Exception e) {
-                       // Handle invalid date format or missing month
-                       continue;
+                        orderID = Integer.parseInt(reviewDetails[1].trim());
+                    } catch (NumberFormatException e) {
+                        continue;
+                    }
+
+                    // Only process reviews for runners and valid orders
+                    if ("runner".equalsIgnoreCase(reviewType) && orderToRunnerMap.containsKey(orderID)) {
+                        String runnerID = orderToRunnerMap.get(orderID);
+                        try {
+                            int reviewMonthNumber = Integer.parseInt(reviewDetails[5].split("-")[1]);
+                            if (reviewMonthNumber == selectedMonth) {
+                                Order order = orderMap.getOrDefault(runnerID, new Order());
+                                order.incrementOrders();
+                                orderMap.put(runnerID, order);
+                            }
+                        } catch (Exception e) {
+                            continue;
+                        }
                     }
                 }
             }
-        }
-        return performanceDataMap;
+
+            // Prepare the performance data without average rating
+            Map<String, String> runnerPerformanceMap = new HashMap<>();
+            for (String runnerID : orderMap.keySet()) {
+                Order order = orderMap.get(runnerID);
+                int totalOrders = order.getTotalOrders();
+                String performanceData = totalOrders + ",0.00"; // Default to 0.00 for rating
+                runnerPerformanceMap.put(runnerID, performanceData);
+            }
+
+            return runnerPerformanceMap;
     }
 
     // Method to calculate vendor performance by month
-    public List<String[]> getVendorPerformanceByMonth(int selectedMonth) {
-        List<String[]> tableData = new ArrayList<>();
-        Map<String, Vendor> vendorData = new HashMap<>();
+    public Map<String, String> getVendorPerformanceByMonth(int selectedMonth) throws IOException {
+        Map<String, Order> vendorOrders = new HashMap<>();
         Set<Integer> processedOrderIDs = new HashSet<>(); // Track processed order IDs
-        
-        try {
-            // Load customerOrder.txt
-            BufferedReader orderReader = new BufferedReader(new FileReader("customerOrder.txt"));
+
+        try (BufferedReader orderReader = new BufferedReader(new FileReader("customerOrder.txt"))) { // Use try-with-resources
             String orderLine;
 
             while ((orderLine = orderReader.readLine()) != null) {
                 String[] orderData = orderLine.split(",");
-                int orderID = Integer.parseInt(orderData[0].trim());
-                int orderMonth = Integer.parseInt(orderData[8].split("-")[1]); // Extract month from orderID or date
+                if (orderData.length > 8) {
+                    int orderID = Integer.parseInt(orderData[0].trim());
+                    int orderMonth = Integer.parseInt(orderData[8].split("-")[1]); // Extract month from date
 
-                if (orderMonth == selectedMonth && "Completed".equals(orderData[3])) {
-                     // Skip if order ID is already processed
-                    if (processedOrderIDs.contains(orderID)) continue;
-                    processedOrderIDs.add(orderID); // Mark this order as processed
-                    
-                    String[] itemsData = orderData[2].replace("[", "").replace("]", "").split("\\|");
-                    Set<String> uniqueVendorsInOrder = new HashSet<>(); // To track vendors per order
-                    
-                    for (String item : itemsData) {
-                        String[] itemDetailsArr = item.split(";");
-                        if (itemDetailsArr.length == 2) {
-                            int itemID = Integer.parseInt(itemDetailsArr[0]);
-                            int quantity = Integer.parseInt(itemDetailsArr[1]);
+                    if (orderMonth == selectedMonth && "Completed".equals(orderData[3])) {
+                        // Skip already processed orders
+                        if (processedOrderIDs.contains(orderID)) continue;
+                        processedOrderIDs.add(orderID);
 
-                            Item items = new Item();
-                            String[] itemInfo = items.itemData(itemID);
-                            if (itemInfo != null) {
-                                double price = Double.parseDouble(itemInfo[3]); // Item price
-                                String vendorEmail = itemInfo[5];
-                                double revenue = price * quantity;
-                                
-                                User user = new User();
-                                String [] vendorDetails = user.performSearch(vendorEmail, userFile);
-                                String vendorName = vendorDetails[1];
-                                // Aggregate vendor data
-                                Vendor vendorPerf = vendorData.computeIfAbsent(vendorEmail,
-                                k -> new Vendor(vendorName,true));
-                                //or this  k -> Vendor.createByName(user.getUserName(vendorEmail)));
+                        String[] itemsData = orderData[2].replace("[", "").replace("]", "").split("\\|");
+                        Set<String> uniqueVendorsInOrder = new HashSet<>();
 
-                                vendorPerf.addRevenue(revenue);   // Add revenue for completed items
-                                uniqueVendorsInOrder.add(vendorEmail);    // Add a single order for the vendor
+                        for (String item : itemsData) {
+                            String[] itemDetailsArr = item.split(";");
+                            if (itemDetailsArr.length == 2) {
+                                int itemID = Integer.parseInt(itemDetailsArr[0]);
+                                int quantity = Integer.parseInt(itemDetailsArr[1]);
+
+                                Item items = new Item();
+                                String[] itemInfo = items.itemData(itemID);
+                                if (itemInfo != null) {
+                                    double price = Double.parseDouble(itemInfo[3]);
+                                    String vendorEmail = itemInfo[5];
+                                    double revenue = price * quantity;
+
+                                    // Aggregate vendor data using Order class
+                                    Order order = vendorOrders.getOrDefault(vendorEmail, new Order());
+                                    order.incrementOrders();
+                                    order.incrementRevenue(revenue);
+                                    vendorOrders.put(vendorEmail, order);
+
+                                    uniqueVendorsInOrder.add(vendorEmail); // Track unique vendors for this order
+                                }
                             }
-                        }
-                    }
-                    // Increment orders for each unique vendor in this order
-                    for (String vendorEmail : uniqueVendorsInOrder) {
-                        Vendor vendorPerf = vendorData.get(vendorEmail);
-                        if (vendorPerf != null) {
-                            vendorPerf.incrementOrders(); // Add one order to the vendor
                         }
                     }
                 }
             }
-            orderReader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        // Convert vendorData to tableData
-        int no = 1;
-        for (Vendor vp : vendorData.values()) {
-            tableData.add(new String[]{
-                String.valueOf(no++),
-                vp.getName(),
-                String.format("%.2f", vp.getTotalRevenue()),
-                String.valueOf(vp.getTotalOrders()),
-                String.format("%.2f", vp.getAverageValuePerOrder()),
-            });
+        // Convert vendorOrders to vendor performance map
+        Map<String, String> vendorPerformanceMap = new HashMap<>();
+        for (Map.Entry<String, Order> entry : vendorOrders.entrySet()) {
+            String vendorEmail = entry.getKey();
+            Order orderData = entry.getValue();
+
+            int totalOrders = orderData.getTotalOrders();
+            double totalRevenue = orderData.getTotalRevenue();
+            double avgOrderValue = orderData.getAverageValuePerOrder();
+
+            String performanceData = totalOrders + "," + String.format("%.2f", totalRevenue) + "," + String.format("%.2f", avgOrderValue);
+            vendorPerformanceMap.put(vendorEmail, performanceData);
         }
 
-        return tableData;
+        return vendorPerformanceMap;
     }
+    
     public List<String[]> getFilteredReviews(int selectedMonth) {
         List<String[]> filteredData = new ArrayList<>();
         int recordNumber = 1;
