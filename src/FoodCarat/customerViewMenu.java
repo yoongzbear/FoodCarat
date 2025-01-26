@@ -208,7 +208,7 @@ public class customerViewMenu extends javax.swing.JFrame {
             String methodsWithoutBrackets = availableMethods.substring(1, availableMethods.length() - 1);
             String[] availableMethodsArray = methodsWithoutBrackets.split(";");
 
-            isAvailableForOrderType = Arrays.asList(availableMethodsArray).contains(orderType);
+            isAvailableForOrderType = Arrays.asList(availableMethodsArray).contains(orderType.toLowerCase());
         } else {
             //if vendor have non available methods
             isAvailableForOrderType = false;
@@ -224,8 +224,9 @@ public class customerViewMenu extends javax.swing.JFrame {
                     String itemType = details[2];
                     String itemPrice = details[3];
                     String imagePath = details[4];
+                    String itemStatus = details[6];
 
-                    if (searchQuery == null || itemName.toLowerCase().contains(searchQuery)) {
+                    if ("available".equals(itemStatus) && (searchQuery == null || itemName.toLowerCase().contains(searchQuery))) {
                         JPanel itemPanel = createMenuPanel(itemID, itemName, itemType, itemPrice, imagePath, isAvailableForOrderType);
                         mainMenuPanel.add(itemPanel);
                     }
