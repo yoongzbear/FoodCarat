@@ -4,6 +4,8 @@
  */
 package FoodCarat;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author User
@@ -15,6 +17,7 @@ public class managerMain extends javax.swing.JFrame {
      */
     public managerMain() {
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -27,7 +30,7 @@ public class managerMain extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         bvenperformance = new javax.swing.JButton();
         brunperformance = new javax.swing.JButton();
@@ -35,34 +38,38 @@ public class managerMain extends javax.swing.JFrame {
         bdiscardItem = new javax.swing.JButton();
         bnotification = new javax.swing.JButton();
         blogout = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(252, 204, 196));
         jPanel1.setForeground(new java.awt.Color(252, 204, 196));
 
-        jLabel1.setFont(new java.awt.Font("Cooper Black", 0, 36)); // NOI18N
-        jLabel1.setText("Manager Main Page");
+        jLabel2.setFont(new java.awt.Font("Cooper Black", 0, 36)); // NOI18N
+        jLabel2.setText("FoodCarat Food Court");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(260, 260, 260)
-                .addComponent(jLabel1)
-                .addContainerGap(280, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addGap(185, 185, 185))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(31, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(27, 27, 27))
+                .addContainerGap(42, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addGap(38, 38, 38))
         );
 
-        jPanel2.setBackground(new java.awt.Color(252, 204, 196));
+        jPanel2.setBackground(new java.awt.Color(252, 222, 217));
 
+        bvenperformance.setBackground(new java.awt.Color(255, 253, 253));
         bvenperformance.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
         bvenperformance.setText("Vendor Performance");
         bvenperformance.addActionListener(new java.awt.event.ActionListener() {
@@ -71,40 +78,50 @@ public class managerMain extends javax.swing.JFrame {
             }
         });
 
+        brunperformance.setBackground(new java.awt.Color(255, 253, 253));
         brunperformance.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
         brunperformance.setText("Runner Performance");
 
+        bcomplaints.setBackground(new java.awt.Color(255, 253, 253));
         bcomplaints.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
         bcomplaints.setText("Customer Complaints");
 
+        bdiscardItem.setBackground(new java.awt.Color(255, 253, 253));
         bdiscardItem.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
         bdiscardItem.setText("Discard Vendor Item");
 
+        bnotification.setBackground(new java.awt.Color(255, 253, 253));
         bnotification.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
         bnotification.setText("Notification");
 
+        blogout.setBackground(new java.awt.Color(255, 253, 253));
         blogout.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
         blogout.setText("Logout");
+        blogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                blogoutActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(16, 16, 16)
+                .addGap(22, 22, 22)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(blogout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(bnotification, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(bdiscardItem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(bvenperformance, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(brunperformance, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(bcomplaints, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(17, Short.MAX_VALUE))
+                    .addComponent(bcomplaints))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(11, 11, 11)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(39, Short.MAX_VALUE)
                 .addComponent(bvenperformance, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(brunperformance, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -115,8 +132,40 @@ public class managerMain extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bnotification, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(blogout, javax.swing.GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(blogout, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(24, 24, 24))
+        );
+
+        jPanel3.setBackground(new java.awt.Color(252, 222, 217));
+
+        jLabel1.setFont(new java.awt.Font("Cooper Black", 0, 36)); // NOI18N
+        jLabel1.setText("Manager Main Page !");
+
+        jLabel3.setFont(new java.awt.Font("Cooper Black", 0, 36)); // NOI18N
+        jLabel3.setText("Welcome to");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(159, 159, 159)
+                        .addComponent(jLabel3))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(83, 83, 83)
+                        .addComponent(jLabel1)))
+                .addContainerGap(96, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel3)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel1)
+                .addGap(170, 170, 170))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -124,18 +173,19 @@ public class managerMain extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
         pack();
@@ -144,6 +194,14 @@ public class managerMain extends javax.swing.JFrame {
     private void bvenperformanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bvenperformanceActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_bvenperformanceActionPerformed
+
+    private void blogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_blogoutActionPerformed
+        User user = new User();
+        user.logOut();
+        JOptionPane.showMessageDialog(this, "You have been logged out!");
+        dispose();
+        new userLogin().setVisible(true);
+    }//GEN-LAST:event_blogoutActionPerformed
 
     /**
      * @param args the command line arguments
@@ -188,7 +246,10 @@ public class managerMain extends javax.swing.JFrame {
     private javax.swing.JButton brunperformance;
     private javax.swing.JButton bvenperformance;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     // End of variables declaration//GEN-END:variables
 }

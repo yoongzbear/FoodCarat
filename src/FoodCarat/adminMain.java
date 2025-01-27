@@ -17,6 +17,7 @@ public class adminMain extends javax.swing.JFrame {
      */
     public adminMain() {
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -28,17 +29,78 @@ public class adminMain extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        bRegistraton = new javax.swing.JButton();
-        bTopup = new javax.swing.JButton();
-        bUpdateuser = new javax.swing.JButton();
-        bnotification = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        bRegistraton = new javax.swing.JButton();
+        bUpdateuser = new javax.swing.JButton();
+        bTopup = new javax.swing.JButton();
         withdrawbtn = new javax.swing.JButton();
+        notificationbtn = new javax.swing.JButton();
+        logoutbtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jPanel1.setBackground(new java.awt.Color(255, 255, 153));
+
+        jLabel2.setFont(new java.awt.Font("Cooper Black", 0, 36)); // NOI18N
+        jLabel2.setText("FoodCarat Food Court");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addGap(188, 188, 188))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(34, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addGap(24, 24, 24))
+        );
+
+        jPanel2.setBackground(new java.awt.Color(255, 255, 204));
+
+        jLabel1.setFont(new java.awt.Font("Cooper Black", 0, 36)); // NOI18N
+        jLabel1.setText("Admin Main Page !");
+
+        jLabel3.setFont(new java.awt.Font("Cooper Black", 0, 36)); // NOI18N
+        jLabel3.setText("Welcome to");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(173, 173, 173)
+                        .addComponent(jLabel3))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(109, 109, 109)
+                        .addComponent(jLabel1)))
+                .addContainerGap(128, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(149, 149, 149)
+                .addComponent(jLabel3)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel3.setBackground(new java.awt.Color(255, 255, 204));
+
+        bRegistraton.setBackground(new java.awt.Color(255, 255, 246));
         bRegistraton.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
         bRegistraton.setText("Registration");
         bRegistraton.addActionListener(new java.awt.event.ActionListener() {
@@ -47,14 +109,7 @@ public class adminMain extends javax.swing.JFrame {
             }
         });
 
-        bTopup.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
-        bTopup.setText("Top-up Credit");
-        bTopup.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bTopupActionPerformed(evt);
-            }
-        });
-
+        bUpdateuser.setBackground(new java.awt.Color(255, 255, 246));
         bUpdateuser.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
         bUpdateuser.setText("Update User");
         bUpdateuser.addActionListener(new java.awt.event.ActionListener() {
@@ -63,39 +118,16 @@ public class adminMain extends javax.swing.JFrame {
             }
         });
 
-        bnotification.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
-        bnotification.setText("Notification");
-        bnotification.addActionListener(new java.awt.event.ActionListener() {
+        bTopup.setBackground(new java.awt.Color(255, 255, 246));
+        bTopup.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
+        bTopup.setText("Top-up Credit");
+        bTopup.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bnotificationActionPerformed(evt);
+                bTopupActionPerformed(evt);
             }
         });
 
-        jButton2.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
-        jButton2.setText("Logout");
-
-        jPanel1.setBackground(new java.awt.Color(255, 255, 204));
-
-        jLabel1.setFont(new java.awt.Font("Cooper Black", 0, 36)); // NOI18N
-        jLabel1.setText("Admin Main Page");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(303, 303, 303)
-                .addComponent(jLabel1)
-                .addContainerGap(327, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(32, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(26, 26, 26))
-        );
-
+        withdrawbtn.setBackground(new java.awt.Color(255, 255, 246));
         withdrawbtn.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
         withdrawbtn.setText("Withdraw Credit");
         withdrawbtn.addActionListener(new java.awt.event.ActionListener() {
@@ -104,31 +136,43 @@ public class adminMain extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
+        notificationbtn.setBackground(new java.awt.Color(255, 255, 246));
+        notificationbtn.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
+        notificationbtn.setText("Notification");
+        notificationbtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                notificationbtnActionPerformed(evt);
+            }
+        });
+
+        logoutbtn.setBackground(new java.awt.Color(255, 255, 246));
+        logoutbtn.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
+        logoutbtn.setText("Logout");
+        logoutbtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logoutbtnActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(24, 24, 24)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(logoutbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bRegistraton, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bTopup, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bUpdateuser, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(withdrawbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(bRegistraton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(bUpdateuser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(bTopup, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(bnotification, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(notificationbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap(31, Short.MAX_VALUE)
                 .addComponent(bRegistraton, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bUpdateuser, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -137,10 +181,30 @@ public class adminMain extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(withdrawbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bnotification, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(notificationbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addComponent(logoutbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
         pack();
@@ -193,15 +257,23 @@ public class adminMain extends javax.swing.JFrame {
         new adminTopupCredit().setVisible(true);
     }//GEN-LAST:event_bTopupActionPerformed
 
-    private void bnotificationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bnotificationActionPerformed
+    private void notificationbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_notificationbtnActionPerformed
         this.dispose();
         new adminNotification().setVisible(true);
-    }//GEN-LAST:event_bnotificationActionPerformed
+    }//GEN-LAST:event_notificationbtnActionPerformed
 
     private void withdrawbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_withdrawbtnActionPerformed
         this.dispose();
         new adminWithdrawCredit().setVisible(true);
     }//GEN-LAST:event_withdrawbtnActionPerformed
+
+    private void logoutbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutbtnActionPerformed
+        User user = new User();
+        user.logOut();
+        JOptionPane.showMessageDialog(this, "You have been logged out!");
+        dispose();
+        new userLogin().setVisible(true);
+    }//GEN-LAST:event_logoutbtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -242,10 +314,14 @@ public class adminMain extends javax.swing.JFrame {
     private javax.swing.JButton bRegistraton;
     private javax.swing.JButton bTopup;
     private javax.swing.JButton bUpdateuser;
-    private javax.swing.JButton bnotification;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JButton logoutbtn;
+    private javax.swing.JButton notificationbtn;
     private javax.swing.JButton withdrawbtn;
     // End of variables declaration//GEN-END:variables
 }
