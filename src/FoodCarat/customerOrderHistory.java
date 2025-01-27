@@ -13,14 +13,17 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -38,14 +41,22 @@ public class customerOrderHistory extends javax.swing.JFrame {
         initComponents();
         populateTable();
         addTableListener();
-        updateCbValueItems();
-        //addComboBoxListener();
+        //updateCbValueItems();
         bAction.setEnabled(false);
         bFeedback.setVisible(false);
         lRunnerNameTitle.setVisible(false);
         lRunnerName.setVisible(false);
         lRunnerRating.setVisible(false);
         cbRunnerRating.setVisible(false);
+        labelCancel.setVisible(false);
+        lcancelReason.setText("");
+        
+        //dont show the label first
+        lOrderID.setText("");
+        lOrderType.setText("");
+        ltotalPrice.setText("");
+        lVendorName.setText("");
+        lOrderStatus.setText("");
         
         //invisible time range filter
         selectLabel.setVisible(false);
@@ -56,46 +67,6 @@ public class customerOrderHistory extends javax.swing.JFrame {
     
     private Map<String, List<String[]>> orderDetailsMap = new HashMap<>();
     
-    private void updateCbValueItems() {
-        String selectedSearchBy = (String) cbSearchBy.getSelectedItem();
-
-        //clear the current items
-        cbValue.removeAllItems();
-
-        if ("Time Range".equals(selectedSearchBy)) {
-            //add items for Time Range
-            cbValue.addItem("Select Time Range");
-            cbValue.addItem("Daily");
-            cbValue.addItem("Monthly");
-            cbValue.addItem("Yearly");
-            
-            //visible time range filter
-            selectLabel.setVisible(true);
-            dateChooser.setVisible(true);
-            monthChooser.setVisible(true);
-            yearChooser.setVisible(true);
-        } else if ("Order Status".equals(selectedSearchBy)) {
-            //add items for Order Status
-            cbValue.addItem("Cancelled");
-            cbValue.addItem("Completed");
-            
-            //invisible time range filter
-            selectLabel.setVisible(false);
-            dateChooser.setVisible(false);
-            monthChooser.setVisible(false);
-            yearChooser.setVisible(false);
-        }
-    }
-    
-//    private void addComboBoxListener() {
-//        cbSearchBy.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                updateCbValueItems();
-//            }
-//        });
-//    }
-    
     private void addTableListener() {
         tOrderHistory.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -105,12 +76,14 @@ public class customerOrderHistory extends javax.swing.JFrame {
                     if (selectedRow != -1) {
                         try {
                             //Get the selected row data
-                            String orderID = (String) tOrderHistory.getValueAt(selectedRow, 0);
-                            String orderType = (String) tOrderHistory.getValueAt(selectedRow, 1);
-                            String totalPrice = (String) tOrderHistory.getValueAt(selectedRow, 3);
-                            String vendorName = (String) tOrderHistory.getValueAt(selectedRow, 4);
-                            String orderStatus = (String) tOrderHistory.getValueAt(selectedRow, 5);
-                            String cancelReason = (String) tOrderHistory.getValueAt(selectedRow, 6);
+                            String orderDate = (String) tOrderHistory.getValueAt(selectedRow, 0);
+                            String orderID = (String) tOrderHistory.getValueAt(selectedRow, 1);
+                            String orderType = (String) tOrderHistory.getValueAt(selectedRow, 2);
+                            String totalPrice = (String) tOrderHistory.getValueAt(selectedRow, 4);
+                            String vendorName = (String) tOrderHistory.getValueAt(selectedRow, 5);
+                            String orderStatus = (String) tOrderHistory.getValueAt(selectedRow, 6);
+                            String cancelReason = (String) tOrderHistory.getValueAt(selectedRow, 7);
+                            
                             //Get feedback
                             Review review = new Review(Integer.parseInt(orderID));
                             String feedback = review.getFeedback();
@@ -132,15 +105,21 @@ public class customerOrderHistory extends javax.swing.JFrame {
                                 validFeedback = false;
                             }
                             
-                            if ("completed".equals(orderStatus)) {
+                            if ("completed".equalsIgnoreCase(orderStatus)) {
+                                labelCancel.setVisible(false);
+                                lcancelReason.setText("");
                                 bAction.setEnabled(true);
                                 bAction.setText("Reorder");
-                            } else if ("pending accept".equals(orderStatus)) {
+                            } else if ("pending accept".equalsIgnoreCase(orderStatus)) {
+                                labelCancel.setVisible(false);
+                                lcancelReason.setText("");
                                 bAction.setEnabled(true);
                                 bAction.setText("Cancel Order");
+                            } else if ("cancelled".equalsIgnoreCase(orderStatus)) {
+                                labelCancel.setVisible(true);
+                                lcancelReason.setText(cancelReason);
                             }
-                            
-                            if ("Delivery".equals(orderType.trim())) {
+                            if ("delivery".equals(orderType.trim())) {
                                 // Set visibility of components related to the runner
                                 lRunnerNameTitle.setVisible(true);
                                 lRunnerName.setVisible(true);
@@ -213,7 +192,8 @@ public class customerOrderHistory extends javax.swing.JFrame {
         DecimalFormat df = new DecimalFormat("0.00");
         model.setRowCount(0);
         model.setColumnCount(0);
-        //Header
+        // Header
+        model.addColumn("Date");
         model.addColumn("Order ID");
         model.addColumn("Order Type");
         model.addColumn("Order Item");
@@ -222,137 +202,157 @@ public class customerOrderHistory extends javax.swing.JFrame {
         model.addColumn("Order Status");
         model.addColumn("Cancel Reason");
 
+        String selectedSearchBy = (String) cbSearchBy.getSelectedItem();
+        String selectedValue = (String) cbValue.getSelectedItem();
+
+        List<String[]> orderRecords = new ArrayList<>(); // To store records
+
         try (BufferedReader reader = new BufferedReader(new FileReader("resources/customerOrder.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] record = line.split(",");
                 String rOrderStatus = record[3];
                 String rUser = record[4];
-                if (rUser.equals(User.getSessionEmail()) && rOrderStatus != ""){
+                if (rUser.equals("customer@mail.com") && rOrderStatus != "") {
                     String rOrderType = record[1];
                     String rOrderList = record[2].replace("[", "").replace("]", "");
                     String rVendorName = null;
-                    String rCancelReason = record[6]; 
+                    String rCancelReason = record[6];
+                    String rDeliveryFee = record[7];
+                    String rTotalPaid = record[8];
+                    String rOrderDate = record[9];
                     rOrderStatus = rOrderStatus.substring(0, 1).toUpperCase() + rOrderStatus.substring(1).toLowerCase();
                     if (rCancelReason.equalsIgnoreCase("null") || rCancelReason.equalsIgnoreCase("NULL") || rCancelReason.isEmpty()) {
                         rCancelReason = "-";
                     } else {
                         rCancelReason = rCancelReason.substring(0, 1).toUpperCase() + rCancelReason.substring(1).toLowerCase();
                     }
-                    
-                    //Split the order items by semicolon
+
+                    // Split the order items by semicolon
                     String[] orderItems = rOrderList.split("\\|");
                     StringBuilder orderItemsConcatenated = new StringBuilder();
-                    double totalPrice = 0.0; 
-                    
+                    double totalPrice = 0.0;
+
                     List<String[]> orderItemDetails = new ArrayList<>();
-                    
-                    //Loop through each item in the order and concatenate them with a comma
+
+                    // Loop through each item in the order and concatenate them with a comma
                     for (int i = 0; i < orderItems.length; i++) {
                         String[] itemDetails = orderItems[i].split(";");
-                        int rOrderItemID = Integer.parseInt(itemDetails[0]); 
+                        int rOrderItemID = Integer.parseInt(itemDetails[0]);
                         String rItemQuantity = itemDetails[1];
-                        //String rItemPrice = itemDetails[2]; //Need to change based on the vendor ori price
-                        
+                        // String rItemPrice = itemDetails[2]; // Need to change based on the vendor ori price
+
                         Item item1 = new Item();
                         String[] itemInfo = item1.itemData(rOrderItemID);
                         String itemID = itemInfo[0];
-                        String itemName = itemInfo[1];  
+                        String itemName = itemInfo[1];
                         String itemPrice = itemInfo[3];
                         String itemImgPath = itemInfo[4];
-                        
+
                         String[] vendorInfo = item1.getVendorInfoByItemID(Integer.parseInt(itemID));
                         rVendorName = vendorInfo[1];
-                        
+
                         orderItemDetails.add(new String[]{String.valueOf(rOrderItemID), itemName, rItemQuantity, itemPrice});
 
-                        //Update total price
+                        // Update total price
                         totalPrice = totalPrice + Double.parseDouble(itemPrice) * Integer.parseInt(rItemQuantity);
 
-                        //Append item to the StringBuilder with a comma
+                        // Append item to the StringBuilder with a comma
                         if (i > 0) {
-                            orderItemsConcatenated.append(", "); 
+                            orderItemsConcatenated.append(", ");
                         }
                         orderItemsConcatenated.append(itemName);
                     }
-                    
-                    
-                    //Get the final concatenated string
+
+                    // Get the final concatenated string
                     String allOrderItems = orderItemsConcatenated.toString();
-                    
-                    String orderID = record[0]; 
+
+                    String orderID = record[0];
                     orderDetailsMap.put(orderID, orderItemDetails);
 
-                    //Add the booking details to the model
-                    model.addRow(new Object[]{orderID, rOrderType, allOrderItems, "RM" + df.format(totalPrice), rVendorName, rOrderStatus, rCancelReason});
+                    // Add the record to the list
+                    orderRecords.add(new String[]{
+                        rOrderDate, orderID, rOrderType, allOrderItems, "RM" + df.format(totalPrice), rVendorName, rOrderStatus, rCancelReason, rDeliveryFee, rTotalPaid
+                    });
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        //Set the model to the table
-        tOrderHistory.setModel(model);
-    }
-    
-    //have filter to show monthly, or yearly
-    public void displayOrderTimeRange(String timeRange, String inputTime) {
-        //get date to test         
-        DefaultTableModel model = (DefaultTableModel) tOrderHistory.getModel();
-        int index = 1;
-        model.setRowCount(0);
-        
-        //SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        
-        //get all orders from vendor, filter based on date  
-        Order orders = new Order();
-        List<String[]> allOrders = orders.getAllOrders(User.getSessionEmail());
-        for (String[] orderData : allOrders) {
-            Item item = new Item();            
-            //orderID,orderMethod,[itemID;quantity],orderStatus,customerEmail,runnerEmail,cancelReason,deliveryFee,totalPaid,date,totalprice
-            String orderID = orderData[0];
-            String orderMethod = orderData[1];
-            String orderItems = orderData[2];
-            String orderStatus = orderData[3];
-            String customerEmail = orderData[4];
-            String orderTotal = orderData[8];
-            String orderDate = orderData[9];
+        // Sort the records based on the order date in descending order
+        orderRecords.sort((record1, record2) -> {
+            try {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                Date date1 = dateFormat.parse(record1[0]); // rOrderDate is at index 0
+                Date date2 = dateFormat.parse(record2[0]);
+                return date2.compareTo(date1); // Compare in reverse order (newest first)
+            } catch (Exception e) {
+                e.printStackTrace();
+                return 0;
+            }
+        });
 
-            String updatedOrderItems = item.replaceItemIDsWithNames(orderItems);
+        //filter
+        for (String[] record : orderRecords) {
+            String rOrderDate = record[0];
+            String rOrderStatus = record[6]; // Order Status is at index 6
 
-            //excluding orders with status pending accept
-            if (orderStatus.equalsIgnoreCase("Pending accept") || orderStatus.equalsIgnoreCase("Canceled")) {
-                continue;
-            } else {
-                if (timeRange.equalsIgnoreCase("Daily")) { //daily
-                    //inputTime = date
-                    if (orderDate.trim().equals(inputTime.trim())) {
-                        model.addRow(new Object[]{index++, orderID, customerEmail, orderMethod, updatedOrderItems, orderStatus});
+            // Filter by "Time Range"
+            if ("Time Range".equals(selectedSearchBy) && !selectedValue.equals("Select Time Range")) {
+                if ("Daily".equals(selectedValue)) {
+                    String inputTime = ((JTextField) dateChooser.getDateEditor().getUiComponent()).getText();
+                    SimpleDateFormat inputDateFormat = new SimpleDateFormat("MMM d, yyyy");
+                    SimpleDateFormat recordDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+                    try {
+                        Date selectedDate = inputDateFormat.parse(inputTime);
+                        String formattedInputDate = recordDateFormat.format(selectedDate);
+                        if (!formattedInputDate.equals(rOrderDate)) {
+                            continue; // Skip this record
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } else if (timeRange.equalsIgnoreCase("Monthly")) { //monthly
-                    //inputTime = 1,2025
-                    String[] inputTimeParts = inputTime.split(",");
-                    int inputMonth = Integer.parseInt(inputTimeParts[0]);
-                    int inputYear = Integer.parseInt(inputTimeParts[1]);
-
-                    String[] orderDateParts = orderDate.split("-");
+                } else if ("Monthly".equals(selectedValue)) {
+                    String inputTime = (monthChooser.getMonth() + 1) + "-" + yearChooser.getYear(); // MM-YYYY format
+                    String[] orderDateParts = rOrderDate.split("-");
                     int orderYear = Integer.parseInt(orderDateParts[0]);
                     int orderMonth = Integer.parseInt(orderDateParts[1]);
 
-                    if (orderYear == inputYear && orderMonth == inputMonth) {
-                        model.addRow(new Object[]{index++, orderID, customerEmail, orderMethod, updatedOrderItems, orderStatus});
+                    String[] inputTimeParts = inputTime.split("-");
+                    int inputMonth = Integer.parseInt(inputTimeParts[0]);
+                    int inputYear = Integer.parseInt(inputTimeParts[1]);
+
+                    if (!(orderYear == inputYear && orderMonth == inputMonth)) {
+                        continue; // Skip this record
                     }
-                } else if (timeRange.equalsIgnoreCase("Yearly")) { //yearly
-                    int inputYear = Integer.parseInt(inputTime);
-                    String[] orderDateParts = orderDate.split("-");
+                } else if ("Yearly".equals(selectedValue)) {
+                    String inputTime = String.valueOf(yearChooser.getYear());
+                    String[] orderDateParts = rOrderDate.split("-");
                     int orderYear = Integer.parseInt(orderDateParts[0]);
-                    if (orderYear == inputYear) {
-                        model.addRow(new Object[]{index++, orderID, customerEmail, orderMethod, updatedOrderItems, orderStatus});
+
+                    if (orderYear != Integer.parseInt(inputTime)) {
+                        continue; // Skip this record
                     }
                 }
             }
+
+            // Filter by "Order Status"
+            if ("Order Status".equals(selectedSearchBy) && !selectedValue.equals("Select Order Status")) {
+                if (!selectedValue.equals(rOrderStatus)) {
+                    continue; // Skip this record
+                }
+            }
+
+            // Add the record to the model if it passes the filters
+            model.addRow(record);
         }
+
+        // Set the model to the table
+        tOrderHistory.setModel(model);
     }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -399,8 +399,6 @@ public class customerOrderHistory extends javax.swing.JFrame {
         lRunnerRating = new javax.swing.JLabel();
         lOrderStatus = new javax.swing.JLabel();
         cbRunnerRating = new javax.swing.JComboBox<>();
-        jLabel13 = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         lOrderID = new javax.swing.JLabel();
         cbValue = new javax.swing.JComboBox<>();
@@ -411,6 +409,9 @@ public class customerOrderHistory extends javax.swing.JFrame {
         cbSearchBy = new javax.swing.JComboBox<>();
         jLabel11 = new javax.swing.JLabel();
         bSearch = new javax.swing.JButton();
+        labelCancel = new javax.swing.JLabel();
+        lcancelReason = new javax.swing.JLabel();
+        bReceipt = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -518,10 +519,6 @@ public class customerOrderHistory extends javax.swing.JFrame {
 
         cbRunnerRating.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Please Rate", "1 🌟", "2 🌟", "3 🌟", "4 🌟", "5 🌟" }));
 
-        jLabel13.setText("Used Points:");
-
-        jLabel15.setText("usedPoint");
-
         jLabel8.setText("Order ID:");
 
         lOrderID.setText("orderID");
@@ -546,6 +543,22 @@ public class customerOrderHistory extends javax.swing.JFrame {
         jLabel11.setText("Search By:");
 
         bSearch.setText("Search");
+        bSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bSearchActionPerformed(evt);
+            }
+        });
+
+        labelCancel.setText("Cancel Reason:");
+
+        lcancelReason.setText("cancelReason");
+
+        bReceipt.setText("View Receipt");
+        bReceipt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bReceiptActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -554,41 +567,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(22, 22, 22)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jLabel3)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 379, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGap(18, 18, 18)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(bAction, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel9)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jLabel5)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jLabel7)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(ltotalPrice)
-                                            .addComponent(lOrderStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(lOrderType)
-                                            .addComponent(lRunnerName)))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jLabel15)
-                                        .addGap(38, 38, 38)))
-                                .addComponent(lRunnerNameTitle)
-                                .addComponent(jLabel13)
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jLabel8))
-                                    .addGap(18, 18, 18)
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(lVendorName, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(lOrderID)))))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(lOrderFeedbackSection, javax.swing.GroupLayout.Alignment.LEADING)
@@ -600,12 +579,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
                                 .addComponent(cbVendorRating, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 682, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lVenFeedbackTitle, javax.swing.GroupLayout.Alignment.LEADING))
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(lRunnerRating)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(cbRunnerRating, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addComponent(bFeedback, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 682, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(jPanel1Layout.createSequentialGroup()
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(jPanel1Layout.createSequentialGroup()
@@ -624,7 +598,41 @@ public class customerOrderHistory extends javax.swing.JFrame {
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(yearChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(bSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                    .addComponent(bSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(jLabel3)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 379, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGap(18, 18, 18)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(bReceipt, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(bAction, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel9)
+                                        .addComponent(jLabel7)
+                                        .addComponent(jLabel5)
+                                        .addComponent(lRunnerNameTitle)
+                                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel8)
+                                        .addComponent(labelCancel))
+                                    .addGap(18, 18, 18)
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(lOrderStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(ltotalPrice)
+                                        .addComponent(lOrderType)
+                                        .addComponent(lRunnerName)
+                                        .addComponent(lcancelReason)
+                                        .addComponent(lVendorName)
+                                        .addComponent(lOrderID)))))
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(lRunnerRating)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(cbRunnerRating, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 682, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                             .addComponent(jLabel2)
@@ -666,7 +674,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel8)
@@ -676,10 +684,6 @@ public class customerOrderHistory extends javax.swing.JFrame {
                             .addComponent(jLabel4)
                             .addComponent(lVendorName))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel13)
-                            .addComponent(jLabel15))
-                        .addGap(11, 11, 11)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel7)
                             .addComponent(ltotalPrice))
@@ -695,9 +699,15 @@ public class customerOrderHistory extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lRunnerNameTitle)
                             .addComponent(lRunnerName))
-                        .addGap(27, 27, 27)
-                        .addComponent(bAction))
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(labelCancel)
+                            .addComponent(lcancelReason))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(bAction)
+                            .addComponent(bReceipt)))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 282, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(lOrderFeedbackSection)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -819,12 +829,71 @@ public class customerOrderHistory extends javax.swing.JFrame {
     }//GEN-LAST:event_bActionActionPerformed
 
     private void cbValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbValueActionPerformed
-        // TODO add your handling code here:
+        String selectedSearchBy = (String) cbSearchBy.getSelectedItem();
+        if ("Time Range".equals(selectedSearchBy)) {
+            // Get the selected time range and input time
+            String selectedRange = (String) cbValue.getSelectedItem();
+            if ("Daily".equalsIgnoreCase(selectedRange)) {
+                selectLabel.setVisible(true);
+                dateChooser.setVisible(true);
+                monthChooser.setVisible(false);
+                yearChooser.setVisible(false);
+            } else if ("Monthly".equalsIgnoreCase(selectedRange)) {
+                selectLabel.setVisible(true);
+                dateChooser.setVisible(false);
+                monthChooser.setVisible(true);
+                yearChooser.setVisible(true);
+            } else if ("Yearly".equalsIgnoreCase(selectedRange)) {
+                selectLabel.setVisible(true);
+                dateChooser.setVisible(false);
+                monthChooser.setVisible(false);
+                yearChooser.setVisible(true);
+            } else if ("Select Time Range".equalsIgnoreCase(selectedRange)) {
+                selectLabel.setVisible(false);
+                dateChooser.setVisible(false);
+                monthChooser.setVisible(false);
+                yearChooser.setVisible(false);
+            }
+        }
     }//GEN-LAST:event_cbValueActionPerformed
 
     private void cbSearchByActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbSearchByActionPerformed
-        updateCbValueItems();
+        String selectedSearchBy = (String) cbSearchBy.getSelectedItem();
+
+        // Clear the current items in cbValue
+        cbValue.removeAllItems();
+
+        if ("Time Range".equals(selectedSearchBy)) {
+            // Add items for Time Range
+            cbValue.addItem("Select Time Range");
+            cbValue.addItem("Daily");
+            cbValue.addItem("Monthly");
+            cbValue.addItem("Yearly");
+        } else if ("Order Status".equals(selectedSearchBy)) {
+            // Add items for Order Status
+            cbValue.addItem("Cancelled");
+            cbValue.addItem("Completed");
+
+            // Hide time range filter
+            selectLabel.setVisible(false);
+            dateChooser.setVisible(false);
+            monthChooser.setVisible(false);
+            yearChooser.setVisible(false);
+        }
     }//GEN-LAST:event_cbSearchByActionPerformed
+
+    private void bSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSearchActionPerformed
+        populateTable();
+    }//GEN-LAST:event_bSearchActionPerformed
+
+    private void bReceiptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bReceiptActionPerformed
+        String orderIDStr = lOrderID.getText();
+        int orderID = Integer.parseInt(orderIDStr);
+        String orderType = lOrderType.getText();
+        this.dispose();
+        customerReceipt frame = new customerReceipt(orderID, orderType);
+        frame.setVisible(true);
+    }//GEN-LAST:event_bReceiptActionPerformed
 
     /**
      * @param args the command line arguments
@@ -865,6 +934,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
     private javax.swing.JButton bAction;
     private javax.swing.JButton bBack;
     private javax.swing.JButton bFeedback;
+    private javax.swing.JButton bReceipt;
     private javax.swing.JButton bSearch;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JComboBox<String> cbRunnerRating;
@@ -874,8 +944,6 @@ public class customerOrderHistory extends javax.swing.JFrame {
     private com.toedter.calendar.JDateChooser dateChooser;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -902,6 +970,8 @@ public class customerOrderHistory extends javax.swing.JFrame {
     private javax.swing.JLabel lVenFeedbackTitle;
     private javax.swing.JLabel lVenRateTitle;
     private javax.swing.JLabel lVendorName;
+    private javax.swing.JLabel labelCancel;
+    private javax.swing.JLabel lcancelReason;
     private javax.swing.JLabel ltotalPrice;
     private com.toedter.calendar.JMonthChooser monthChooser;
     private javax.swing.JLabel selectLabel;
