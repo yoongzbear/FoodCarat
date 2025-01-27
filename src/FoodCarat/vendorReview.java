@@ -13,7 +13,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 import org.jfree.chart.ChartPanel;
 import org.jfree.data.general.DefaultPieDataset;
@@ -23,10 +22,9 @@ import org.jfree.data.general.DefaultPieDataset;
  * @author mastu
  */
 public class vendorReview extends javax.swing.JFrame {
-
-    private String email = "vendor@mail.com";
-//    private String email = User.getSessionEmail();
-    private String role = "vendor";
+    
+    private String email = User.getSessionEmail();
+    Vendor vendor = new Vendor(email);
 
     /**
      * Creates new form vendorReview
@@ -37,8 +35,7 @@ public class vendorReview extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         
         displayReviews();
-        vendorFeedbackTxtArea.setEditable(false);
-        
+        vendorFeedbackTxtArea.setEditable(false);        
     }
 
     //display all vendor reviews
@@ -50,7 +47,6 @@ public class vendorReview extends javax.swing.JFrame {
         System.out.println(email);
         for (String[] reviewData : allReviews) {
                     
-            //0reviewID,1orderID,2reviewType,3rating,4review,5date,6customerEmail
             String reviewID = reviewData[0];
             String rating = reviewData[3];
             String feedback = reviewData[4];
@@ -70,7 +66,6 @@ public class vendorReview extends javax.swing.JFrame {
         List<String[]> allReviews = new Review().getAllReviews(email, "vendor");
         for (String[] reviewData : allReviews) {
                     
-            //0reviewID,1orderID,2reviewType,3rating,4review,5date,6customerEmail
             String reviewID = reviewData[0];
             String rating = reviewData[3];
             String feedback = reviewData[4];
@@ -102,7 +97,6 @@ public class vendorReview extends javax.swing.JFrame {
 
         for (String[] reviewData : allReviews) {
 
-            //0reviewID,1orderID,2reviewType,3rating,4review,5date,6customerEmail
             String reviewID = reviewData[0];
             String rating = reviewData[3];
             String feedback = reviewData[4];
@@ -114,9 +108,8 @@ public class vendorReview extends javax.swing.JFrame {
     }
     
     //display selected vendor review 
-    public void displaySelectedReview(String reviewID) {
+    public void displaySelectedReview(int reviewID) {
         DecimalFormat df = new DecimalFormat("0.00");
-        //review, order, items
         String[] details = new Review().getReview(reviewID);
         
         //get items, price, and quantity to display in table
@@ -146,7 +139,6 @@ public class vendorReview extends javax.swing.JFrame {
             }
         }
         
-        //5, 3, vendor, 3, Kena cancelled, 2024-01-01, customer@mail.com, 3, Take away, [2;1|4;1], Ordered, customerEmail, NULL, NULL, NULL, 20.00, 2025-01-01 , 25.80
         idLabel.setText(details[1].trim()); //order ID
         dateLabel.setText(details[5].trim());
         methodLabel.setText(details[8].trim());
@@ -170,7 +162,7 @@ public class vendorReview extends javax.swing.JFrame {
             ratingsCount = new Review().ratingCount(email, "vendor", "yearly", timeRange);
         }
         
-        // Check if all items have 0 quantity
+        //check if all ratings are 0
         boolean allZero = true;
         for (int i = 0; i < ratingsCount.length; i++) {
             if (ratingsCount[i] > 0) {
@@ -1002,11 +994,11 @@ public class vendorReview extends javax.swing.JFrame {
     private void viewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewBtnActionPerformed
         //display selected row of item in the table
         int selectedRow = reviewTable.getSelectedRow();
-
-        //have validation to "choose an item in the table"
+        
         if (selectedRow >= 0) {
-            Object id = reviewTable.getModel().getValueAt(selectedRow, 1);
-            displaySelectedReview(id.toString());
+            Object idObj = reviewTable.getModel().getValueAt(selectedRow, 1);
+            int id = Integer.parseInt(idObj.toString());
+            displaySelectedReview(id);
         } else {
             //no row is selected
             JOptionPane.showMessageDialog(null, "Please select a row to view details.", "Alert", JOptionPane.WARNING_MESSAGE);
@@ -1033,7 +1025,6 @@ public class vendorReview extends javax.swing.JFrame {
             selectedFilter[index++] = "5";
         }
         selectedFilter = Arrays.copyOf(selectedFilter, index); //adjust the size of array
-        //call displayreview filter
         displayReviews(selectedFilter);
     }//GEN-LAST:event_filterBtnActionPerformed
 

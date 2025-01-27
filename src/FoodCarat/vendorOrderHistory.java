@@ -5,24 +5,17 @@
 package FoodCarat;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import org.jfree.chart.ChartPanel;
 import org.jfree.data.category.DefaultCategoryDataset;
@@ -36,9 +29,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     /**
      * Creates new form vendorOrderHistory
      */       
-    //change to userSession 
-    private String email = "vendor@mail.com";
-//    private String email = User.getSessionEmail();
+    private String email = User.getSessionEmail();
     Vendor vendor = new Vendor(email);
     
     public vendorOrderHistory() {
@@ -128,8 +119,6 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         totalPriceLabel.setText("RM" + details[10].trim());
 
         //view if got feedback for the order
-        Review orderReview = new Review(orderID);
-        //String reviews = orderReview.getFeedback();
         Review review = new Review(orderID);
         try {
             String feedback = review.getFeedback();
@@ -163,7 +152,6 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             String orderStatus = orderData[3];
             orderStatus = orderStatus.substring(0, 1).toUpperCase() + orderStatus.substring(1).toLowerCase();
             String customerEmail = orderData[4];
-            String orderTotal = orderData[7];
 
             String updatedOrderItems = item.replaceItemIDsWithNames(orderItems);
 
@@ -183,26 +171,21 @@ public class vendorOrderHistory extends javax.swing.JFrame {
 
     //have filter to show monthly, or yearly
     public void displayOrderTimeRange(String timeRange, String inputTime) {
-        //get date to test         
         DefaultTableModel model = (DefaultTableModel) orderTable.getModel();
         int index = 1;
         model.setRowCount(0);
-        
-        //SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         
         //get all orders from vendor, filter based on date  
         Order orders = new Order();
         List<String[]> allOrders = orders.getAllOrders(email);
         for (String[] orderData : allOrders) {
             Item item = new Item();            
-            //orderID,orderMethod,[itemID;quantity],orderStatus,customerEmail,runnerEmail,cancelReason,deliveryFee,totalPaid,date,totalprice
             String orderID = orderData[0];
             String orderMethod = orderData[1];
             String orderItems = orderData[2];
             String orderStatus = orderData[3];
             orderStatus = orderStatus.substring(0, 1).toUpperCase() + orderStatus.substring(1).toLowerCase();
             String customerEmail = orderData[4];
-            String orderTotal = orderData[8];
             String orderDate = orderData[9];
 
             String updatedOrderItems = item.replaceItemIDsWithNames(orderItems);
@@ -1063,7 +1046,6 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     }//GEN-LAST:event_timeRangeBoxActionPerformed
 
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
-        // TODO add your handling code here:
         String searchOrder = searchTxt.getText();
         if (searchOrder.equals("Enter item search")) { //if vendor doesn't enter any input in the search box
             JOptionPane.showMessageDialog(null, "Please enter item name to search.", "Alert", JOptionPane.WARNING_MESSAGE);
@@ -1174,6 +1156,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     }//GEN-LAST:event_chooseQuarter
 
     private void displayYear(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_displayYear
+        //dynamically change start and end date label based on year 
         String quarter = quarterChartBox.getSelectedItem().toString();
         String year = String.valueOf(chartQuarterYearChooser.getYear());
         if (!quarter.equalsIgnoreCase("Quarter") && year.length() == 4) {

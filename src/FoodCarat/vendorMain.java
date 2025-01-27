@@ -5,7 +5,6 @@
 package FoodCarat;
 
 import java.awt.Image;
-import java.io.File;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import javax.swing.ImageIcon;
@@ -22,10 +21,8 @@ public class vendorMain extends javax.swing.JFrame {
      */
     
     //change to userSession 
-    private String email = "vendor@mail.com";
-    private String name = "Vendor";
-//    private String email = User.getSessionEmail();
-//    private String name = User.getSessionName();
+    private String email = User.getSessionEmail();
+    private String name = User.getSessionName();
     Vendor vendor = new Vendor(email);
     
     public vendorMain() {
@@ -35,6 +32,7 @@ public class vendorMain extends javax.swing.JFrame {
         
         //display vendor info
         displayInfo();
+        displayMethod();
     }
         
     public void displayInfo() { //display vendor info
@@ -52,7 +50,7 @@ public class vendorMain extends javax.swing.JFrame {
             Image img = icon.getImage();
             Image resizedImage = img.getScaledInstance(vendorLogo.getWidth(), vendorLogo.getHeight(), Image.SCALE_SMOOTH);
             vendorLogo.setIcon(new ImageIcon(resizedImage));
-            
+
             displayMethod();
         } else {
             JOptionPane.showMessageDialog(this, "Vendor information not found for email: " + email,
@@ -415,8 +413,14 @@ public class vendorMain extends javax.swing.JFrame {
     }//GEN-LAST:event_revenueBtnActionPerformed
 
     private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
-        User.clearSession();
-        dispose();
+        int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to log out? All methods will be closed.", "Vendor Log Out", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            String methodString = "[]";
+            vendor.updateMethodAvailable(methodString);
+            vendor.logOut();
+            JOptionPane.showMessageDialog(null, "You have logged out, see you tomorrow!", "Log Out", JOptionPane.INFORMATION_MESSAGE);
+            dispose();
+        }
     }//GEN-LAST:event_logoutBtnActionPerformed
 
     private void orderHistoryBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_orderHistoryBtnActionPerformed
@@ -452,6 +456,7 @@ public class vendorMain extends javax.swing.JFrame {
         }
         //call method to update method from vendor class
         vendor.updateMethodAvailable(methodString);
+        JOptionPane.showMessageDialog(null, "Available methods updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
         vendor.setAvailableMethod(methodString); //set current session's available methods
         displayInfo(); //refresh info
     }//GEN-LAST:event_updateMethodBtnActionPerformed
@@ -462,6 +467,7 @@ public class vendorMain extends javax.swing.JFrame {
         if (confirm == JOptionPane.YES_OPTION) {
             String methodString = "[dine in;take away;delivery]";
             vendor.updateMethodAvailable(methodString);
+            JOptionPane.showMessageDialog(null, "Available methods updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
             vendor.setAvailableMethod(methodString);
             displayInfo(); //refresh info
         }
@@ -473,6 +479,7 @@ public class vendorMain extends javax.swing.JFrame {
         if (confirm == JOptionPane.YES_OPTION) {
             String methodString = "[]";
             vendor.updateMethodAvailable(methodString);
+            JOptionPane.showMessageDialog(null, "Available methods updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
             vendor.setAvailableMethod(methodString);
             displayInfo(); //refresh info
         }

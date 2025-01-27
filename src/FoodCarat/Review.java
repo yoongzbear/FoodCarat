@@ -236,7 +236,7 @@ public class Review {
     }
     
     //get review, order and item info based on review ID
-    public String[] getReview(String id) {
+    public String[] getReview(int id) {
         String[] reviewInfo = null;
         try {
             FileReader fr = new FileReader(reviewFileName);
@@ -245,7 +245,8 @@ public class Review {
 
             while ((read = br.readLine()) != null) {
                 String[] reviewData = read.split(",");
-                if (reviewData[0].equals(id)) {
+                int reviewID = Integer.parseInt(reviewData[0]);
+                if (reviewID == id) {
                     //get order info
                     //0reviewID,1orderID,2reviewType,3rating,4review,5date,6customerEmail
                     int orderID = Integer.parseInt(reviewData[1]);

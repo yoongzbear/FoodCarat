@@ -237,12 +237,11 @@ public class Item {
             while ((read = br.readLine()) != null) {
                 //get all rows where vendor email == venEmail
                 String[] itemData = read.split(",");
-                if(isAvailableOnly && itemData[5].equals(venEmail) && itemData[6].equals("available")) {
+                if (isAvailableOnly && itemData[5].equals(venEmail) && itemData[6].equals("available")) {
                     allItems.add(itemData);
-                } else {
-                    if (itemData[5].equals(venEmail)) {
-                        allItems.add(itemData);
-                    }
+                } 
+                else if (!isAvailableOnly && itemData[5].equals(venEmail)) {
+                    allItems.add(itemData);
                 }
             }
         } catch(IOException e) {

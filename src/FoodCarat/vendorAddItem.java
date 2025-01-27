@@ -26,13 +26,8 @@ public class vendorAddItem extends javax.swing.JFrame {
     //variables
     String imagePath = "";
     File imageFile = null;
-    //change to userSession 
-    private String email = "vendor@mail.com";
-    private String name = "Vendor";
-//    private String email = User.getSessionEmail();
-//    private String name = User.getSessionName();
+    private String email = User.getSessionEmail(); //get session's email
     Item item = new Item();
-    Vendor vendor = new Vendor(email);
     
     public vendorAddItem() {
         initComponents();
@@ -247,11 +242,10 @@ public class vendorAddItem extends javax.swing.JFrame {
         String type = typeBox.getSelectedItem().toString().trim();
         String priceText = priceTxt.getText().trim();
         
-        DecimalFormat df = new DecimalFormat("0.00");
         double price;
 
         //validate if fields are empty
-        if (name.isEmpty() || type.equals("Select Type") || priceText.isEmpty() || imagePath == "") {
+        if (name.isEmpty() || type.equals("Select Type") || priceText.isEmpty() || "".equals(imagePath)) {
             JOptionPane.showMessageDialog(null, "Please fill in all fields.", "Incomplete Submission", JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -267,14 +261,12 @@ public class vendorAddItem extends javax.swing.JFrame {
         //validate item name if is duplicated
         if (duplicateName(name)) {
             JOptionPane.showMessageDialog(null, "Item name is taken, please change the item name.", "Duplicate Name", JOptionPane.ERROR_MESSAGE);
-            return; 
         }
         else {            
             //upload image into menu folder
             String newImagePath = new Item().uploadImage(imagePath);
             if (newImagePath == null) {
                 JOptionPane.showMessageDialog(null, "Failed to save the image.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
             } else {
                 //get next ID
                 String[] latestItem = new Item().latestItem();

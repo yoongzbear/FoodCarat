@@ -4,17 +4,12 @@
  */
 package FoodCarat;
 
-import java.awt.Color;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -23,11 +18,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class vendorCurrentOrder extends javax.swing.JFrame {
 
-    private String email = "vendor@mail.com";
-    private String role = "vendor";
-//    private String email = User.getSessionEmail();
-//    private String email = User.getSessionRole();
-    Vendor vendor = new Vendor(email);
+    private String email = User.getSessionEmail();
 
     /**
      * Creates new form vendorCurrentOrder
@@ -46,10 +37,9 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
     
     //display new order
     public void displayNewOrder() {
-        DecimalFormat df = new DecimalFormat("0.00");
         String[] newOrderInfo = new Order().getNewOrder(email);
         //if newOrderInfo is null, display "no new orders"
-        if (newOrderInfo==null) {
+        if (newOrderInfo == null) {
             orderMessageLabel.setText("No new orders.");
             //reset new order section 
             incomingIDLabel.setText("");
@@ -763,7 +753,6 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
     private void rejectBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rejectBtnActionPerformed
         //update order status to cancelled
         int orderID = Integer.parseInt(incomingIDLabel.getText());
-        String orderMethod = incomingMethodTxt.getText();
         
         //may need to add cancellation reason
         int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to reject this order?", "Reject Order", JOptionPane.YES_NO_OPTION);

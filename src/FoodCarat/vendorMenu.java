@@ -4,12 +4,9 @@
  */
 package FoodCarat;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -19,7 +16,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -33,11 +29,7 @@ public class vendorMenu extends javax.swing.JFrame {
 
     String imagePath = "";
     File imageFile = null;
-    //change to userSession 
-    private String email = "vendor@mail.com";
-    private String name = "Vendor";
-//    private String email = User.getSessionEmail();
-//    private String name = User.getSessionName();
+    private String email = User.getSessionEmail();
     Vendor vendor = new Vendor(email);
     boolean edit = true;
     
@@ -129,7 +121,10 @@ public class vendorMenu extends javax.swing.JFrame {
         ImageIcon itemImage = new ImageIcon(imagePath);
         Image resizedImage = itemImage.getImage().getScaledInstance(photoLabel.getWidth(), photoLabel.getHeight(), Image.SCALE_SMOOTH);
         photoLabel.setText(""); //clear the label
-        photoLabel.setIcon(new ImageIcon(resizedImage));        
+        photoLabel.setIcon(new ImageIcon(resizedImage));  
+        
+        deleteBtn.setEnabled(true);
+        editBtn.setEnabled(true);
     }
     
     //display items based on check boxes
@@ -152,7 +147,7 @@ public class vendorMenu extends javax.swing.JFrame {
             for (String filterType : filter) {
                 if (itemType.equals(filterType)) {
                     isFiltered = true;
-                    break;  // Exit loop once a match is found
+                    break;  
                 }
             }
 
@@ -162,8 +157,7 @@ public class vendorMenu extends javax.swing.JFrame {
                 Image img = itemImage.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
                 itemImage = new ImageIcon(img);
 
-                model.addRow(
-                        new Object[]{index, itemID, itemImage, itemName, itemType, itemPrice});
+                model.addRow(new Object[]{index, itemID, itemImage, itemName, itemType, itemPrice});
                 index++;
             }
         }
@@ -595,9 +589,8 @@ public class vendorMenu extends javax.swing.JFrame {
         //have validation to "choose an item in the table"
         if (selectedRow >= 0) {            
             Object id = itemTable.getModel().getValueAt(selectedRow, 1);
-            int selectID = (int) id;
+            int selectID = Integer.parseInt(id.toString());
             displayItems(selectID);
-            deleteBtn.setEnabled(true);
         } else {
             //no row is selected
             JOptionPane.showMessageDialog(null, "Please select a row to view details.", "Alert", JOptionPane.WARNING_MESSAGE);
@@ -629,7 +622,6 @@ public class vendorMenu extends javax.swing.JFrame {
     private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
         //enable editing text field
         enableTextField();
-        DecimalFormat df = new DecimalFormat("0.00");
         String id = idLabel.getText().trim();
         String name = itemNameTxt.getText().trim();
         String type = typeBox.getSelectedItem().toString().trim();

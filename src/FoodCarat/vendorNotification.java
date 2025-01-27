@@ -4,14 +4,13 @@
  */
 package FoodCarat;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -20,10 +19,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class vendorNotification extends javax.swing.JFrame {
 
-    private String email = "vendor@mail.com";
-    private String role = "vendor";
-//    private String email = User.getSessionEmail();
-//    private String email = User.getSessionRole();
+    private String email = User.getSessionEmail();
     Vendor vendor = new Vendor(email);
 
     /**
@@ -38,8 +34,6 @@ public class vendorNotification extends javax.swing.JFrame {
     }
     
     //display all activities    
-//    Display urgent stuff first 
-//    New order > order status > review > item
     public void displayActivities(String[] filters) {
         DefaultTableModel model = (DefaultTableModel) notificationTable.getModel();
         model.setRowCount(0);
@@ -47,7 +41,6 @@ public class vendorNotification extends javax.swing.JFrame {
         //get current date in yyyy-MM-dd
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate currentDate = LocalDate.now();
-        System.out.println(currentDate);
         
         Order orders = new Order();
         
@@ -61,7 +54,7 @@ public class vendorNotification extends javax.swing.JFrame {
                         if (orderDate.isEqual(currentDate)) {
                             int orderID = Integer.parseInt(order[0].trim());
                             String message = "A new order is waiting for your approval. Please check as soon as possible. (Order ID: " + orderID + ")";
-                            model.addRow(new Object[]{"New Order", orderID, message});
+                            model.addRow(new Object[]{"New Order", message});
                         }
                     } catch (DateTimeParseException e) {
                         System.err.println("Invalid date format for order ID " + order[0] + ": " + e.getMessage());
@@ -78,7 +71,7 @@ public class vendorNotification extends javax.swing.JFrame {
                         int orderID = Integer.parseInt(order[0].trim());
                         if (orderDate.isEqual(currentDate) && !orderStatus.equalsIgnoreCase("cancelled") && !orderStatus.equalsIgnoreCase("assigning runner") && !orderStatus.equalsIgnoreCase("pending accept")) {
                             String message = "An order has changed its status to \"" + orderStatus.substring(0, 1).toUpperCase() + orderStatus.substring(1).toLowerCase() + "\" (Order ID: " + orderID + ")";
-                            model.addRow(new Object[]{"Order Status", orderID, message});
+                            model.addRow(new Object[]{"Order Status", message});
                         } 
                     } catch (DateTimeParseException e) {
                         System.err.println("Invalid date format for order ID " + order[0] + ": " + e.getMessage());
@@ -86,14 +79,11 @@ public class vendorNotification extends javax.swing.JFrame {
                 }
                 
             } else if (filter.equalsIgnoreCase("review")) {
-                //Review - if got review for order from that vendor on the date
                 //order review
                 Review reviews = new Review();
                 List<String[]> vendorReview = reviews.getAllReviews(email, "vendor");
                 List<String[]> orderReview = reviews.getAllReviews(email, "order");
                 
-                System.out.println(orderReview.size());
-
                 for (String[] review : vendorReview) {
                     try {
                         LocalDate reviewDate = LocalDate.parse(review[5].trim(), dateFormat);
@@ -101,7 +91,7 @@ public class vendorNotification extends javax.swing.JFrame {
                         
                         if (reviewDate.isEqual(currentDate)) {
                             String message = "You received a new review as a vendor! " + " (Review ID: " + reviewID + ")";
-                            model.addRow(new Object[]{"Vendor Review", reviewID, message});
+                            model.addRow(new Object[]{"Vendor Review", message});
                         }
                     } catch (DateTimeParseException e) {
                         System.err.println("Invalid date format for review ID " + review[0] + ": " + e.getMessage());
@@ -115,7 +105,7 @@ public class vendorNotification extends javax.swing.JFrame {
                         
                         if (reviewDate.isEqual(currentDate)) {
                             String message = "You received a new review for an order! " + " (Review ID: " + reviewID + ")";
-                            model.addRow(new Object[]{"Order Review", reviewID, message});
+                            model.addRow(new Object[]{"Order Review", message});
                         }
                     } catch (DateTimeParseException e) {
                         System.err.println("Invalid date format for review ID " + review[0] + ": " + e.getMessage());
@@ -123,7 +113,7 @@ public class vendorNotification extends javax.swing.JFrame {
                 }
                 
             } else if (filter.equalsIgnoreCase("item")) {
-                //Item - deleted by vendor, item added (latest item by vendor) - show up to 10 records
+                //Item - deleted by vendor, item added (latest item by vendor)
                 Item items = new Item();
                 List<String[]> itemNotify = items.getAllItems(email, false);
                 List<String[]> newItems = new ArrayList<>();
@@ -143,7 +133,7 @@ public class vendorNotification extends javax.swing.JFrame {
 
                 for (String[] addedItem : newItems) {
                     String message = "New " + addedItem[2] + " item added: \"" + addedItem[1] + "\" (Item ID: " + addedItem[0] + ")";
-                    model.addRow(new Object[]{"Item Added", addedItem[0], message});
+                    model.addRow(new Object[]{"Item Added", message});
                 }
 
                 // Add deleted items to the table
@@ -154,16 +144,48 @@ public class vendorNotification extends javax.swing.JFrame {
                     } else if (deletedItem[6].equalsIgnoreCase("deleted by manager")) {
                         message = "Item \"" + deletedItem[1] + "\" was deleted by FoodCarat Manager (Item ID: " + deletedItem[0] + ")";
                     }
-                    model.addRow(new Object[]{"Item Deleted", deletedItem[0], message});
+                    model.addRow(new Object[]{"Item Deleted", message});
                 }
             }
         }
     }
 
-//    Automatically call the panel and populate the details part
+    public void displayDetails(int id, String detailType) {
+        //call panel based on type then populate with info
+        System.out.println("id: " + id + "\ntype: " + detailType);
 
-    public void displayDetails() {
-        //call panel based on type then populate with info (idk can or not)
+        if (detailType.equalsIgnoreCase("New Order")) {
+            vendorCurrentOrder currentOrderGUI = new vendorCurrentOrder();
+            currentOrderGUI.setVisible(true);
+            dispose();
+        } else if (detailType.equalsIgnoreCase("Order Status")) {
+            vendorCurrentOrder currentOrderGUI = new vendorCurrentOrder();
+            currentOrderGUI.displayOrderDetails(id);
+            currentOrderGUI.setVisible(true);
+            dispose();
+        } else if (detailType.equalsIgnoreCase("Vendor Review")) {
+            vendorReview vendorReviewGUI = new vendorReview();
+            vendorReviewGUI.displaySelectedReview(id);
+            vendorReviewGUI.setVisible(true);
+            dispose();
+        } else if (detailType.equalsIgnoreCase("Order Review")) {
+            vendorOrderHistory orderReviewGUI = new vendorOrderHistory();
+            //get order ID from the review 
+            String[] review = new Review().getReview(id);
+            int orderID = Integer.parseInt(review[1]);
+            orderReviewGUI.displayVendorOrder(orderID);
+            orderReviewGUI.setVisible(true);
+            dispose();
+        } else if (detailType.equalsIgnoreCase("Item Added")) {
+            vendorMenu vendorMenuGUI = new vendorMenu();
+            vendorMenuGUI.displayItems(id);
+            vendorMenuGUI.setVisible(true);
+            dispose();
+        } else if (detailType.equalsIgnoreCase("Item Deleted")) {
+            //display vendorItemDeleted page without disposing 
+            vendorItemDeleted itemDeletedGUI = new vendorItemDeleted(id);
+            itemDeletedGUI.setVisible(true);
+        }
     }
     
     /**
@@ -203,7 +225,7 @@ public class vendorNotification extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Type", "ID", "Activity"
+                "Type", "Activity"
             }
         ));
         notificationTable.setRowHeight(35);
@@ -212,9 +234,7 @@ public class vendorNotification extends javax.swing.JFrame {
             notificationTable.getColumnModel().getColumn(0).setResizable(false);
             notificationTable.getColumnModel().getColumn(0).setPreferredWidth(20);
             notificationTable.getColumnModel().getColumn(1).setResizable(false);
-            notificationTable.getColumnModel().getColumn(1).setPreferredWidth(10);
-            notificationTable.getColumnModel().getColumn(2).setResizable(false);
-            notificationTable.getColumnModel().getColumn(2).setPreferredWidth(500);
+            notificationTable.getColumnModel().getColumn(1).setPreferredWidth(500);
         }
 
         filterBtn.setText("Filter");
@@ -298,8 +318,53 @@ public class vendorNotification extends javax.swing.JFrame {
     }//GEN-LAST:event_menuBtnActionPerformed
 
     private void viewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewBtnActionPerformed
-        // TODO add your handling code here:
         //call respective GUI classes hehe
+        int selectedRow = notificationTable.getSelectedRow();
+        //validation to choose a row 
+        if (selectedRow >= 0) {
+            //id is in the message ()
+            
+            //get ID, type and message
+            String type = notificationTable.getModel().getValueAt(selectedRow, 0).toString(); //type column   
+            int id = 0;
+            String message = notificationTable.getModel().getValueAt(selectedRow, 1).toString(); //message column, will change to 1
+
+            if (type.equalsIgnoreCase("New Order")) {
+                int startIndex = message.indexOf("(Order ID:") + "(Order ID:".length();
+                int endIndex = message.indexOf(")", startIndex);
+                String orderID = message.substring(startIndex, endIndex).trim();
+                id = Integer.parseInt(orderID);
+            } else if (type.equalsIgnoreCase("Order Status")) {
+                int startIndex = message.indexOf("(Order ID:") + "(Order ID:".length();
+                int endIndex = message.indexOf(")", startIndex);
+                String orderID = message.substring(startIndex, endIndex).trim();
+                id = Integer.parseInt(orderID);
+            } else if (type.equalsIgnoreCase("Vendor Review")) {
+                int startIndex = message.indexOf("(Review ID:") + "(Review ID:".length();
+                int endIndex = message.indexOf(")", startIndex);
+                String reviewID = message.substring(startIndex, endIndex).trim();
+                id = Integer.parseInt(reviewID);
+            } else if (type.equalsIgnoreCase("Order Review")) {
+                int startIndex = message.indexOf("(Review ID:") + "(Review ID:".length();
+                int endIndex = message.indexOf(")", startIndex);
+                String reviewID = message.substring(startIndex, endIndex).trim();
+                id = Integer.parseInt(reviewID);
+            } else if (type.equalsIgnoreCase("Item Added")) {
+                int startIndex = message.indexOf("(Item ID:") + "(Item ID:".length();
+                int endIndex = message.indexOf(")", startIndex);
+                String itemID = message.substring(startIndex, endIndex).trim();
+                id = Integer.parseInt(itemID);
+            } else if (type.equalsIgnoreCase("Item Deleted")) {
+                int startIndex = message.indexOf("(Item ID:") + "(Item ID:".length();
+                int endIndex = message.indexOf(")", startIndex);
+                String itemID = message.substring(startIndex, endIndex).trim();
+                id = Integer.parseInt(itemID);
+            }
+            
+            displayDetails(id, type);            
+        } else { //no row is selected
+            JOptionPane.showMessageDialog(null, "Please select a row to view details.", "Alert", JOptionPane.WARNING_MESSAGE);
+        }
     }//GEN-LAST:event_viewBtnActionPerformed
 
     private void filterBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterBtnActionPerformed
