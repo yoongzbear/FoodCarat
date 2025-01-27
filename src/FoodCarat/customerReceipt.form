@@ -34,7 +34,11 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="bBack" min="-2" pref="146" max="-2" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <Component id="bOrderHistory" min="-2" pref="121" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="bBack" min="-2" pref="146" max="-2" attributes="0"/>
+                  </Group>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="jScrollPane1" alignment="0" min="-2" pref="483" max="-2" attributes="0"/>
                       <Component id="jLabel11" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -90,7 +94,10 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-              <Component id="bBack" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="bBack" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="bOrderHistory" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -288,7 +295,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="bBack">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Back to Main Page"/>
+        <Property name="text" type="java.lang.String" value="Main Menu"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bBackActionPerformed"/>
@@ -348,6 +355,14 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="deliveryFee"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="bOrderHistory">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Order History"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bOrderHistoryActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

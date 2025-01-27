@@ -138,6 +138,7 @@ public class customerReceipt extends javax.swing.JFrame {
         sPayTotal = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
         sDeliveryFee = new javax.swing.JLabel();
+        bOrderHistory = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -184,7 +185,7 @@ public class customerReceipt extends javax.swing.JFrame {
 
         jLabel14.setText("Total Payment:");
 
-        bBack.setText("Back to Main Page");
+        bBack.setText("Main Menu");
         bBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bBackActionPerformed(evt);
@@ -213,6 +214,13 @@ public class customerReceipt extends javax.swing.JFrame {
 
         sDeliveryFee.setText("deliveryFee");
 
+        bOrderHistory.setText("Order History");
+        bOrderHistory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bOrderHistoryActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -226,7 +234,10 @@ public class customerReceipt extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(41, 41, 41)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(bBack, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(bOrderHistory, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bBack, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 483, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel11)
@@ -270,7 +281,9 @@ public class customerReceipt extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(10, 10, 10)
-                .addComponent(bBack)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(bBack)
+                    .addComponent(bOrderHistory))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -333,6 +346,12 @@ public class customerReceipt extends javax.swing.JFrame {
         frame.setVisible(true);
     }//GEN-LAST:event_bBackActionPerformed
 
+    private void bOrderHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bOrderHistoryActionPerformed
+        this.dispose();
+        customerOrderHistory frame = new customerOrderHistory();
+        frame.setVisible(true);
+    }//GEN-LAST:event_bOrderHistoryActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -370,6 +389,7 @@ public class customerReceipt extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bBack;
+    private javax.swing.JButton bOrderHistory;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
