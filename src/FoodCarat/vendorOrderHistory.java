@@ -28,18 +28,15 @@ public class vendorOrderHistory extends javax.swing.JFrame {
 
     /**
      * Creates new form vendorOrderHistory
-     */       
-    //private String email = User.getSessionEmail();
-    private String email = "vendor@mail.com";
-    
+     */
+    private String email = User.getSessionEmail();
     Vendor vendor = new Vendor(email);
-    
+
     public vendorOrderHistory() {
         initComponents();
-        getContentPane().setBackground(new java.awt.Color(186,85,211)); //setting background color of frame
+        getContentPane().setBackground(new java.awt.Color(186, 85, 211)); //setting background color of frame
         setLocationRelativeTo(null);
         
-        //test if it works
         displayVendorOrder();
         
         //set the placeholder for search box
@@ -478,7 +475,6 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                 "Item", "Price (RM)", "Quantity"
             }
         ));
-        itemTable.setRowHeight(20);
         jScrollPane5.setViewportView(itemTable);
 
         jLabel12.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
@@ -494,16 +490,12 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         jLabel15.setText("Order Method:");
 
         idLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        idLabel.setText("ID");
 
         dateLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        dateLabel.setText("Date");
 
         emailLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        emailLabel.setText("Email");
 
         methodLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        methodLabel.setText("Method");
 
         feedbackLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         feedbackLabel.setText("Order Feedback:");
@@ -512,10 +504,8 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         jLabel18.setText("Total Price:");
 
         totalPriceLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        totalPriceLabel.setText("RM");
 
         statusLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        statusLabel.setText("Status");
 
         jLabel16.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         jLabel16.setText("Status:");
@@ -628,7 +618,6 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         chartWeekRange1.setText("End Date:");
 
         weeklyEndDateTxt.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        weeklyEndDateTxt.setText("dd MMM yyyy");
 
         weeklyChartBtn.setText("Generate Chart");
         weeklyChartBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -810,10 +799,8 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         chartWeekRange7.setText("Start Date:");
 
         startDateQuarterLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        startDateQuarterLabel.setText("Start Date");
 
         endDateQuarterLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        endDateQuarterLabel.setText("End Date");
 
         chartWeekRange8.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         chartWeekRange8.setText("End Date:");
@@ -1277,7 +1264,6 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     private javax.swing.JLabel methodLabel;
     private javax.swing.JButton monthChartBtn;
     private com.toedter.calendar.JMonthChooser monthChooser;
-    private javax.swing.JPanel monthlyChartPanel;
     private javax.swing.JPanel monthlyChartPanel1;
     private javax.swing.JTable orderTable;
     private javax.swing.JComboBox<String> quarterChartBox;

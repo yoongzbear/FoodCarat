@@ -35,6 +35,11 @@ public class vendorReview extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         
         displayReviews();
+        ratingOneChkBox.setSelected(true);
+        ratingTwoChkBox.setSelected(true);
+        ratingThreeChkBox.setSelected(true);
+        ratingFourChkBox.setSelected(true);
+        ratingFiveChkBox.setSelected(true);
         vendorFeedbackTxtArea.setEditable(false);        
     }
 
@@ -44,7 +49,6 @@ public class vendorReview extends javax.swing.JFrame {
         int index = 1;
         model.setRowCount(0);
         List<String[]> allReviews = new Review().getAllReviews(email, "vendor");
-        System.out.println(email);
         for (String[] reviewData : allReviews) {
                     
             String reviewID = reviewData[0];
@@ -259,8 +263,6 @@ public class vendorReview extends javax.swing.JFrame {
         ratingFiveChkBox = new javax.swing.JCheckBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         reviewTable = new javax.swing.JTable();
-        sortBtn = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
         filterBtn = new javax.swing.JButton();
         viewBtn = new javax.swing.JButton();
         revertBtn = new javax.swing.JButton();
@@ -335,6 +337,11 @@ public class vendorReview extends javax.swing.JFrame {
         ratingTwoChkBox.setText("2 🌟");
 
         sortComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sort Rating", "Lowest to Highest", "Highest to Lowest" }));
+        sortComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sortComboBoxActionPerformed(evt);
+            }
+        });
 
         ratingThreeChkBox.setText("3 🌟");
 
@@ -361,16 +368,6 @@ public class vendorReview extends javax.swing.JFrame {
             reviewTable.getColumnModel().getColumn(4).setResizable(false);
             reviewTable.getColumnModel().getColumn(4).setPreferredWidth(30);
         }
-
-        sortBtn.setText("Sort");
-        sortBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                sortBtnActionPerformed(evt);
-            }
-        });
-
-        jLabel2.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        jLabel2.setText("Filter:");
 
         filterBtn.setText("Filter");
         filterBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -405,39 +402,28 @@ public class vendorReview extends javax.swing.JFrame {
                 .addContainerGap())
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(ratingOneChkBox, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(ratingTwoChkBox)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(ratingThreeChkBox)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(ratingFourChkBox)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(ratingFiveChkBox)
-                                .addGap(18, 18, 18)
-                                .addComponent(filterBtn)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(sortComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(sortBtn)))
-                        .addGap(138, 138, 138))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 874, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addComponent(ratingOneChkBox, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ratingTwoChkBox)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ratingThreeChkBox)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ratingFourChkBox)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ratingFiveChkBox)
+                        .addGap(18, 18, 18)
+                        .addComponent(filterBtn)
+                        .addGap(405, 405, 405)
+                        .addComponent(sortComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 874, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ratingOneChkBox)
                     .addComponent(ratingTwoChkBox)
@@ -445,15 +431,14 @@ public class vendorReview extends javax.swing.JFrame {
                     .addComponent(ratingFourChkBox)
                     .addComponent(ratingFiveChkBox)
                     .addComponent(filterBtn)
-                    .addComponent(sortComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(sortBtn))
+                    .addComponent(sortComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(viewBtn)
                     .addComponent(revertBtn))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         jLabel3.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
@@ -497,25 +482,19 @@ public class vendorReview extends javax.swing.JFrame {
         jLabel10.setText("Vendor Rating:");
 
         idLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        idLabel.setText("sd");
 
         dateLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        dateLabel.setText("date");
 
         emailLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        emailLabel.setText("em");
 
         methodLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        methodLabel.setText("cha");
 
         ratingLabel.setFont(new java.awt.Font("Segoe UI Emoji", 0, 14)); // NOI18N
-        ratingLabel.setText("44");
 
         jLabel12.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         jLabel12.setText("Total Price: ");
 
         priceLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        priceLabel.setText("meow");
 
         vendorFeedbackTxtArea.setColumns(20);
         vendorFeedbackTxtArea.setRows(5);
@@ -620,7 +599,6 @@ public class vendorReview extends javax.swing.JFrame {
         chartWeekRange1.setText("End Date:");
 
         weeklyEndDateTxt.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        weeklyEndDateTxt.setText("dd MMM yyyy");
 
         weeklyChartBtn.setText("Generate Chart");
         weeklyChartBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -629,8 +607,9 @@ public class vendorReview extends javax.swing.JFrame {
             }
         });
 
-        weeklyChartPanel.setMaximumSize(new java.awt.Dimension(325, 200));
-        weeklyChartPanel.setMinimumSize(new java.awt.Dimension(325, 200));
+        weeklyChartPanel.setMaximumSize(new java.awt.Dimension(467, 300));
+        weeklyChartPanel.setMinimumSize(new java.awt.Dimension(467, 300));
+        weeklyChartPanel.setPreferredSize(new java.awt.Dimension(467, 300));
 
         javax.swing.GroupLayout weeklyChartPanelLayout = new javax.swing.GroupLayout(weeklyChartPanel);
         weeklyChartPanel.setLayout(weeklyChartPanelLayout);
@@ -640,7 +619,7 @@ public class vendorReview extends javax.swing.JFrame {
         );
         weeklyChartPanelLayout.setVerticalGroup(
             weeklyChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 200, Short.MAX_VALUE)
+            .addGap(0, 300, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -662,7 +641,7 @@ public class vendorReview extends javax.swing.JFrame {
                                     .addComponent(weeklyEndDateTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(weeklyDateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(weeklyChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(39, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -677,9 +656,9 @@ public class vendorReview extends javax.swing.JFrame {
                     .addComponent(weeklyEndDateTxt))
                 .addGap(31, 31, 31)
                 .addComponent(weeklyChartBtn)
-                .addGap(30, 30, 30)
+                .addGap(28, 28, 28)
                 .addComponent(weeklyChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(212, Short.MAX_VALUE))
+                .addContainerGap(102, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Weekly", jPanel3);
@@ -697,18 +676,19 @@ public class vendorReview extends javax.swing.JFrame {
             }
         });
 
-        monthlyChartPanel.setMaximumSize(new java.awt.Dimension(325, 200));
-        monthlyChartPanel.setMinimumSize(new java.awt.Dimension(325, 200));
+        monthlyChartPanel.setMaximumSize(new java.awt.Dimension(467, 300));
+        monthlyChartPanel.setMinimumSize(new java.awt.Dimension(467, 300));
+        monthlyChartPanel.setPreferredSize(new java.awt.Dimension(467, 300));
 
         javax.swing.GroupLayout monthlyChartPanelLayout = new javax.swing.GroupLayout(monthlyChartPanel);
         monthlyChartPanel.setLayout(monthlyChartPanelLayout);
         monthlyChartPanelLayout.setHorizontalGroup(
             monthlyChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 453, Short.MAX_VALUE)
+            .addGap(0, 467, Short.MAX_VALUE)
         );
         monthlyChartPanelLayout.setVerticalGroup(
             monthlyChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 200, Short.MAX_VALUE)
+            .addGap(0, 300, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -732,7 +712,7 @@ public class vendorReview extends javax.swing.JFrame {
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(monthlyChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addContainerGap(39, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -749,7 +729,7 @@ public class vendorReview extends javax.swing.JFrame {
                 .addComponent(monthChartBtn)
                 .addGap(50, 50, 50)
                 .addComponent(monthlyChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(200, Short.MAX_VALUE))
+                .addContainerGap(88, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Monthly", jPanel5);
@@ -770,18 +750,19 @@ public class vendorReview extends javax.swing.JFrame {
             }
         });
 
-        quarterlyChartPanel.setMaximumSize(new java.awt.Dimension(325, 200));
-        quarterlyChartPanel.setMinimumSize(new java.awt.Dimension(325, 200));
+        quarterlyChartPanel.setMaximumSize(new java.awt.Dimension(467, 300));
+        quarterlyChartPanel.setMinimumSize(new java.awt.Dimension(467, 300));
+        quarterlyChartPanel.setPreferredSize(new java.awt.Dimension(467, 300));
 
         javax.swing.GroupLayout quarterlyChartPanelLayout = new javax.swing.GroupLayout(quarterlyChartPanel);
         quarterlyChartPanel.setLayout(quarterlyChartPanelLayout);
         quarterlyChartPanelLayout.setHorizontalGroup(
             quarterlyChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 453, Short.MAX_VALUE)
+            .addGap(0, 467, Short.MAX_VALUE)
         );
         quarterlyChartPanelLayout.setVerticalGroup(
             quarterlyChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 200, Short.MAX_VALUE)
+            .addGap(0, 300, Short.MAX_VALUE)
         );
 
         chartWeekRange6.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
@@ -798,10 +779,8 @@ public class vendorReview extends javax.swing.JFrame {
         chartWeekRange7.setText("Start Date:");
 
         startDateQuarterLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        startDateQuarterLabel.setText("Start Date");
 
         endDateQuarterLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        endDateQuarterLabel.setText("End Date");
 
         chartWeekRange8.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         chartWeekRange8.setText("End Date:");
@@ -836,7 +815,7 @@ public class vendorReview extends javax.swing.JFrame {
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGap(14, 14, 14)
                         .addComponent(quarterlyChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -858,7 +837,7 @@ public class vendorReview extends javax.swing.JFrame {
                 .addComponent(quarterChartBtn)
                 .addGap(50, 50, 50)
                 .addComponent(quarterlyChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(217, Short.MAX_VALUE))
+                .addContainerGap(105, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Quarterly", jPanel6);
@@ -873,18 +852,19 @@ public class vendorReview extends javax.swing.JFrame {
             }
         });
 
-        yearlyChartPanel.setMaximumSize(new java.awt.Dimension(325, 200));
-        yearlyChartPanel.setMinimumSize(new java.awt.Dimension(325, 200));
+        yearlyChartPanel.setMaximumSize(new java.awt.Dimension(467, 300));
+        yearlyChartPanel.setMinimumSize(new java.awt.Dimension(467, 300));
+        yearlyChartPanel.setPreferredSize(new java.awt.Dimension(467, 300));
 
         javax.swing.GroupLayout yearlyChartPanelLayout = new javax.swing.GroupLayout(yearlyChartPanel);
         yearlyChartPanel.setLayout(yearlyChartPanelLayout);
         yearlyChartPanelLayout.setHorizontalGroup(
             yearlyChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 453, Short.MAX_VALUE)
+            .addGap(0, 467, Short.MAX_VALUE)
         );
         yearlyChartPanelLayout.setVerticalGroup(
             yearlyChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 200, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
@@ -892,17 +872,19 @@ public class vendorReview extends javax.swing.JFrame {
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(yearlyChartBtn)
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addGap(8, 8, 8)
+                        .addContainerGap()
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(yearlyChartBtn)
                             .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addGap(8, 8, 8)
                                 .addComponent(chartWeekRange9)
                                 .addGap(18, 18, 18)
-                                .addComponent(chartYearlyChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(yearlyChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(chartYearlyChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(yearlyChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(27, Short.MAX_VALUE))
         );
         jPanel7Layout.setVerticalGroup(
@@ -914,9 +896,9 @@ public class vendorReview extends javax.swing.JFrame {
                     .addComponent(chartWeekRange9))
                 .addGap(33, 33, 33)
                 .addComponent(yearlyChartBtn)
-                .addGap(50, 50, 50)
-                .addComponent(yearlyChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(247, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(yearlyChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(177, 177, 177))
         );
 
         jTabbedPane1.addTab("Yearly", jPanel7);
@@ -956,31 +938,28 @@ public class vendorReview extends javax.swing.JFrame {
                             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(43, 43, 43))
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(menuBtn)
-                        .addGap(19, 19, 19))))
+                        .addGap(469, 469, 469)
+                        .addComponent(menuBtn)))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(menuBtn)
-                        .addGap(19, 19, 19))
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addComponent(menuBtn)
+                    .addComponent(jLabel1))
                 .addGap(12, 12, 12)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(15, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         pack();
@@ -1037,16 +1016,6 @@ public class vendorReview extends javax.swing.JFrame {
         sortComboBox.setSelectedItem("Sort Rating");
         displayReviews();
     }//GEN-LAST:event_revertBtnActionPerformed
-
-    private void sortBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortBtnActionPerformed
-        //get the combo box
-        String sorting = (String) sortComboBox.getSelectedItem();
-        if (sorting.equals("Sort Rating")) {
-            JOptionPane.showMessageDialog(null, "Please select sorting order.", "Alert", JOptionPane.WARNING_MESSAGE);
-        } else {
-            displayReviews(sorting);
-        }        
-    }//GEN-LAST:event_sortBtnActionPerformed
 
     private void weeklyDateChooserjDateChooserInput(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_weeklyDateChooserjDateChooserInput
         SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy");
@@ -1180,6 +1149,16 @@ public class vendorReview extends javax.swing.JFrame {
         generateChart("yearly", timeRange);
     }//GEN-LAST:event_yearlyChartBtnActionPerformed
 
+    private void sortComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortComboBoxActionPerformed
+        //get the combo box
+        String sorting = (String) sortComboBox.getSelectedItem();
+        if (sorting.equals("Sort Rating")) {
+            displayReviews();
+        } else {
+            displayReviews(sorting);
+        }  
+    }//GEN-LAST:event_sortComboBoxActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1239,7 +1218,6 @@ public class vendorReview extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -1274,7 +1252,6 @@ public class vendorReview extends javax.swing.JFrame {
     private javax.swing.JCheckBox ratingTwoChkBox;
     private javax.swing.JButton revertBtn;
     private javax.swing.JTable reviewTable;
-    private javax.swing.JButton sortBtn;
     private javax.swing.JComboBox<String> sortComboBox;
     private javax.swing.JLabel startDateQuarterLabel;
     private javax.swing.JTextArea vendorFeedbackTxtArea;
