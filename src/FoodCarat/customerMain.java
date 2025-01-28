@@ -85,6 +85,11 @@ public class customerMain extends javax.swing.JFrame {
         });
 
         bNotif.setText("Notification");
+        bNotif.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bNotifActionPerformed(evt);
+            }
+        });
 
         bOrder.setText("Order");
         bOrder.addActionListener(new java.awt.event.ActionListener() {
@@ -287,6 +292,12 @@ public class customerMain extends javax.swing.JFrame {
         customerTransacHistory frame = new customerTransacHistory();
         frame.setVisible(true);
     }//GEN-LAST:event_bCheckPointActionPerformed
+
+    private void bNotifActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bNotifActionPerformed
+        this.dispose();
+        customerNotification frame = new customerNotification();
+        frame.setVisible(true);
+    }//GEN-LAST:event_bNotifActionPerformed
 
     /**
      * @param args the command line arguments
