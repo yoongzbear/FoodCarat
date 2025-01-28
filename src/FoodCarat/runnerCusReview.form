@@ -280,11 +280,11 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="127" max="-2" attributes="0"/>
-                      <Component id="jYearChooser1" min="-2" pref="80" max="-2" attributes="0"/>
+                      <Component id="startYearChooser" min="-2" pref="80" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jLabel5" min="-2" pref="27" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jYearChooser2" min="-2" pref="80" max="-2" attributes="0"/>
+                      <Component id="endYearChooser" min="-2" pref="80" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="YgenerateJB" min="-2" max="-2" attributes="0"/>
                       <EmptySpace pref="68" max="32767" attributes="0"/>
@@ -297,9 +297,9 @@
                       <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="103" alignment="0" groupAlignment="1" attributes="0">
-                              <Component id="jYearChooser2" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Component id="endYearChooser" alignment="1" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel5" alignment="1" min="-2" max="-2" attributes="0"/>
-                              <Component id="jYearChooser1" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Component id="startYearChooser" alignment="1" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
@@ -321,9 +321,9 @@
                 <Property name="text" type="java.lang.String" value="-"/>
               </Properties>
             </Component>
-            <Component class="com.toedter.calendar.JYearChooser" name="jYearChooser1">
+            <Component class="com.toedter.calendar.JYearChooser" name="startYearChooser">
             </Component>
-            <Component class="com.toedter.calendar.JYearChooser" name="jYearChooser2">
+            <Component class="com.toedter.calendar.JYearChooser" name="endYearChooser">
             </Component>
             <Component class="javax.swing.JButton" name="YgenerateJB">
               <Properties>

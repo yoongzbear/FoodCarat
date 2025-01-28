@@ -8,17 +8,14 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
-import java.time.Month;
-import java.time.YearMonth;
 import java.time.ZoneId;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import org.jfree.chart.ChartFactory;
@@ -35,24 +32,44 @@ import org.jfree.data.category.DefaultCategoryDataset;
  * @author Yuna
  */
 public class runnerCusReview extends javax.swing.JFrame {
-    //private String runnerEmail = User.getSessionEmail();
-    private String runnerEmail = "runner3@mail.com";
+    private String runnerEmail = User.getSessionEmail();
     private String Role = "runner";
+    private List<String[]> currentData;
 
-    /**
-     * Creates new form runnerCusReview
-     */
     public runnerCusReview() {
         initComponents();
         setLocationRelativeTo(null);
         
         addCheckBoxListeners();
-        fetchFilteredData(null, null);
+        fetchData(null, null);
         chartAllData();
     }
-    
+
+
     // Update the table
-    private void fetchFilteredData(LocalDate startDate, LocalDate endDate) {
+    private void fetchData(LocalDate startDate, LocalDate endDate) {
+        List<String[]> cusReview = new Review().getAllReviews(runnerEmail, Role);
+        cusReview.sort((review1, review2) -> review2[5].compareTo(review1[5]));
+
+        currentData = new ArrayList<>();
+
+        for (String[] reviewInfo : cusReview) {
+            String reviewDate = reviewInfo[5];
+            LocalDate date = LocalDate.parse(reviewDate);
+
+            // Filter by date range if provided
+            if ((startDate == null || !date.isBefore(startDate)) &&
+                (endDate == null || !date.isAfter(endDate))) {
+                currentData.add(reviewInfo);
+            }
+        }
+
+        // Apply any selected checkbox
+        filterDataByCheckBox();
+    }
+
+    // Filter the current data based on checkbox selections
+    private void filterDataByCheckBox() {
         Set<String> selectedRatings = new HashSet<>();
         if (oneJCB.isSelected()) selectedRatings.add("1");
         if (twoJCB.isSelected()) selectedRatings.add("2");
@@ -60,46 +77,31 @@ public class runnerCusReview extends javax.swing.JFrame {
         if (fourJCB.isSelected()) selectedRatings.add("4");
         if (fiveJCB.isSelected()) selectedRatings.add("5");
 
-        // Fetch all reviews
-        List<String[]> cusReview = new Review().getAllReviews(runnerEmail, Role);
-        cusReview.sort((review1, review2) -> review2[5].compareTo(review1[5]));
-
         DefaultTableModel model = (DefaultTableModel) cusReviewJT.getModel();
         model.setRowCount(0);
-
+        
         // Populate the table with filtered data
-        for (String[] reviewInfo : cusReview) {
-            String reviewDate = reviewInfo[5];
-            LocalDate date = LocalDate.parse(reviewDate);
+        for (String[] reviewInfo : currentData) {
+            String rank = reviewInfo[3];
 
-            if ((startDate == null || !date.isBefore(startDate)) &&
-                (endDate == null || !date.isAfter(endDate))) {
-                String reviewId = reviewInfo[0];
-                String rank = reviewInfo[3];
-                String review = reviewInfo[4];
-
-                // Check if the rank matches selected ratings or if no ratings are selected
-                if (selectedRatings.isEmpty() || selectedRatings.contains(rank)) {
-                    model.addRow(new Object[]{
-                        reviewId, rank, review, reviewDate
-                    });
-                }
+            // Check if the rank matches selected ratings or if no ratings are selected
+            if (selectedRatings.isEmpty() || selectedRatings.contains(rank)) {
+                model.addRow(new Object[]{
+                    reviewInfo[0],
+                    rank,
+                    reviewInfo[4],
+                    reviewInfo[5]
+                });
             }
         }
     }
-    
+
+    // Apply filters and refresh table
     private void applyFilters() {
-        LocalDate startDate = startDateChooser.getDate() != null 
-            ? startDateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate() 
-            : null;
-        LocalDate endDate = endDateChooser.getDate() != null 
-            ? endDateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate() 
-            : null;
-        
-        fetchFilteredData(startDate, endDate);
+        filterDataByCheckBox();
     }
 
-    // Add action listeners for checkboxes
+    // for rank's filter
     private void addCheckBoxListeners() {
         ActionListener filterListener = e -> applyFilters();
         oneJCB.addActionListener(filterListener);
@@ -113,22 +115,22 @@ public class runnerCusReview extends javax.swing.JFrame {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
         LocalDate currentDate = LocalDate.now();
-        LocalDate startDate = currentDate.minusMonths(4); // Start from 4 months ago
+        LocalDate startDate = currentDate.minusMonths(4);
 
-        // Initialize a map to store the total count of each rating (1-5)
+        // store the total count of each rating (1-5)
         Map<Integer, Integer> ratingCounts = new LinkedHashMap<>();
         for (int i = 1; i <= 5; i++) {
             ratingCounts.put(i, 0);
         }
 
         DefaultTableModel model = (DefaultTableModel) cusReviewJT.getModel();
-        // Iterate through the table rows and count the ratings for the last 5 months
+
         for (int i = 0; i < model.getRowCount(); i++) {
             String dateString = (String) model.getValueAt(i, 3);
             String rankStr = (String) model.getValueAt(i, 1);
             LocalDate reviewDate = LocalDate.parse(dateString);
 
-            if (!reviewDate.isBefore(startDate)) { // Check if within the last 5 months
+            if (!reviewDate.isBefore(startDate)) {
                 int rank = Integer.parseInt(rankStr);            
                 ratingCounts.put(rank, ratingCounts.getOrDefault(rank, 0) + 1);
             }
@@ -141,6 +143,7 @@ public class runnerCusReview extends javax.swing.JFrame {
         displayBarChart(dataset, "Ratings Over Last 5 Months", "Ranks", "Total Count");
     }
 
+    // Generate Daily Bar Chart
     private void generateDailyBarChart(LocalDate startDate, LocalDate endDate) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         DefaultTableModel model = (DefaultTableModel) cusReviewJT.getModel();
@@ -150,7 +153,6 @@ public class runnerCusReview extends javax.swing.JFrame {
             ratingCounts.put(i, 0);
         }
 
-        // Iterate through the table rows and count the ratings for the selected date range
         for (int i = 0; i < model.getRowCount(); i++) {
             String dateString = (String) model.getValueAt(i, 3);
             String rankStr = (String) model.getValueAt(i, 1);
@@ -178,22 +180,25 @@ public class runnerCusReview extends javax.swing.JFrame {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         DefaultTableModel model = (DefaultTableModel) cusReviewJT.getModel();
 
-        // Initialize a map to store the total count of each rank (1-5)
         Map<Integer, Integer> rankCounts = new LinkedHashMap<>();
         for (int i = 1; i <= 5; i++) {
             rankCounts.put(i, 0);
         }
 
-        // Count the ranks for the selected date range
         for (int i = 0; i < model.getRowCount(); i++) {
-            String rankStr = (String) model.getValueAt(i, 1); // Rank column
-            int rank = Integer.parseInt(rankStr);
-            rankCounts.put(rank, rankCounts.getOrDefault(rank, 0) + 1);
+            String dateString = (String) model.getValueAt(i, 3);
+            String rankStr = (String) model.getValueAt(i, 1);
+            LocalDate reviewDate = LocalDate.parse(dateString);
+
+            if (!reviewDate.isBefore(startDate) && !reviewDate.isAfter(endDate)) {
+                int rank = Integer.parseInt(rankStr);
+                rankCounts.put(rank, rankCounts.getOrDefault(rank, 0) + 1);
+            }
         }
 
-            for (Map.Entry<Integer, Integer> entry : rankCounts.entrySet()) {
-                dataset.addValue(entry.getValue(), "Total Count of Ratings", String.valueOf(entry.getKey()));
-            }
+        for (Map.Entry<Integer, Integer> entry : rankCounts.entrySet()) {
+            dataset.addValue(entry.getValue(), "Total Count of Ratings", String.valueOf(entry.getKey()));
+        }
 
         displayBarChart(dataset, "Rantings from " + startDate + " to " + endDate, "Ranks", "Total Count");
     }
@@ -203,17 +208,21 @@ public class runnerCusReview extends javax.swing.JFrame {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         DefaultTableModel model = (DefaultTableModel) cusReviewJT.getModel();
         
-         // Initialize a map to store the total count of each rank (1-5) across all selected years
         Map<Integer, Integer> rankCounts = new LinkedHashMap<>();
         for (int i = 1; i <= 5; i++) {
             rankCounts.put(i, 0);
         }
 
-        // Count the ranks for the selected year range
         for (int i = 0; i < model.getRowCount(); i++) {
+            String dateString = (String) model.getValueAt(i, 3);
             String rankStr = (String) model.getValueAt(i, 1);
+            LocalDate reviewDate = LocalDate.parse(dateString);
+
+            int reviewYear = reviewDate.getYear();
+            if (reviewYear >= startYear && reviewYear <= endYear) {
                 int rank = Integer.parseInt(rankStr);
                 rankCounts.put(rank, rankCounts.getOrDefault(rank, 0) + 1);
+            }
         }
 
         for (Map.Entry<Integer, Integer> entry : rankCounts.entrySet()) {
@@ -223,7 +232,7 @@ public class runnerCusReview extends javax.swing.JFrame {
         displayBarChart(dataset, "Rantings from " + startYear + " to " + endYear, "Ranks", "Total Count");
     }
 
-    // Display the bar chart
+    // Display bar chart
     private void displayBarChart(DefaultCategoryDataset dataset, String title, String xAxisLabel, String yAxisLabel) {
         JFreeChart barChart = ChartFactory.createBarChart(
             title, xAxisLabel, yAxisLabel, dataset, PlotOrientation.VERTICAL, true, true, false);
@@ -231,7 +240,7 @@ public class runnerCusReview extends javax.swing.JFrame {
         CategoryPlot plot = barChart.getCategoryPlot();
         NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
 
-        // Calculate the total number of reviews
+        // Calculate total reviews
         int totalReviews = 0;
         for (int i = 0; i < dataset.getColumnCount(); i++) {
             Number value = dataset.getValue(0, i);
@@ -240,7 +249,7 @@ public class runnerCusReview extends javax.swing.JFrame {
             }
         }
 
-        // Set the x-axis tick unit based on total reviews
+        // Set x-axis tick unit
         if (totalReviews <= 10) {
             rangeAxis.setTickUnit(new NumberTickUnit(1));
         } else {
@@ -250,10 +259,10 @@ public class runnerCusReview extends javax.swing.JFrame {
         ChartPanel chartPanel = new ChartPanel(barChart);
         chartPanel.setPreferredSize(new Dimension(800, 600));
 
-        chartPanel.setMouseWheelEnabled(false); // Disable zooming with mouse wheel
-        chartPanel.setDomainZoomable(false);    // Disable domain zooming (x-axis)
-        chartPanel.setRangeZoomable(false);     // Disable range zooming (y-axis)
-        chartPanel.setPopupMenu(null);          // Remove the right-click menu
+        chartPanel.setMouseWheelEnabled(false);
+        chartPanel.setDomainZoomable(false);
+        chartPanel.setRangeZoomable(false);
+        chartPanel.setPopupMenu(null);
 
         barChartJL.removeAll();
         barChartJL.setLayout(new BorderLayout());
@@ -283,8 +292,8 @@ public class runnerCusReview extends javax.swing.JFrame {
         startMonthChooser = new com.toedter.calendar.JDateChooser();
         yearJP = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
-        jYearChooser1 = new com.toedter.calendar.JYearChooser();
-        jYearChooser2 = new com.toedter.calendar.JYearChooser();
+        startYearChooser = new com.toedter.calendar.JYearChooser();
+        endYearChooser = new com.toedter.calendar.JYearChooser();
         YgenerateJB = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -415,11 +424,11 @@ public class runnerCusReview extends javax.swing.JFrame {
             yearJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(yearJPLayout.createSequentialGroup()
                 .addGap(127, 127, 127)
-                .addComponent(jYearChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(startYearChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jYearChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(endYearChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(YgenerateJB)
                 .addContainerGap(68, Short.MAX_VALUE))
@@ -430,9 +439,9 @@ public class runnerCusReview extends javax.swing.JFrame {
                 .addGap(11, 11, 11)
                 .addGroup(yearJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(yearJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jYearChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(endYearChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel5)
-                        .addComponent(jYearChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(startYearChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(yearJPLayout.createSequentialGroup()
                         .addGap(3, 3, 3)
                         .addComponent(YgenerateJB)))
@@ -633,9 +642,8 @@ public class runnerCusReview extends javax.swing.JFrame {
         LocalDate startLocalDate = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         LocalDate endLocalDate = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-        fetchFilteredData(startLocalDate, endLocalDate);
+        fetchData(startLocalDate, endLocalDate);
         generateDailyBarChart(startLocalDate, endLocalDate);
-        applyFilters();
     }//GEN-LAST:event_DgenerateJBActionPerformed
 
     private void MgenerateJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MgenerateJBActionPerformed
@@ -651,21 +659,21 @@ public class runnerCusReview extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "End date cannot be earlier than start date.", "Invalid Date Range", JOptionPane.WARNING_MESSAGE);
             return;
         }
+        
         LocalDate startLocalDate = start.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         LocalDate endLocalDate = end.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-        // Adjust the start and end date
+        // Adjust start and end date
         startLocalDate = startLocalDate.withDayOfMonth(1);
         endLocalDate = endLocalDate.withDayOfMonth(endLocalDate.lengthOfMonth());
 
-        fetchFilteredData(startLocalDate, endLocalDate);
+        fetchData(startLocalDate, endLocalDate);
         generateMonthlyBarChart(startLocalDate, endLocalDate);
-        applyFilters();
     }//GEN-LAST:event_MgenerateJBActionPerformed
 
     private void YgenerateJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_YgenerateJBActionPerformed
-        int startYear = jYearChooser1.getYear();
-        int endYear = jYearChooser2.getYear();
+        int startYear = startYearChooser.getYear();
+        int endYear = endYearChooser.getYear();
 
         if (startYear == 0 || endYear == 0) {
             JOptionPane.showMessageDialog(this, "Please select both start and end dates.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -681,13 +689,12 @@ public class runnerCusReview extends javax.swing.JFrame {
         LocalDate startLocalDate = LocalDate.of(startYear, 1, 1);
         LocalDate endLocalDate = LocalDate.of(endYear, 12, 31);
 
-        fetchFilteredData(startLocalDate, endLocalDate);
+        fetchData(startLocalDate, endLocalDate);
         generateYearlyBarChart(startYear, endYear);
-        applyFilters();
     }//GEN-LAST:event_YgenerateJBActionPerformed
 
     private void allJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_allJBActionPerformed
-        fetchFilteredData(null, null);
+        fetchData(null, null);
         chartAllData();
     }//GEN-LAST:event_allJBActionPerformed
 
@@ -737,6 +744,7 @@ public class runnerCusReview extends javax.swing.JFrame {
     private javax.swing.JPanel dayJP;
     private com.toedter.calendar.JDateChooser endDateChooser;
     private com.toedter.calendar.JDateChooser endMonthChooser;
+    private com.toedter.calendar.JYearChooser endYearChooser;
     private javax.swing.JCheckBox fiveJCB;
     private javax.swing.JCheckBox fourJCB;
     private javax.swing.JLabel jLabel1;
@@ -748,12 +756,11 @@ public class runnerCusReview extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private com.toedter.calendar.JYearChooser jYearChooser1;
-    private com.toedter.calendar.JYearChooser jYearChooser2;
     private javax.swing.JPanel monthJP;
     private javax.swing.JCheckBox oneJCB;
     private com.toedter.calendar.JDateChooser startDateChooser;
     private com.toedter.calendar.JDateChooser startMonthChooser;
+    private com.toedter.calendar.JYearChooser startYearChooser;
     private javax.swing.JCheckBox threeJCB;
     private javax.swing.JCheckBox twoJCB;
     private javax.swing.JPanel yearJP;
