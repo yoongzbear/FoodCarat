@@ -19,7 +19,9 @@ import javax.swing.text.PlainDocument;
  * @author Yuna
  */
 public class vendor1AccInfo extends javax.swing.JFrame {
-/**
+    private String email = User.getSessionEmail();
+
+    /**
      * Creates new form vendor1ProfilePic
      */
     
@@ -249,8 +251,6 @@ public class vendor1AccInfo extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void completeJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_completeJBActionPerformed
-        String email = User.getSessionEmail();
-        
         String name = nameTF.getText().trim();
         String password = passwordTF.getText().trim();
         String contactNumber = contactNoTF.getText().trim();

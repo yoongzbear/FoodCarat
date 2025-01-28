@@ -13,14 +13,14 @@ import javax.swing.JOptionPane;
  * @author Yuna
  */
 public class runnerMain extends javax.swing.JFrame {
+    private String email = User.getSessionEmail();
+    private String name = User.getSessionName();
+    
 
     public runnerMain() {
         initComponents();
         setLocationRelativeTo(null);
         username.setText("");
-        String name = User.getSessionName();
-        
-        String email = User.getSessionEmail();
         Runner runner = new Runner();
         String[] runnerDetails = runner.getRunnerDetails(email);
         
@@ -399,7 +399,6 @@ public class runnerMain extends javax.swing.JFrame {
     }//GEN-LAST:event_logoutButtonActionPerformed
 
     private void avaJRBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_avaJRBActionPerformed
-        String email = User.getSessionEmail();
         String status = "available";
         
         Runner runner = new Runner();
@@ -411,7 +410,6 @@ public class runnerMain extends javax.swing.JFrame {
     }//GEN-LAST:event_avaJRBActionPerformed
 
     private void unaJRBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_unaJRBActionPerformed
-        String email = User.getSessionEmail();
         String status = "unavailable";
         
         Runner runner = new Runner();
