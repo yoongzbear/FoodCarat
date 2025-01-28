@@ -191,8 +191,8 @@
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Daily">
-                <Property name="tabTitle" type="java.lang.String" value="Daily"/>
+              <JTabbedPaneConstraints tabName="Day">
+                <Property name="tabTitle" type="java.lang.String" value="Day"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>
@@ -270,8 +270,8 @@
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Monthly">
-                <Property name="tabTitle" type="java.lang.String" value="Monthly"/>
+              <JTabbedPaneConstraints tabName="Month">
+                <Property name="tabTitle" type="java.lang.String" value="Month"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>
@@ -344,8 +344,8 @@
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Yearly">
-                <Property name="tabTitle" type="java.lang.String" value="Yearly"/>
+              <JTabbedPaneConstraints tabName="Year">
+                <Property name="tabTitle" type="java.lang.String" value="Year"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>

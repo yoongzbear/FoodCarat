@@ -379,7 +379,7 @@ public class runnerTaskHistory extends javax.swing.JFrame {
                 .addContainerGap(7, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Daily", dayJP);
+        jTabbedPane1.addTab("Day", dayJP);
 
         monthJP.setBackground(new java.awt.Color(255, 255, 255));
         monthJP.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -422,7 +422,7 @@ public class runnerTaskHistory extends javax.swing.JFrame {
                 .addGap(8, 8, 8))
         );
 
-        jTabbedPane1.addTab("Monthly", monthJP);
+        jTabbedPane1.addTab("Month", monthJP);
 
         yearJP.setBackground(new java.awt.Color(255, 255, 255));
         yearJP.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -468,7 +468,7 @@ public class runnerTaskHistory extends javax.swing.JFrame {
                 .addContainerGap(13, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Yearly", yearJP);
+        jTabbedPane1.addTab("Year", yearJP);
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
         jPanel5.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
