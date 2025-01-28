@@ -17,7 +17,6 @@ import javax.swing.table.TableColumn;
  */
 public class adminNotification extends javax.swing.JFrame {
     private DefaultTableModel tableModel;
-    private String cuscreditFile = "resources/customer credit.txt";
     private String userFile = "resources/user.txt";
     /**
      * Creates new form adminNotification

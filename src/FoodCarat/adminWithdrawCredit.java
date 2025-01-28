@@ -56,9 +56,9 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
                 sumtxt.setText("Insufficient balance for withdrawal");
                 return;  // Exit early to prevent further calculations
             }
-            
+
             // Calculate the new amount
-            double newAmount = currentAmount- withdrawAmount;
+            double newAmount = currentAmount - withdrawAmount;
 
             // Update the sumtxt field
             sumtxt.setText(String.format("%.2f", newAmount));
@@ -67,6 +67,7 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
             sumtxt.setText("Invalid Input");
         }
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -109,11 +110,6 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
         Lsearch.setText("Search:");
 
         sumtxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        sumtxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                sumtxtActionPerformed(evt);
-            }
-        });
 
         Lemail.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         Lemail.setText("Email:");
@@ -137,11 +133,6 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
         });
 
         emailtxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        emailtxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                emailtxtActionPerformed(evt);
-            }
-        });
 
         bsearch.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
         bsearch.setText("Search");
@@ -250,10 +241,6 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void sumtxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sumtxtActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_sumtxtActionPerformed
-
     private void withdrawbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_withdrawbtnActionPerformed
         try {
             // Get the current amount and top-up amount from the text fields
@@ -261,14 +248,14 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
             String name = nametxt.getText().trim();
             String currentAmountStr = currentamounttxt.getText().trim();
             String withdrawAmountStr = withdrawnumtxt.getText().trim();
-            String afterWithdrawAmountStr= sumtxt.getText().trim();
+            String afterWithdrawAmountStr = sumtxt.getText().trim();
 
             if (withdrawAmountStr.isEmpty()) {
                 javax.swing.JOptionPane.showMessageDialog(this, "Please enter the withdraw amount.", "Input Error", javax.swing.JOptionPane.WARNING_MESSAGE);
                 withdrawnumtxt.requestFocus();
                 return;
             }
-            
+
             if (afterWithdrawAmountStr.equals("Insufficient balance for withdrawal")) {
                 javax.swing.JOptionPane.showMessageDialog(this, "Insufficient balance for withdraw!", "Input Error", javax.swing.JOptionPane.WARNING_MESSAGE);
                 return;
@@ -277,11 +264,11 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
             double currentAmount = Double.parseDouble(currentAmountStr);
             double withdrawAmountWithoutSymbol = Double.parseDouble(withdrawAmountStr);
             double withdrawAmount = -Math.abs(withdrawAmountWithoutSymbol); // Ensure it's negative
-            
+
             // Confirm before proceeding
             int option = javax.swing.JOptionPane.showConfirmDialog(this,
-                String.format("Name: %s\nWithdraw Amount: %.2f\nDo you want to proceed?", name, withdrawAmountWithoutSymbol),
-                "Confirm Top-up", javax.swing.JOptionPane.YES_NO_OPTION);
+                    String.format("Name: %s\nWithdraw Amount: %.2f\nDo you want to proceed?", name, withdrawAmountWithoutSymbol),
+                    "Confirm Top-up", javax.swing.JOptionPane.YES_NO_OPTION);
 
             if (option != javax.swing.JOptionPane.YES_OPTION) {
                 return;
@@ -305,10 +292,6 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
         this.dispose();
         new adminMain().setVisible(true);
     }//GEN-LAST:event_bbackActionPerformed
-
-    private void emailtxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailtxtActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_emailtxtActionPerformed
 
     private void bsearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bsearchActionPerformed
         String searchEmail = searchtxt.getText().trim();

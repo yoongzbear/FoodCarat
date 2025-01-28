@@ -104,11 +104,6 @@ public class adminTopupCredit extends javax.swing.JFrame {
         searchtxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
 
         emailtxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        emailtxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                emailtxtActionPerformed(evt);
-            }
-        });
 
         Lname.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         Lname.setText("Customer Name:");
@@ -129,11 +124,6 @@ public class adminTopupCredit extends javax.swing.JFrame {
         toupnumtxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
 
         sumtxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        sumtxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                sumtxtActionPerformed(evt);
-            }
-        });
 
         btopup.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
         btopup.setText("Top up");
@@ -247,38 +237,30 @@ public class adminTopupCredit extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void emailtxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailtxtActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_emailtxtActionPerformed
-
-    private void sumtxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sumtxtActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_sumtxtActionPerformed
-
     private void bsearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bsearchActionPerformed
         String searchEmail = searchtxt.getText().trim();
-        
+
         User user = new User();
 
         // Clear the table and fields before populating
         clearFields();
 
         try {
-        String role = user.getRoleByEmail(searchEmail, userFile);
-        
-        if (role != null && role.equals("customer")) {
-            String data = user.getRoleSpecificData(searchEmail, role, 2);  //customer credit is at index 2
-            String[] custData = user.performSearch(searchEmail, cusFile);
-            
-            emailtxt.setText(custData[0]);
-            currentamounttxt.setText(data);
-            nametxt.setText(custData[1]);
-        } else {
-            javax.swing.JOptionPane.showMessageDialog(this, "No matching record found!");
+            String role = user.getRoleByEmail(searchEmail, userFile);
+
+            if (role != null && role.equals("customer")) {
+                String data = user.getRoleSpecificData(searchEmail, role, 2);  //customer credit is at index 2
+                String[] custData = user.performSearch(searchEmail, cusFile);
+
+                emailtxt.setText(custData[0]);
+                currentamounttxt.setText(data);
+                nametxt.setText(custData[1]);
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, "No matching record found!");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
     }//GEN-LAST:event_bsearchActionPerformed
 
     private void btopupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btopupActionPerformed

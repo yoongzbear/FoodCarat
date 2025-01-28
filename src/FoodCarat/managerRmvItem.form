@@ -125,9 +125,6 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Search Item Name"/>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="searchTxtActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
@@ -191,9 +188,6 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Food"/>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="foodBoxActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="viewBtn">
       <Properties>
@@ -207,17 +201,11 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Beverage"/>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="beverageBoxActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JCheckBox" name="dessertBox">
       <Properties>
         <Property name="text" type="java.lang.String" value="Dessert"/>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="dessertBoxActionPerformed"/>
-      </Events>
     </Component>
     <Container class="javax.swing.JPanel" name="jPanel1">
 
@@ -408,9 +396,6 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Set"/>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="setBoxActionPerformed"/>
-      </Events>
     </Component>
   </SubComponents>
 </Form>

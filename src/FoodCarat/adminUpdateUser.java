@@ -81,6 +81,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
                 break;
         }
     }
+
     //set data after performing search at update user
     public void setUserData(String email, String name, String userBirth, String contactNumber, String roleSpecificData) {
         emailtxt.setText(email);
@@ -129,6 +130,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
         }
         return true;
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -172,11 +174,6 @@ public class adminUpdateUser extends javax.swing.JFrame {
         Lsearch.setText("Search:");
 
         searchtxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        searchtxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                searchtxtActionPerformed(evt);
-            }
-        });
 
         Lemail.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         Lemail.setText("Email:");
@@ -212,11 +209,6 @@ public class adminUpdateUser extends javax.swing.JFrame {
         emailtxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
 
         nametxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        nametxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nametxtActionPerformed(evt);
-            }
-        });
 
         phonetxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
 
@@ -387,14 +379,6 @@ public class adminUpdateUser extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void searchtxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchtxtActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_searchtxtActionPerformed
-
-    private void nametxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nametxtActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_nametxtActionPerformed
 
     private void bUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bUpdateActionPerformed
         // Retrieve the form field values

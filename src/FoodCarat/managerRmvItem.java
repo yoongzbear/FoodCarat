@@ -13,13 +13,11 @@ import java.awt.event.FocusListener;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -288,11 +286,6 @@ public class managerRmvItem extends javax.swing.JFrame {
         });
 
         searchTxt.setText("Search Item Name");
-        searchTxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                searchTxtActionPerformed(evt);
-            }
-        });
 
         jLabel1.setFont(new java.awt.Font("Cooper Black", 0, 36)); // NOI18N
         jLabel1.setText("Menu Items");
@@ -337,11 +330,6 @@ public class managerRmvItem extends javax.swing.JFrame {
         jScrollPane1.setViewportView(itemTable);
 
         foodBox.setText("Food");
-        foodBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                foodBoxActionPerformed(evt);
-            }
-        });
 
         viewBtn.setText("View Details");
         viewBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -351,18 +339,8 @@ public class managerRmvItem extends javax.swing.JFrame {
         });
 
         beverageBox.setText("Beverage");
-        beverageBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                beverageBoxActionPerformed(evt);
-            }
-        });
 
         dessertBox.setText("Dessert");
-        dessertBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                dessertBoxActionPerformed(evt);
-            }
-        });
 
         jLabel2.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel2.setText("Item Details");
@@ -469,11 +447,6 @@ public class managerRmvItem extends javax.swing.JFrame {
         );
 
         setBox.setText("Set");
-        setBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                setBoxActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -574,10 +547,6 @@ public class managerRmvItem extends javax.swing.JFrame {
         displayItemsFilter(selectedFilter);
     }//GEN-LAST:event_filterBtnActionPerformed
 
-    private void searchTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchTxtActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_searchTxtActionPerformed
-
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
         //search based on item name
         String searchItem = searchTxt.getText();
@@ -598,10 +567,6 @@ public class managerRmvItem extends javax.swing.JFrame {
         setBox.setSelected(false);
     }//GEN-LAST:event_revertBtnActionPerformed
 
-    private void foodBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_foodBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_foodBoxActionPerformed
-
     private void viewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewBtnActionPerformed
         //display selected row of item in the table
         int selectedRow = itemTable.getSelectedRow();
@@ -617,14 +582,6 @@ public class managerRmvItem extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Please select a row to view details.", "Alert", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_viewBtnActionPerformed
-
-    private void beverageBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_beverageBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_beverageBoxActionPerformed
-
-    private void dessertBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dessertBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_dessertBoxActionPerformed
 
     private void typeBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeBoxActionPerformed
         // TODO add your handling code here:
@@ -648,10 +605,6 @@ public class managerRmvItem extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Please select a row to delete item.", "Alert", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_deleteBtnActionPerformed
-
-    private void setBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_setBoxActionPerformed
 
     /**
      * @param args the command line arguments
