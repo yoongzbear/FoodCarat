@@ -10,7 +10,10 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.swing.JOptionPane;
 
@@ -21,11 +24,10 @@ import javax.swing.JOptionPane;
 public class Customer extends User{
     private int points;
     private String customerFile = "resources/customer.txt";
-    private String cusFile = "resources/customer.txt";
+    private String creditFile = "resources/transactionCredit.txt";
     
     public Customer(String email){ //for set points
         super(email);
-        //paolawan@mail.com,,0.0,13
         try{
             BufferedReader br = new BufferedReader(new FileReader(customerFile));
             String line;
@@ -105,6 +107,71 @@ public class Customer extends User{
         return earnablePoints;
     }
     
+    public List<String[]> creditRecord(String email){ //get customer topup record
+        List<String[]> records = new ArrayList<>();
+        
+        // Define the formatter to parse date and time
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(creditFile));
+            String line;
+            
+            while ((line = br.readLine()) != null) {
+                String[] record = line.split(",");  // Split the line into an array
+                
+                if (email.equals(record[1])) {  // If email matches
+                    // Add the record to the list
+                    records.add(record);
+                }
+            }
+            br.close();
+            
+            // Sort records based on the date/time (newest to oldest)
+            Collections.sort(records, (record1, record2) -> {
+                // Combine date and time parts and parse into LocalDateTime
+                String dateTimeStr1 = record1[4] + " " + record1[5];  // Combine date and time for record 1
+                String dateTimeStr2 = record2[4] + " " + record2[5];  // Combine date and time for record 2
+                dateTimeStr1 = dateTimeStr1.trim();
+            dateTimeStr2 = dateTimeStr2.trim();
+                LocalDateTime dateTime1 = LocalDateTime.parse(dateTimeStr1, formatter);
+                LocalDateTime dateTime2 = LocalDateTime.parse(dateTimeStr2, formatter);
+                
+                // Compare in descending order (newest first)
+                return dateTime2.compareTo(dateTime1);
+            });
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        return records;  
+    }
+    
+    public String[] getTopupInfo(int transactionID) {
+        String[] topupInfo = null;
+        try {
+            FileReader fr = new FileReader(creditFile);
+            BufferedReader br = new BufferedReader(fr);
+            String read;
+
+            while ((read = br.readLine()) != null) {
+                String[] record = read.split(",");
+                String selectedTransactID = record[0];
+
+                if (selectedTransactID.equals(String.valueOf(transactionID))) {
+                    topupInfo = record;
+                    break;
+                }
+            }
+            br.close();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Failed to read from the credit file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        return topupInfo;
+    }
+    
     public Customer(){
         // for contrustor
     }
@@ -161,7 +228,7 @@ public class Customer extends User{
         boolean emailFound = false;
         List<String> fileContent = new ArrayList<>();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(cusFile))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(customerFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
