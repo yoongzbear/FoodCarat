@@ -249,7 +249,7 @@ public class runnerCusReview extends javax.swing.JFrame {
             }
         }
 
-        // Set x-axis tick unit
+        // Set tick unit
         if (totalReviews <= 10) {
             rangeAxis.setTickUnit(new NumberTickUnit(1));
         } else {
@@ -470,21 +470,18 @@ public class runnerCusReview extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addComponent(backJB)
-                .addGap(132, 132, 132)
+                .addGap(144, 144, 144)
                 .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 393, Short.MAX_VALUE)
-                .addContainerGap(265, Short.MAX_VALUE))
+                .addGap(253, 253, 253))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
-                        .addComponent(jLabel1))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addComponent(backJB)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel1)
+                    .addComponent(backJB))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         cusReviewJT.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N

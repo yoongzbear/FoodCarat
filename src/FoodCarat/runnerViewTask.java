@@ -281,7 +281,6 @@ public class runnerViewTask extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
-        setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(153, 255, 153));
 

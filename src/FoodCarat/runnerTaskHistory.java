@@ -40,7 +40,7 @@ public class runnerTaskHistory extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         
-        fetchFilteredData(null,null); // Show all data on startup
+        fetchFilteredData(null,null);
         chartAllData();
     }
     
@@ -202,8 +202,22 @@ public class runnerTaskHistory extends javax.swing.JFrame {
 
         CategoryPlot plot = barChart.getCategoryPlot();
         NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-        rangeAxis.setTickUnit(new NumberTickUnit(10)); // Set y-axis tick unit
 
+        int totalTasks = 0;
+        for (int i = 0; i < dataset.getColumnCount(); i++) {
+            Number value = dataset.getValue(0, i);
+            if (value != null) {
+                totalTasks += value.intValue();
+            }
+        }
+
+        // Set tick unit
+        if (totalTasks <= 10) {
+            rangeAxis.setTickUnit(new NumberTickUnit(1));
+        } else {
+            rangeAxis.setTickUnit(new NumberTickUnit(10));
+        }
+        
         ChartPanel chartPanel = new ChartPanel(barChart);
         chartPanel.setPreferredSize(new Dimension(800, 600));
 
@@ -253,7 +267,6 @@ public class runnerTaskHistory extends javax.swing.JFrame {
         allJB = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(153, 255, 153));
 
@@ -274,7 +287,7 @@ public class runnerTaskHistory extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addComponent(backJB)
-                .addGap(158, 158, 158)
+                .addGap(183, 183, 183)
                 .addComponent(jLabel1)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
