@@ -354,6 +354,181 @@ public class customerOrderHistory extends javax.swing.JFrame {
         tOrderHistory.setModel(model);
     }
 
+    //for selected order from notif
+    public void populateTable(String selectedOrderID) {
+        DefaultTableModel model = new DefaultTableModel();
+        DecimalFormat df = new DecimalFormat("0.00");
+        model.setRowCount(0);
+        model.setColumnCount(0);
+        // Header
+        model.addColumn("Date");
+        model.addColumn("Order ID");
+        model.addColumn("Order Type");
+        model.addColumn("Order Item");
+        model.addColumn("Total Price");
+        model.addColumn("Vendor Name");
+        model.addColumn("Order Status");
+        model.addColumn("Cancel Reason");
+
+        String selectedSearchBy = (String) cbSearchBy.getSelectedItem();
+        String selectedValue = (String) cbValue.getSelectedItem();
+
+        List<String[]> orderRecords = new ArrayList<>(); // To store records
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("resources/customerOrder.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] record = line.split(",");
+                String rOrderStatus = record[3];
+                String rUser = record[4];
+                if (rUser.equals("customer@mail.com") && rOrderStatus != "") {
+                    String rOrderType = record[1];
+                    String rOrderList = record[2].replace("[", "").replace("]", "");
+                    String rVendorName = null;
+                    String rCancelReason = record[6];
+                    String rDeliveryFee = record[7];
+                    String rTotalPaid = record[8];
+                    String rOrderDate = record[9];
+                    rOrderStatus = rOrderStatus.substring(0, 1).toUpperCase() + rOrderStatus.substring(1).toLowerCase();
+                    if (rCancelReason.equalsIgnoreCase("null") || rCancelReason.equalsIgnoreCase("NULL") || rCancelReason.isEmpty()) {
+                        rCancelReason = "-";
+                    } else {
+                        rCancelReason = rCancelReason.substring(0, 1).toUpperCase() + rCancelReason.substring(1).toLowerCase();
+                    }
+
+                    // Split the order items by semicolon
+                    String[] orderItems = rOrderList.split("\\|");
+                    StringBuilder orderItemsConcatenated = new StringBuilder();
+                    double totalPrice = 0.0;
+
+                    List<String[]> orderItemDetails = new ArrayList<>();
+
+                    // Loop through each item in the order and concatenate them with a comma
+                    for (int i = 0; i < orderItems.length; i++) {
+                        String[] itemDetails = orderItems[i].split(";");
+                        int rOrderItemID = Integer.parseInt(itemDetails[0]);
+                        String rItemQuantity = itemDetails[1];
+                        // String rItemPrice = itemDetails[2]; // Need to change based on the vendor ori price
+
+                        Item item1 = new Item();
+                        String[] itemInfo = item1.itemData(rOrderItemID);
+                        String itemID = itemInfo[0];
+                        String itemName = itemInfo[1];
+                        String itemPrice = itemInfo[3];
+                        String itemImgPath = itemInfo[4];
+
+                        String[] vendorInfo = item1.getVendorInfoByItemID(Integer.parseInt(itemID));
+                        rVendorName = vendorInfo[1];
+
+                        orderItemDetails.add(new String[]{String.valueOf(rOrderItemID), itemName, rItemQuantity, itemPrice});
+
+                        // Update total price
+                        totalPrice = totalPrice + Double.parseDouble(itemPrice) * Integer.parseInt(rItemQuantity);
+
+                        // Append item to the StringBuilder with a comma
+                        if (i > 0) {
+                            orderItemsConcatenated.append(", ");
+                        }
+                        orderItemsConcatenated.append(itemName);
+                    }
+
+                    // Get the final concatenated string
+                    String allOrderItems = orderItemsConcatenated.toString();
+
+                    String orderID = record[0];
+                    orderDetailsMap.put(orderID, orderItemDetails);
+
+                    // Add the record to the list
+                    orderRecords.add(new String[]{
+                        rOrderDate, orderID, rOrderType, allOrderItems, "RM" + df.format(totalPrice), rVendorName, rOrderStatus, rCancelReason, rDeliveryFee, rTotalPaid
+                    });
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Sort the records based on the order date in descending order
+        orderRecords.sort((record1, record2) -> {
+            try {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                Date date1 = dateFormat.parse(record1[0]); // rOrderDate is at index 0
+                Date date2 = dateFormat.parse(record2[0]);
+                return date2.compareTo(date1); // Compare in reverse order (newest first)
+            } catch (Exception e) {
+                e.printStackTrace();
+                return 0;
+            }
+        });
+
+        //filter
+        for (String[] record : orderRecords) {
+            String rOrderDate = record[0];
+            String rOrderStatus = record[6]; // Order Status is at index 6
+
+            // Filter by "Time Range"
+            if ("Time Range".equals(selectedSearchBy) && !selectedValue.equals("Select Time Range")) {
+                if ("Daily".equals(selectedValue)) {
+                    String inputTime = ((JTextField) dateChooser.getDateEditor().getUiComponent()).getText();
+                    SimpleDateFormat inputDateFormat = new SimpleDateFormat("MMM d, yyyy");
+                    SimpleDateFormat recordDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+                    try {
+                        Date selectedDate = inputDateFormat.parse(inputTime);
+                        String formattedInputDate = recordDateFormat.format(selectedDate);
+                        if (!formattedInputDate.equals(rOrderDate)) {
+                            continue; // Skip this record
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else if ("Monthly".equals(selectedValue)) {
+                    String inputTime = (monthChooser.getMonth() + 1) + "-" + yearChooser.getYear(); // MM-YYYY format
+                    String[] orderDateParts = rOrderDate.split("-");
+                    int orderYear = Integer.parseInt(orderDateParts[0]);
+                    int orderMonth = Integer.parseInt(orderDateParts[1]);
+
+                    String[] inputTimeParts = inputTime.split("-");
+                    int inputMonth = Integer.parseInt(inputTimeParts[0]);
+                    int inputYear = Integer.parseInt(inputTimeParts[1]);
+
+                    if (!(orderYear == inputYear && orderMonth == inputMonth)) {
+                        continue; // Skip this record
+                    }
+                } else if ("Yearly".equals(selectedValue)) {
+                    String inputTime = String.valueOf(yearChooser.getYear());
+                    String[] orderDateParts = rOrderDate.split("-");
+                    int orderYear = Integer.parseInt(orderDateParts[0]);
+
+                    if (orderYear != Integer.parseInt(inputTime)) {
+                        continue; // Skip this record
+                    }
+                }
+            }
+
+            // Filter by "Order Status"
+            if ("Order Status".equals(selectedSearchBy) && !selectedValue.equals("Select Order Status")) {
+                if (!selectedValue.equals(rOrderStatus)) {
+                    continue; // Skip this record
+                }
+            }
+
+            // Add the record to the model if it passes the filters
+            model.addRow(record);
+        }
+
+        // Set the model to the table
+        tOrderHistory.setModel(model);
+        
+        if (selectedOrderID != null) {
+            for (int row = 0; row < tOrderHistory.getRowCount(); row++) {
+                if (tOrderHistory.getValueAt(row, 1).equals(selectedOrderID)) {
+                    tOrderHistory.setRowSelectionInterval(row, row); // Select the row with the orderID
+                    break; // Exit loop once the order is found
+                }
+            }
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
