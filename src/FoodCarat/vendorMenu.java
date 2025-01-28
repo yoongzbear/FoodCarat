@@ -599,7 +599,7 @@ public class vendorMenu extends javax.swing.JFrame {
 
     private void filterBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterBtnActionPerformed
         //filter table based on the selected ticked box
-        String[] selectedFilter = new String[3];
+        String[] selectedFilter = new String[4];
         int index = 0;
 
         if (foodBox.isSelected()) {
