@@ -366,30 +366,33 @@ public class Order {
         }        
         
         for (String[] order : allOrders) {
-            try {
-                LocalDate orderDate = LocalDate.parse(order[9].trim(), dateFormat);
+            //1,Take away,[1;1|2;1],in kitchen,customer@mail.com,NULL,NULL,0.00,27.80,2025-01-28
+            if (!order[3].trim().equalsIgnoreCase("pending accept") && !order[3].trim().equalsIgnoreCase("cancelled")) {
+                try {
+                    LocalDate orderDate = LocalDate.parse(order[9].trim(), dateFormat);
 
-                if ((orderDate.isEqual(startDate) || orderDate.isAfter(startDate))
-                        && (orderDate.isEqual(endDate) || orderDate.isBefore(endDate))) {
-                    String orderItems = order[2];
-                    orderItems = orderItems.replaceAll("[\\[\\]]", ""); //remove [ ]
+                    if ((orderDate.isEqual(startDate) || orderDate.isAfter(startDate))
+                            && (orderDate.isEqual(endDate) || orderDate.isBefore(endDate))) {
+                        String orderItems = order[2];
+                        orderItems = orderItems.replaceAll("[\\[\\]]", ""); //remove [ ]
 
-                    String[] orderItemsArray = orderItems.split("\\|");
-                    for (String orderItem : orderItemsArray) {
-                        String[] itemData = orderItem.split(";");
-                        String itemID = itemData[0];
-                        int quantity = Integer.parseInt(itemData[1]);
+                        String[] orderItemsArray = orderItems.split("\\|");
+                        for (String orderItem : orderItemsArray) {
+                            String[] itemData = orderItem.split(";");
+                            String itemID = itemData[0];
+                            int quantity = Integer.parseInt(itemData[1]);
 
-                        // Find the corresponding item from the vendor's items and increment its quantity
-                        for (String[] item : itemQuantities) {
-                            if (item[0].equals(itemID)) {
-                                item[1] = String.valueOf(Integer.parseInt(item[1]) + quantity);
+                            // Find the corresponding item from the vendor's items and increment its quantity
+                            for (String[] item : itemQuantities) {
+                                if (item[0].equals(itemID)) {
+                                    item[1] = String.valueOf(Integer.parseInt(item[1]) + quantity);
+                                }
                             }
                         }
                     }
+                } catch (java.time.format.DateTimeParseException e) {
+                    System.err.println("Invalid data in order: " + e.getMessage());
                 }
-            } catch (java.time.format.DateTimeParseException e) {
-                System.err.println("Invalid data in order: " + e.getMessage());
             }
 
         }

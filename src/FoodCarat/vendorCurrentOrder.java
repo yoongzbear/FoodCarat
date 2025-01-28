@@ -239,8 +239,7 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         try {
             order.updateStatus(orderID, "cancelled", "vendor");
             order.refund(orderID, cusEmail);
-            JOptionPane.showMessageDialog(null, "Order " + orderID + " is rejected.");
-            displayNewOrder(); //display next new order
+            JOptionPane.showMessageDialog(null, "Order " + orderID + " is rejected.");            
         } catch (IOException ex) {
             Logger.getLogger(customerOrderHistory.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -758,6 +757,7 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to reject this order?", "Reject Order", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             refundOrder(orderID);
+            displayNewOrder(); //display next new order
         }
     }//GEN-LAST:event_rejectBtnActionPerformed
 
@@ -775,8 +775,12 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         if (search.equals("Search Order ID")) {
             JOptionPane.showMessageDialog(null, "Please enter your search.", "Alert", JOptionPane.WARNING_MESSAGE);
         } else {
-            int searchID = Integer.parseInt(search);
-            displaySearch(searchID);
+            try {
+                int searchID = Integer.parseInt(search.trim());
+                displaySearch(searchID);
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Please enter numerical value for the Order ID.", "Alert", JOptionPane.WARNING_MESSAGE);
+            }
         }
     }//GEN-LAST:event_searchBtnActionPerformed
 

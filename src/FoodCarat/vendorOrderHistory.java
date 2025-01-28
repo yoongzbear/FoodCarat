@@ -29,7 +29,9 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     /**
      * Creates new form vendorOrderHistory
      */       
-    private String email = User.getSessionEmail();
+    //private String email = User.getSessionEmail();
+    private String email = "vendor@mail.com";
+    
     Vendor vendor = new Vendor(email);
     
     public vendorOrderHistory() {
@@ -42,6 +44,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         
         //set the placeholder for search box
         GuiUtility.setPlaceholder(searchTxt, "Enter your search");
+        rangeBtn.setEnabled(false); //disable view range button
         
         //hide month and year chooser for table
         monthChooser.setVisible(false);
@@ -70,7 +73,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             String updatedOrderItems = item.replaceItemIDsWithNames(orderItems);
 
             //if status = pending accept, dont show
-            if (orderStatus.equalsIgnoreCase("Pending accept") || orderStatus.equalsIgnoreCase("Canceled") || orderStatus.equalsIgnoreCase("Assigning runner")) {
+            if (orderStatus.equalsIgnoreCase("Pending accept") || orderStatus.equalsIgnoreCase("Cancelled") || orderStatus.equalsIgnoreCase("Assigning runner")) {
                 continue;
             } else {
                 model.addRow(new Object[]{index++, orderID, customerEmail, orderMethod, updatedOrderItems, orderStatus});
@@ -131,7 +134,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                 feedbackTxtArea.setText("-");
             }
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Error", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Unable to display selected order", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -143,6 +146,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         int index = 1;
         model.setRowCount(0);
         itemTable.setRowHeight(100);
+        boolean found = false;
         
         for (String[] orderData : allVendorOrders) {
             Item item = new Item();            
@@ -164,8 +168,14 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             boolean matchesStatus = orderStatus.toLowerCase().contains(lowerSearch);
 
             if (matchesOrderID || matchesMethod || matchesEmail || matchesItems || matchesStatus) {
+                found = true;
                 model.addRow(new Object[]{index++, orderID, customerEmail, orderMethod, updatedOrderItems, orderStatus});
-            }
+            } 
+        }
+        
+        if (!found) {
+            JOptionPane.showMessageDialog(null, "Search is not found.", "Not Found", JOptionPane.INFORMATION_MESSAGE);
+            displayVendorOrder();
         }
     }
 
@@ -191,7 +201,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             String updatedOrderItems = item.replaceItemIDsWithNames(orderItems);
 
             //excluding orders with status pending accept
-            if (orderStatus.equalsIgnoreCase("Pending accept") || orderStatus.equalsIgnoreCase("Canceled")) {
+            if (orderStatus.equalsIgnoreCase("Pending accept") || orderStatus.equalsIgnoreCase("Cancelled")) {
                 continue;
             } else {
                 if (timeRange.equalsIgnoreCase("Daily")) { //daily
@@ -256,10 +266,10 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                 weeklyChartPanel.revalidate();
                 weeklyChartPanel.repaint();
             } else if (type.equalsIgnoreCase("monthly")) {
-                monthlyChartPanel.removeAll();
-                monthlyChartPanel.setLayout(new BorderLayout());
-                monthlyChartPanel.revalidate();
-                monthlyChartPanel.repaint();
+                monthlyChartPanel1.removeAll();
+                monthlyChartPanel1.setLayout(new BorderLayout());
+                monthlyChartPanel1.revalidate();
+                monthlyChartPanel1.repaint();
             } else if (type.equalsIgnoreCase("quarterly")) {
                 quarterlyChartPanel.removeAll();
                 quarterlyChartPanel.setLayout(new BorderLayout());
@@ -297,11 +307,11 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         } else if (type.equalsIgnoreCase("monthly")) {
             ChartPanel chartPanel = ChartUtility.createBarChart(dataset, "Monthly Ordered Items", "Item", "Count");
 
-            monthlyChartPanel.removeAll();
-            monthlyChartPanel.setLayout(new BorderLayout());
-            monthlyChartPanel.add(chartPanel, BorderLayout.CENTER);
-            monthlyChartPanel.revalidate();
-            monthlyChartPanel.repaint();
+            monthlyChartPanel1.removeAll();
+            monthlyChartPanel1.setLayout(new BorderLayout());
+            monthlyChartPanel1.add(chartPanel, BorderLayout.CENTER);
+            monthlyChartPanel1.revalidate();
+            monthlyChartPanel1.repaint();
         } else if (type.equalsIgnoreCase("quarterly")) {
             ChartPanel chartPanel = ChartUtility.createBarChart(dataset, "Quarterly Ordered Items", "Item", "Count");
 
@@ -380,7 +390,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         chartWeekRange4 = new javax.swing.JLabel();
         chartYearChooser = new com.toedter.calendar.JYearChooser();
         monthChartBtn = new javax.swing.JButton();
-        monthlyChartPanel = new javax.swing.JPanel();
+        monthlyChartPanel1 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         chartWeekRange5 = new javax.swing.JLabel();
         chartQuarterYearChooser = new com.toedter.calendar.JYearChooser();
@@ -468,6 +478,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                 "Item", "Price (RM)", "Quantity"
             }
         ));
+        itemTable.setRowHeight(20);
         jScrollPane5.setViewportView(itemTable);
 
         jLabel12.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
@@ -626,9 +637,9 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             }
         });
 
-        weeklyChartPanel.setMaximumSize(new java.awt.Dimension(325, 200));
-        weeklyChartPanel.setMinimumSize(new java.awt.Dimension(325, 200));
-        weeklyChartPanel.setPreferredSize(new java.awt.Dimension(325, 200));
+        weeklyChartPanel.setMaximumSize(new java.awt.Dimension(467, 300));
+        weeklyChartPanel.setMinimumSize(new java.awt.Dimension(467, 300));
+        weeklyChartPanel.setPreferredSize(new java.awt.Dimension(467, 300));
 
         javax.swing.GroupLayout weeklyChartPanelLayout = new javax.swing.GroupLayout(weeklyChartPanel);
         weeklyChartPanel.setLayout(weeklyChartPanelLayout);
@@ -638,7 +649,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         );
         weeklyChartPanelLayout.setVerticalGroup(
             weeklyChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 200, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -651,16 +662,16 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(chartWeekRange)
-                                    .addComponent(chartWeekRange1))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(weeklyEndDateTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(weeklyDateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(weeklyChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 467, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(10, Short.MAX_VALUE))
+                            .addComponent(chartWeekRange)
+                            .addComponent(chartWeekRange1))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(weeklyEndDateTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(weeklyDateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(34, 34, 34)
+                        .addComponent(weeklyChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -676,8 +687,8 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                 .addGap(31, 31, 31)
                 .addComponent(weeklyChartBtn)
                 .addGap(30, 30, 30)
-                .addComponent(weeklyChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(227, Short.MAX_VALUE))
+                .addComponent(weeklyChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(137, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Weekly", jPanel3);
@@ -695,19 +706,19 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             }
         });
 
-        monthlyChartPanel.setMaximumSize(new java.awt.Dimension(325, 200));
-        monthlyChartPanel.setMinimumSize(new java.awt.Dimension(325, 200));
-        monthlyChartPanel.setPreferredSize(new java.awt.Dimension(325, 200));
+        monthlyChartPanel1.setMaximumSize(new java.awt.Dimension(467, 300));
+        monthlyChartPanel1.setMinimumSize(new java.awt.Dimension(467, 300));
+        monthlyChartPanel1.setPreferredSize(new java.awt.Dimension(467, 300));
 
-        javax.swing.GroupLayout monthlyChartPanelLayout = new javax.swing.GroupLayout(monthlyChartPanel);
-        monthlyChartPanel.setLayout(monthlyChartPanelLayout);
-        monthlyChartPanelLayout.setHorizontalGroup(
-            monthlyChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 453, Short.MAX_VALUE)
+        javax.swing.GroupLayout monthlyChartPanel1Layout = new javax.swing.GroupLayout(monthlyChartPanel1);
+        monthlyChartPanel1.setLayout(monthlyChartPanel1Layout);
+        monthlyChartPanel1Layout.setHorizontalGroup(
+            monthlyChartPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 467, Short.MAX_VALUE)
         );
-        monthlyChartPanelLayout.setVerticalGroup(
-            monthlyChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 200, Short.MAX_VALUE)
+        monthlyChartPanel1Layout.setVerticalGroup(
+            monthlyChartPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -727,11 +738,12 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                             .addComponent(chartYearChooser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(monthChartBtn))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(monthlyChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 453, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(24, Short.MAX_VALUE))
+                        .addComponent(monthChartBtn)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addGap(0, 27, Short.MAX_VALUE)
+                .addComponent(monthlyChartPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(35, 35, 35))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -746,9 +758,9 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                     .addComponent(chartWeekRange4))
                 .addGap(33, 33, 33)
                 .addComponent(monthChartBtn)
-                .addGap(50, 50, 50)
-                .addComponent(monthlyChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(215, Short.MAX_VALUE))
+                .addGap(48, 48, 48)
+                .addComponent(monthlyChartPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(117, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Monthly", jPanel4);
@@ -769,18 +781,19 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             }
         });
 
-        quarterlyChartPanel.setMaximumSize(new java.awt.Dimension(325, 200));
-        quarterlyChartPanel.setMinimumSize(new java.awt.Dimension(325, 200));
+        quarterlyChartPanel.setMaximumSize(new java.awt.Dimension(467, 300));
+        quarterlyChartPanel.setMinimumSize(new java.awt.Dimension(467, 300));
+        quarterlyChartPanel.setPreferredSize(new java.awt.Dimension(467, 300));
 
         javax.swing.GroupLayout quarterlyChartPanelLayout = new javax.swing.GroupLayout(quarterlyChartPanel);
         quarterlyChartPanel.setLayout(quarterlyChartPanelLayout);
         quarterlyChartPanelLayout.setHorizontalGroup(
             quarterlyChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 453, Short.MAX_VALUE)
+            .addGap(0, 467, Short.MAX_VALUE)
         );
         quarterlyChartPanelLayout.setVerticalGroup(
             quarterlyChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 200, Short.MAX_VALUE)
+            .addGap(0, 300, Short.MAX_VALUE)
         );
 
         chartWeekRange6.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
@@ -810,32 +823,31 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(quarterChartBtn)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addContainerGap()
+                        .addGap(8, 8, 8)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(chartWeekRange6)
+                            .addComponent(chartWeekRange5))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(quarterChartBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(chartQuarterYearChooser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(55, 55, 55)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(quarterChartBtn)
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGap(8, 8, 8)
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(chartWeekRange6)
-                                    .addComponent(chartWeekRange5))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(quarterChartBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(chartQuarterYearChooser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(55, 55, 55)
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(chartWeekRange7)
-                                    .addComponent(chartWeekRange8))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(startDateQuarterLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
-                                    .addComponent(endDateQuarterLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addComponent(quarterlyChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(16, Short.MAX_VALUE))
+                            .addComponent(chartWeekRange7)
+                            .addComponent(chartWeekRange8))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(startDateQuarterLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+                            .addComponent(endDateQuarterLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap(103, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap(31, Short.MAX_VALUE)
+                .addComponent(quarterlyChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -855,9 +867,9 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                         .addComponent(endDateQuarterLabel)))
                 .addGap(33, 33, 33)
                 .addComponent(quarterChartBtn)
-                .addGap(50, 50, 50)
+                .addGap(47, 47, 47)
                 .addComponent(quarterlyChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(232, Short.MAX_VALUE))
+                .addContainerGap(135, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Quarterly", jPanel5);
@@ -866,14 +878,11 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 14, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jTabbedPane1))
-                .addContainerGap())
+                    .addComponent(jLabel2)
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 529, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -881,7 +890,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                 .addGap(15, 15, 15)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jTabbedPane1)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -922,7 +931,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
                                 .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(78, 78, 78)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                        .addGap(18, 18, Short.MAX_VALUE)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1006,6 +1015,8 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                 //get date
                 if (dateChooser.getDate() == null) {
                     JOptionPane.showMessageDialog(null, "Please select a date.", "Alert", JOptionPane.WARNING_MESSAGE);
+                    displayVendorOrder();
+                    return;
                 } else {
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                     inputTime = dateFormat.format(dateChooser.getDate());
@@ -1029,19 +1040,27 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             dateChooser.setVisible(true);
             monthChooser.setVisible(false);
             yearChooser.setVisible(false);
+            rangeBtn.setEnabled(true);
         }    
         else if (timeRangeBox.getSelectedItem().equals("Monthly")) {
             selectDateLabel.setText("Select:");
             dateChooser.setVisible(false);
             monthChooser.setVisible(true);
             yearChooser.setVisible(true);
+            rangeBtn.setEnabled(true);
         } else if (timeRangeBox.getSelectedItem().equals("Yearly")) {
             selectDateLabel.setText("Select:");
             dateChooser.setVisible(false);
             monthChooser.setVisible(false);
             yearChooser.setVisible(true);
+            rangeBtn.setEnabled(true);
         } else if (timeRangeBox.getSelectedItem().equals("Select Time Range")) {
             displayVendorOrder();
+            rangeBtn.setEnabled(false);
+            dateChooser.setVisible(true);
+            dateChooser.setDate(null);
+            monthChooser.setVisible(false);
+            yearChooser.setVisible(false);
         }
     }//GEN-LAST:event_timeRangeBoxActionPerformed
 
@@ -1259,6 +1278,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     private javax.swing.JButton monthChartBtn;
     private com.toedter.calendar.JMonthChooser monthChooser;
     private javax.swing.JPanel monthlyChartPanel;
+    private javax.swing.JPanel monthlyChartPanel1;
     private javax.swing.JTable orderTable;
     private javax.swing.JComboBox<String> quarterChartBox;
     private javax.swing.JButton quarterChartBtn;
