@@ -999,10 +999,10 @@ public class customerOrderHistory extends javax.swing.JFrame {
             for (String[] orderData : allOrders) {
                 String orderID = orderData[0];
                 String orderStatus = orderData[3];  // Get the status from index 3
-                if ("completed".equals(selectedOrderStatus) && selectedOrderID.equals(orderID)) {
+                if ("completed".equalsIgnoreCase(selectedOrderStatus) && selectedOrderID.equals(orderID)) {
                     System.out.println("reorder");
                     break;
-                } else if ("pending accept".equals(selectedOrderStatus) && selectedOrderID.equals(orderID)) {
+                } else if ("pending accept".equalsIgnoreCase(selectedOrderStatus) && selectedOrderID.equals(orderID)) {
                     int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to cancel order?");
                     if (confirm == JOptionPane.YES_OPTION) {
                         try {
