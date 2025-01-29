@@ -207,7 +207,7 @@ public class Customer extends User{
             } else {
                 JOptionPane.showMessageDialog(
                     parentComponent,
-                    "Invalid address. Please ensure it is non-empty, under 255 characters, and only contains letters, numbers, spaces, commas or hyphens.",
+                    "Invalid address. Please ensure it is non-empty, under 255 characters.",
                     "Error",
                     JOptionPane.ERROR_MESSAGE
                 );
@@ -217,10 +217,7 @@ public class Customer extends User{
 
     // Validate the address
     private boolean isValidAddress(String address) {
-        // Allow letters, numbers, spaces, commas, and hyphens
-        String regex = "^[a-zA-Z0-9,\\s-]+$";
-
-        return address.length() > 20 && address.length() <= 255 && address.matches(regex);
+        return address.length() > 20 && address.length() <= 255;
     }
 
     // Save the delivery address
