@@ -215,7 +215,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
                 String[] record = line.split(",");
                 String rOrderStatus = record[3];
                 String rUser = record[4];
-                if (rUser.equals("customer2@mail.com") && rOrderStatus != "") {
+                if (rUser.equals("customer@mail.com") && rOrderStatus != "") {
                     String rOrderType = record[1];
                     String rOrderList = record[2].replace("[", "").replace("]", "");
                     String rVendorName = null;
