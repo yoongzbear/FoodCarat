@@ -8,7 +8,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.io.File;
-import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.ImageIcon;
@@ -43,8 +42,13 @@ public class vendorMenu extends javax.swing.JFrame {
         
         //display items in table
         displayItems();
+        foodBox.setSelected(true);
+        beverageBox.setSelected(true);
+        dessertBox.setSelected(true);
+        setBox.setSelected(true);
         
         enableTextField();
+        typeBox.setVisible(false); //hide the combo box for type 
         
         //set the placeholder for search box
         GuiUtility.setPlaceholder(searchTxt, "Search item name");
@@ -62,9 +66,9 @@ public class vendorMenu extends javax.swing.JFrame {
         //reset details section
         photoLabel.setIcon(null);
         photoLabel.setText("Item Photo");
-        idLabel.setText("ID");
+        idLabel.setText("");
         itemNameTxt.setText("");
-        typeBox.setSelectedItem("Item Type");
+        typeLabel.setText("");
         itemPriceTxt.setText("");
         editBtn.setEnabled(false);
         deleteBtn.setEnabled(false);
@@ -106,27 +110,28 @@ public class vendorMenu extends javax.swing.JFrame {
             }
         });
     }
-    
+
     //display items based on id
     public void displayItems(int id) {
         //display details
-        String[] details = new Item().itemData(id);        
+        String[] details = new Item().itemData(id);
         idLabel.setText(details[0].trim());
         itemNameTxt.setText(details[1].trim());
         typeBox.setSelectedItem(details[2].trim());
+        typeLabel.setText(details[2].trim());
         itemPriceTxt.setText(details[3].trim());
-        
+
         //photo
         imagePath = details[4].trim();
         ImageIcon itemImage = new ImageIcon(imagePath);
         Image resizedImage = itemImage.getImage().getScaledInstance(photoLabel.getWidth(), photoLabel.getHeight(), Image.SCALE_SMOOTH);
         photoLabel.setText(""); //clear the label
-        photoLabel.setIcon(new ImageIcon(resizedImage));  
-        
+        photoLabel.setIcon(new ImageIcon(resizedImage));
+
         deleteBtn.setEnabled(true);
         editBtn.setEnabled(true);
     }
-    
+
     //display items based on check boxes
     public void displayItemsFilter(String[] filter) {      
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
@@ -183,7 +188,13 @@ public class vendorMenu extends javax.swing.JFrame {
         int index = 1;
         model.setRowCount(0);
         itemTable.setRowHeight(100);
-  
+
+        if (searchedItems.isEmpty()) { //if no item matches search
+            JOptionPane.showMessageDialog(null, "No items found for '" + searchItem + "'.", "Not Found", JOptionPane.INFORMATION_MESSAGE);
+            displayItems();
+            return; 
+        }
+
         for (String[] itemData : searchedItems) {
             String itemID = itemData[0];
             String itemName = itemData[1];
@@ -213,24 +224,29 @@ public class vendorMenu extends javax.swing.JFrame {
             }
         });
     }
-    
+
     public void enableTextField() { //enable text fields when click edit details
-        if(edit==false) {
+        if (edit == false) {
             //when click to edit
             edit = true;
             itemNameTxt.setEditable(true);
             typeBox.setEnabled(true);
             itemPriceTxt.setEditable(true);
             editImageBtn.setEnabled(true);
-        } else if(edit==true) {
+            typeLabel.setVisible(false);
+            typeBox.setVisible(true);
+        } else if (edit == true) {
             edit = false;
             itemNameTxt.setEditable(false);
             typeBox.setEnabled(false);
             itemPriceTxt.setEditable(false);
             editImageBtn.setEnabled(false);
+            typeLabel.setVisible(true);
+            typeLabel.setText("");
+            typeBox.setVisible(false);
         }
     }
-    
+
     //validate price in text field
     private boolean validatePrice(String priceText) {
         try {
@@ -269,6 +285,7 @@ public class vendorMenu extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         editImageBtn = new javax.swing.JButton();
         idLabel = new javax.swing.JLabel();
+        typeLabel = new javax.swing.JLabel();
         addBtn = new javax.swing.JButton();
         filterBtn = new javax.swing.JButton();
         searchTxt = new javax.swing.JTextField();
@@ -346,7 +363,7 @@ public class vendorMenu extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel5.setText("Item Type:");
 
-        typeBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item Type", "Food", "Beverage", "Dessert", "Set" }));
+        typeBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Food", "Beverage", "Dessert", "Set" }));
 
         jLabel6.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel6.setText("Item Price (RM):");
@@ -376,7 +393,8 @@ public class vendorMenu extends javax.swing.JFrame {
         });
 
         idLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
-        idLabel.setText("ID");
+
+        typeLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -409,9 +427,12 @@ public class vendorMenu extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(itemNameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(typeBox, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(itemPriceTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(idLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(idLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(typeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(typeBox, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(editBtn)
@@ -439,7 +460,8 @@ public class vendorMenu extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(typeBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(typeBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(typeLabel))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
@@ -467,6 +489,11 @@ public class vendorMenu extends javax.swing.JFrame {
         });
 
         searchTxt.setText("Search Item Name");
+        searchTxt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchTxtActionPerformed(evt);
+            }
+        });
 
         searchBtn.setText("Search");
         searchBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -658,12 +685,14 @@ public class vendorMenu extends javax.swing.JFrame {
                     Item updateItem = new Item(Integer.parseInt(id), name, type, price, newImagePath, email, "available");
                     updateItem.editItem();
 
+                    // Ensure fields and buttons are disabled after saving
+                    enableTextField(); // Disable input fields and editImageBtn
+
                     editBtn.setText("Edit Details");
                     displayItems();
                     resetDetails();
                 }
             } if (confirm == JOptionPane.NO_OPTION) {
-                edit = false;
                 enableTextField();
                 editBtn.setText("Save Details");
             }
@@ -673,21 +702,13 @@ public class vendorMenu extends javax.swing.JFrame {
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
         //delete the selected item off the item text file
-        int selectedRow = itemTable.getSelectedRow();
-
-        //have validation to "choose an item in the table"
-        if (selectedRow >= 0) {
-            int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to delete this item?", "Delete Item", JOptionPane.YES_NO_OPTION);
-            if (confirm == JOptionPane.YES_OPTION) {
-                int id = Integer.parseInt(idLabel.getText());
-                new Item().deleteItem(id, "vendor"); 
-                displayItems();
-                resetDetails();
-            }
-        } else {
-            //no row is selected
-            JOptionPane.showMessageDialog(null, "Please select a row to delete item.", "Alert", JOptionPane.WARNING_MESSAGE);
-        } 
+        int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to delete this item?", "Delete Item", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            int id = Integer.parseInt(idLabel.getText());
+            new Item().deleteItem(id, "vendor");
+            displayItems();
+            resetDetails();
+        }
     }//GEN-LAST:event_deleteBtnActionPerformed
 
     private void editImageBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editImageBtnActionPerformed
@@ -712,7 +733,7 @@ public class vendorMenu extends javax.swing.JFrame {
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
         //search based on item name
         String searchItem = searchTxt.getText();
-        if (searchItem.equals("Search item name")) { //if vendor doesn't enter any input in the search box
+        if (searchItem.equals("Search item name") || searchItem.equals("")) { //if vendor doesn't enter any input in the search box
             JOptionPane.showMessageDialog(null, "Please enter item name to search.", "Alert", JOptionPane.WARNING_MESSAGE);
             displayItems();
         } else {
@@ -723,11 +744,15 @@ public class vendorMenu extends javax.swing.JFrame {
     private void revertBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_revertBtnActionPerformed
         displayItems();
         GuiUtility.setPlaceholder(searchTxt, "Search item name");
-        foodBox.setSelected(false);
-        beverageBox.setSelected(false);
-        dessertBox.setSelected(false);
-        setBox.setSelected(false);
+        foodBox.setSelected(true);
+        beverageBox.setSelected(true);
+        dessertBox.setSelected(true);
+        setBox.setSelected(true);
     }//GEN-LAST:event_revertBtnActionPerformed
+
+    private void searchTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchTxtActionPerformed
+        searchBtn.doClick();
+    }//GEN-LAST:event_searchTxtActionPerformed
 
     /**
      * @param args the command line arguments
@@ -792,6 +817,7 @@ public class vendorMenu extends javax.swing.JFrame {
     private javax.swing.JTextField searchTxt;
     private javax.swing.JCheckBox setBox;
     private javax.swing.JComboBox<String> typeBox;
+    private javax.swing.JLabel typeLabel;
     private javax.swing.JButton viewBtn;
     // End of variables declaration//GEN-END:variables
 }
