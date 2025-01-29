@@ -420,6 +420,7 @@ public class vendorMain extends javax.swing.JFrame {
             vendor.logOut();
             JOptionPane.showMessageDialog(null, "You have logged out, see you tomorrow!", "Log Out", JOptionPane.INFORMATION_MESSAGE);
             dispose();
+            new userLogin().setVisible(true);
         }
     }//GEN-LAST:event_logoutBtnActionPerformed
 
