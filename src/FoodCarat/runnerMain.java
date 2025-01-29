@@ -5,8 +5,17 @@
 package FoodCarat;
 
 import java.awt.Image;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -15,7 +24,6 @@ import javax.swing.JOptionPane;
 public class runnerMain extends javax.swing.JFrame {
     private String email = User.getSessionEmail();
     private String name = User.getSessionName();
-    
 
     public runnerMain() {
         initComponents();
@@ -59,6 +67,115 @@ public class runnerMain extends javax.swing.JFrame {
 
         // Set the resized icon
         statusImage.setIcon(resizedIcon);
+        
+        displayCurrentTask();
+        
+        loadLatestCompletedTasks(notificJT);
+    }
+    
+        // Display Current Task in table
+    private void displayCurrentTask() {
+        Order order = new Order();
+        List<String[]> allOrders = order.getAllOrders();
+
+        for (String[] orderData : allOrders) {
+            if (email.equals(orderData[5]) && !orderData[3].equalsIgnoreCase("assigning runner") && !orderData[3].equalsIgnoreCase("completed")) {
+                
+                Item item = new Item();
+                String itemIDString = orderData[2].replaceAll("[\\[\\]]", "");
+                String[] itemDetails = itemIDString.split("\\|");
+                StringBuilder formattedItems = new StringBuilder();
+
+                for (int i = 0; i < itemDetails.length; i++) {
+                    String[] parts = itemDetails[i].split(";");
+                    int itemID = Integer.parseInt(parts[0]);
+                    int quantity = Integer.parseInt(parts[1]);
+
+                    // Get item name from Item class
+                    String[] itemData = item.itemData(itemID);
+                    String itemName = itemData != null && itemData.length > 1 ? itemData[1] : "Unknown Item";
+
+                    // Format item and quantity
+                    if (i > 0) {
+                        formattedItems.append(", ");
+                    }
+                    formattedItems.append(itemName).append("[").append(quantity).append("]");
+                }
+
+                String items = formattedItems.toString(); // Combine all items into a single string
+
+                String[] vendorInfo = item.getVendorInfoByItemID(Integer.parseInt(itemDetails[0].split(";")[0].trim()));
+                String vendorName = vendorInfo[1];
+            
+                String[] customerInfo = new User().getUserInfo(orderData[4]);
+                String customerName = customerInfo[1];
+
+                String address = new Customer().getCustomerAddress(orderData[4]);
+                String contactNumber = customerInfo[5];
+                
+                String deliveryFee = orderData[7];
+                String status = orderData[3];
+                
+                taskInfo.removeAll();
+                taskInfo.setText("<html>Vendor Name: " + vendorName + "<br>" + 
+                                 "Item(s): " + items + "<br>" + 
+                                 "Customer Name: " + customerName + "<br>" +
+                                 "Customer Contact No.: " + contactNumber + "<br>" + 
+                                 "Address: " + address + "<br>" +
+                                 "Status: " + status + "<br>" + 
+                                 "Delivery Fee: " + deliveryFee + "</html>");
+            }
+        }
+    }
+    
+    public void loadLatestCompletedTasks(JTable table) {
+        DefaultTableModel model = (DefaultTableModel) notificJT.getModel();
+        model.setRowCount(0);
+
+        List<String[]> completedTasks = getLatestCompletedTasks(10);
+
+        for (String[] task : completedTasks) {
+            model.addRow(task);
+        }
+
+        model.fireTableDataChanged();
+    }
+
+    // Fetch latest 10 completed tasks
+    public List<String[]> getLatestCompletedTasks(int limit) {
+        List<String[]> tasks = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("resources/customerOrder.txt"))) {
+            String line;
+            List<String[]> tempTasks = new ArrayList<>();
+
+            while ((line = reader.readLine()) != null) {
+                String[] orderData = line.split(",");
+                String status = orderData[3];
+                String runnerEmail = orderData[5];
+
+                if ("completed".equalsIgnoreCase(status) && runnerEmail.equalsIgnoreCase(email)) {
+                    String deliveryFee = orderData[7];
+                    String date = orderData[9];
+
+                    tempTasks.add(new String[]{date, "Congratulations! You have a new income!", deliveryFee});
+                }
+            }
+
+            tempTasks.sort((a, b) -> {
+            LocalDate dateA = LocalDate.parse(a[0], formatter);
+            LocalDate dateB = LocalDate.parse(b[0], formatter);
+            return dateB.compareTo(dateA);
+        });
+
+        tasks = tempTasks.subList(0, Math.min(limit, tempTasks.size()));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return tasks;
     }
 
     /**
@@ -91,7 +208,7 @@ public class runnerMain extends javax.swing.JFrame {
         jPanel5 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        notificJT = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -284,28 +401,29 @@ public class runnerMain extends javax.swing.JFrame {
         jPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         jLabel3.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
-        jLabel3.setText("Notification (send when food prepared and complete and receive delivery fee");
+        jLabel3.setText("Notification");
 
-        jTable1.setAutoCreateColumnsFromModel(false);
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        notificJT.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Order ID.", "Description"
+                "Date", "Description", "Earnings (RM)"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false
+                false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setPreferredWidth(5);
+        jScrollPane1.setViewportView(notificJT);
+        if (notificJT.getColumnModel().getColumnCount() > 0) {
+            notificJT.getColumnModel().getColumn(0).setPreferredWidth(50);
+            notificJT.getColumnModel().getColumn(1).setPreferredWidth(350);
+            notificJT.getColumnModel().getColumn(2).setPreferredWidth(5);
         }
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -469,8 +587,8 @@ public class runnerMain extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JButton logoutButton;
+    private javax.swing.JTable notificJT;
     private javax.swing.JButton revenueJB;
     private javax.swing.ButtonGroup statusGroup;
     private javax.swing.JLabel statusImage;
