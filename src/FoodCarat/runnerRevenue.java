@@ -250,9 +250,9 @@ public class runnerRevenue extends javax.swing.JFrame {
 
     // Display chart
     private void displayLineChart(DefaultCategoryDataset dataset, String title, String xAxisLabel, String yAxisLabel) {
-        JFreeChart barChart = ChartFactory.createLineChart(title, xAxisLabel, yAxisLabel, dataset, PlotOrientation.VERTICAL, true, true, false);
+        JFreeChart lineChart = ChartFactory.createLineChart(title, xAxisLabel, yAxisLabel, dataset, PlotOrientation.VERTICAL, true, true, false);
 
-        CategoryPlot plot = barChart.getCategoryPlot();
+        CategoryPlot plot = lineChart.getCategoryPlot();
         NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
         
         int totalIncome = 0;
@@ -269,7 +269,7 @@ public class runnerRevenue extends javax.swing.JFrame {
             rangeAxis.setTickUnit(new NumberTickUnit(20));
         }
 
-        ChartPanel chartPanel = new ChartPanel(barChart);
+        ChartPanel chartPanel = new ChartPanel(lineChart);
         chartPanel.setPreferredSize(new Dimension(800, 600));
 
         chartPanel.setMouseWheelEnabled(false);

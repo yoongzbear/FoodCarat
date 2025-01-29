@@ -26,7 +26,7 @@
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="32767" attributes="0"/>
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="335" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="447" max="-2" attributes="0"/>
               <Component id="menuBtn" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
           </Group>
@@ -37,21 +37,26 @@
               <EmptySpace max="-2" attributes="0"/>
           </Group>
           <Group type="102" attributes="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <EmptySpace min="-2" pref="106" max="-2" attributes="0"/>
-                      <Component id="jLabel4" min="-2" pref="202" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="112" max="-2" attributes="0"/>
-                      <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="127" max="-2" attributes="0"/>
-                      <Component id="jLabel7" min="-2" pref="165" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="205" max="-2" attributes="0"/>
-                      <Component id="jLabel8" min="-2" pref="149" max="-2" attributes="0"/>
-                  </Group>
-              </Group>
+              <EmptySpace min="-2" pref="106" max="-2" attributes="0"/>
+              <Component id="jLabel4" min="-2" pref="202" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="112" max="-2" attributes="0"/>
+              <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="79" max="-2" attributes="0"/>
+              <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="incomeJMC" min="-2" pref="125" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="incomeJYC" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
+          </Group>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="127" max="-2" attributes="0"/>
+              <Component id="annualRevenueJL" min="-2" pref="165" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="205" max="-2" attributes="0"/>
+              <Component id="completedOrderedJL" min="-2" pref="149" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
+              <Component id="totalIncomeMJL" min="-2" pref="149" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="198" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -63,20 +68,32 @@
                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                   <Component id="menuBtn" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="68" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="68" pref="68" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel9" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <Component id="incomeJMC" alignment="1" min="-2" pref="28" max="-2" attributes="0"/>
+                  </Group>
+                  <Component id="incomeJYC" alignment="1" min="-2" pref="28" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jLabel8" alignment="0" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-                  <Component id="jTabbedPane1" min="-2" pref="501" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="annualRevenueJL" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="completedOrderedJL" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
+                          <Component id="jTabbedPane1" min="-2" pref="501" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <Component id="totalIncomeMJL" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
@@ -111,46 +128,76 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
-                          <Component id="jLabel2" min="-2" pref="493" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" pref="115" max="-2" attributes="0"/>
-                          <Component id="jMonthChooser1" min="-2" pref="125" max="-2" attributes="0"/>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="jYearChooser1" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
-                  <EmptySpace pref="80" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
+                  <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="pieMonthJMC" min="-2" pref="125" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
+                  <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="pieYearJYC" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
+                  <Component id="generateChartJB" min="-2" pref="145" max="-2" attributes="0"/>
+                  <EmptySpace pref="64" max="32767" attributes="0"/>
+              </Group>
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="pieChartJL" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
-                  <EmptySpace pref="27" max="32767" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jMonthChooser1" min="-2" max="-2" attributes="0"/>
-                      <Component id="jYearChooser1" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="pieMonthJMC" max="32767" attributes="0"/>
+                      <Component id="jLabel7" max="32767" attributes="0"/>
+                      <Component id="jLabel8" alignment="1" max="32767" attributes="0"/>
+                      <Component id="pieYearJYC" max="32767" attributes="0"/>
+                      <Component id="generateChartJB" pref="24" max="32767" attributes="0"/>
                   </Group>
-                  <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
-                  <Component id="jLabel2" min="-2" pref="377" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Component id="pieChartJL" pref="412" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JLabel" name="jLabel2">
+        <Component class="javax.swing.JLabel" name="pieChartJL">
           <Properties>
             <Property name="text" type="java.lang.String" value="Pie Chart - show order, delivery,  take away(%) by month"/>
           </Properties>
         </Component>
-        <Component class="com.toedter.calendar.JMonthChooser" name="jMonthChooser1">
+        <Component class="com.toedter.calendar.JMonthChooser" name="pieMonthJMC">
         </Component>
-        <Component class="com.toedter.calendar.JYearChooser" name="jYearChooser1">
+        <Component class="com.toedter.calendar.JYearChooser" name="pieYearJYC">
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel7">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Cooper Black" size="18" style="0"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Month:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel8">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Cooper Black" size="18" style="0"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Year:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="generateChartJB">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Generate Chart"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="generateChartJBActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -180,25 +227,25 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace pref="199" max="32767" attributes="0"/>
-                      <Component id="jLabel3" min="-2" pref="257" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="169" max="-2" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="lineChartMonthJL" pref="621" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="193" max="-2" attributes="0"/>
-                      <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="257" max="32767" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="lineChartMonthJL" pref="454" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Component class="javax.swing.JLabel" name="jLabel3">
+            <Component class="javax.swing.JLabel" name="lineChartMonthJL">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Line Chart - few month income - 6 month"/>
               </Properties>
@@ -223,24 +270,24 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="57" max="-2" attributes="0"/>
-                      <Component id="jLabel6" min="-2" pref="413" max="-2" attributes="0"/>
-                      <EmptySpace pref="155" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="lineChartYearJL" pref="621" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace pref="262" max="32767" attributes="0"/>
-                      <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="188" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="lineChartYearJL" pref="454" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Component class="javax.swing.JLabel" name="jLabel6">
+            <Component class="javax.swing.JLabel" name="lineChartYearJL">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Line Chart - few year income - register until now (max. 5 years)"/>
               </Properties>
@@ -254,7 +301,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Cooper Black" size="24" style="0"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Total completed ordered"/>
+        <Property name="text" type="java.lang.String" value="Total completed orders"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel4">
@@ -265,7 +312,7 @@
         <Property name="text" type="java.lang.String" value="Annual Revenue"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel7">
+    <Component class="javax.swing.JLabel" name="annualRevenueJL">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Cooper Black" size="20" style="0"/>
@@ -277,7 +324,37 @@
         <Property name="text" type="java.lang.String" value="RM100K"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel8">
+    <Component class="javax.swing.JLabel" name="completedOrderedJL">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Cooper Black" size="20" style="0"/>
+        </Property>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
+        </Property>
+        <Property name="horizontalAlignment" type="int" value="0"/>
+        <Property name="text" type="java.lang.String" value="200K"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel9">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Cooper Black" size="24" style="0"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Total Income of "/>
+      </Properties>
+    </Component>
+    <Component class="com.toedter.calendar.JMonthChooser" name="incomeJMC">
+      <Events>
+        <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="incomeJMCPropertyChange"/>
+      </Events>
+    </Component>
+    <Component class="com.toedter.calendar.JYearChooser" name="incomeJYC">
+      <Events>
+        <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="incomeJYCPropertyChange"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="totalIncomeMJL">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Cooper Black" size="20" style="0"/>
