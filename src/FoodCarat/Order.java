@@ -2,16 +2,16 @@ package FoodCarat;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
@@ -635,6 +635,60 @@ public class Order {
             writer.write(stringBuilder.toString());
             writer.close();
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void writeReOrderDetails(int newOrderID, String orderItems, double price) {
+        try {
+            List<String> updatedLines = new ArrayList<>();
+
+            BufferedReader reader = new BufferedReader(new FileReader(orderFile));
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] orderData = line.split(",");
+                int currentOrderID = Integer.parseInt(orderData[0]);
+
+                if (currentOrderID == orderID) {
+                String currentOrderType = orderData[1];
+                double originalPrice = price;
+                double deliveryFee = 0.0;
+
+                if ("delivery".equalsIgnoreCase(currentOrderType)) {
+                    deliveryFee = calculateDeliveryFee(originalPrice);
+                }
+                double totalPaid = originalPrice + deliveryFee;
+
+                String formattedTotalPaid = String.format("%.2f", totalPaid);
+                String formattedDeliveryFee = String.format("%.2f", deliveryFee);
+
+                /**
+                String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+
+                String orderDetails = newOrderID + "," + orderMethod + "," + orderItems + ",pending accept," +
+                                      email + ",null,null," + formattedDeliveryFee + "," + formattedTotalPaid + "," + currentDate;
+    **/
+                orderData[2] = orderItems;
+                orderData[7] = formattedDeliveryFee;
+                orderData[8] = formattedTotalPaid; 
+
+                line = String.join(",", orderData);
+                    }
+                            updatedLines.add(line);
+
+                }
+
+            reader.close();
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter(orderFile));
+            for (String updatedLine : updatedLines) {
+                writer.write(updatedLine);
+                writer.newLine();
+            }
+        
+            writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

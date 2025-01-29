@@ -34,6 +34,7 @@ import javax.swing.table.DefaultTableModel;
  * @author ASUS
  */
 public class customerOrderHistory extends javax.swing.JFrame {
+    private String email = User.getSessionEmail();
 
     /**
      * Creates new form customerOrderHistory
@@ -214,7 +215,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
                 String[] record = line.split(",");
                 String rOrderStatus = record[3];
                 String rUser = record[4];
-                if (rUser.equals("customer@mail.com") && rOrderStatus != "") {
+                if (rUser.equals("customer2@mail.com") && rOrderStatus != "") {
                     String rOrderType = record[1];
                     String rOrderList = record[2].replace("[", "").replace("]", "");
                     String rVendorName = null;
@@ -998,10 +999,47 @@ public class customerOrderHistory extends javax.swing.JFrame {
             // Loop through the orders (or access the first one based on your needs)
             for (String[] orderData : allOrders) {
                 String orderID = orderData[0];
-                String orderStatus = orderData[3];  // Get the status from index 3
                 if ("completed".equalsIgnoreCase(selectedOrderStatus) && selectedOrderID.equals(orderID)) {
-                    System.out.println("reorder");
-                    break;
+                    String itemIDString = orderData[2].replaceAll("[\\[\\]]", "");
+                    String[] itemIDs = itemIDString.split(";");
+
+                    String firstItemID = itemIDs[0];
+                    Item item = new Item();
+                    String[] userInfo = item.getVendorInfoByItemID(Integer.parseInt(firstItemID.trim()));
+                    Vendor vendor = new Vendor(userInfo[0]);
+                    String vendorInfo = vendor.getAvailableMethod();
+                    String vendorMethod = vendorInfo.replaceAll("[\\[\\]]", "").trim();
+
+                    if (vendorMethod.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "The store is not available for any order type.", "Unavailable", JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+
+                    String[] availableOrderTypes = vendorMethod.split(";");
+
+                    // Show selection dialog for order type
+                    int choiceIndex = JOptionPane.showOptionDialog(null, "Please select an order type:", "Start Order!", 
+                            JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, availableOrderTypes, availableOrderTypes[0]);
+
+                    if (choiceIndex != JOptionPane.CLOSED_OPTION) {
+                        String chosenOrderType = availableOrderTypes[choiceIndex];
+
+                        // Initialize a new order
+                        //Order Order = new Order(chosenOrderType, User.getSessionEmail());
+                        Order Order = new Order(chosenOrderType, User.getSessionEmail());
+                        Order.initialOrder();
+                        int OrderID = Order.getOrderID();
+                        
+                        
+                        String orderItems = orderData[2];
+                        double orderPrice = Double.parseDouble(orderData[8]);
+                        Order.writeReOrderDetails(OrderID, orderItems, orderPrice);
+
+                        customerPayment paymentFrame = new customerPayment(OrderID, chosenOrderType);
+                        paymentFrame.setVisible(true);
+                        this.dispose();
+                    }
+                    return;
                 } else if ("pending accept".equalsIgnoreCase(selectedOrderStatus) && selectedOrderID.equals(orderID)) {
                     int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to cancel order?");
                     if (confirm == JOptionPane.YES_OPTION) {
