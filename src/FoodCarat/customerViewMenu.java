@@ -106,8 +106,7 @@ public class customerViewMenu extends javax.swing.JFrame {
                         if (availableMethods != null && !availableMethods.isEmpty()) {
                             String methodsWithoutBrackets = availableMethods.substring(1, availableMethods.length() - 1);
                             String[] availableMethodsArray = methodsWithoutBrackets.split(";");
-                            isAvailableForOrderType = Arrays.asList(availableMethodsArray).contains(orderType);
-                            System.out.println(orderType);
+                            isAvailableForOrderType = Arrays.stream(availableMethodsArray).anyMatch(method -> method.equalsIgnoreCase(orderType));
                         } else {
                             isAvailableForOrderType = false;
                         }
