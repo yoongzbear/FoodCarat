@@ -89,12 +89,6 @@ public class Admin extends User {
 
         // Check the login status, role match, and email match
         String result = checkFirstLogin(searchEmail, selectedRole, userFile);
-        //get the customer address by remove the [] and change ; to ,
-        if ("customer".equals(selectedRole)) {
-                    Customer customer = new Customer(searchEmail);
-                    String customerAddress = customer.getCustomerAddress(searchEmail);
-                    result = customerAddress;
-        }
         
         // Handle based on the result of checkFirstLogin
         if (result.equals("notFound")) {
@@ -106,6 +100,12 @@ public class Admin extends User {
         } else if (result.equals("notExisting")) {
             JOptionPane.showMessageDialog(null, "User account does not exist. Please try again.");
         }else {
+            //get the customer address by remove the [] and change ; to ,
+            if ("customer".equals(selectedRole)) {
+                        Customer customer = new Customer(searchEmail);
+                        String customerAddress = customer.getCustomerAddress(searchEmail);
+                        result = customerAddress;
+            }
         // If the user has completed the first login, update the user data
         updateUserForm.setUserData(getEmail(), getName(), getBirth(), getContactNumber(), result);
         }
