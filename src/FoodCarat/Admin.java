@@ -25,6 +25,8 @@ public class Admin extends User {
 
     private static String userFile = "resources/user.txt";
     private String cusFile = "resources/customer.txt";
+    private String venFile = "resources/vendor.txt";
+    private String runFile = "resources/runner.txt";
     private String cuscreditFile = "resources/transactionCredit.txt";
     
     public Admin(){
@@ -60,7 +62,7 @@ public class Admin extends User {
             samplePassword.append(characters.charAt(random.nextInt(characters.length())));
         }
         String password = samplePassword.toString();
-        String roleFileName = role + ".txt";
+        String roleFileName = "resources/" + role + ".txt";
         
         // Write to user.txt
         try (FileWriter userWriter = new FileWriter(userFile, true)) {
@@ -297,13 +299,13 @@ public class Admin extends User {
         if (role != null) {
             switch (role.toLowerCase()) {
                 case "vendor":
-                    super.updateCredit(email, newAmount, "vendor.txt", 4);
+                    super.updateCredit(email, newAmount, venFile, 4);
                     break;
                 case "runner":
-                    super.updateCredit(email, newAmount, "runner.txt", 3);
+                    super.updateCredit(email, newAmount, runFile, 3);
                     break;
                 case "customer":
-                    super.updateCredit(email, newAmount, "customer.txt", 2);
+                    super.updateCredit(email, newAmount, cusFile, 2);
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown role: " + role);
