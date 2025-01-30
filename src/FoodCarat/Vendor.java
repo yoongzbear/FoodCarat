@@ -174,7 +174,6 @@ public class Vendor extends User{
             }
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Error reading vendor.txt: " + e.getMessage());
         }
 
         if (updated) {
@@ -183,13 +182,9 @@ public class Vendor extends User{
                     writer.write(updatedLine);
                     writer.newLine();
                 }
-                System.out.println("Vendor information updated successfully.");
             } catch (IOException e) {
                 e.printStackTrace();
-                System.out.println("Error writing to vendor.txt: " + e.getMessage());
             }
-        } else {
-            System.out.println("No matching email found to update.");
         }
     }
 }

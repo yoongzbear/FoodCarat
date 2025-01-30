@@ -20,7 +20,7 @@ import javax.swing.text.PlainDocument;
  */
 public class vendor1AccInfo extends javax.swing.JFrame {
     private String email = User.getSessionEmail();
-
+    
     /**
      * Creates new form vendor1ProfilePic
      */
@@ -46,7 +46,7 @@ public class vendor1AccInfo extends javax.swing.JFrame {
 
         dateTF.setText(formattedDate);
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -294,7 +294,7 @@ public class vendor1AccInfo extends javax.swing.JFrame {
         vendor.addVendorInfo(email, savedPicturePath, cuisine);
         
         new vendorMain().setVisible(true);
-        dispose();
+        dispose(); 
     }//GEN-LAST:event_completeJBActionPerformed
 
     private void uploadJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadJBActionPerformed
