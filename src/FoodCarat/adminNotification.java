@@ -32,6 +32,10 @@ public class adminNotification extends javax.swing.JFrame {
         setColumnWidths();
         setRowHeight();
         
+        Admin admin = new Admin();
+        ArrayList<String> allTransactions = admin.getTransactionMessages();
+        displayAllTransactions(allTransactions); // Populate the table with all transactions
+        
         // Add row selection listener to show receipt on row click
         notificationtable.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
@@ -88,6 +92,39 @@ public class adminNotification extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Transaction details not found.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
+    }
+    
+    private void displayAllTransactions(ArrayList<String> transactions) {
+        // Clear existing rows in the table
+        tableModel.setRowCount(0);
+
+        // Populate the table with the transactions
+        int transactionNumber = 1; 
+        for (String transaction : transactions) {
+            tableModel.addRow(new Object[]{transactionNumber++, transaction});
+        }
+
+        fillEmptyRowSpace();
+    }
+    
+    private ArrayList<String> getFilteredTransactionsByMonth(ArrayList<String> allTransactions, int month) {
+        ArrayList<String> filteredTransactions = new ArrayList<>();
+
+        for (String transaction : allTransactions) {
+
+            String[] parts = transaction.split("\\s+");
+            for (String part : parts) {
+                if (part.matches("\\d{4}-\\d{2}-\\d{2}")) { // Check for date format "YYYY-MM-DD"
+                    String[] dateParts = part.split("-");
+                    int transactionMonth = Integer.parseInt(dateParts[1]); // Extract the month
+                    if (transactionMonth == month) {
+                        filteredTransactions.add(transaction);
+                    }
+                }
+            }
+        }
+
+        return filteredTransactions;
     }
     
     private void fillEmptyRowSpace() {           
@@ -228,21 +265,21 @@ public class adminNotification extends javax.swing.JFrame {
             return;
         }
         Admin admin = new Admin();
-        ArrayList<String> transactionMessages = admin.getTransactionMessages(monthNumber);
+        ArrayList<String> transactionMessages = admin.getTransactionMessages();
 
+                // Filter transactions by the selected month
+        ArrayList<String> filteredTransactions = getFilteredTransactionsByMonth(transactionMessages, monthNumber);
+        
         tableModel.setRowCount(0);
 
         // If there are no transactions, show a message and return
         if (transactionMessages.isEmpty()) {
+            displayAllTransactions(transactionMessages);
             JOptionPane.showMessageDialog(this, "No data available for the selected month.");
             return;
+        }else{
+            displayAllTransactions(filteredTransactions);
         }
-        // Add the transaction messages to the table
-        int transactionNumber = 1;
-        for (String message : transactionMessages) {
-            tableModel.addRow(new Object[]{transactionNumber++, message});
-        }
-        fillEmptyRowSpace();
     }//GEN-LAST:event_searchbtnActionPerformed
 
     /**
