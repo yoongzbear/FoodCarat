@@ -19,7 +19,7 @@ import org.jfree.data.general.DefaultPieDataset;
  * @author User
  */
 public class managerMonVenPer extends javax.swing.JFrame {
-
+    private String userFile = "resources/user.txt";
     /**
      * Creates new form managerMonVenPer
      */
@@ -58,7 +58,7 @@ public class managerMonVenPer extends javax.swing.JFrame {
             double avgOrderValue = Double.parseDouble(performanceValues[2]);
 
             User user = new User();
-            String[] venName = user.performSearch(vendorEmail, "user.txt");
+            String[] venName = user.performSearch(vendorEmail, userFile);
             String vendorName = venName[1];
 
             // Add row data to the table
@@ -162,7 +162,7 @@ public class managerMonVenPer extends javax.swing.JFrame {
             try {
                 // Fetch runner name using the user utility
                 User user = new User();
-                String[] vendorDetails = user.performSearch(vendorID, "user.txt");
+                String[] vendorDetails = user.performSearch(vendorID, userFile);
                 String vendorName = vendorDetails.length > 1 ? vendorDetails[1] : vendorID;
 
                 // Calculate and add percentages
