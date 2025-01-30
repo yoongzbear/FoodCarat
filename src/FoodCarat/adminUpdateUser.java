@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
  */
 public class adminUpdateUser extends javax.swing.JFrame {
     private String role;
+    private static String userFile = "resources/user.txt";
     /**
      * Creates new form adminUpdateUser
      */
@@ -403,13 +404,13 @@ public class adminUpdateUser extends javax.swing.JFrame {
         Admin admin = new Admin();
         if (validateFields(email, name, birthDate, phone, role, additionalField)) {
            // Update user.txt
-           boolean userUpdated = admin.updateFile("user.txt",
+           boolean userUpdated = admin.updateFile(userFile,
                    email,
                    new String[]{name, birthDate, phone},
                    new int[]{1, 4, 5});
 
            // Update role-specific file
-           boolean roleUpdated = admin.updateFile(role + ".txt",
+           boolean roleUpdated = admin.updateFile("resources/" + role + ".txt",
                    email,
                    new String[]{additionalField},
                    new int[]{1});
@@ -444,10 +445,10 @@ public class adminUpdateUser extends javax.swing.JFrame {
 
         if (confirmation == JOptionPane.YES_OPTION) {
             // Delete from user.txt
-            boolean userDeleted = admin.removeInfoUserFile("user.txt", email);
+            boolean userDeleted = admin.removeInfoUserFile(userFile, email);
 
             // Delete from role-specific file
-            boolean roleDeleted = admin.deleteFromFile(role + ".txt", email);
+            boolean roleDeleted = admin.deleteFromFile("resources/" + role + ".txt", email);
 
             // Handle deletion results
             if (userDeleted && roleDeleted) {
