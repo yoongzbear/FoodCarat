@@ -217,8 +217,6 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
                 nextStatusTxt.setText("In kitchen");
             } else if (currentStatus.equalsIgnoreCase("in kitchen")) {
                 nextStatusTxt.setText("Ready");
-            } else if (currentStatus.equalsIgnoreCase("ready")) {
-                nextStatusTxt.setText("Picked up by runner");
             }
         } else {
             if (currentStatus.equalsIgnoreCase("ordered")) {

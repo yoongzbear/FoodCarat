@@ -9,6 +9,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -309,11 +310,18 @@ public class Order {
     
     //get new orders with status "pending accept"
     public String[] getNewOrder(String vendorEmail) {
-        List<Integer> orderIDs = new ArrayList<>();
         List<String[]> vendorOrders = getAllOrders(vendorEmail);
+        //get current date in yyyy-MM-dd
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate currentDate = LocalDate.now();
         for (String[] orderData : vendorOrders) {
-            if (orderData[3].equalsIgnoreCase("Pending accept")) {
+            try {
+                LocalDate orderDate = LocalDate.parse(orderData[9].trim(), dateFormat);
+                if (orderData[3].equalsIgnoreCase("Pending accept") && orderDate.isEqual(currentDate)) {
                 return orderData;
+            }
+            } catch (DateTimeParseException e) {
+                System.err.println("Invalid date format for order ID " + orderData[0] + ": " + e.getMessage());
             }
         }        
         return null; //no new order
