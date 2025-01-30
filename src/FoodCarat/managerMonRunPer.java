@@ -19,7 +19,7 @@ import org.jfree.data.general.DefaultPieDataset;
  * @author User
  */
 public class managerMonRunPer extends javax.swing.JFrame {
-    private static String userFile = "resources/user.txt";
+    private String userFile = "resources/user.txt";
     /**
      * Creates new form managerMonRunPer
      */
