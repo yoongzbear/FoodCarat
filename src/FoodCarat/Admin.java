@@ -73,7 +73,9 @@ public class Admin extends User {
         try (FileWriter roleWriter = new FileWriter(roleFileName, true)) {
             if ("customer".equalsIgnoreCase(role)) {
                 roleWriter.write(email + ",,0.0,0\n"); //credit amount will be 0.0 after the registration and the point will be 0
-            } else {
+            } else if("vendor".equalsIgnoreCase(role)){
+                roleWriter.write(email + ",,,[],0.0\n");
+            } else{
                 roleWriter.write(email + ",,\n");
             }
         }
