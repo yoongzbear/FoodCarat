@@ -326,7 +326,7 @@ public class Admin extends User {
     
     //Notification
     // Method to retrieve the list of transaction messages
-    public ArrayList<String> getTransactionMessages(int month) {
+    public ArrayList<String> getTransactionMessages() {
         ArrayList<String> transactionMessages = new ArrayList<>();
         String filePath = cuscreditFile;
         
@@ -343,12 +343,6 @@ public class Admin extends User {
                     String date = parts[4];
                     String time = parts[5];
 
-                    // Split the date and extract the month
-                    String[] dateParts = date.split("-");
-                    int transactionMonth = Integer.parseInt(dateParts[1]);
-
-                    // If the month matches the provided month, create the message
-                    if (transactionMonth==month) {
                         // Create the message in the required format
                         String message = String.format(
                             "Top-up amount %.2f has been successfully credited into %s's account at %s %s (transaction id: %s)",
@@ -358,7 +352,6 @@ public class Admin extends User {
                         transactionMessages.add(message);
                     }
                 }
-            }
         } catch (IOException e) {
             javax.swing.JOptionPane.showMessageDialog(null, "Error reading file: " + e.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
         }
