@@ -22,6 +22,7 @@ import java.util.Set;
  */
 public class Manager extends User{
     private String userFile = "resources/user.txt";
+    private String orderFile = "resources/customerOrder.txt";
         
     //Monitor Runner Performance
     //
@@ -29,7 +30,7 @@ public class Manager extends User{
         Map<String, Order> orderMap = new HashMap<>();
         Map<Integer, String> orderToRunnerMap = new HashMap<>();
 
-        BufferedReader orderReader = new BufferedReader(new FileReader("customerOrder.txt"));
+        BufferedReader orderReader = new BufferedReader(new FileReader(orderFile));
         String line;
 
         while ((line = orderReader.readLine()) != null) {
@@ -91,7 +92,7 @@ public class Manager extends User{
         Map<String, Order> vendorOrders = new HashMap<>();
         Set<Integer> processedOrderIDs = new HashSet<>(); // Track processed order IDs
 
-        try (BufferedReader orderReader = new BufferedReader(new FileReader("customerOrder.txt"))) { // Use try-with-resources
+        try (BufferedReader orderReader = new BufferedReader(new FileReader(orderFile))) { // Use try-with-resources
             String orderLine;
 
             while ((orderLine = orderReader.readLine()) != null) {
@@ -171,7 +172,7 @@ public class Manager extends User{
                     String reviewID = fields[0];
                     
                     User user = new User();
-                    String []userDetails = user.performSearch(email, "user.txt");
+                    String []userDetails = user.performSearch(email, userFile);
                     String cusName = userDetails[1];
                     // Check if the month matches and review type is "foodcourt"
                     if (date == selectedMonth &&
