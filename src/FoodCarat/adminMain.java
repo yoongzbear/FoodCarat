@@ -268,11 +268,14 @@ public class adminMain extends javax.swing.JFrame {
     }//GEN-LAST:event_withdrawbtnActionPerformed
 
     private void logoutbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutbtnActionPerformed
-        User user = new User();
-        user.logOut();
-        JOptionPane.showMessageDialog(this, "You have been logged out!");
-        dispose();
-        new userLogin().setVisible(true);
+        int choice = JOptionPane.showConfirmDialog(null, "Are you sure to logout?", "Confirm Logout", JOptionPane.YES_NO_OPTION);
+        if (choice == JOptionPane.YES_OPTION){
+            User user = new User();
+            user.logOut();
+            JOptionPane.showMessageDialog(null, "You have been logged out!", "Log Out", JOptionPane.INFORMATION_MESSAGE);
+            this.dispose();
+            new userLogin().setVisible(true);
+        }
     }//GEN-LAST:event_logoutbtnActionPerformed
 
     /**
