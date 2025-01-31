@@ -167,6 +167,17 @@ public class customerOrderHistory extends javax.swing.JFrame {
                                 bFeedback.setEnabled(true);
                                 bFeedback.setVisible(true);
                             } else {
+                                //No feedback for incomplete feedback
+                                taOrderFeedback.setText("");
+                                taOrderFeedback.setEditable(false);
+                                cbVendorRating.setEditable(false);
+                                
+                                //clear section
+                                cbVendorRating.setSelectedItem("Please Rate");
+                                taVendorFeedback.setText("");
+                                taVendorFeedback.setEditable(false);
+                                cbRunnerRating.setEditable(false);
+                                cbRunnerRating.setSelectedItem("Please Rate");
                                 bFeedback.setEnabled(false);
                             }
                             //For the order items
@@ -220,11 +231,11 @@ public class customerOrderHistory extends javax.swing.JFrame {
                 String[] record = line.split(",");
                 String rOrderStatus = record[3];
                 String rUser = record[4];
-                if (rUser.equals("customer@mail.com") && rOrderStatus != "") {
+                if (rUser.equals(User.getSessionEmail()) && rOrderStatus != "") {
                     String rOrderType = record[1];
                     
                     String formattedOrderType = "";
-                    switch (rOrderType) {
+                    switch (rOrderType.toLowerCase()) {
                         case "dine in":
                             formattedOrderType = "Dine In";
                             break;
@@ -263,7 +274,6 @@ public class customerOrderHistory extends javax.swing.JFrame {
                         String[] itemDetails = orderItems[i].split(";");
                         int rOrderItemID = Integer.parseInt(itemDetails[0]);
                         String rItemQuantity = itemDetails[1];
-                        // String rItemPrice = itemDetails[2]; // Need to change based on the vendor ori price
 
                         Item item1 = new Item();
                         String[] itemInfo = item1.itemData(rOrderItemID);
@@ -403,7 +413,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
                 String[] record = line.split(",");
                 String rOrderStatus = record[3];
                 String rUser = record[4];
-                if (rUser.equals("customer@mail.com") && rOrderStatus != "") {
+                if (rUser.equals(User.getSessionEmail()) && rOrderStatus != "") {
                     String rOrderType = record[1];
                     String rOrderList = record[2].replace("[", "").replace("]", "");
                     String rVendorName = null;
