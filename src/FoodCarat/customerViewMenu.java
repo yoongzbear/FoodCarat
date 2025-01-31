@@ -43,8 +43,8 @@ public class customerViewMenu extends javax.swing.JFrame {
 
     public customerViewMenu(int orderID, String orderType) {
         this.orderID = orderID;
-        this.orderType = orderType;
-        this.currentOrder = new Order(orderType, "customerEmail"); 
+        this.orderType = orderType.toLowerCase();
+        this.currentOrder = new Order(orderType, User.getSessionEmail()); 
         initComponents();
         lItemName.setText("");
         lUnitPrice.setText("");
@@ -360,7 +360,7 @@ public class customerViewMenu extends javax.swing.JFrame {
             String quantity = item[2];
             double totalPrice = Integer.parseInt(quantity) * unitPrice;
 
-            model.addRow(new Object[]{itemName, "RM" + unitPrice, quantity, "RM" + df.format(totalPrice), itemID});
+            model.addRow(new Object[]{itemName, "RM" + df.format(unitPrice), quantity, "RM" + df.format(totalPrice), itemID});
         }
         
     }
