@@ -32,7 +32,7 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="jScrollPane5" alignment="0" pref="1055" max="32767" attributes="0"/>
+          <Component id="jScrollPane5" alignment="0" pref="1139" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
   </Layout>
@@ -57,14 +57,14 @@
                               <Component id="jScrollPane2" alignment="1" max="32767" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="102" alignment="0" attributes="0">
+                                      <Group type="102" attributes="0">
                                           <Component id="selectLabel" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace type="separate" max="-2" attributes="0"/>
                                           <Component id="dateChooser" min="-2" pref="150" max="-2" attributes="0"/>
                                       </Group>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Component id="jLabel11" min="-2" pref="60" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
+                                      <Group type="102" attributes="0">
+                                          <Component id="jLabel11" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace type="separate" max="-2" attributes="0"/>
                                           <Component id="cbSearchBy" min="-2" pref="131" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
@@ -183,8 +183,8 @@
                                   <Component id="selectLabel" min="-2" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="dateChooser" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="monthChooser" alignment="1" min="-2" max="-2" attributes="0"/>
-                                      <Component id="yearChooser" alignment="1" min="-2" max="-2" attributes="0"/>
+                                      <Component id="monthChooser" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="yearChooser" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -331,7 +331,7 @@
             <Component class="javax.swing.JLabel" name="lVenFeedbackSection">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="12" style="1"/>
+                  <Font name="Cooper Black" size="12" style="0"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Vendor Feedback Section"/>
               </Properties>
@@ -343,13 +343,16 @@
             </Component>
             <Component class="javax.swing.JLabel" name="lVenRateTitle">
               <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Cooper Black" size="12" style="0"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Rating:"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel3">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="12" style="1"/>
+                  <Font name="Cooper Black" size="12" style="0"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Order Details"/>
               </Properties>
@@ -357,7 +360,7 @@
             <Component class="javax.swing.JLabel" name="lOrderFeedbackSection">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="12" style="1"/>
+                  <Font name="Cooper Black" size="12" style="0"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Order Feedback Section"/>
               </Properties>
@@ -406,6 +409,9 @@
             </Container>
             <Component class="javax.swing.JLabel" name="jLabel6">
               <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Cooper Black" size="12" style="0"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Ordered Item(s) :"/>
               </Properties>
             </Component>
@@ -416,6 +422,9 @@
             </Component>
             <Component class="javax.swing.JLabel" name="lOrderFeedbackTitle">
               <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Cooper Black" size="12" style="0"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Order Feedback :"/>
               </Properties>
             </Component>
@@ -491,6 +500,9 @@
             </Container>
             <Component class="javax.swing.JLabel" name="lVenFeedbackTitle">
               <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Cooper Black" size="12" style="0"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Feedback:"/>
               </Properties>
             </Component>
@@ -520,7 +532,7 @@
             <Component class="javax.swing.JLabel" name="lRunnerRating">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="12" style="1"/>
+                  <Font name="Cooper Black" size="12" style="0"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Runner Rating:"/>
               </Properties>
@@ -606,6 +618,9 @@
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel11">
               <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Cooper Black" size="14" style="0"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Search By:"/>
               </Properties>
             </Component>
