@@ -26,6 +26,8 @@ public class customerFCFeedback extends javax.swing.JFrame {
     public customerFCFeedback() {
         initComponents();
         populateTable();
+        setLocationRelativeTo(null);
+        getContentPane().setBackground(new java.awt.Color(180,200,234));
     }
     
     private void populateTable(){
@@ -43,6 +45,7 @@ public class customerFCFeedback extends javax.swing.JFrame {
                     String rComplaint = record[4];
                     String rReviewDate = record[5];
                     String rReviewStatus = record[7];
+                    rReviewStatus = rReviewStatus.substring(0, 1).toUpperCase() + rReviewStatus.substring(1).toLowerCase();
                     
                     model.addRow(new Object[]{rReviewDate, rComplaint, rReviewStatus});
                 }
@@ -84,7 +87,7 @@ public class customerFCFeedback extends javax.swing.JFrame {
         taComplaint.setRows(5);
         jScrollPane1.setViewportView(taComplaint);
 
-        bBack.setText("Back to Main Page");
+        bBack.setText("Main Menu");
         bBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bBackActionPerformed(evt);
@@ -163,8 +166,8 @@ public class customerFCFeedback extends javax.swing.JFrame {
             Review review = new Review(complaint);
             review.saveOrderFeedback(); 
             JOptionPane.showMessageDialog(null, "Thank you for providing us with your thoughts. We are grateful that you brought this to our notice, and will work to resolve the issue as quickly as possible.");
-
-            bSubmit.setVisible(false);
+            populateTable();
+            taComplaint.setText("");
         } else {
             JOptionPane.showMessageDialog(null, "No order selected.");
         }
