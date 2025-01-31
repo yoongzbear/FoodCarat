@@ -25,7 +25,10 @@ public class adminUpdateUser extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         this.role = role;
-        Lrole.setText(role);        
+        //convert to title case
+        String roleTitle = role.substring(0, 1).toUpperCase() + role.substring(1).toLowerCase();
+        Lrole.setText(roleTitle);
+        
         emailtxt.setEditable(false); 
         customizeForm();
         getContentPane().setBackground(new Color(255, 255, 204));
@@ -248,7 +251,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
             }
         });
 
-        Lrole.setFont(new java.awt.Font("Cooper Black", 0, 24)); // NOI18N
+        Lrole.setFont(new java.awt.Font("Cooper Black", 0, 30)); // NOI18N
         Lrole.setText("xxxxxx");
 
         cuisinecbx.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
