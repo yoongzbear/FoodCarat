@@ -22,6 +22,7 @@ public class customerMain extends javax.swing.JFrame {
      */
     public customerMain() {
         initComponents();
+        setLocationRelativeTo(null);
         username.setText(User.getSessionName());
         Customer customer = new Customer(User.getSessionEmail());
         pointsLabel.setText(String.valueOf(customer.getPoints()));
@@ -36,6 +37,12 @@ public class customerMain extends javax.swing.JFrame {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+        
+        String customerAddress = customer.getCustomerAddress(User.getSessionEmail());
+        taAddress.setText(customerAddress);
+        taAddress.setEditable(false);
+        taAddress.setWrapStyleWord(true);
+        taAddress.setLineWrap(true);
     }
 
     /**
@@ -63,6 +70,9 @@ public class customerMain extends javax.swing.JFrame {
         creditLabel = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         pointsLabel = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        taAddress = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(153, 204, 255));
@@ -142,7 +152,7 @@ public class customerMain extends javax.swing.JFrame {
                 .addComponent(bComplaintFC, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(bLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(177, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel2.setBackground(new java.awt.Color(180, 200, 234));
@@ -200,19 +210,25 @@ public class customerMain extends javax.swing.JFrame {
         pointsLabel.setFont(new java.awt.Font("Cooper Black", 0, 30)); // NOI18N
         pointsLabel.setText("lPoint");
 
+        jLabel2.setFont(new java.awt.Font("Cooper Black", 0, 24)); // NOI18N
+        jLabel2.setText("Your Address:");
+
+        taAddress.setColumns(20);
+        taAddress.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        taAddress.setRows(5);
+        jScrollPane1.setViewportView(taAddress);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(79, 79, 79)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel4)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -224,13 +240,22 @@ public class customerMain extends javax.swing.JFrame {
                                         .addComponent(jLabel7)
                                         .addGap(45, 45, 45)
                                         .addComponent(pointsLabel)))
-                                .addGap(58, 58, 58))))))
+                                .addGap(58, 58, 58))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jScrollPane1)))
+                        .addGap(74, 74, 74))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(94, 94, 94)
+                .addGap(69, 69, 69)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel4)
                 .addGap(42, 42, 42)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -240,7 +265,7 @@ public class customerMain extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(pointsLabel))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(104, 104, 104))
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
@@ -250,6 +275,9 @@ public class customerMain extends javax.swing.JFrame {
     private void bLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bLogoutActionPerformed
         int choice = JOptionPane.showConfirmDialog(null, "Are you sure to logout?");
         if (choice == JOptionPane.YES_OPTION){
+            User user = new User();
+            user.logOut();
+            JOptionPane.showMessageDialog(null, "You have logged out, see you next time!", "Log Out", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
             userLogin frame = new userLogin();
             frame.setVisible(true);
@@ -343,13 +371,16 @@ public class customerMain extends javax.swing.JFrame {
     private javax.swing.JButton bOrderHistory;
     private javax.swing.JLabel creditLabel;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel pointsLabel;
+    private javax.swing.JTextArea taAddress;
     private javax.swing.JLabel username;
     // End of variables declaration//GEN-END:variables
 }
