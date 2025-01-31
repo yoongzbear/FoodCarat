@@ -57,6 +57,14 @@ public class customerViewMenu extends javax.swing.JFrame {
         tCart.getColumnModel().getColumn(4).setMaxWidth(0);
         tCart.getColumnModel().getColumn(4).setMinWidth(0);
         tCart.getColumnModel().getColumn(4).setPreferredWidth(0);
+        
+        lItemName.setText("");
+        lUnitPrice.setText("");
+        sQuantity.setValue(0);
+        lTotalPrice.setText("");
+        
+        setLocationRelativeTo(null);
+        getContentPane().setBackground(new java.awt.Color(180,200,234));
     }
     
     private void onSearch() {
@@ -101,7 +109,6 @@ public class customerViewMenu extends javax.swing.JFrame {
                         // Existing code to create and add vendor panel
                         Vendor vendor = new Vendor(vendorEmail);
                         String availableMethods = vendor.getAvailableMethod();
-                        System.out.println(availableMethods);
                         boolean isAvailableForOrderType;
                         if (availableMethods != null && !availableMethods.isEmpty()) {
                             String methodsWithoutBrackets = availableMethods.substring(1, availableMethods.length() - 1);
@@ -225,6 +232,10 @@ public class customerViewMenu extends javax.swing.JFrame {
         if (availableMethods != null && !availableMethods.isEmpty()) {
             String methodsWithoutBrackets = availableMethods.substring(1, availableMethods.length() - 1);
             String[] availableMethodsArray = methodsWithoutBrackets.split(";");
+            //convert array to lowercase
+            availableMethodsArray = Arrays.stream(availableMethodsArray)
+                                    .map(String::toLowerCase)
+                                    .toArray(String[]::new);
 
             isAvailableForOrderType = Arrays.asList(availableMethodsArray).contains(orderType.toLowerCase());
         } else {
@@ -447,7 +458,7 @@ public class customerViewMenu extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        bBack.setText("Back to Main Page");
+        bBack.setText("Main Menu");
         bBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bBackActionPerformed(evt);
@@ -468,13 +479,16 @@ public class customerViewMenu extends javax.swing.JFrame {
         tCart.getTableHeader().setReorderingAllowed(false);
         jScrollPane3.setViewportView(tCart);
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel2.setText("Cart Item");
 
+        jLabel3.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel3.setText("Product Name:");
 
+        jLabel6.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel6.setText("Order Quantity:");
 
+        jLabel7.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel7.setText("Product Total Price:");
 
         lItemName.setText("itemName");
@@ -502,6 +516,7 @@ public class customerViewMenu extends javax.swing.JFrame {
             }
         });
 
+        jLabel5.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel5.setText("Product Price");
 
         lUnitPrice.setText("unitPrice");
@@ -578,7 +593,7 @@ public class customerViewMenu extends javax.swing.JFrame {
         jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         jScrollPane2.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 
-        mainMenuPanel.setBackground(new java.awt.Color(204, 255, 255));
+        mainMenuPanel.setBackground(new java.awt.Color(255, 255, 255));
 
         javax.swing.GroupLayout mainMenuPanelLayout = new javax.swing.GroupLayout(mainMenuPanel);
         mainMenuPanel.setLayout(mainMenuPanelLayout);
@@ -606,6 +621,7 @@ public class customerViewMenu extends javax.swing.JFrame {
             }
         });
 
+        jLabel4.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel4.setText("Search:");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -613,7 +629,7 @@ public class customerViewMenu extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(25, Short.MAX_VALUE)
+                .addContainerGap(41, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
@@ -622,13 +638,13 @@ public class customerViewMenu extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addGap(17, 17, 17))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                                     .addComponent(jLabel1)
                                     .addComponent(lableChooseVendor))
-                                .addGap(82, 82, 82))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addGap(17, 17, 17)))
+                                .addGap(156, 156, 156)))
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(searchField, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
@@ -665,9 +681,7 @@ public class customerViewMenu extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 984, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
