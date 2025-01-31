@@ -450,6 +450,11 @@ public class adminUpdateUser extends javax.swing.JFrame {
             // Delete from role-specific file
             boolean roleDeleted = admin.deleteFromFile("resources/" + role + ".txt", email);
 
+            Item item = new Item();
+            if ("vendor".equals(role)) {
+                item.deleteVendorItems(email, "vendor");
+            }
+            
             // Handle deletion results
             if (userDeleted && roleDeleted) {
                 JOptionPane.showMessageDialog(null, "Record deleted successfully!");
