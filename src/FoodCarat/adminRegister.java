@@ -27,7 +27,10 @@ public class adminRegister extends javax.swing.JFrame {
     public adminRegister(String role) {
         this.role=role;
         initComponents();
-        Lrole.setText(role);
+        //convert to title case
+        String roleTitle = role.substring(0, 1).toUpperCase() + role.substring(1).toLowerCase();
+        Lrole.setText(roleTitle);
+        
         setLocationRelativeTo(null);
         getContentPane().setBackground(new Color(255, 255, 204));
     }
