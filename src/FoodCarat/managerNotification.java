@@ -33,6 +33,17 @@ public class managerNotification extends javax.swing.JFrame {
         complaintNotificationtable.getColumnModel().getColumn(4).setWidth(0);
         complaintNotificationtable.getColumnModel().getColumn(4).setPreferredWidth(0);
         getContentPane().setBackground(new Color(252, 204, 196));
+        
+        //show all the data
+        Manager manager = new Manager();
+        List<String[]> allData = manager.getFilteredReviews(0);  // 0 means no filtering by month
+        // Populate the table with all data
+        DefaultTableModel model = (DefaultTableModel) complaintNotificationtable.getModel();
+        model.setRowCount(0);
+        for (String[] complaint : allData) {
+            model.addRow(complaint);  // Add row to the table
+        }
+        fillEmptyRowSpace();
     }
     
     private void handleTableClick(java.awt.event.MouseEvent evt) {
@@ -213,16 +224,18 @@ public class managerNotification extends javax.swing.JFrame {
         List<String[]> complaintData = manager.getFilteredReviews(monthNumber);
         DefaultTableModel model = (DefaultTableModel) complaintNotificationtable.getModel();
         if (complaintData.isEmpty()) {
+            if (monthNumber != 0) {
             JOptionPane.showMessageDialog(this, "No complaints found for this month.", "Info", JOptionPane.INFORMATION_MESSAGE);
-            model.setRowCount(0);
-        } else {
-            model.setRowCount(0);
-            // Loop through the complaintData and add each row to the table
-            for (String[] complaint : complaintData) {
-                model.addRow(complaint);
-            }
-            fillEmptyRowSpace();
         }
+            complaintData = manager.getFilteredReviews(0);  // Fetch all data
+        }
+        // Clear the table before adding new data
+        model.setRowCount(0);
+        // Loop through the complaintData (filtered or all) and add each row to the table
+        for (String[] complaint : complaintData) {
+            model.addRow(complaint);
+        }
+        fillEmptyRowSpace();
     }//GEN-LAST:event_searchbtnActionPerformed
 
     private void backbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backbtnActionPerformed
