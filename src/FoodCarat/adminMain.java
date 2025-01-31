@@ -211,45 +211,51 @@ public class adminMain extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bRegistratonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRegistratonActionPerformed
-    String[] role = {"customer", "vendor", "runner"};
-        var choice = JOptionPane.showOptionDialog(null, "Please select: ", "Registration Role ", 0, 3, null, role, role[0]);
-        if (choice == 0){
-            this.dispose();
-            // Pass the selected role to the Registration form
-            adminRegister registerPage = new adminRegister(role[0]);
-            registerPage.setVisible(true);
-        } 
-        if (choice == 1){
-            this.dispose();
-            adminRegister registerPage = new adminRegister(role[1]);
-            registerPage.setVisible(true);
-        } 
-        if (choice == 2){
-            this.dispose();
-            adminRegister registerPage = new adminRegister(role[2]);
-            registerPage.setVisible(true);
-        }
+    String[] roleDisplay = {"Customer", "Vendor", "Runner"}; // Titles for display
+    String[] role = {"customer", "vendor", "runner"}; // Lowercase for passing to NewRegistration
+
+    // Show the selection dialog with titles
+    int choice = JOptionPane.showOptionDialog(
+        null,
+        "Please select: ",
+        "Registration Role",
+        JOptionPane.DEFAULT_OPTION,
+        JOptionPane.QUESTION_MESSAGE,
+        null,
+        roleDisplay,
+        roleDisplay[0]
+    );
+
+    // Pass the lowercase role to the registration form
+    if (choice >= 0 && choice < role.length) { // Ensure valid selection
+        this.dispose();
+        adminRegister registerPage = new adminRegister(role[choice]); // Pass lowercase value
+        registerPage.setVisible(true);
+    }
     }//GEN-LAST:event_bRegistratonActionPerformed
 
     private void bUpdateuserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bUpdateuserActionPerformed
-    String[] role = {"customer", "vendor", "runner"};
-        var choice = JOptionPane.showOptionDialog(null, "Please select: ", "Registration Role ", 0, 3, null, role, role[0]);
-        if (choice == 0){
-            this.dispose();
-            // Pass the selected role to the Registration form
-            adminUpdateUser updatePage = new adminUpdateUser(role[0]);
-            updatePage.setVisible(true);
-        } 
-        if (choice == 1){
-            this.dispose();
-            adminUpdateUser updatePage = new adminUpdateUser(role[1]);
-            updatePage.setVisible(true);
-        } 
-        if (choice == 2){
-            this.dispose();
-            adminUpdateUser updatePage = new adminUpdateUser(role[2]);
-            updatePage.setVisible(true);
-        }
+        String[] roleDisplay = {"Customer", "Vendor", "Runner"}; // Titles for display
+         String[] role = {"customer", "vendor", "runner"}; // Lowercase for passing to UpdateUser1
+
+         // Show the selection dialog with titles
+         int choice = JOptionPane.showOptionDialog(
+             null,
+             "Please select: ",
+             "Registration Role",
+             JOptionPane.DEFAULT_OPTION,
+             JOptionPane.QUESTION_MESSAGE,
+             null,
+             roleDisplay,
+             roleDisplay[0]
+         );
+
+         // If a valid choice is made, proceed
+         if (choice >= 0 && choice < role.length) {
+             this.dispose();
+             adminUpdateUser updatePage = new adminUpdateUser(role[choice]); // Pass the lowercase value
+             updatePage.setVisible(true);
+         }
     }//GEN-LAST:event_bUpdateuserActionPerformed
 
     private void bTopupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bTopupActionPerformed
