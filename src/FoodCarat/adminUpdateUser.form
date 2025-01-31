@@ -63,8 +63,8 @@
                                   </Group>
                                   <EmptySpace min="-2" pref="59" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                      <Component id="userbirthtxt" pref="219" max="32767" attributes="0"/>
-                                      <Component id="phonetxt" max="32767" attributes="0"/>
+                                      <Component id="phonetxt" pref="219" max="32767" attributes="0"/>
+                                      <Component id="dateChooser" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                               <Component id="jScrollPane1" max="32767" attributes="0"/>
@@ -149,9 +149,9 @@
                           <Component id="Lphone" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="Ldate" min="-2" max="-2" attributes="0"/>
-                          <Component id="userbirthtxt" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="dateChooser" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -371,8 +371,6 @@
         <Property name="text" type="java.lang.String" value="xxxxxx"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="userbirthtxt">
-    </Component>
     <Component class="javax.swing.JComboBox" name="cuisinecbx">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
@@ -407,6 +405,8 @@
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>
+    </Component>
+    <Component class="com.toedter.calendar.JDateChooser" name="dateChooser">
     </Component>
   </SubComponents>
 </Form>
