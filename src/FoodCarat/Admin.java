@@ -339,19 +339,26 @@ public class Admin extends User {
                 if (parts.length == 6) {
                     String transactionId = parts[0];
                     String email = parts[1];
-                    double topUpAmount = Double.parseDouble(parts[2]);
+                    double amountChanges = Double.parseDouble(parts[3]);
                     String date = parts[4];
                     String time = parts[5];
 
-                        // Create the message in the required format
-                        String message = String.format(
-                            "Top-up amount %.2f has been successfully credited into %s's account at %s %s (transaction id: %s)",
-                            topUpAmount, email, date, time, transactionId
+                    String message;
+                    if (amountChanges >= 0) {
+                        message = String.format(
+                            "Top-up amount RM%.2f has been successfully credited into %s's account at %s %s (transaction id: %s)",
+                            amountChanges, email, date, time, transactionId
                         );
-                        // Add message to the list
-                        transactionMessages.add(message);
+                    } else {
+                        message = String.format(
+                            "Withdraw amount RM%.2f has been successfully deducted from %s's account at %s %s (transaction id: %s)",
+                            Math.abs(amountChanges), email, date, time, transactionId
+                        );
                     }
+                    // Add message to the list
+                    transactionMessages.add(message);
                 }
+            }
         } catch (IOException e) {
             javax.swing.JOptionPane.showMessageDialog(null, "Error reading file: " + e.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
         }
