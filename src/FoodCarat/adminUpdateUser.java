@@ -5,6 +5,9 @@
 package FoodCarat;
 
 import java.awt.Color;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 
@@ -39,7 +42,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
     }
     
     private void clearFields() {
-        GuiUtility.clearFields(emailtxt, nametxt, userbirthtxt, phonetxt, platnumtxt, addresstxta, cuisinecbx);
+        GuiUtility.clearFields(emailtxt, nametxt, dateChooser, phonetxt, platnumtxt, addresstxta, cuisinecbx);
     }
     
     private void customizeForm() {
@@ -94,7 +97,17 @@ public class adminUpdateUser extends javax.swing.JFrame {
     public void setUserData(String email, String name, String userBirth, String contactNumber, String roleSpecificData) {
         emailtxt.setText(email);
         nametxt.setText(name);
-        userbirthtxt.setText(userBirth);
+        
+        // Parse userBirth string and set it in JDateChooser
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // Adjust format to match your input
+        try {
+            Date birthDate = dateFormat.parse(userBirth);
+            dateChooser.setDate(birthDate);
+        } catch (ParseException e) {
+            e.printStackTrace(); // Handle invalid date format
+            dateChooser.setDate(null); // Set to null if the date is invalid
+        }
+        
         phonetxt.setText(contactNumber);
         platnumtxt.setText(roleSpecificData);
         addresstxta.setText(roleSpecificData);
@@ -113,12 +126,26 @@ public class adminUpdateUser extends javax.swing.JFrame {
             return false;
         }
         if (birthDate.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Birth date cannot be empty!");
+            JOptionPane.showMessageDialog(null, "The date field cannot be empty!");
             return false;
-        } else if (!Pattern.matches("^\\d{4}-\\d{2}-\\d{2}$", birthDate)) {
-            JOptionPane.showMessageDialog(null, "Please enter a valid birth date in the format YYYY-MM-DD!");
+        } 
+        
+        // Check if the birth date is a future date
+        try {
+            String[] dateParts = birthDate.split("-");
+            int year = Integer.parseInt(dateParts[0]);
+            int month = Integer.parseInt(dateParts[1]);
+            int day = Integer.parseInt(dateParts[2]);
+            java.time.LocalDate inputDate = java.time.LocalDate.of(year, month, day);
+            if (inputDate.isAfter(java.time.LocalDate.now())) {
+                JOptionPane.showMessageDialog(null, "The date field cannot be a future date!");
+                return false;
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Invalid birth date format!");
             return false;
         }
+        
         if (phone.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Phone number cannot be empty!");
             return false;
@@ -170,8 +197,8 @@ public class adminUpdateUser extends javax.swing.JFrame {
         bDelete = new javax.swing.JButton();
         bBack = new javax.swing.JButton();
         Lrole = new javax.swing.JLabel();
-        userbirthtxt = new javax.swing.JTextField();
         cuisinecbx = new javax.swing.JComboBox<>();
+        dateChooser = new com.toedter.calendar.JDateChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -298,8 +325,8 @@ public class adminUpdateUser extends javax.swing.JFrame {
                                         .addComponent(Ldate))
                                     .addGap(59, 59, 59)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(userbirthtxt, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
-                                        .addComponent(phonetxt)))
+                                        .addComponent(phonetxt, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
+                                        .addComponent(dateChooser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                 .addComponent(jScrollPane1))
                             .addComponent(cuisinecbx, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE))))
@@ -361,9 +388,9 @@ public class adminUpdateUser extends javax.swing.JFrame {
                             .addComponent(phonetxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(Lphone))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(Ldate)
-                            .addComponent(userbirthtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(dateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Lshop)
@@ -392,7 +419,15 @@ public class adminUpdateUser extends javax.swing.JFrame {
         // Retrieve the form field values
         String email = emailtxt.getText().trim();
         String name = nametxt.getText().trim();
-        String birthDate = userbirthtxt.getText().trim();
+        
+        Date selectedDate = dateChooser.getDate();
+        String birthDate = "";
+
+        if (selectedDate != null) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            birthDate = dateFormat.format(selectedDate); // Convert the Date to a formatted String
+        }
+        
         String phone = phonetxt.getText().trim();
         String additionalField = "";
 
@@ -544,6 +579,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
     private javax.swing.JButton bSearch;
     private javax.swing.JButton bUpdate;
     private javax.swing.JComboBox<String> cuisinecbx;
+    private com.toedter.calendar.JDateChooser dateChooser;
     private javax.swing.JTextField emailtxt;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
@@ -551,6 +587,5 @@ public class adminUpdateUser extends javax.swing.JFrame {
     private javax.swing.JTextField phonetxt;
     private javax.swing.JTextField platnumtxt;
     private javax.swing.JTextField searchtxt;
-    private javax.swing.JTextField userbirthtxt;
     // End of variables declaration//GEN-END:variables
 }
