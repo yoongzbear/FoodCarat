@@ -59,7 +59,7 @@
                                   <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="Lphone" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="Lgender" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="Ldate" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace min="-2" pref="59" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -150,7 +150,7 @@
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="Lgender" min="-2" max="-2" attributes="0"/>
+                          <Component id="Ldate" min="-2" max="-2" attributes="0"/>
                           <Component id="userbirthtxt" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -222,7 +222,7 @@
         <Property name="text" type="java.lang.String" value="Name:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="Lgender">
+    <Component class="javax.swing.JLabel" name="Ldate">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Cooper Black" size="18" style="0"/>

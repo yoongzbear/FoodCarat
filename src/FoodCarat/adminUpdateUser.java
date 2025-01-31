@@ -29,6 +29,10 @@ public class adminUpdateUser extends javax.swing.JFrame {
         String roleTitle = role.substring(0, 1).toUpperCase() + role.substring(1).toLowerCase();
         Lrole.setText(roleTitle);
         
+        if(role.equals("vendor")){
+            Ldate.setText("Establishment Date:");
+        }
+        
         emailtxt.setEditable(false); 
         customizeForm();
         getContentPane().setBackground(new Color(255, 255, 204));
@@ -149,7 +153,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
         searchtxt = new javax.swing.JTextField();
         Lemail = new javax.swing.JLabel();
         Lname = new javax.swing.JLabel();
-        Lgender = new javax.swing.JLabel();
+        Ldate = new javax.swing.JLabel();
         Lphone = new javax.swing.JLabel();
         Lshop = new javax.swing.JLabel();
         LotherInfo = new javax.swing.JLabel();
@@ -185,8 +189,8 @@ public class adminUpdateUser extends javax.swing.JFrame {
         Lname.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         Lname.setText("Name:");
 
-        Lgender.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        Lgender.setText("User Birth:");
+        Ldate.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        Ldate.setText("User Birth:");
 
         Lphone.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         Lphone.setText("Phone Number:");
@@ -291,7 +295,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
                                     .addGap(43, 43, 43)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(Lphone)
-                                        .addComponent(Lgender))
+                                        .addComponent(Ldate))
                                     .addGap(59, 59, 59)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                         .addComponent(userbirthtxt, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
@@ -358,7 +362,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
                             .addComponent(Lphone))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Lgender)
+                            .addComponent(Ldate)
                             .addComponent(userbirthtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -525,8 +529,8 @@ public class adminUpdateUser extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Laddress;
+    private javax.swing.JLabel Ldate;
     private javax.swing.JLabel Lemail;
-    private javax.swing.JLabel Lgender;
     private javax.swing.JLabel Lname;
     private javax.swing.JLabel LotherInfo;
     private javax.swing.JLabel Lphone;
