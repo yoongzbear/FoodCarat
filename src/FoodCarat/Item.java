@@ -389,6 +389,35 @@ public class Item {
         return isDeleted;
     }
     
+    //Delete all the items of that specific vendor
+    public void deleteVendorItems(String vendorEmail, String userType) {
+        // Get all items matching the vendor email
+        List<String[]> items = getAllItems(vendorEmail, false); // Get all items, regardless of availability
+
+        if (items.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No items found for the vendor email: " + vendorEmail, "Info", JOptionPane.INFORMATION_MESSAGE);
+            return; // Exit if no items are found
+        }
+
+        boolean allDeleted = true;
+
+        // Extract and delete items based on their ID
+        for (String[] itemData : items) {
+            int itemId = Integer.parseInt(itemData[0]);
+            boolean deleted = deleteItem(itemId, userType);
+            if (!deleted) {
+                allDeleted = false; // Track if any deletion failed
+            }
+        }
+
+        // Show message after processing all items
+        if (allDeleted) {
+            JOptionPane.showMessageDialog(null, "All items for the vendor have been deleted.", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, "Some items could not be deleted. Please check the file.", "Warning", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+    
     public String[] getVendorInfoByItemID(int itemID) {
         //find the vendor email based on the itemID from item.txt
         String[] itemData = itemData(itemID);
