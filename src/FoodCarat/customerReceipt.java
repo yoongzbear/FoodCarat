@@ -5,6 +5,7 @@
 package FoodCarat;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -19,9 +20,10 @@ public class customerReceipt extends javax.swing.JFrame {
      */
     private int orderID;
     private String orderType;
+    DecimalFormat df = new DecimalFormat("0.00");
     
     public customerReceipt(int orderID, String orderType) {
-        this.orderType = orderType;
+        this.orderType = orderType.toLowerCase();
         this.orderID = orderID;
         initComponents();
         displayOrderDetails();
@@ -107,7 +109,7 @@ public class customerReceipt extends javax.swing.JFrame {
                 sVendorName.setText(String.valueOf(vendorName));
 
                 // Add the item to the table
-                model.addRow(new Object[]{itemName, "RM " + itemPrice, quantity, "RM " + orderItemTotal});
+                model.addRow(new Object[]{itemName, "RM " + df.format(itemPrice), quantity, "RM " + df.format(orderItemTotal)});
             }
         }
         sSubTotal.setText("RM " + String.format("%.2f", subtotal));
