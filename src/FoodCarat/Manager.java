@@ -175,7 +175,8 @@ public class Manager extends User{
                     String []userDetails = user.performSearch(email, userFile);
                     String cusName = userDetails[1];
                     // Check if the month matches and review type is "foodcourt"
-                    if (date == selectedMonth &&
+                    // If selectedMonth is 0, no filtering will be applied (show all reviews)
+                    if ((selectedMonth == 0 || date == selectedMonth) &&
                         reviewType.equalsIgnoreCase("foodcourt") && complaintStatus.equals("unresolved")) {
                         
                         filteredData.add(new String[]{
