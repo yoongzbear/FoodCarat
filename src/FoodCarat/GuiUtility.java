@@ -4,6 +4,7 @@
  */
 package FoodCarat;
 
+import com.toedter.calendar.JDateChooser;
 import java.awt.Color;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -73,6 +74,8 @@ public class GuiUtility {
                 ((javax.swing.JComboBox<?>) component).setSelectedIndex(-1); 
             } else if (component instanceof javax.swing.JLabel) {
                 ((javax.swing.JLabel) component).setText(""); 
+            } else if (component instanceof JDateChooser) {
+                ((JDateChooser) component).setDate(null); // Clear JDateChooser
             }
         }
     }
