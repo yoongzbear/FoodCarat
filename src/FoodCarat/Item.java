@@ -6,7 +6,6 @@ package FoodCarat;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -159,17 +158,21 @@ public class Item {
             FileReader fr = new FileReader(itemFile);
             BufferedReader br = new BufferedReader(fr);
             String read;
-            
+
             while ((read = br.readLine()) != null) {
-                String[] parts = read.split(","); 
+                String[] parts = read.split(",");
                 int itemPartID = Integer.parseInt(parts[0]);
-                if (itemPartID==itemID) { 
+                if (itemPartID == itemID) {
+                    //add (N/A) at end of deleted item's name
+                    if (parts[6].equalsIgnoreCase("deleted by vendor") || parts[6].equalsIgnoreCase("deleted by manager")) {
+                        parts[1] += " (N/A)";
+                    }
                     itemInfo = parts;
-                    break; 
+                    break;
                 }
             }
             br.close();
-        } catch(IOException e) {
+        } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Failed to read from the file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
         return itemInfo;
@@ -214,13 +217,16 @@ public class Item {
                         allItems.add(itemData);
                     }
                 } else {
+                    //add (N/A) at end of deleted item's name
+                    if (itemData[6].equalsIgnoreCase("deleted by vendor") || itemData[6].equalsIgnoreCase("deleted by manager")) {
+                        itemData[1] += " (N/A)";
+                    }
                     allItems.add(itemData);
                 }
             }
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Failed to read from the file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-        
         return allItems;
     }
     
@@ -240,7 +246,11 @@ public class Item {
                 if (isAvailableOnly && itemData[5].equals(venEmail) && itemData[6].equals("available")) {
                     allItems.add(itemData);
                 } 
-                else if (!isAvailableOnly && itemData[5].equals(venEmail)) {
+                else if (!isAvailableOnly && itemData[5].equals(venEmail)) { //including the ones deleted 
+                    //add (N/A) at end of deleted item's name
+                    if (itemData[6].equalsIgnoreCase("deleted by vendor") || itemData[6].equalsIgnoreCase("deleted by manager")) {
+                        itemData[1] += " (N/A)";
+                    }
                     allItems.add(itemData);
                 }
             }

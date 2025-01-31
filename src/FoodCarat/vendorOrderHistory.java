@@ -279,6 +279,9 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         //make item names into initials only 
         Map<String, String> itemIdToNameMap = new HashMap<>();
         for (String[] itemData : new Item().getAllItems(email, false)) {
+            if (itemData[1].contains("(N/A)")) {
+                itemData[1] = itemData[1].replace("(N/A)", "").trim(); //remove N/A
+            }
             itemIdToNameMap.put(itemData[0], itemData[1]); //itemID, itemName
         }
 
