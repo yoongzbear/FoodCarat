@@ -34,7 +34,6 @@ public class managerMain extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         bvenperformance = new javax.swing.JButton();
         brunperformance = new javax.swing.JButton();
-        bcomplaints = new javax.swing.JButton();
         bdiscardItem = new javax.swing.JButton();
         bnotification = new javax.swing.JButton();
         blogout = new javax.swing.JButton();
@@ -81,18 +80,29 @@ public class managerMain extends javax.swing.JFrame {
         brunperformance.setBackground(new java.awt.Color(255, 253, 253));
         brunperformance.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
         brunperformance.setText("Runner Performance");
-
-        bcomplaints.setBackground(new java.awt.Color(255, 253, 253));
-        bcomplaints.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
-        bcomplaints.setText("Customer Complaints");
+        brunperformance.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                brunperformanceActionPerformed(evt);
+            }
+        });
 
         bdiscardItem.setBackground(new java.awt.Color(255, 253, 253));
         bdiscardItem.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
         bdiscardItem.setText("Discard Vendor Item");
+        bdiscardItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bdiscardItemActionPerformed(evt);
+            }
+        });
 
         bnotification.setBackground(new java.awt.Color(255, 253, 253));
         bnotification.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
         bnotification.setText("Notification");
+        bnotification.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bnotificationActionPerformed(evt);
+            }
+        });
 
         blogout.setBackground(new java.awt.Color(255, 253, 253));
         blogout.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
@@ -108,32 +118,29 @@ public class managerMain extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(22, 22, 22)
+                .addGap(23, 23, 23)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(blogout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(bnotification, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(bdiscardItem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(bvenperformance, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(brunperformance, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(bcomplaints))
-                .addContainerGap(30, Short.MAX_VALUE))
+                    .addComponent(brunperformance, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(39, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(18, 18, 18)
                 .addComponent(bvenperformance, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(brunperformance, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bcomplaints, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(bdiscardItem, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bnotification, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(blogout, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(24, 24, 24))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         jPanel3.setBackground(new java.awt.Color(252, 222, 217));
@@ -151,12 +158,12 @@ public class managerMain extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(159, 159, 159)
-                        .addComponent(jLabel3))
+                        .addGap(74, 74, 74)
+                        .addComponent(jLabel1))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(83, 83, 83)
-                        .addComponent(jLabel1)))
-                .addContainerGap(96, Short.MAX_VALUE))
+                        .addGap(145, 145, 145)
+                        .addComponent(jLabel3)))
+                .addContainerGap(105, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -165,7 +172,7 @@ public class managerMain extends javax.swing.JFrame {
                 .addComponent(jLabel3)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel1)
-                .addGap(170, 170, 170))
+                .addGap(121, 121, 121))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -183,25 +190,44 @@ public class managerMain extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void bvenperformanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bvenperformanceActionPerformed
-        // TODO add your handling code here:
+        this.dispose();
+        new managerMonVenPer().setVisible(true);
     }//GEN-LAST:event_bvenperformanceActionPerformed
 
     private void blogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_blogoutActionPerformed
-        User user = new User();
-        user.logOut();
-        JOptionPane.showMessageDialog(this, "You have been logged out!");
-        dispose();
-        new userLogin().setVisible(true);
+       int choice = JOptionPane.showConfirmDialog(null, "Are you sure to logout?", "Confirm Logout", JOptionPane.YES_NO_OPTION);
+        if (choice == JOptionPane.YES_OPTION){
+            User user = new User();
+            user.logOut();
+            JOptionPane.showMessageDialog(null, "You have been logged out!", "Log Out", JOptionPane.INFORMATION_MESSAGE);
+            this.dispose();
+            new userLogin().setVisible(true);
+        }
     }//GEN-LAST:event_blogoutActionPerformed
+
+    private void brunperformanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_brunperformanceActionPerformed
+        this.dispose();
+        new managerMonRunPer().setVisible(true);
+    }//GEN-LAST:event_brunperformanceActionPerformed
+
+    private void bdiscardItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bdiscardItemActionPerformed
+        this.dispose();
+        new managerRmvItem().setVisible(true);
+    }//GEN-LAST:event_bdiscardItemActionPerformed
+
+    private void bnotificationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bnotificationActionPerformed
+        this.dispose();
+        new managerNotification().setVisible(true);
+    }//GEN-LAST:event_bnotificationActionPerformed
 
     /**
      * @param args the command line arguments
@@ -239,7 +265,6 @@ public class managerMain extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton bcomplaints;
     private javax.swing.JButton bdiscardItem;
     private javax.swing.JButton blogout;
     private javax.swing.JButton bnotification;
