@@ -490,7 +490,7 @@ public class Order {
             bw.write(fileContent.toString());
             bw.close();
 
-            JOptionPane.showMessageDialog(null, "Order deleted successfully!");
+            JOptionPane.showMessageDialog(null, "Order cancelled successfully!");
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Error while deleting order: " + e.getMessage());
         }
