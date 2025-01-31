@@ -25,6 +25,8 @@ public class customerReceipt extends javax.swing.JFrame {
         this.orderID = orderID;
         initComponents();
         displayOrderDetails();
+        setLocationRelativeTo(null);
+        getContentPane().setBackground(new java.awt.Color(180,200,234));
     }
     
     private void displayOrderDetails() {
@@ -38,20 +40,31 @@ public class customerReceipt extends javax.swing.JFrame {
         String deliveryFee = tokens[7];
         String paidTotal = tokens[8];
         String orderDate = tokens[9];
-        //Get customer point balance and customer contact
-        Customer customer = new Customer(User.getSessionEmail());
-        int pointBalance = customer.getPoints();
-        String creditBalance = "0";
         User user = new User(User.getSessionEmail());
         String[] userInfo = user.performSearch(User.getSessionEmail(), "resources/user.txt");
         String userContact = userInfo[5];
+        
+        String formattedOrderType = "";
+        switch (this.orderType) {
+            case "dine in":
+                formattedOrderType = "Dine In";
+                break;
+            case "take away":
+                formattedOrderType = "Take Away";
+                break;
+            case "delivery":
+                formattedOrderType = "Delivery";
+                break;
+            default:
+                formattedOrderType = "Unknown"; //invalid value
+        }
         
         //Display
         sOrderID.setText(String.valueOf(orderID));
         sOrderDate.setText(orderDate);
         sUsername.setText(User.getSessionName());
         sHPNum.setText(userContact);
-        sOrderType.setText(String.valueOf(orderType));
+        sOrderType.setText(formattedOrderType);
         //calculate redeemed points here
         double deliveryFeeDouble = Double.parseDouble(deliveryFee.replace("RM ", ""));
         double paidTotalDouble = Double.parseDouble(paidTotal.replace("RM ", ""));
@@ -148,14 +161,19 @@ public class customerReceipt extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Cooper Black", 0, 24)); // NOI18N
         jLabel2.setText("Order Receipt");
 
+        jLabel3.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel3.setText("Order ID:");
 
+        jLabel4.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel4.setText("Order Date:");
 
+        jLabel5.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel5.setText("Order From:");
 
+        jLabel6.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel6.setText("Order Type:");
 
+        jLabel7.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel7.setText("Order Item(s):");
 
         tOrderItem.setModel(new javax.swing.table.DefaultTableModel(
@@ -169,20 +187,25 @@ public class customerReceipt extends javax.swing.JFrame {
         tOrderItem.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(tOrderItem);
 
-        jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel8.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel8.setText("Payment Details");
 
+        jLabel9.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel9.setText("Customer Name:");
 
+        jLabel10.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel10.setText("Customer Contact:");
 
-        jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel11.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel11.setText("Order Details");
 
+        jLabel12.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel12.setText("Subtotal:");
 
+        jLabel13.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel13.setText("Points Redeemed:");
 
+        jLabel14.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel14.setText("Total Payment:");
 
         bBack.setText("Main Menu");
@@ -210,6 +233,7 @@ public class customerReceipt extends javax.swing.JFrame {
 
         sPayTotal.setText("payTotal");
 
+        jLabel15.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel15.setText("Delivery Fee:");
 
         sDeliveryFee.setText("deliveryFee");
@@ -316,7 +340,7 @@ public class customerReceipt extends javax.swing.JFrame {
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(33, 33, 33)
+                .addGap(21, 21, 21)
                 .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -334,7 +358,7 @@ public class customerReceipt extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel14)
                     .addComponent(sPayTotal))
-                .addContainerGap(11, Short.MAX_VALUE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
 
         pack();
