@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -456,8 +457,11 @@ public class Review {
             JOptionPane.showMessageDialog(null, "Rate: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
 
-        // If no reviews or ratings were found, return 0 or any appropriate message
-        return ratingCount > 0 ? totalRating / ratingCount : 0;  // Return 0 if no ratings found
+        double averageRating = (ratingCount > 0) ? totalRating / ratingCount : 0;
+
+        // Use DecimalFormat to format the result to 2 decimal places
+        DecimalFormat df = new DecimalFormat("#.00");
+        return Double.parseDouble(df.format(averageRating));
     }
 
     // Method to get a random vendor review based on vendorEmail
