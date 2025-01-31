@@ -30,6 +30,8 @@ public class customerPayment extends javax.swing.JFrame {
         this.orderID = orderID;
         initComponents();
         displayOrderDetails();
+        setLocationRelativeTo(null);
+        getContentPane().setBackground(new java.awt.Color(180,200,234));
     }
     
     private void displayOrderDetails() {
@@ -49,10 +51,25 @@ public class customerPayment extends javax.swing.JFrame {
             Customer customer = new Customer(User.getSessionEmail());
             int pointBalance = customer.getPoints();
             String creditBalance = "0";
+            
+            String formattedOrderType = "";
+            switch (this.orderType) {
+                case "dine in":
+                    formattedOrderType = "Dine In";
+                    break;
+                case "take away":
+                    formattedOrderType = "Take Away";
+                    break;
+                case "delivery":
+                    formattedOrderType = "Delivery";
+                    break;
+                default:
+                    formattedOrderType = "Unknown"; //invalid value
+            }
 
             //display
             sOrderID.setText(String.valueOf(orderID));
-            sOrderType.setText(String.valueOf(orderType));
+            sOrderType.setText(formattedOrderType);
             sDeliveryFee.setText("RM " + String.valueOf(deliveryFee));
             sPayTotal.setText("RM " + String.valueOf(paymentTotal));
 
@@ -148,17 +165,22 @@ public class customerPayment extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Cooper Black", 0, 24)); // NOI18N
         jLabel2.setText("Payment");
 
+        jLabel3.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel3.setText("Order ID:");
 
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel4.setText("Order Summary:");
 
+        jLabel5.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel5.setText("Order From:");
 
+        jLabel6.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel6.setText("Order Type:");
 
+        jLabel7.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel7.setText("Delivery Fee:");
 
+        jLabel8.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel8.setText("Payment Total:");
 
         tOrderItem.setModel(new javax.swing.table.DefaultTableModel(
@@ -171,6 +193,7 @@ public class customerPayment extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tOrderItem);
 
+        jLabel10.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel10.setText("Order Item(s):");
 
         sOrderID.setText("orderID");
@@ -183,13 +206,16 @@ public class customerPayment extends javax.swing.JFrame {
 
         sPayTotal.setText("payTotal");
 
-        jLabel17.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel17.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel17.setText("Payment Details:");
 
+        jLabel18.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel18.setText("Credit Balance:");
 
+        jLabel19.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel19.setText("Point Balance:");
 
+        jLabel20.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel20.setText("Redeem Points:");
 
         bPay.setText("Pay");
@@ -203,7 +229,7 @@ public class customerPayment extends javax.swing.JFrame {
 
         sPointBalance.setText("pointBalance");
 
-        bBackMain.setText("Back to Main Page");
+        bBackMain.setText("Main Menu");
         bBackMain.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bBackMainActionPerformed(evt);
@@ -268,7 +294,7 @@ public class customerPayment extends javax.swing.JFrame {
                                         .addComponent(jLabel8)
                                         .addGap(18, 18, 18)
                                         .addComponent(sPayTotal, javax.swing.GroupLayout.DEFAULT_SIZE, 64, Short.MAX_VALUE)))))))
-                .addContainerGap(48, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -320,7 +346,7 @@ public class customerPayment extends javax.swing.JFrame {
                     .addComponent(tfRedeemPoints, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel19)
                     .addComponent(sPointBalance))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addComponent(bPay)
                 .addContainerGap())
         );
@@ -359,6 +385,7 @@ public class customerPayment extends javax.swing.JFrame {
 
         //calculate the total redeemable amount based on points into RM
         double redeemAmount = redeemPoints * 0.01;
+        System.out.println("Redeem Amount:" + redeemAmount);
 
         //ensure the total payable amount (after redemption) is less than or equal to the payment total
         double cusPayableAmount = redeemAmount + currentBalance; 
@@ -375,7 +402,7 @@ public class customerPayment extends javax.swing.JFrame {
 
                 if (cusOrderID == Integer.parseInt(sOrderID.getText())) {
 
-                    double newPaymentTotal = payTotal - redeemAmount + deliveryFee;; //update the payment total
+                    double newPaymentTotal = payTotal - redeemAmount; //update the payment total
                     double finalPaidNoDelivery = payTotal - redeemAmount;
                     double updatedCredit = currentBalance - newPaymentTotal;
 
