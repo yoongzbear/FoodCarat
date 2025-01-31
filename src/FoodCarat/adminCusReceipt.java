@@ -39,15 +39,17 @@ public class adminCusReceipt extends javax.swing.JFrame {
         LtransID.setText(Integer.toString(transactionId));
         Lemail.setText(email);
         Lname.setText(name);
-        LbeforeChange.setText(String.format("%.2f", currentAmount));
+        LbeforeChange.setText(String.format("RM %.2f", currentAmount));
         
-        // Add "+" if amountChanges > 0, otherwise just display the number
-        String formattedAmountChanges = amountChanges > 0
-            ? "+" + String.format("%.2f", amountChanges)
-            : String.format("%.2f", amountChanges);
+        String formattedAmountChanges;
+        if (amountChanges > 0) {
+            formattedAmountChanges = "+ RM " + String.format("%.2f", amountChanges);
+        } else {
+            formattedAmountChanges = "- RM " + String.format("%.2f", Math.abs(amountChanges));
+        }
         LchangesNum.setText(formattedAmountChanges);
     
-        LafterChange.setText(String.format("%.2f", newCurrentAmount));
+        LafterChange.setText(String.format("RM %.2f", newCurrentAmount));
         Ldate.setText(datePayment);
         Ltime.setText(timePayment);
     }
