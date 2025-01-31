@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -39,6 +41,8 @@ public class vendorNotification extends javax.swing.JFrame {
         
         String[] filters = {"new", "status", "review", "item", "withdraw"};
         displayActivities(filters);
+        
+        notificationTableListener();
     }
     
     //display all activities    
@@ -214,6 +218,62 @@ public class vendorNotification extends javax.swing.JFrame {
         }
     }
     
+    private void notificationTableListener() { //display respecitve GUI classes
+        notificationTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) { // Ensure the event is the final one
+                    int selectedRow = notificationTable.getSelectedRow();
+                    if (selectedRow != -1) { // Check if a row is actually selected
+                        //get ID, type and message
+                        String type = notificationTable.getModel().getValueAt(selectedRow, 0).toString(); //type column   
+                        int id = 0;
+                        String message = notificationTable.getModel().getValueAt(selectedRow, 1).toString(); //message column, will change to 1
+
+                        if (type.equalsIgnoreCase("New Order")) {
+                            int startIndex = message.indexOf("(Order ID:") + "(Order ID:".length();
+                            int endIndex = message.indexOf(")", startIndex);
+                            String orderID = message.substring(startIndex, endIndex).trim();
+                            id = Integer.parseInt(orderID);
+                        } else if (type.equalsIgnoreCase("Order Status")) {
+                            int startIndex = message.indexOf("(Order ID:") + "(Order ID:".length();
+                            int endIndex = message.indexOf(")", startIndex);
+                            String orderID = message.substring(startIndex, endIndex).trim();
+                            id = Integer.parseInt(orderID);
+                        } else if (type.equalsIgnoreCase("Vendor Review")) {
+                            int startIndex = message.indexOf("(Review ID:") + "(Review ID:".length();
+                            int endIndex = message.indexOf(")", startIndex);
+                            String reviewID = message.substring(startIndex, endIndex).trim();
+                            id = Integer.parseInt(reviewID);
+                        } else if (type.equalsIgnoreCase("Order Review")) {
+                            int startIndex = message.indexOf("(Review ID:") + "(Review ID:".length();
+                            int endIndex = message.indexOf(")", startIndex);
+                            String reviewID = message.substring(startIndex, endIndex).trim();
+                            id = Integer.parseInt(reviewID);
+                        } else if (type.equalsIgnoreCase("Item Added")) {
+                            int startIndex = message.indexOf("(Item ID:") + "(Item ID:".length();
+                            int endIndex = message.indexOf(")", startIndex);
+                            String itemID = message.substring(startIndex, endIndex).trim();
+                            id = Integer.parseInt(itemID);
+                        } else if (type.equalsIgnoreCase("Item Deleted")) {
+                            int startIndex = message.indexOf("(Item ID:") + "(Item ID:".length();
+                            int endIndex = message.indexOf(")", startIndex);
+                            String itemID = message.substring(startIndex, endIndex).trim();
+                            id = Integer.parseInt(itemID);
+                        } else if (type.equalsIgnoreCase("Withdrawal")) {
+                            int startIndex = message.indexOf("(Transaction ID:") + "(Transaction ID:".length();
+                            int endIndex = message.indexOf(")", startIndex);
+                            String itemID = message.substring(startIndex, endIndex).trim();
+                            id = Integer.parseInt(itemID);
+                        }
+
+                        displayDetails(id, type);
+                    }
+                }
+            }
+        });
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -231,7 +291,6 @@ public class vendorNotification extends javax.swing.JFrame {
         newOrderChkBox = new javax.swing.JCheckBox();
         orderStatusChkBox = new javax.swing.JCheckBox();
         reviewChkBox = new javax.swing.JCheckBox();
-        viewBtn = new javax.swing.JButton();
         itemChkBox = new javax.swing.JCheckBox();
         withdrawChkBox = new javax.swing.JCheckBox();
 
@@ -277,13 +336,6 @@ public class vendorNotification extends javax.swing.JFrame {
 
         reviewChkBox.setText("Review");
 
-        viewBtn.setText("View Details");
-        viewBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewBtnActionPerformed(evt);
-            }
-        });
-
         itemChkBox.setText("Item");
 
         withdrawChkBox.setText("Withdrawal");
@@ -293,31 +345,27 @@ public class vendorNotification extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(76, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(191, 191, 191)
-                        .addComponent(menuBtn)
-                        .addContainerGap())
+                .addContainerGap(34, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(viewBtn)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 827, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addComponent(newOrderChkBox)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(orderStatusChkBox)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(reviewChkBox)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(itemChkBox)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(withdrawChkBox)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(filterBtn))))
-                        .addGap(46, 46, 46))))
+                        .addComponent(jLabel1)
+                        .addGap(151, 151, 151)
+                        .addComponent(menuBtn))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 827, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addComponent(newOrderChkBox)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(orderStatusChkBox)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(reviewChkBox)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(itemChkBox)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(withdrawChkBox)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(filterBtn))))
+                .addGap(31, 31, 31))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -335,10 +383,8 @@ public class vendorNotification extends javax.swing.JFrame {
                     .addComponent(itemChkBox)
                     .addComponent(withdrawChkBox))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 509, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(viewBtn)
-                .addGap(18, 18, 18))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 536, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(26, Short.MAX_VALUE))
         );
 
         pack();
@@ -348,61 +394,6 @@ public class vendorNotification extends javax.swing.JFrame {
         new vendorMain().setVisible(true);
         dispose();
     }//GEN-LAST:event_menuBtnActionPerformed
-
-    private void viewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewBtnActionPerformed
-        //call respective GUI classes hehe
-        int selectedRow = notificationTable.getSelectedRow();
-        //validation to choose a row 
-        if (selectedRow >= 0) {
-            //id is in the message ()
-            
-            //get ID, type and message
-            String type = notificationTable.getModel().getValueAt(selectedRow, 0).toString(); //type column   
-            int id = 0;
-            String message = notificationTable.getModel().getValueAt(selectedRow, 1).toString(); //message column, will change to 1
-
-            if (type.equalsIgnoreCase("New Order")) {
-                int startIndex = message.indexOf("(Order ID:") + "(Order ID:".length();
-                int endIndex = message.indexOf(")", startIndex);
-                String orderID = message.substring(startIndex, endIndex).trim();
-                id = Integer.parseInt(orderID);
-            } else if (type.equalsIgnoreCase("Order Status")) {
-                int startIndex = message.indexOf("(Order ID:") + "(Order ID:".length();
-                int endIndex = message.indexOf(")", startIndex);
-                String orderID = message.substring(startIndex, endIndex).trim();
-                id = Integer.parseInt(orderID);
-            } else if (type.equalsIgnoreCase("Vendor Review")) {
-                int startIndex = message.indexOf("(Review ID:") + "(Review ID:".length();
-                int endIndex = message.indexOf(")", startIndex);
-                String reviewID = message.substring(startIndex, endIndex).trim();
-                id = Integer.parseInt(reviewID);
-            } else if (type.equalsIgnoreCase("Order Review")) {
-                int startIndex = message.indexOf("(Review ID:") + "(Review ID:".length();
-                int endIndex = message.indexOf(")", startIndex);
-                String reviewID = message.substring(startIndex, endIndex).trim();
-                id = Integer.parseInt(reviewID);
-            } else if (type.equalsIgnoreCase("Item Added")) {
-                int startIndex = message.indexOf("(Item ID:") + "(Item ID:".length();
-                int endIndex = message.indexOf(")", startIndex);
-                String itemID = message.substring(startIndex, endIndex).trim();
-                id = Integer.parseInt(itemID);
-            } else if (type.equalsIgnoreCase("Item Deleted")) {
-                int startIndex = message.indexOf("(Item ID:") + "(Item ID:".length();
-                int endIndex = message.indexOf(")", startIndex);
-                String itemID = message.substring(startIndex, endIndex).trim();
-                id = Integer.parseInt(itemID);
-            } else if (type.equalsIgnoreCase("Withdrawal")) {
-                int startIndex = message.indexOf("(Transaction ID:") + "(Transaction ID:".length();
-                int endIndex = message.indexOf(")", startIndex);
-                String itemID = message.substring(startIndex, endIndex).trim();
-                id = Integer.parseInt(itemID);
-            }
-            
-            displayDetails(id, type);            
-        } else { //no row is selected
-            JOptionPane.showMessageDialog(null, "Please select a row to view details.", "Alert", JOptionPane.WARNING_MESSAGE);
-        }
-    }//GEN-LAST:event_viewBtnActionPerformed
 
     private void filterBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterBtnActionPerformed
         String[] selectedFilter = new String[5];
@@ -472,7 +463,6 @@ public class vendorNotification extends javax.swing.JFrame {
     private javax.swing.JTable notificationTable;
     private javax.swing.JCheckBox orderStatusChkBox;
     private javax.swing.JCheckBox reviewChkBox;
-    private javax.swing.JButton viewBtn;
     private javax.swing.JCheckBox withdrawChkBox;
     // End of variables declaration//GEN-END:variables
 }

@@ -6,7 +6,6 @@ package FoodCarat;
 
 import java.awt.Image;
 import java.io.File;
-import java.text.DecimalFormat;
 import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;

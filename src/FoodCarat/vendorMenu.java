@@ -16,6 +16,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -59,6 +61,8 @@ public class vendorMenu extends javax.swing.JFrame {
         photoLabel.setPreferredSize(new Dimension(175, 164)); 
         photoLabel.setMinimumSize(new Dimension(175, 164));
         photoLabel.setMaximumSize(new Dimension(175, 164));
+        
+        itemTableListener();
     }
     
     //reset details section
@@ -256,6 +260,26 @@ public class vendorMenu extends javax.swing.JFrame {
             return false; 
         } 
     }
+    
+    private void itemTableListener() {
+        itemTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) { // Ensure the event is the final one
+                    int selectedRow = itemTable.getSelectedRow();
+                    if (selectedRow != -1) { // Check if a row is actually selected
+                        Object id = itemTable.getModel().getValueAt(selectedRow, 1);
+                        try {
+                            int selectID = Integer.parseInt(id.toString());
+                            displayItems(selectID);
+                        } catch (NumberFormatException error) {
+                            JOptionPane.showMessageDialog(null, "The selected ID is not a valid number.", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                }
+            }
+        });
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -270,7 +294,6 @@ public class vendorMenu extends javax.swing.JFrame {
         menuBtn = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         itemTable = new javax.swing.JTable();
-        viewBtn = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         photoLabel = new javax.swing.JLabel();
@@ -338,14 +361,6 @@ public class vendorMenu extends javax.swing.JFrame {
             itemTable.getColumnModel().getColumn(5).setResizable(false);
             itemTable.getColumnModel().getColumn(5).setPreferredWidth(50);
         }
-
-        viewBtn.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        viewBtn.setText("View Details");
-        viewBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewBtnActionPerformed(evt);
-            }
-        });
 
         jLabel2.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel2.setText("Item Details");
@@ -534,11 +549,8 @@ public class vendorMenu extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 5, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(revertBtn)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(viewBtn))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(revertBtn, javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 712, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(foodBox, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -589,9 +601,7 @@ public class vendorMenu extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(viewBtn)
-                            .addComponent(revertBtn)))
+                        .addComponent(revertBtn))
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 18, Short.MAX_VALUE))
         );
@@ -608,21 +618,6 @@ public class vendorMenu extends javax.swing.JFrame {
         new vendorMain().setVisible(true);
         dispose();
     }//GEN-LAST:event_menuBtnActionPerformed
-
-    private void viewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewBtnActionPerformed
-        //display selected row of item in the table
-        int selectedRow = itemTable.getSelectedRow();
-        
-        //have validation to "choose an item in the table"
-        if (selectedRow >= 0) {            
-            Object id = itemTable.getModel().getValueAt(selectedRow, 1);
-            int selectID = Integer.parseInt(id.toString());
-            displayItems(selectID);
-        } else {
-            //no row is selected
-            JOptionPane.showMessageDialog(null, "Please select a row to view details.", "Alert", JOptionPane.WARNING_MESSAGE);
-        }
-    }//GEN-LAST:event_viewBtnActionPerformed
 
     private void filterBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterBtnActionPerformed
         //filter table based on the selected ticked box
@@ -823,6 +818,5 @@ public class vendorMenu extends javax.swing.JFrame {
     private javax.swing.JCheckBox setBox;
     private javax.swing.JComboBox<String> typeBox;
     private javax.swing.JLabel typeLabel;
-    private javax.swing.JButton viewBtn;
     // End of variables declaration//GEN-END:variables
 }

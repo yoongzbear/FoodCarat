@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import org.jfree.chart.ChartPanel;
 import org.jfree.data.category.DefaultCategoryDataset;
@@ -38,6 +40,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         
         displayVendorOrder();
+        orderTableListener();
         
         //set the placeholder for search box
         GuiUtility.setPlaceholder(searchTxt, "Enter your search");
@@ -60,10 +63,9 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         for (String[] orderData : allOrders) {
             Item item = new Item();            
             String orderID = orderData[0];
-            String orderMethod = orderData[1];
+            String orderMethod = orderData[1].substring(0, 1).toUpperCase() + orderData[1].substring(1).toLowerCase();
             String orderItems = orderData[2];
-            String orderStatus = orderData[3];
-            orderStatus = orderStatus.substring(0, 1).toUpperCase() + orderStatus.substring(1).toLowerCase();
+            String orderStatus = orderData[3].substring(0, 1).toUpperCase() + orderData[3].substring(1).toLowerCase();
             String customerEmail = orderData[4];
             String orderTotal = orderData[8];
 
@@ -112,7 +114,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         }
 
         idLabel.setText(details[0].trim());
-        methodLabel.setText(details[1].trim());
+        methodLabel.setText(details[1].substring(0, 1).toUpperCase() + details[1].substring(1).toLowerCase());
         statusLabel.setText(details[3].trim().substring(0, 1).toUpperCase() + details[3].trim().substring(1).toLowerCase());
         emailLabel.setText(details[4].trim());
         dateLabel.setText(details[9].trim());
@@ -148,10 +150,9 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         for (String[] orderData : allVendorOrders) {
             Item item = new Item();            
             String orderID = orderData[0];
-            String orderMethod = orderData[1];
+            String orderMethod = orderData[1].substring(0, 1).toUpperCase() + orderData[1].substring(1).toLowerCase();
             String orderItems = orderData[2];
-            String orderStatus = orderData[3];
-            orderStatus = orderStatus.substring(0, 1).toUpperCase() + orderStatus.substring(1).toLowerCase();
+            String orderStatus = orderData[3].substring(0, 1).toUpperCase() + orderData[1].substring(1).toLowerCase();
             String customerEmail = orderData[4];
 
             String updatedOrderItems = item.replaceItemIDsWithNames(orderItems);
@@ -188,10 +189,9 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         for (String[] orderData : allOrders) {
             Item item = new Item();            
             String orderID = orderData[0];
-            String orderMethod = orderData[1];
+            String orderMethod = orderData[1].substring(0, 1).toUpperCase() + orderData[1].substring(1).toLowerCase();
             String orderItems = orderData[2];
-            String orderStatus = orderData[3];
-            orderStatus = orderStatus.substring(0, 1).toUpperCase() + orderStatus.substring(1).toLowerCase();
+            String orderStatus = orderData[3].substring(0, 1).toUpperCase() + orderData[1].substring(1).toLowerCase();
             String customerEmail = orderData[4];
             String orderDate = orderData[9];
 
@@ -335,6 +335,26 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         }
         return initials.toString().toUpperCase();
     }
+    
+    private void orderTableListener() {
+        orderTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) { // Ensure the event is the final one
+                    int selectedRow = orderTable.getSelectedRow();
+                    if (selectedRow != -1) { // Check if a row is actually selected
+                        Object id = orderTable.getModel().getValueAt(selectedRow, 1);
+                        try {
+                            int selectID = Integer.parseInt(id.toString()); //convert the object to string and parse as int
+                            displayVendorOrder(selectID);
+                        } catch (NumberFormatException error) {
+                            JOptionPane.showMessageDialog(null, "The selected ID is not a valid number.", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                }
+            }
+        });
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -349,7 +369,6 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         menuBtn = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         orderTable = new javax.swing.JTable();
-        viewBtn = new javax.swing.JButton();
         timeRangeBox = new javax.swing.JComboBox<>();
         searchTxt = new javax.swing.JTextField();
         searchBtn = new javax.swing.JButton();
@@ -440,13 +459,6 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             orderTable.getColumnModel().getColumn(5).setResizable(false);
             orderTable.getColumnModel().getColumn(5).setPreferredWidth(40);
         }
-
-        viewBtn.setText("View Details");
-        viewBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewBtnActionPerformed(evt);
-            }
-        });
 
         timeRangeBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Time Range", "Daily", "Monthly", "Yearly" }));
         timeRangeBox.addActionListener(new java.awt.event.ActionListener() {
@@ -901,7 +913,6 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(19, 19, 19)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(viewBtn)
                             .addComponent(jScrollPane1)
                             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
@@ -950,10 +961,8 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                                         .addComponent(searchBtn))
                                     .addComponent(rangeBtn))
                                 .addGap(11, 11, 11)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(12, 12, 12)
-                                .addComponent(viewBtn)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
                                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addComponent(monthChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -973,25 +982,6 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         new vendorMain().setVisible(true);
         dispose();
     }//GEN-LAST:event_menuBtnActionPerformed
-
-    private void viewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewBtnActionPerformed
-        //if got reason ID, display the label and text field for reason cancelled
-        int selectedRow = orderTable.getSelectedRow();
-
-        //have validation to "choose an item in the table"
-        if (selectedRow >= 0) {
-            Object id = orderTable.getModel().getValueAt(selectedRow, 1);
-            try {
-                int selectID = Integer.parseInt(id.toString()); //convert the object to string and parse as int
-                displayVendorOrder(selectID);
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "The selected ID is not a valid number.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        } else {
-            //no row is selected
-            JOptionPane.showMessageDialog(null, "Please select a row to view details.", "Alert", JOptionPane.WARNING_MESSAGE);
-        }
-    }//GEN-LAST:event_viewBtnActionPerformed
 
     private void rangeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rangeBtnActionPerformed
         String timeRange = timeRangeBox.getSelectedItem().toString();
@@ -1280,7 +1270,6 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     private javax.swing.JLabel statusLabel;
     private javax.swing.JComboBox<String> timeRangeBox;
     private javax.swing.JLabel totalPriceLabel;
-    private javax.swing.JButton viewBtn;
     private javax.swing.JButton weeklyChartBtn;
     private javax.swing.JPanel weeklyChartPanel;
     private com.toedter.calendar.JDateChooser weeklyDateChooser;

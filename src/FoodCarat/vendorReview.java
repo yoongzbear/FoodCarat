@@ -13,6 +13,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import org.jfree.chart.ChartPanel;
 import org.jfree.data.general.DefaultPieDataset;
@@ -35,6 +37,7 @@ public class vendorReview extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         
         displayReviews();
+        reviewTableListener();
         ratingOneChkBox.setSelected(true);
         ratingTwoChkBox.setSelected(true);
         ratingThreeChkBox.setSelected(true);
@@ -145,7 +148,7 @@ public class vendorReview extends javax.swing.JFrame {
         
         idLabel.setText(details[1].trim()); //order ID
         dateLabel.setText(details[5].trim());
-        methodLabel.setText(details[8].trim());
+        methodLabel.setText(details[8].trim().substring(0, 1).toUpperCase() + details[8].trim().substring(1).toLowerCase());
         emailLabel.setText(details[6].trim());
         priceLabel.setText("RM"+details[17].trim());
         ratingLabel.setText(details[3].trim() + " 🌟");
@@ -242,6 +245,26 @@ public class vendorReview extends javax.swing.JFrame {
             yearlyChartPanel.repaint();
         }
     }
+    
+    private void reviewTableListener() {
+        reviewTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) { // Ensure the event is the final one
+                    int selectedRow = reviewTable.getSelectedRow();
+                    if (selectedRow != -1) { // Check if a row is actually selected
+                        Object idObj = reviewTable.getModel().getValueAt(selectedRow, 1);
+                        try {
+                            int id = Integer.parseInt(idObj.toString());
+                            displaySelectedReview(id);
+                        } catch (NumberFormatException error) {
+                            JOptionPane.showMessageDialog(null, "The selected ID is not a valid number.", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                }
+            }
+        });
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -264,7 +287,6 @@ public class vendorReview extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         reviewTable = new javax.swing.JTable();
         filterBtn = new javax.swing.JButton();
-        viewBtn = new javax.swing.JButton();
         revertBtn = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
@@ -376,13 +398,6 @@ public class vendorReview extends javax.swing.JFrame {
             }
         });
 
-        viewBtn.setText("View Details");
-        viewBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewBtnActionPerformed(evt);
-            }
-        });
-
         revertBtn.setText("Revert Table");
         revertBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -397,9 +412,7 @@ public class vendorReview extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(revertBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(viewBtn)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -435,9 +448,7 @@ public class vendorReview extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(viewBtn)
-                    .addComponent(revertBtn))
+                .addComponent(revertBtn)
                 .addContainerGap(15, Short.MAX_VALUE))
         );
 
@@ -970,20 +981,6 @@ public class vendorReview extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_menuBtnActionPerformed
 
-    private void viewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewBtnActionPerformed
-        //display selected row of item in the table
-        int selectedRow = reviewTable.getSelectedRow();
-        
-        if (selectedRow >= 0) {
-            Object idObj = reviewTable.getModel().getValueAt(selectedRow, 1);
-            int id = Integer.parseInt(idObj.toString());
-            displaySelectedReview(id);
-        } else {
-            //no row is selected
-            JOptionPane.showMessageDialog(null, "Please select a row to view details.", "Alert", JOptionPane.WARNING_MESSAGE);
-        }
-    }//GEN-LAST:event_viewBtnActionPerformed
-
     private void filterBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterBtnActionPerformed
         String[] selectedFilter = new String[5];
         int index = 0;
@@ -1255,7 +1252,6 @@ public class vendorReview extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> sortComboBox;
     private javax.swing.JLabel startDateQuarterLabel;
     private javax.swing.JTextArea vendorFeedbackTxtArea;
-    private javax.swing.JButton viewBtn;
     private javax.swing.JButton weeklyChartBtn;
     private javax.swing.JPanel weeklyChartPanel;
     private com.toedter.calendar.JDateChooser weeklyDateChooser;
