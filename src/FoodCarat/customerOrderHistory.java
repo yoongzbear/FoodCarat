@@ -45,6 +45,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
         addTableListener();
         //updateCbValueItems();
         bAction.setEnabled(false);
+        bReceipt.setEnabled(false);
         bFeedback.setVisible(false);
         lRunnerNameTitle.setVisible(false);
         lRunnerName.setVisible(false);
@@ -65,6 +66,9 @@ public class customerOrderHistory extends javax.swing.JFrame {
         dateChooser.setVisible(false);
         monthChooser.setVisible(false);
         yearChooser.setVisible(false);
+        
+        setLocationRelativeTo(null);
+        getContentPane().setBackground(new java.awt.Color(180,200,234));
     }
     
     private Map<String, List<String[]>> orderDetailsMap = new HashMap<>();
@@ -101,6 +105,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
                             ltotalPrice.setText(totalPrice);
                             lVendorName.setText(vendorName);
                             lOrderStatus.setText(orderStatus);
+                            bReceipt.setEnabled(true);
                             boolean validFeedback = true;
                             //Check feedback based on the reviewType
                             if ("null".equals(feedbackParts[1]) || "null".equals(feedbackParts[2]) || "null".equals(feedbackParts[3])) {
@@ -217,6 +222,22 @@ public class customerOrderHistory extends javax.swing.JFrame {
                 String rUser = record[4];
                 if (rUser.equals("customer@mail.com") && rOrderStatus != "") {
                     String rOrderType = record[1];
+                    
+                    String formattedOrderType = "";
+                    switch (rOrderType) {
+                        case "dine in":
+                            formattedOrderType = "Dine In";
+                            break;
+                        case "take away":
+                            formattedOrderType = "Take Away";
+                            break;
+                        case "delivery":
+                            formattedOrderType = "Delivery";
+                            break;
+                        default:
+                            formattedOrderType = "Unknown"; //invalid value
+                    }
+                    
                     String rOrderList = record[2].replace("[", "").replace("]", "");
                     String rVendorName = null;
                     String rCancelReason = record[6];
@@ -274,7 +295,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
 
                     // Add the record to the list
                     orderRecords.add(new String[]{
-                        rOrderDate, orderID, rOrderType, allOrderItems, "RM" + df.format(totalPrice), rVendorName, rOrderStatus, rCancelReason, rDeliveryFee, rTotalPaid
+                        rOrderDate, orderID, formattedOrderType, allOrderItems, "RM" + df.format(totalPrice), rVendorName, rOrderStatus, rCancelReason, rDeliveryFee, rTotalPaid
                     });
                 }
             }
@@ -622,17 +643,18 @@ public class customerOrderHistory extends javax.swing.JFrame {
 
         jLabel9.setText("Order Type:");
 
-        lVenFeedbackSection.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lVenFeedbackSection.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         lVenFeedbackSection.setText("Vendor Feedback Section");
 
         lOrderType.setText("orderType");
 
+        lVenRateTitle.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         lVenRateTitle.setText("Rating:");
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel3.setText("Order Details");
 
-        lOrderFeedbackSection.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lOrderFeedbackSection.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         lOrderFeedbackSection.setText("Order Feedback Section");
 
         cbVendorRating.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Please Rate", "1 🌟", "2 🌟", "3 🌟", "4 🌟", "5 🌟" }));
@@ -645,10 +667,12 @@ public class customerOrderHistory extends javax.swing.JFrame {
         taVendorFeedback.setRows(5);
         jScrollPane3.setViewportView(taVendorFeedback);
 
+        jLabel6.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         jLabel6.setText("Ordered Item(s) :");
 
         jLabel7.setText("Total Price Paid:");
 
+        lOrderFeedbackTitle.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         lOrderFeedbackTitle.setText("Order Feedback :");
 
         taOrderFeedback.setColumns(20);
@@ -675,6 +699,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
         tbOrderItem.getTableHeader().setReorderingAllowed(false);
         jScrollPane4.setViewportView(tbOrderItem);
 
+        lVenFeedbackTitle.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         lVenFeedbackTitle.setText("Feedback:");
 
         lRunnerNameTitle.setText("Runner Name:");
@@ -690,7 +715,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
 
         jLabel5.setText("Order Status:");
 
-        lRunnerRating.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lRunnerRating.setFont(new java.awt.Font("Cooper Black", 0, 12)); // NOI18N
         lRunnerRating.setText("Runner Rating:");
 
         lOrderStatus.setText("orderStatus");
@@ -718,6 +743,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
             }
         });
 
+        jLabel11.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         jLabel11.setText("Search By:");
 
         bSearch.setText("Search");
@@ -761,8 +787,8 @@ public class customerOrderHistory extends javax.swing.JFrame {
                                     .addGap(18, 18, 18)
                                     .addComponent(dateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(jLabel11)
+                                    .addGap(18, 18, 18)
                                     .addComponent(cbSearchBy, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -855,8 +881,8 @@ public class customerOrderHistory extends javax.swing.JFrame {
                             .addComponent(selectLabel)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(dateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(monthChooser, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(yearChooser, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(monthChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(yearChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -938,7 +964,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 1055, Short.MAX_VALUE)
+            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 1139, Short.MAX_VALUE)
         );
 
         pack();
@@ -968,7 +994,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
                 int selectedRow = tOrderHistory.getSelectedRow();
 
                 if (selectedRow != -1) {
-                    String orderIDString = (String) tOrderHistory.getValueAt(selectedRow, 0);
+                    String orderIDString = (String) tOrderHistory.getValueAt(selectedRow, 1);
                     int orderID = Integer.parseInt(orderIDString); 
                     String orderFeedback = taOrderFeedback.getText();
                     String selectedVendorRating = (String) cbVendorRating.getSelectedItem();
