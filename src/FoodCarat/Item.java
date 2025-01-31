@@ -344,7 +344,7 @@ public class Item {
     }
     
     //delete item
-    public void deleteItem(int id, String userType) {
+    public boolean deleteItem(int id, String userType) {
         //get all data
         List<String[]> allItems = new ArrayList<>();
         boolean isDeleted = false;
@@ -386,12 +386,7 @@ public class Item {
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Failed to delete the item information: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-
-        if (isDeleted) {
-            JOptionPane.showMessageDialog(null, "Item successfully deleted!", "Success", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(null, "Failed to find the item", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        return isDeleted;
     }
     
     public String[] getVendorInfoByItemID(int itemID) {

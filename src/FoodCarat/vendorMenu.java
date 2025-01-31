@@ -705,7 +705,12 @@ public class vendorMenu extends javax.swing.JFrame {
         int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to delete this item?", "Delete Item", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             int id = Integer.parseInt(idLabel.getText());
-            new Item().deleteItem(id, "vendor");
+            boolean isDeleted = new Item().deleteItem(id, "vendor");
+            if (isDeleted) {
+                JOptionPane.showMessageDialog(null, "Item successfully deleted!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "Failed to delete the item.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
             displayItems();
             resetDetails();
         }
