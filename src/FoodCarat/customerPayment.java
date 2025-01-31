@@ -7,6 +7,7 @@ package FoodCarat;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -24,6 +25,7 @@ public class customerPayment extends javax.swing.JFrame {
      */
     private int orderID;
     private String orderType;
+    DecimalFormat df = new DecimalFormat("0.00");
     
     public customerPayment(int orderID, String orderType) {
         this.orderType = orderType.toLowerCase();
@@ -79,7 +81,8 @@ public class customerPayment extends javax.swing.JFrame {
             if (role != null && role.equals("customer")) {
                 creditBalance = user.getRoleSpecificData(User.getSessionEmail(), role, 2);
             }
-            sCreditBalance.setText(creditBalance);
+            double balance = Double.parseDouble(creditBalance);
+            sCreditBalance.setText("RM " + String.format("%.2f", balance));
             sPointBalance.setText(String.valueOf(pointBalance));
 
             populateOrderItemsTable(orderItems);
@@ -117,7 +120,7 @@ public class customerPayment extends javax.swing.JFrame {
                 sVendorName.setText(String.valueOf(vendorName));
 
                 //add the item to the table
-                model.addRow(new Object[]{itemName, "RM " + itemPrice, quantity, "RM " + orderItemTotal});
+                model.addRow(new Object[]{itemName, "RM " + df.format(itemPrice), quantity, "RM " + df.format(orderItemTotal)});
             }
         }
     }
@@ -255,7 +258,7 @@ public class customerPayment extends javax.swing.JFrame {
                                 .addGroup(layout.createSequentialGroup()
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(jLabel18)
-                                        .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jLabel19))
                                     .addGap(18, 18, 18)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(sCreditBalance)
@@ -362,7 +365,7 @@ public class customerPayment extends javax.swing.JFrame {
 
         //retrieve data
         int redeemPoints = (int) tfRedeemPoints.getValue(); 
-        double currentBalance = Double.parseDouble(sCreditBalance.getText()); 
+        double currentBalance = Double.parseDouble(sCreditBalance.getText().replaceAll("RM ", "")); 
         int currentPoints = Integer.parseInt(sPointBalance.getText()); 
         String payTotalStr = sPayTotal.getText().replaceAll("RM ", "");
         double payTotal = Double.parseDouble(payTotalStr); 
@@ -385,7 +388,6 @@ public class customerPayment extends javax.swing.JFrame {
 
         //calculate the total redeemable amount based on points into RM
         double redeemAmount = redeemPoints * 0.01;
-        System.out.println("Redeem Amount:" + redeemAmount);
 
         //ensure the total payable amount (after redemption) is less than or equal to the payment total
         double cusPayableAmount = redeemAmount + currentBalance; 
