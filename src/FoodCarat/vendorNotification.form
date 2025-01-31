@@ -45,7 +45,9 @@
                                   <Component id="reviewChkBox" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="itemChkBox" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="withdrawChkBox" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
                                   <Component id="filterBtn" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
@@ -71,6 +73,7 @@
                   <Component id="filterBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="orderStatusChkBox" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="itemChkBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="withdrawChkBox" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="jScrollPane1" pref="509" max="32767" attributes="0"/>
@@ -169,6 +172,11 @@
     <Component class="javax.swing.JCheckBox" name="itemChkBox">
       <Properties>
         <Property name="text" type="java.lang.String" value="Item"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="withdrawChkBox">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Withdrawal"/>
       </Properties>
     </Component>
   </SubComponents>

@@ -4,6 +4,7 @@
  */
 package FoodCarat;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -29,7 +30,14 @@ public class vendorNotification extends javax.swing.JFrame {
         initComponents();
         getContentPane().setBackground(new java.awt.Color(186,85,211)); //setting background color of frame
         setLocationRelativeTo(null);
-        String[] filters = {"new", "status", "review", "item"};
+        
+        newOrderChkBox.setSelected(true);
+        orderStatusChkBox.setSelected(true);
+        reviewChkBox.setSelected(true);
+        itemChkBox.setSelected(true);
+        withdrawChkBox.setSelected(true);
+        
+        String[] filters = {"new", "status", "review", "item", "withdraw"};
         displayActivities(filters);
     }
     
@@ -146,14 +154,27 @@ public class vendorNotification extends javax.swing.JFrame {
                     }
                     model.addRow(new Object[]{"Item Deleted", message});
                 }
+            } else if (filter.equalsIgnoreCase("withdraw")) {
+                //show withdrawal transactions
+                DecimalFormat df = new DecimalFormat("0.00");
+                List<String[]> transaction = vendor.getWithdrawalTransaction();
+                for (String[] data : transaction) {
+                    String message = "";
+                    try {
+                        //convert amount to number only
+                        double amount = Math.abs(Double.parseDouble(data[3]));
+                        message = "RM" + df.format(amount) + " has been withdrawn from your account (Transaction ID: " + data[0] + ")";
+                        model.addRow(new Object[]{"Withdrawal", message});
+                    } catch (NumberFormatException e) {                        
+                        JOptionPane.showMessageDialog(null, "Failed in converting the amount.", "Alert", JOptionPane.WARNING_MESSAGE);
+                    }
+                }
             }
         }
     }
 
     public void displayDetails(int id, String detailType) {
         //call panel based on type then populate with info
-        System.out.println("id: " + id + "\ntype: " + detailType);
-
         if (detailType.equalsIgnoreCase("New Order")) {
             vendorCurrentOrder currentOrderGUI = new vendorCurrentOrder();
             currentOrderGUI.setVisible(true);
@@ -185,6 +206,11 @@ public class vendorNotification extends javax.swing.JFrame {
             //display vendorItemDeleted page without disposing 
             vendorItemDeleted itemDeletedGUI = new vendorItemDeleted(id);
             itemDeletedGUI.setVisible(true);
+        } else if (detailType.equalsIgnoreCase("Withdrawal")) {
+            //display receipt - adminCusReceipt
+            String[] details = vendor.getWithdrawalTransaction(id);
+            adminCusReceipt receiptGUI = new adminCusReceipt(id, details[1], User.getSessionName(), Double.parseDouble(details[2]), Double.parseDouble(details[3]), details[4], details[5]);
+            receiptGUI.setVisible(true);
         }
     }
     
@@ -207,6 +233,7 @@ public class vendorNotification extends javax.swing.JFrame {
         reviewChkBox = new javax.swing.JCheckBox();
         viewBtn = new javax.swing.JButton();
         itemChkBox = new javax.swing.JCheckBox();
+        withdrawChkBox = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -259,6 +286,8 @@ public class vendorNotification extends javax.swing.JFrame {
 
         itemChkBox.setText("Item");
 
+        withdrawChkBox.setText("Withdrawal");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -284,7 +313,9 @@ public class vendorNotification extends javax.swing.JFrame {
                                     .addComponent(reviewChkBox)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(itemChkBox)
-                                    .addGap(18, 18, 18)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(withdrawChkBox)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(filterBtn))))
                         .addGap(46, 46, 46))))
         );
@@ -301,7 +332,8 @@ public class vendorNotification extends javax.swing.JFrame {
                     .addComponent(reviewChkBox)
                     .addComponent(filterBtn)
                     .addComponent(orderStatusChkBox)
-                    .addComponent(itemChkBox))
+                    .addComponent(itemChkBox)
+                    .addComponent(withdrawChkBox))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 509, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -359,6 +391,11 @@ public class vendorNotification extends javax.swing.JFrame {
                 int endIndex = message.indexOf(")", startIndex);
                 String itemID = message.substring(startIndex, endIndex).trim();
                 id = Integer.parseInt(itemID);
+            } else if (type.equalsIgnoreCase("Withdrawal")) {
+                int startIndex = message.indexOf("(Transaction ID:") + "(Transaction ID:".length();
+                int endIndex = message.indexOf(")", startIndex);
+                String itemID = message.substring(startIndex, endIndex).trim();
+                id = Integer.parseInt(itemID);
             }
             
             displayDetails(id, type);            
@@ -382,10 +419,12 @@ public class vendorNotification extends javax.swing.JFrame {
         } 
         if (itemChkBox.isSelected()) {
             selectedFilter[index++] = "item";
+        }         
+        if (withdrawChkBox.isSelected()) {
+            selectedFilter[index++] = "withdraw";
         } 
-        selectedFilter = Arrays.copyOf(selectedFilter, index); //adjust the size of array
-        //call filter
-        displayActivities(selectedFilter);
+        selectedFilter = Arrays.copyOf(selectedFilter, index); //adjust the size of array        
+        displayActivities(selectedFilter); //call filter
     }//GEN-LAST:event_filterBtnActionPerformed
 
     /**
@@ -434,5 +473,6 @@ public class vendorNotification extends javax.swing.JFrame {
     private javax.swing.JCheckBox orderStatusChkBox;
     private javax.swing.JCheckBox reviewChkBox;
     private javax.swing.JButton viewBtn;
+    private javax.swing.JCheckBox withdrawChkBox;
     // End of variables declaration//GEN-END:variables
 }

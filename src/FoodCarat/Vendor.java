@@ -13,17 +13,12 @@ import javax.swing.JOptionPane;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 /**
  *
  * @author mastu
  */
 public class Vendor extends User{
-    //constructor    
-    //super(email,password,name);
             
     private String cuisine;
     private String photoLink;
@@ -31,6 +26,7 @@ public class Vendor extends User{
     private double creditBalance;
     
     private String vendorFile = "resources/vendor.txt";
+    private String vendorCreditFile = "resources/transactionCredit.txt";
     
     private double totalRevenue;
     
@@ -186,5 +182,47 @@ public class Vendor extends User{
                 e.printStackTrace();
             }
         }
+    }
+    
+    //vendor withdrawal transaction
+    public List<String[]> getWithdrawalTransaction() {
+        List<String[]> transaction = new ArrayList<>();
+        try {
+            File fileName = new File(vendorCreditFile);
+            FileReader fr = new FileReader(fileName);
+            BufferedReader br = new BufferedReader(fr);
+            String read;
+            boolean found = false; //flag for finding vendor record
+            
+            while((read=br.readLine()) !=null ) {
+                //scanning the file until it meets null
+                String[] data = read.split(",");
+                if(data.length > 0 && data[1].equalsIgnoreCase(email)){
+                    found = true;
+                    transaction.add(data);
+                }
+            }
+            fr.close();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }        
+        
+        return transaction;
+    }
+    
+    //withdrawal details
+    public String[] getWithdrawalTransaction(int transactionID) {
+        String[] details = new String[7];
+        List<String[]> transaction = getWithdrawalTransaction();
+
+        for (String[] data : transaction) {
+            if (data.length > 0 && Integer.parseInt(data[0]) == transactionID) {
+                for (int i = 0; i < Math.min(data.length, details.length); i++) {
+                    details[i] = data[i];
+                }
+                return details; 
+            }
+        }
+        return details; //null or partially filled
     }
 }
