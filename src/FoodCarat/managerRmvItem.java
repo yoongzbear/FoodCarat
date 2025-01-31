@@ -11,8 +11,11 @@ import java.awt.Image;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -27,6 +30,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class managerRmvItem extends javax.swing.JFrame {
     Item item = new Item();
+    User user = new User();
     String imagePath = "";
     //change to userSession 
     private String email = "chagee@mail.com";
@@ -45,41 +49,46 @@ public class managerRmvItem extends javax.swing.JFrame {
         
         //display items in table
         displayItems();
+        foodBox.setSelected(true);
+        beverageBox.setSelected(true);
+        dessertBox.setSelected(true);
+        setBox.setSelected(true);
                 
-        //set the placeholder for search box
-        setPlaceholder(searchTxt, "Search Item Name");
         deleteBtn.setEnabled(false);
+        populateVendorNames(vendorlistcbx, true);
         
         //set size of photoLabel
         photoLabel.setPreferredSize(new Dimension(175, 164)); 
         photoLabel.setMinimumSize(new Dimension(175, 164));
         photoLabel.setMaximumSize(new Dimension(175, 164));
         getContentPane().setBackground(new Color(252, 204, 196));
-    }
+    }    
     
-    public void setPlaceholder(JTextField textField, String placeholder) {
-        textField.setText(placeholder);
-        textField.setForeground(Color.GRAY);  
+    private Map<String, String> vendorNameToEmailMap = new HashMap<>();
 
-        textField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                //if the text field contains the placeholder, clear it when the clicked
-                if (textField.getText().equals(placeholder)) {
-                    textField.setText("");
-                    textField.setForeground(Color.BLACK);  
+    public void populateVendorNames(JComboBox<String> vendorListCbx, boolean isAvailableOnly) {
+        // Get all items from the file
+        List<String[]> allItems = item.getAllItems(isAvailableOnly);
+
+        // Clear the map and combo box
+        vendorNameToEmailMap.clear();
+        vendorListCbx.removeAllItems();
+        
+        vendorListCbx.addItem("Please select a vendor");        
+
+        for (String[] itemData : allItems) {
+            if (itemData.length > 5) {
+                String vendorEmail = itemData[5]; // Get vendor email
+                String[] vendorData = user.performSearch(vendorEmail, "user.txt"); // Search for vendor data
+                if (vendorData != null && vendorData.length > 1) {
+                    String vendorName = vendorData[1]; // Get the vendor name
+                    if (!vendorNameToEmailMap.containsKey(vendorName)) {
+                        vendorNameToEmailMap.put(vendorName, vendorEmail); // Map vendor name to email
+                        vendorListCbx.addItem(vendorName); // Add vendor name to the combo box
+                    }
                 }
             }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                //if the text field is empty, show the placeholder again
-                if (textField.getText().isEmpty()) {
-                    textField.setText(placeholder);
-                    textField.setForeground(Color.GRAY);
-                }
-            }
-        });
+        }
     }
     
     //reset details section
@@ -97,7 +106,7 @@ public class managerRmvItem extends javax.swing.JFrame {
     //display all items
     public void displayItems() {
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
-        List<String[]> allItems = item.getAllItems(email, true); //items with available status
+        List<String[]> allItems = item.getAllItems(true); //items with available status
         int index = 1;
         model.setRowCount(0);
         itemTable.setRowHeight(100);
@@ -107,14 +116,17 @@ public class managerRmvItem extends javax.swing.JFrame {
             String itemType = itemData[2];
             String itemPrice = itemData[3];
             String itemImgPath = itemData[4];
-
+            String vendorEmail = itemData[5];
+            //Get the name of the vendor using the email
+            String [] vendorData = user.performSearch(vendorEmail, "user.txt");
+            String vendorName = vendorData[1];
             //image icon
             ImageIcon itemImage = new ImageIcon(itemImgPath);
             Image img = itemImage.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
             itemImage = new ImageIcon(img);
 
             model.addRow(
-                    new Object[]{index, itemID, itemImage, itemName, itemType, itemPrice});
+                    new Object[]{index, itemID, itemImage, itemName, itemType, itemPrice, vendorName});
             index++;
         }
         //render image column
@@ -141,6 +153,11 @@ public class managerRmvItem extends javax.swing.JFrame {
         typeBox.setSelectedItem(details[2].trim());
         itemPriceTxt.setText(details[3].trim());
         
+        String vendorEmail = details[5];
+        String[] vendorDetails = user.performSearch(vendorEmail,"user.txt");
+        String vendorName = vendorDetails[1].trim();
+        venNameLabel.setText(vendorName);
+        
         //photo
         imagePath = details[4].trim();
         ImageIcon itemImage = new ImageIcon(imagePath);
@@ -152,7 +169,7 @@ public class managerRmvItem extends javax.swing.JFrame {
     //display items based on check boxes
     public void displayItemsFilter(String[] filter) {      
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
-        List<String[]> allItems = item.getAllItems(email, true); //items with available status only
+        List<String[]> allItems = item.getAllItems(true); //items with available status only
         int index = 1;
         model.setRowCount(0);
         itemTable.setRowHeight(100);
@@ -163,7 +180,11 @@ public class managerRmvItem extends javax.swing.JFrame {
             String itemType = itemData[2];
             String itemPrice = itemData[3];
             String itemImgPath = itemData[4];
-
+            String vendorEmail = itemData[5];
+            
+            String [] vendorData = user.performSearch(vendorEmail, "user.txt");
+            String vendorName = vendorData[1];
+            
             //check if item type matches the filter
             boolean isFiltered = false;
             for (String filterType : filter) {
@@ -180,7 +201,7 @@ public class managerRmvItem extends javax.swing.JFrame {
                 itemImage = new ImageIcon(img);
 
                 model.addRow(
-                        new Object[]{index, itemID, itemImage, itemName, itemType, itemPrice});
+                        new Object[]{index, itemID, itemImage, itemName, itemType, itemPrice, vendorName});
                 index++;
             }
         }
@@ -202,7 +223,7 @@ public class managerRmvItem extends javax.swing.JFrame {
     //display items based on search bar
     public void displayItemsSearch(String searchItem) {
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
-        List<String[]> allItems = item.getAllItems(email, true); //items with available status
+        List<String[]> allItems = item.getAllItems(searchItem, true); //items with available status
         int index = 1;
         model.setRowCount(0);
         itemTable.setRowHeight(100);
@@ -214,18 +235,18 @@ public class managerRmvItem extends javax.swing.JFrame {
             String itemPrice = itemData[3];
             String itemImgPath = itemData[4];
 
-            //check if item type matches the filter
-            boolean isFound = false;
-            if (itemName.toLowerCase().contains(searchItem.toLowerCase())) {
-                //image icon
-                ImageIcon itemImage = new ImageIcon(itemImgPath);
-                Image img = itemImage.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-                itemImage = new ImageIcon(img);
+            String [] vendorData = user.performSearch(searchItem, "user.txt");
+            String vendorName = vendorData[1];
+            
+            //image icon
+            ImageIcon itemImage = new ImageIcon(itemImgPath);
+            Image img = itemImage.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+            itemImage = new ImageIcon(img);
 
-                model.addRow(
-                        new Object[]{index, itemID, itemImage, itemName, itemType, itemPrice});
-                index++;
-            }
+            model.addRow(
+                    new Object[]{index, itemID, itemImage, itemName, itemType, itemPrice, vendorName});
+            index++;
+
         }
         //render image column
         itemTable.getColumnModel().getColumn(2).setCellRenderer(new DefaultTableCellRenderer() {
@@ -251,7 +272,6 @@ public class managerRmvItem extends javax.swing.JFrame {
     private void initComponents() {
 
         filterBtn = new javax.swing.JButton();
-        searchTxt = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         searchBtn = new javax.swing.JButton();
         menuBtn = new javax.swing.JButton();
@@ -274,7 +294,10 @@ public class managerRmvItem extends javax.swing.JFrame {
         deleteBtn = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
         idLabel = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        venNameLabel = new javax.swing.JLabel();
         setBox = new javax.swing.JCheckBox();
+        vendorlistcbx = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -284,8 +307,6 @@ public class managerRmvItem extends javax.swing.JFrame {
                 filterBtnActionPerformed(evt);
             }
         });
-
-        searchTxt.setText("Search Item Name");
 
         jLabel1.setFont(new java.awt.Font("Cooper Black", 0, 36)); // NOI18N
         jLabel1.setText("Menu Items");
@@ -316,11 +337,11 @@ public class managerRmvItem extends javax.swing.JFrame {
 
             },
             new String [] {
-                "No.", "ID", "Photo", "Name", "Type", "Price (RM)"
+                "No.", "ID", "Photo", "Name", "Type", "Price (RM)", "Vendor"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                true, true, false, true, true, true
+                true, true, false, true, true, true, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -381,21 +402,18 @@ public class managerRmvItem extends javax.swing.JFrame {
         idLabel.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
         idLabel.setText("ID");
 
+        jLabel4.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        jLabel4.setText("Vendor:");
+
+        venNameLabel.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        venNameLabel.setText("Name");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(16, 16, 16)
-                                .addComponent(photoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 345, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -412,20 +430,34 @@ public class managerRmvItem extends javax.swing.JFrame {
                                     .addComponent(typeBox, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(itemPriceTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(idLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 0, Short.MAX_VALUE))
+                                .addGap(0, 26, Short.MAX_VALUE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(deleteBtn)))))
+                                .addComponent(deleteBtn))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(photoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(venNameLabel)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
+                .addContainerGap(12, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(venNameLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(photoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(idLabel))
@@ -462,13 +494,12 @@ public class managerRmvItem extends javax.swing.JFrame {
                         .addComponent(menuBtn))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 5, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(revertBtn)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(viewBtn))
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 712, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(revertBtn)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(viewBtn))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 712, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(foodBox, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -479,8 +510,8 @@ public class managerRmvItem extends javax.swing.JFrame {
                                 .addComponent(setBox)
                                 .addGap(18, 18, 18)
                                 .addComponent(filterBtn)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(46, 46, 46)
+                                .addComponent(vendorlistcbx, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(searchBtn)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -496,19 +527,18 @@ public class managerRmvItem extends javax.swing.JFrame {
                         .addComponent(menuBtn)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 20, Short.MAX_VALUE)
+                        .addGap(0, 19, Short.MAX_VALUE)
                         .addComponent(jLabel1)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(searchBtn))
+                    .addComponent(searchBtn)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(filterBtn)
                         .addComponent(foodBox)
                         .addComponent(beverageBox)
                         .addComponent(dessertBox)
-                        .addComponent(setBox)))
+                        .addComponent(setBox)
+                        .addComponent(vendorlistcbx, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -518,7 +548,7 @@ public class managerRmvItem extends javax.swing.JFrame {
                             .addComponent(viewBtn)
                             .addComponent(revertBtn)))
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 20, Short.MAX_VALUE))
+                .addGap(0, 19, Short.MAX_VALUE))
         );
 
         pack();
@@ -548,9 +578,23 @@ public class managerRmvItem extends javax.swing.JFrame {
     }//GEN-LAST:event_filterBtnActionPerformed
 
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
-        //search based on item name
-        String searchItem = searchTxt.getText();
-        displayItemsSearch(searchItem);
+        // Get the selected name from the combo box
+        String selectedVendorName = (String) vendorlistcbx.getSelectedItem();
+
+        if ("Please select a vendor".equals(selectedVendorName)) {
+            JOptionPane.showMessageDialog(null, "Please select a valid vendor.", "Alert", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        // Retrieve the corresponding email
+        if (vendorNameToEmailMap.containsKey(selectedVendorName)) {
+            String searchEmail = vendorNameToEmailMap.get(selectedVendorName);
+
+            // Pass the email to the search function
+            displayItemsSearch(searchEmail);
+        } else {
+            JOptionPane.showMessageDialog(null, "Vendor not found.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_searchBtnActionPerformed
 
     private void menuBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBtnActionPerformed
@@ -560,7 +604,6 @@ public class managerRmvItem extends javax.swing.JFrame {
 
     private void revertBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_revertBtnActionPerformed
         displayItems();
-        setPlaceholder(searchTxt, "Search Item Name");
         foodBox.setSelected(false);
         beverageBox.setSelected(false);
         dessertBox.setSelected(false);
@@ -574,7 +617,7 @@ public class managerRmvItem extends javax.swing.JFrame {
         //have validation to "choose an item in the table"
         if (selectedRow >= 0) {
             Object id = itemTable.getModel().getValueAt(selectedRow, 1);
-            int selectID = (int) id;
+            int selectID = Integer.parseInt((String) id);
             displayItems(selectID);
             deleteBtn.setEnabled(true);
         } else {
@@ -596,7 +639,7 @@ public class managerRmvItem extends javax.swing.JFrame {
             int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to delete this item?", "Delete Item", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 int id = Integer.parseInt(idLabel.getText());
-                item.deleteItem(id, "vendor"); 
+                item.deleteItem(id, "manager"); 
                 displayItems();
                 resetDetails();
             }
@@ -654,6 +697,7 @@ public class managerRmvItem extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
@@ -663,9 +707,10 @@ public class managerRmvItem extends javax.swing.JFrame {
     private javax.swing.JLabel photoLabel;
     private javax.swing.JButton revertBtn;
     private javax.swing.JButton searchBtn;
-    private javax.swing.JTextField searchTxt;
     private javax.swing.JCheckBox setBox;
     private javax.swing.JComboBox<String> typeBox;
+    private javax.swing.JLabel venNameLabel;
+    private javax.swing.JComboBox<String> vendorlistcbx;
     private javax.swing.JButton viewBtn;
     // End of variables declaration//GEN-END:variables
 }
