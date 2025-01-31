@@ -72,29 +72,32 @@ public class customerNotification extends javax.swing.JFrame {
                 for (String[] orderData : allOrders) {
                     int orderID = Integer.parseInt(orderData[0].trim());
                     String orderStatus = orderData[3];
+                    String cusEmail = orderData[4];
                     
                     String title = "";
                     String message = "";  
 
-                    //check order status and set the appropriate message
-                    if ("pending accept".equalsIgnoreCase(orderStatus)) {
-                        title = "Order Placed";
-                        message = "Order placed! Please wait for vendor to accept. (Order ID: " + orderID + ")";
-                    } else if ("assigning runner".equalsIgnoreCase(orderStatus)) {
-                        title = "Runner Assigned";
-                        message = "Your order has been assigned a runner! Please wait for runner to accept the task. (Order ID: " + orderID + ")";
-                    } else if ("ordered".equalsIgnoreCase(orderStatus)) {
-                        title = "Order in Queue";
-                        message = "Your order will be in the kitchen soon. (Order ID: " + orderID + ")";
-                    } else if ("in kitchen".equalsIgnoreCase(orderStatus)) {
-                        title = "Order in Prepare";
-                        message = "Your order is preparing now! (Order ID: " + orderID + ")";
-                    } else if ("ready".equalsIgnoreCase(orderStatus)) {
-                        title = "Order is Ready";
-                        message = "Your order is ready now! (Order ID: " + orderID + ")";
-                    } else if ("picked up by runner".equalsIgnoreCase(orderStatus)) {
-                        title = "Order in Delivery";
-                        message = "Your order is picked up by the runner! The order will arrive soon. (Order ID: " + orderID + ")";
+                    if (email.equalsIgnoreCase(cusEmail)){
+                        //check order status and set the appropriate message
+                        if ("pending accept".equalsIgnoreCase(orderStatus)) {
+                            title = "Order Placed";
+                            message = "Order placed! Please wait for vendor to accept. (Order ID: " + orderID + ")";
+                        } else if ("assigning runner".equalsIgnoreCase(orderStatus)) {
+                            title = "Runner Assigned";
+                            message = "Your order has been assigned a runner! Please wait for runner to accept the task. (Order ID: " + orderID + ")";
+                        } else if ("ordered".equalsIgnoreCase(orderStatus)) {
+                            title = "Order in Queue";
+                            message = "Your order will be in the kitchen soon. (Order ID: " + orderID + ")";
+                        } else if ("in kitchen".equalsIgnoreCase(orderStatus)) {
+                            title = "Order in Prepare";
+                            message = "Your order is preparing now! (Order ID: " + orderID + ")";
+                        } else if ("ready".equalsIgnoreCase(orderStatus)) {
+                            title = "Order is Ready";
+                            message = "Your order is ready now! (Order ID: " + orderID + ")";
+                        } else if ("picked up by runner".equalsIgnoreCase(orderStatus)) {
+                            title = "Order in Delivery";
+                            message = "Your order is picked up by the runner! The order will arrive soon. (Order ID: " + orderID + ")";
+                        }
                     }
 
                     if (!message.isEmpty()) {
@@ -106,7 +109,8 @@ public class customerNotification extends javax.swing.JFrame {
                 for (String[] orderData : allOrders) {
                     int orderID = Integer.parseInt(orderData[0].trim());
                     String orderStatus = orderData[3];
-                    if ("completed".equalsIgnoreCase(orderStatus)) {
+                    String cusEmail = orderData[4];
+                    if ("completed".equalsIgnoreCase(orderStatus) && email.equalsIgnoreCase(cusEmail)) {
                         String message = "Order complete! We’d love your feedback. Thanks for choosing Foodcarat! (Order ID: " + orderID + ")";
                         notifications.add(new String[]{"Order Complete", message, orderData[9]});
                     }
@@ -116,8 +120,9 @@ public class customerNotification extends javax.swing.JFrame {
                 for (String[] orderData : allOrders) {
                     int orderID = Integer.parseInt(orderData[0].trim());
                     String orderStatus = orderData[3];
+                    String cusEmail = orderData[4];
                     String cancelReason = orderData[6];
-                    if ("cancelled".equalsIgnoreCase(orderStatus)) {
+                    if ("cancelled".equalsIgnoreCase(orderStatus) && email.equalsIgnoreCase(cusEmail)) {
                         String message = "Sorry, your order was cancelled due to: " + cancelReason + ". A refund has been issued. (Order ID: " + orderID + ")";
                         notifications.add(new String[]{"Order Cancelled", message, orderData[9]});
                     }
