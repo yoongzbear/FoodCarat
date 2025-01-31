@@ -28,6 +28,8 @@ public class customerTransacHistory extends javax.swing.JFrame {
     public customerTransacHistory() {
         initComponents();
         populateTable();
+        setLocationRelativeTo(null);
+        getContentPane().setBackground(new java.awt.Color(180,200,234));
     }
     
     private void populateTable(){
