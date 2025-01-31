@@ -27,7 +27,7 @@ public class customerNotification extends javax.swing.JFrame {
     /**
      * Creates new form customerNotification
      */
-    private String email = "customer@mail.com";
+    private String email = User.getSessionEmail();
     
     public customerNotification() {
         initComponents();
@@ -38,6 +38,8 @@ public class customerNotification extends javax.swing.JFrame {
                             "reload"
                             };
         displayNotif(filters);
+        setLocationRelativeTo(null);
+        getContentPane().setBackground(new java.awt.Color(180,200,234));
     }
     
     public void displayNotif(String[] filters) {
