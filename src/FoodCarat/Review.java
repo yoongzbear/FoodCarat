@@ -291,7 +291,7 @@ public class Review {
         //Get review date
         Calendar today = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String reviewDate = sdf.format(today.getTime());
+        String reviewDate1 = sdf.format(today.getTime());
 
         //Use a StringBuilder to accumulate the review records
         StringBuilder stringBuilder = new StringBuilder(); 
@@ -305,7 +305,7 @@ public class Review {
                 "order", 
                 "null", 
                 orderFeedback, 
-                reviewDate, 
+                reviewDate1, 
                 customerEmail,
                 "null"
             )).append("\n");
@@ -319,7 +319,7 @@ public class Review {
                 "vendor", 
                 vendorRating, 
                 vendorFeedback, 
-                reviewDate, 
+                reviewDate1, 
                 customerEmail,
                 "null"
             )).append("\n");
@@ -334,7 +334,7 @@ public class Review {
                     "runner", 
                     runnerRating, 
                     "null", 
-                    reviewDate, 
+                    reviewDate1, 
                     customerEmail,
                     "null"
                 )).append("\n");
@@ -348,7 +348,7 @@ public class Review {
                 "foodcourt", 
                 "null", 
                 foodCourtComplaint, 
-                reviewDate, 
+                reviewDate1, 
                 customerEmail,
                 "unresolved"
             )).append("\n");
