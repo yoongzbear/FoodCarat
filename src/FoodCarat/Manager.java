@@ -99,9 +99,9 @@ public class Manager extends User{
                 String[] orderData = orderLine.split(",");
                 if (orderData.length > 8) {
                     int orderID = Integer.parseInt(orderData[0].trim());
-                    int orderMonth = Integer.parseInt(orderData[8].split("-")[1]); // Extract month from date
+                    int orderMonth = Integer.parseInt(orderData[9].split("-")[1]); // Extract month from date
 
-                    if (orderMonth == selectedMonth && "Completed".equals(orderData[3])) {
+                    if (orderMonth == selectedMonth && "completed".equals(orderData[3])) {
                         // Skip already processed orders
                         if (processedOrderIDs.contains(orderID)) continue;
                         processedOrderIDs.add(orderID);
