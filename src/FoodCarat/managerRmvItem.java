@@ -29,14 +29,11 @@ import javax.swing.table.DefaultTableModel;
  * @author User
  */
 public class managerRmvItem extends javax.swing.JFrame {
+    private String userFile = "resources/user.txt";
     Item item = new Item();
     User user = new User();
     String imagePath = "";
-    //change to userSession 
-    private String email = "chagee@mail.com";
-    private String name = "Chagee";
-//    private String email = User.getSessionEmail();
-//    private String name = User.getSessionName();
+
     //can create manager object
     /**
      * Creates new form managerRmvItem
@@ -79,7 +76,7 @@ public class managerRmvItem extends javax.swing.JFrame {
         for (String[] itemData : allItems) {
             if (itemData.length > 5) {
                 String vendorEmail = itemData[5]; // Get vendor email
-                String[] vendorData = user.performSearch(vendorEmail, "user.txt"); // Search for vendor data
+                String[] vendorData = user.performSearch(vendorEmail, userFile); // Search for vendor data
                 if (vendorData != null && vendorData.length > 1) {
                     String vendorName = vendorData[1]; // Get the vendor name
                     if (!vendorNameToEmailMap.containsKey(vendorName)) {
@@ -118,7 +115,7 @@ public class managerRmvItem extends javax.swing.JFrame {
             String itemImgPath = itemData[4];
             String vendorEmail = itemData[5];
             //Get the name of the vendor using the email
-            String [] vendorData = user.performSearch(vendorEmail, "user.txt");
+            String [] vendorData = user.performSearch(vendorEmail, userFile);
             String vendorName = vendorData[1];
             //image icon
             ImageIcon itemImage = new ImageIcon(itemImgPath);
@@ -154,7 +151,7 @@ public class managerRmvItem extends javax.swing.JFrame {
         itemPriceTxt.setText(details[3].trim());
         
         String vendorEmail = details[5];
-        String[] vendorDetails = user.performSearch(vendorEmail,"user.txt");
+        String[] vendorDetails = user.performSearch(vendorEmail, userFile);
         String vendorName = vendorDetails[1].trim();
         venNameLabel.setText(vendorName);
         
@@ -182,7 +179,7 @@ public class managerRmvItem extends javax.swing.JFrame {
             String itemImgPath = itemData[4];
             String vendorEmail = itemData[5];
             
-            String [] vendorData = user.performSearch(vendorEmail, "user.txt");
+            String [] vendorData = user.performSearch(vendorEmail, userFile);
             String vendorName = vendorData[1];
             
             //check if item type matches the filter
@@ -235,7 +232,7 @@ public class managerRmvItem extends javax.swing.JFrame {
             String itemPrice = itemData[3];
             String itemImgPath = itemData[4];
 
-            String [] vendorData = user.performSearch(searchItem, "user.txt");
+            String [] vendorData = user.performSearch(searchItem, userFile);
             String vendorName = vendorData[1];
             
             //image icon
