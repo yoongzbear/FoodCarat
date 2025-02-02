@@ -261,24 +261,25 @@ public class adminNotification extends javax.swing.JFrame {
         
         if (selectedMonth == null || "Please select".equals(selectedMonth)) {
             javax.swing.JOptionPane.showMessageDialog(this, "Please select a valid month!");
-            tableModel.setRowCount(0);
+            fillEmptyRowSpace();
             return;
         }
         Admin admin = new Admin();
         ArrayList<String> transactionMessages = admin.getTransactionMessages();
 
-                // Filter transactions by the selected month
+        // Filter transactions by the selected month
         ArrayList<String> filteredTransactions = getFilteredTransactionsByMonth(transactionMessages, monthNumber);
         
         tableModel.setRowCount(0);
 
         // If there are no transactions, show a message and return
-        if (transactionMessages.isEmpty()) {
+        if (filteredTransactions.isEmpty()) {
             displayAllTransactions(transactionMessages);
             JOptionPane.showMessageDialog(this, "No data available for the selected month.");
             return;
         }else{
             displayAllTransactions(filteredTransactions);
+            fillEmptyRowSpace();
         }
     }//GEN-LAST:event_searchbtnActionPerformed
 
