@@ -5,7 +5,7 @@
 package FoodCarat;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,7 +20,8 @@ import javax.swing.table.DefaultTableModel;
  */
 public class vendorCurrentOrder extends javax.swing.JFrame {
 
-    private String email = User.getSessionEmail();    
+    //private String email = User.getSessionEmail();    
+    private String email = "vendor@mail.com";    
 
     /**
      * Creates new form vendorCurrentOrder
@@ -129,34 +130,38 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         model.setRowCount(0);
         Order orders = new Order();
 
-        if (filter.equalsIgnoreCase("Ordered")) {
-            List<String[]> orderList = orders.getOrderByStatus(email, "ordered");
-            for (String[] orderData : orderList) {
-                String orderItems = orderData[2].trim();
-                String updatedOrderItems = new Item().replaceItemIDsWithNames(orderItems); //replace item ID with item names
-                String orderStatus = orderData[3].substring(0, 1).toUpperCase() + orderData[3].substring(1).toLowerCase();
-                String method = orderData[1].trim().substring(0, 1).toUpperCase() + orderData[1].trim().substring(1).toLowerCase();
-                model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, method, orderStatus});
-            }
-        } else if (filter.equalsIgnoreCase("In kitchen")) {
-            List<String[]> orderList = orders.getOrderByStatus(email, "in kitchen");
-            for (String[] orderData : orderList) {
-                String orderItems = orderData[2].trim();
-                String updatedOrderItems = new Item().replaceItemIDsWithNames(orderItems);
-                String orderStatus = orderData[3].substring(0, 1).toUpperCase() + orderData[3].substring(1).toLowerCase();
-                String method = orderData[1].trim().substring(0, 1).toUpperCase() + orderData[1].trim().substring(1).toLowerCase();
-                model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, method, orderStatus});
-            }
-        } else if (filter.equalsIgnoreCase("Ready")) {
-            List<String[]> orderList = orders.getOrderByStatus(email, "ready");
-            for (String[] orderData : orderList) {
-                String orderItems = orderData[2].trim();
-                String updatedOrderItems = new Item().replaceItemIDsWithNames(orderItems);
-                String orderStatus = orderData[3].substring(0, 1).toUpperCase() + orderData[3].substring(1).toLowerCase();
-                String method = orderData[1].trim().substring(0, 1).toUpperCase() + orderData[1].trim().substring(1).toLowerCase();
-                model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, method, orderStatus});
-            }
-        }
+        List<String[]> orderList = new ArrayList<>();
+        switch (filter.toLowerCase()) {
+            case "ordered":
+                orderList = orders.getOrderByStatus(email, "ordered");
+                for (String[] orderData : orderList) {
+                    String orderItems = orderData[2].trim();
+                    String updatedOrderItems = new Item().replaceItemIDsWithNames(orderItems); //replace item ID with item names
+                    String orderStatus = orderData[3].substring(0, 1).toUpperCase() + orderData[3].substring(1).toLowerCase();
+                    String method = orderData[1].trim().substring(0, 1).toUpperCase() + orderData[1].trim().substring(1).toLowerCase();
+                    model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, method, orderStatus});
+                }
+                break;
+            case "in kitchen":
+                orderList = orders.getOrderByStatus(email, "in kitchen");
+                for (String[] orderData : orderList) {
+                    String orderItems = orderData[2].trim();
+                    String updatedOrderItems = new Item().replaceItemIDsWithNames(orderItems);
+                    String orderStatus = orderData[3].substring(0, 1).toUpperCase() + orderData[3].substring(1).toLowerCase();
+                    String method = orderData[1].trim().substring(0, 1).toUpperCase() + orderData[1].trim().substring(1).toLowerCase();
+                    model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, method, orderStatus});
+                }
+                break;
+            case "ready":
+                orderList = orders.getOrderByStatus(email, "ready");
+                for (String[] orderData : orderList) {
+                    String orderItems = orderData[2].trim();
+                    String updatedOrderItems = new Item().replaceItemIDsWithNames(orderItems);
+                    String orderStatus = orderData[3].substring(0, 1).toUpperCase() + orderData[3].substring(1).toLowerCase();
+                    String method = orderData[1].trim().substring(0, 1).toUpperCase() + orderData[1].trim().substring(1).toLowerCase();
+                    model.addRow(new Object[]{index++, orderData[0], updatedOrderItems, method, orderStatus});
+                }
+        }         
     }
     
     //display searched id in table
@@ -211,20 +216,31 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         String currentStatus = orderDetails[3].trim();
         currentStatus = currentStatus.substring(0, 1).toUpperCase() + currentStatus.substring(1).toLowerCase();
         currentStatusTxt.setText(currentStatus);
-        if (orderMethod.equalsIgnoreCase("Delivery")) {
-            if (currentStatus.equalsIgnoreCase("ordered")) {
-                nextStatusTxt.setText("In kitchen");
-            } else if (currentStatus.equalsIgnoreCase("in kitchen")) {
-                nextStatusTxt.setText("Ready");
-            }
-        } else {
-            if (currentStatus.equalsIgnoreCase("ordered")) {
-                nextStatusTxt.setText("In kitchen");
-            } else if (currentStatus.equalsIgnoreCase("in kitchen")) {
-                nextStatusTxt.setText("Ready");
-            } else if (currentStatus.equalsIgnoreCase("ready")) {
-                nextStatusTxt.setText("Completed");
-            }
+
+        switch (orderMethod.toLowerCase()) {
+            case "delivery":
+                switch (currentStatus.toLowerCase()) {
+                    case "ordered":
+                        nextStatusTxt.setText("In kitchen");
+                        break;
+                    case "in kitchen":
+                        nextStatusTxt.setText("Ready");
+                        break;
+                }
+                break;
+            default:
+                switch (currentStatus.toLowerCase()) {
+                    case "ordered":
+                        nextStatusTxt.setText("In kitchen");
+                        break;
+                    case "in kitchen":
+                        nextStatusTxt.setText("Ready");
+                        break;
+                    case "ready":
+                        nextStatusTxt.setText("Completed");
+                        break;
+                }
+                break;
         }
     }
     
@@ -728,12 +744,16 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         String orderID = incomingIDLabel.getText();
         String orderMethod = incomingMethodTxt.getText();
         Order order = new Order();
-        
-        if (orderMethod.equalsIgnoreCase("delivery")) {
-            order.updateStatus(Integer.parseInt(orderID), "assigning runner", "vendor");
-        } else {
-            order.updateStatus(Integer.parseInt(orderID), "ordered", "vendor");
+
+        switch (orderMethod.toLowerCase()) {
+            case "delivery":
+                order.updateStatus(Integer.parseInt(orderID), "assigning runner", "vendor");
+                break;
+            default:
+                order.updateStatus(Integer.parseInt(orderID), "ordered", "vendor");
+                break;
         }
+
         displayNewOrder(); //display next new order 
         displayCurrentOrder(); //refresh current orders table
         JOptionPane.showMessageDialog(null, "Order " + orderID + " is accepted.");

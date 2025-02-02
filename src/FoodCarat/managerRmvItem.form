@@ -103,7 +103,7 @@
                   </Group>
                   <Component id="jPanel1" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="0" pref="19" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="20" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -259,9 +259,9 @@
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="itemNameTxt" alignment="0" min="-2" pref="329" max="-2" attributes="0"/>
-                                      <Component id="typeBox" alignment="0" min="-2" pref="181" max="-2" attributes="0"/>
                                       <Component id="itemPriceTxt" alignment="0" min="-2" pref="127" max="-2" attributes="0"/>
                                       <Component id="idLabel" alignment="0" min="-2" pref="95" max="-2" attributes="0"/>
+                                      <Component id="typeTxt" min="-2" pref="95" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace min="0" pref="26" max="32767" attributes="0"/>
                               </Group>
@@ -314,7 +314,7 @@
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="typeBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="typeTxt" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
@@ -373,25 +373,6 @@
             <Property name="text" type="java.lang.String" value="Item Type:"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JComboBox" name="typeBox">
-          <Properties>
-            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="5">
-                <StringItem index="0" value="Item Type"/>
-                <StringItem index="1" value="Food"/>
-                <StringItem index="2" value="Beverage"/>
-                <StringItem index="3" value="Dessert"/>
-                <StringItem index="4" value="Set"/>
-              </StringArray>
-            </Property>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="typeBoxActionPerformed"/>
-          </Events>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-          </AuxValues>
-        </Component>
         <Component class="javax.swing.JLabel" name="jLabel6">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
@@ -440,6 +421,14 @@
               <Font name="Cooper Black" size="18" style="0"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Name"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="typeTxt">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Cooper Black" size="14" style="0"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Type"/>
           </Properties>
         </Component>
       </SubComponents>
