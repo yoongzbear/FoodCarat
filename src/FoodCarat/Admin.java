@@ -157,7 +157,7 @@ public class Admin extends User {
         return true;
     }
         
-    // Remain the email and name at user.txt but remove others info (eg.email,name,,,)
+    // Remain the email and name at user.txt but remove others info (eg.email,name,,userType,,)- password is empty
     public boolean removeInfoUserFile(String fileName, String email) {
         List<String> fileContent = new ArrayList<>();
         boolean recordUpdated = false;
@@ -171,7 +171,7 @@ public class Admin extends User {
                 if (data[0].equalsIgnoreCase(email)) {
                     recordUpdated = true;
                     // Update the user record with email, name, and empty fields
-                    fileContent.add(data[0] + "," + data[1] + ",,,,");
+                    fileContent.add(data[0] + "," + data[1] + ",,"+ data[3]+ ",,");
                 } else {
                     fileContent.add(line); // Keep other records unchanged
                 }
