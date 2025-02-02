@@ -155,8 +155,8 @@ public class adminNotification extends javax.swing.JFrame {
         notificationtable = new javax.swing.JTable();
         backbtn = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        monthcbx = new javax.swing.JComboBox<>();
         searchbtn = new javax.swing.JButton();
+        monthChooser = new com.toedter.calendar.JMonthChooser();
 
         jButton2.setText("jButton2");
 
@@ -187,9 +187,6 @@ public class adminNotification extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
         jLabel1.setText("Month:");
 
-        monthcbx.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
-        monthcbx.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Please select", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" }));
-
         searchbtn.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
         searchbtn.setText("Search");
         searchbtn.addActionListener(new java.awt.event.ActionListener() {
@@ -214,8 +211,8 @@ public class adminNotification extends javax.swing.JFrame {
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1250, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1)
-                                .addGap(56, 56, 56)
-                                .addComponent(monthcbx, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(26, 26, 26)
+                                .addComponent(monthChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(searchbtn))))
                     .addGroup(layout.createSequentialGroup()
@@ -226,18 +223,19 @@ public class adminNotification extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(7, Short.MAX_VALUE)
-                .addComponent(backbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(1, 1, 1)
-                .addComponent(Lnotification)
-                .addGap(28, 28, 28)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(monthcbx, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(16, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(backbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(1, 1, 1)
+                        .addComponent(Lnotification)
+                        .addGap(28, 28, 28)
+                        .addComponent(jLabel1))
+                    .addComponent(monthChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(searchbtn))
-                .addGap(18, 18, 18)
+                .addGap(12, 12, 12)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27))
+                .addGap(30, 30, 30))
         );
 
         pack();
@@ -249,21 +247,8 @@ public class adminNotification extends javax.swing.JFrame {
     }//GEN-LAST:event_backbtnActionPerformed
 
     private void searchbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchbtnActionPerformed
-        String selectedMonth = monthcbx.getSelectedItem().toString();
-        // Array of month names
-        String[] monthNames = {
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-        };
-
-        // Convert the month name to the month number (1 for January, 2 for February, etc.)
-        int monthNumber = Arrays.asList(monthNames).indexOf(selectedMonth) + 1;
+        int monthNumber = monthChooser.getMonth() + 1; 
         
-        if (selectedMonth == null || "Please select".equals(selectedMonth)) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Please select a valid month!");
-            fillEmptyRowSpace();
-            return;
-        }
         Admin admin = new Admin();
         ArrayList<String> transactionMessages = admin.getTransactionMessages();
 
@@ -324,7 +309,7 @@ public class adminNotification extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JComboBox<String> monthcbx;
+    private com.toedter.calendar.JMonthChooser monthChooser;
     private javax.swing.JTable notificationtable;
     private javax.swing.JButton searchbtn;
     // End of variables declaration//GEN-END:variables
