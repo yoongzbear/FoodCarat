@@ -161,8 +161,6 @@ public class Vendor extends User{
                 if (vendorData.length > 1 && vendorData[0].equalsIgnoreCase(email)) {
                     vendorData[1] = cuisine;
                     vendorData[2] = picturePath;
-                    vendorData[3] = "[]";
-                    vendorData[4] = "0.0";
                     updated = true;
                 }
 
