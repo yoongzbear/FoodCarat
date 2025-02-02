@@ -540,7 +540,7 @@ public class Review {
 
     // Method to get orderIDs associated with a specific runnerEmail
     public void updateStatus(int reviewID, String newStatus) {
-        File file = new File("review.txt");
+        File file = new File(reviewFileName);
         List<String> fileContent = new ArrayList<>();
         boolean updated = false;
 
