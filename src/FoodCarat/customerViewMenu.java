@@ -64,7 +64,8 @@ public class customerViewMenu extends javax.swing.JFrame {
         lTotalPrice.setText("");
         
         setLocationRelativeTo(null);
-        getContentPane().setBackground(new java.awt.Color(180,200,234));
+        jPanel1.setBackground(new java.awt.Color(180,200,234));
+        jPanel2.setBackground(new java.awt.Color(180,200,234));
     }
     
     private void onSearch() {
@@ -100,8 +101,9 @@ public class customerViewMenu extends javax.swing.JFrame {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] details = line.split(",");
+                String userPassword = details[2];
                 String userType = details[3];
-                if ("vendor".equals(details[3])) {
+                if ("vendor".equals(userType) && !"".equals(userPassword)) {
                     String vendorEmail = details[0];
                     String vendorName = details[1];
                     
@@ -629,7 +631,7 @@ public class customerViewMenu extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(41, Short.MAX_VALUE)
+                .addContainerGap(33, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
@@ -672,7 +674,7 @@ public class customerViewMenu extends javax.swing.JFrame {
                 .addComponent(bBackVendor)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(160, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
         jScrollPane4.setViewportView(jPanel2);
