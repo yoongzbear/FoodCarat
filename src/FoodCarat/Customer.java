@@ -103,7 +103,7 @@ public class Customer extends User{
     }
     
     public int calculateEarnablePoints(double payment){
-        int earnablePoints = (int) (payment * 0.01);
+        int earnablePoints = (int)payment;
         return earnablePoints;
     }
     
