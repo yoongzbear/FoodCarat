@@ -68,7 +68,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
         yearChooser.setVisible(false);
         
         setLocationRelativeTo(null);
-        getContentPane().setBackground(new java.awt.Color(180,200,234));
+        jPanel1.setBackground(new java.awt.Color(180,200,234));
     }
     
     private Map<String, List<String[]>> orderDetailsMap = new HashMap<>();
@@ -126,7 +126,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
                                 labelCancel.setVisible(true);
                                 lcancelReason.setText(cancelReason);
                             }
-                            if ("delivery".equals(orderType.trim())) {
+                            if ("delivery".equalsIgnoreCase(orderType.trim())) {
                                 // Set visibility of components related to the runner
                                 lRunnerNameTitle.setVisible(true);
                                 lRunnerName.setVisible(true);
