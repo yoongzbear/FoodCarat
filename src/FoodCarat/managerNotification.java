@@ -50,6 +50,15 @@ public class managerNotification extends javax.swing.JFrame {
         // Check if the user clicked a row
         int selectedRow = complaintNotificationtable.getSelectedRow();
         if (selectedRow >= 0) {
+            // Retrieve any one of the data from the selected row
+            Object emailObj = complaintNotificationtable.getValueAt(selectedRow, 2);
+
+            // Validate if data exists in the row
+            if (emailObj == null || emailObj.toString().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "No data found in the selected row!", "Error", JOptionPane.ERROR_MESSAGE);
+                return; // Stop further execution
+            }
+            
             // Show confirmation dialog
             int result = JOptionPane.showConfirmDialog(
                     this,
