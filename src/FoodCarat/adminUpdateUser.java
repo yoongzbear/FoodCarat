@@ -99,7 +99,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
         nametxt.setText(name);
         
         // Parse userBirth string and set it in JDateChooser
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // Adjust format to match your input
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
             Date birthDate = dateFormat.parse(userBirth);
             dateChooser.setDate(birthDate);
