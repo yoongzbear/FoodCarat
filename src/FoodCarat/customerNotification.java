@@ -405,16 +405,6 @@ public class customerNotification extends javax.swing.JFrame {
             String title = tbNotif.getModel().getValueAt(selectedRow, 0).toString(); //type column   
             int id = 0;
             String message = tbNotif.getModel().getValueAt(selectedRow, 1).toString(); //message column, will change to 1
-
-//            title.equalsIgnoreCase("Runner Assigned") ||
-//            title.equalsIgnoreCase("Order in Queue") ||
-//            title.equalsIgnoreCase("Order in Prepare") ||
-//            title.equalsIgnoreCase("Order is Ready") ||
-//            title.equalsIgnoreCase("Order in Delivery") ||
-//            title.equalsIgnoreCase("Order Complete") ||
-//            title.equalsIgnoreCase("Order Cancelled") ||
-//            title.equalsIgnoreCase("Order Placed")
-//            title.equalsIgnoreCase("Top-up Notification")
             
             if (title.equalsIgnoreCase("Order Placed") ||
                 title.equalsIgnoreCase("Runner Assigned") ||
