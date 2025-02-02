@@ -388,12 +388,16 @@ public class User {
 
                 if (details[0].equalsIgnoreCase(email)) {
 
-                    if (details.length > 3) {
-                        if (!details[3].equalsIgnoreCase(userType)) {
-                            return "roleMismatch";
+                    if (details.length == 4) { 
+                        if (details[2] == null || details[2].trim().isEmpty()) { //check the password exist or not (account is deleted)
+                            return "notExisting"; 
+                        } 
+                    } 
+
+                    if (details.length > 3) { 
+                        if (!details[3].equalsIgnoreCase(userType)) { 
+                            return "roleMismatch"; 
                         }
-                    } else { //account has been deleted
-                        return "notExisting"; 
                     }
                     // Check birth, contactNumber, gender are filled OR not
                     if (details.length >= 6 && !details[4].isEmpty() && !details[5].isEmpty()) {
