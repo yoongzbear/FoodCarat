@@ -149,8 +149,8 @@ public class adminUpdateUser extends javax.swing.JFrame {
         if (phone.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Phone number cannot be empty!");
             return false;
-        } else if (!Pattern.matches("^\\d{3}-\\d{7}$", phone)) {
-            JOptionPane.showMessageDialog(null, "Phone number must be in the format xxx-xxxxxxx!");
+        } else if (!Pattern.matches("^\\d{3}\\d{7}$", phone)) {
+            JOptionPane.showMessageDialog(null, "Phone number invalid! Please check again");
             return false;
         }
         if ("customer".equals(role) && additionalField.isEmpty()) {
