@@ -130,7 +130,7 @@ public class managerNotification extends javax.swing.JFrame {
         jLabel2.setText("Month:");
 
         monthcbx.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
-        monthcbx.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Please select", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" }));
+        monthcbx.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All Month", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" }));
 
         searchbtn.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
         searchbtn.setText("Search");
@@ -169,7 +169,7 @@ public class managerNotification extends javax.swing.JFrame {
                                 .addGap(29, 29, 29)
                                 .addComponent(searchbtn))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 776, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(56, Short.MAX_VALUE))
+                .addContainerGap(57, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(backbtn)
@@ -212,11 +212,6 @@ public class managerNotification extends javax.swing.JFrame {
 
         // Convert selectedMonth to month number
         int monthNumber = Arrays.asList(monthNames).indexOf(selectedMonth) + 1;
-        
-        if (selectedMonth.equals("Please select")) {
-            JOptionPane.showMessageDialog(this, "Please enter a valid month.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
         
         Manager manager = new Manager(); 
 
