@@ -317,12 +317,12 @@ public class User {
                     }
 
                     if (userData.length > 4) {
-                        // Convert date from yyyy/MM/dd to yyyyMMdd
-                        String formattedDate = date.replace("/", "");
+                        // Convert date from yyyy/MM/dd to yyyy-MM-dd
+                        String formattedDate = date.replace("/", "-");
                         userData[4] = formattedDate;
                     } else {
                         userData = Arrays.copyOf(userData, 6);
-                        String formattedDate = date.replace("/", "");
+                        String formattedDate = date.replace("/", "-");
                         userData[4] = formattedDate;
                     }
 
