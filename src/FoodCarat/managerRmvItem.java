@@ -95,7 +95,7 @@ public class managerRmvItem extends javax.swing.JFrame {
         photoLabel.setText("Item Photo");
         idLabel.setText("ID");
         itemNameTxt.setText("");
-        typeBox.setSelectedItem("Item Type");
+        typeTxt.setText("");
         itemPriceTxt.setText("");
         deleteBtn.setEnabled(false);
     }
@@ -147,7 +147,7 @@ public class managerRmvItem extends javax.swing.JFrame {
         String[] details = item.itemData(id);        
         idLabel.setText(details[0].trim());
         itemNameTxt.setText(details[1].trim());
-        typeBox.setSelectedItem(details[2].trim());
+        typeTxt.setText(details[2].trim());
         itemPriceTxt.setText(details[3].trim());
         
         String vendorEmail = details[5];
@@ -285,7 +285,6 @@ public class managerRmvItem extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         itemNameTxt = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        typeBox = new javax.swing.JComboBox<>();
         jLabel6 = new javax.swing.JLabel();
         itemPriceTxt = new javax.swing.JTextField();
         deleteBtn = new javax.swing.JButton();
@@ -293,6 +292,7 @@ public class managerRmvItem extends javax.swing.JFrame {
         idLabel = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         venNameLabel = new javax.swing.JLabel();
+        typeTxt = new javax.swing.JLabel();
         setBox = new javax.swing.JCheckBox();
         vendorlistcbx = new javax.swing.JComboBox<>();
 
@@ -376,13 +376,6 @@ public class managerRmvItem extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel5.setText("Item Type:");
 
-        typeBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item Type", "Food", "Beverage", "Dessert", "Set" }));
-        typeBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                typeBoxActionPerformed(evt);
-            }
-        });
-
         jLabel6.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel6.setText("Item Price (RM):");
 
@@ -405,6 +398,9 @@ public class managerRmvItem extends javax.swing.JFrame {
         venNameLabel.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         venNameLabel.setText("Name");
 
+        typeTxt.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
+        typeTxt.setText("Type");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -424,9 +420,9 @@ public class managerRmvItem extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(itemNameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(typeBox, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(itemPriceTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(idLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(idLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(typeTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(0, 26, Short.MAX_VALUE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
@@ -465,7 +461,7 @@ public class managerRmvItem extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(typeBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(typeTxt))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
@@ -545,7 +541,7 @@ public class managerRmvItem extends javax.swing.JFrame {
                             .addComponent(viewBtn)
                             .addComponent(revertBtn)))
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 19, Short.MAX_VALUE))
+                .addGap(0, 20, Short.MAX_VALUE))
         );
 
         pack();
@@ -622,10 +618,6 @@ public class managerRmvItem extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Please select a row to view details.", "Alert", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_viewBtnActionPerformed
-
-    private void typeBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_typeBoxActionPerformed
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
         //delete the selected item off the item text file
@@ -705,7 +697,7 @@ public class managerRmvItem extends javax.swing.JFrame {
     private javax.swing.JButton revertBtn;
     private javax.swing.JButton searchBtn;
     private javax.swing.JCheckBox setBox;
-    private javax.swing.JComboBox<String> typeBox;
+    private javax.swing.JLabel typeTxt;
     private javax.swing.JLabel venNameLabel;
     private javax.swing.JComboBox<String> vendorlistcbx;
     private javax.swing.JButton viewBtn;
