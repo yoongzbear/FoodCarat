@@ -206,6 +206,8 @@ public class managerMonRunPer extends javax.swing.JFrame {
         averagechart = new javax.swing.JPanel();
         backbtn = new javax.swing.JButton();
         monthChooser = new com.toedter.calendar.JMonthChooser();
+        jLabel4 = new javax.swing.JLabel();
+        yearChooser = new com.toedter.calendar.JYearChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -270,6 +272,9 @@ public class managerMonRunPer extends javax.swing.JFrame {
             }
         });
 
+        jLabel4.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        jLabel4.setText("Year:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -284,7 +289,11 @@ public class managerMonRunPer extends javax.swing.JFrame {
                                 .addComponent(jLabel1)
                                 .addGap(18, 18, 18)
                                 .addComponent(monthChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(295, 295, 295)
+                                .addGap(41, 41, 41)
+                                .addComponent(jLabel4)
+                                .addGap(18, 18, 18)
+                                .addComponent(yearChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(122, 122, 122)
                                 .addComponent(bsearch)))
                         .addGap(43, 43, 43)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -324,7 +333,9 @@ public class managerMonRunPer extends javax.swing.JFrame {
                             .addComponent(monthChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel1)
-                                .addComponent(bsearch)))
+                                .addComponent(bsearch)
+                                .addComponent(jLabel4))
+                            .addComponent(yearChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -407,9 +418,11 @@ public class managerMonRunPer extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
     private com.toedter.calendar.JMonthChooser monthChooser;
     private javax.swing.JTable runpertable;
     private javax.swing.JPanel totalorderchart;
+    private com.toedter.calendar.JYearChooser yearChooser;
     // End of variables declaration//GEN-END:variables
 }
