@@ -200,12 +200,12 @@ public class managerMonRunPer extends javax.swing.JFrame {
         bsearch = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         runpertable = new javax.swing.JTable();
-        monthcbx = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         totalorderchart = new javax.swing.JPanel();
         averagechart = new javax.swing.JPanel();
         backbtn = new javax.swing.JButton();
+        monthChooser = new com.toedter.calendar.JMonthChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -233,9 +233,6 @@ public class managerMonRunPer extends javax.swing.JFrame {
             }
         ));
         jScrollPane1.setViewportView(runpertable);
-
-        monthcbx.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
-        monthcbx.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Please select", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" }));
 
         jLabel2.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
         jLabel2.setText("Total Order Chart");
@@ -285,9 +282,9 @@ public class managerMonRunPer extends javax.swing.JFrame {
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 630, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1)
-                                .addGap(29, 29, 29)
-                                .addComponent(monthcbx, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(43, 43, 43)
+                                .addGap(18, 18, 18)
+                                .addComponent(monthChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(295, 295, 295)
                                 .addComponent(bsearch)))
                         .addGap(43, 43, 43)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -315,19 +312,20 @@ public class managerMonRunPer extends javax.swing.JFrame {
                         .addGap(14, 14, 14)
                         .addComponent(backbtn)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(39, 39, 39)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(bsearch)
-                            .addComponent(monthcbx, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
                             .addComponent(jLabel2))
-                        .addGap(10, 10, 10)))
+                        .addGap(10, 10, 10))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(39, 39, 39)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(monthChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel1)
+                                .addComponent(bsearch)))
+                        .addGap(18, 18, 18)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(totalorderchart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -340,25 +338,12 @@ public class managerMonRunPer extends javax.swing.JFrame {
 
     private void bsearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bsearchActionPerformed
         DefaultTableModel model = (DefaultTableModel) runpertable.getModel();
-        String selectedMonth = monthcbx.getSelectedItem().toString();
-        // Array of month names
-        String[] monthNames = {
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-        };
-
-        // Convert the month name to the month number (1 for January, 2 for February, etc.)
-        int monthNumber = Arrays.asList(monthNames).indexOf(selectedMonth) + 1;
-        
-        if (selectedMonth == null || "Please select".equals(selectedMonth)) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Please select a valid month!");
-            return;
-        }
+        int selectedMonth = monthChooser.getMonth() + 1; 
         
         try {
         // Fetch the performance data
         Manager manager = new Manager();
-        Map<String, String> performanceDataMap = manager.getRunnerPerformance(monthNumber);
+        Map<String, String> performanceDataMap = manager.getRunnerPerformance(selectedMonth);
 
         model.setRowCount(0);
         
@@ -368,7 +353,7 @@ public class managerMonRunPer extends javax.swing.JFrame {
         }
         
         createRunnerPerformancePieChart(performanceDataMap);
-        displayRunnerPerformance(monthNumber);
+        displayRunnerPerformance(selectedMonth);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -423,7 +408,7 @@ public class managerMonRunPer extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JComboBox<String> monthcbx;
+    private com.toedter.calendar.JMonthChooser monthChooser;
     private javax.swing.JTable runpertable;
     private javax.swing.JPanel totalorderchart;
     // End of variables declaration//GEN-END:variables
