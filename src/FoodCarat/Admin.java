@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -362,6 +363,10 @@ public class Admin extends User {
         } catch (IOException e) {
             javax.swing.JOptionPane.showMessageDialog(null, "Error reading file: " + e.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
         }
+        
+        // Reverse the list so the latest transactions appear first
+        Collections.reverse(transactionMessages);
+        
         return transactionMessages;
     }
 }
