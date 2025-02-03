@@ -43,7 +43,7 @@ public class customerReceipt extends javax.swing.JFrame {
         String paidTotal = tokens[8];
         String orderDate = tokens[9];
         User user = new User(User.getSessionEmail());
-        String[] userInfo = user.performSearch(User.getSessionEmail(), "resources/user.txt");
+        String[] userInfo = user.getUserInfo(User.getSessionEmail());
         String userContact = userInfo[5];
         
         String formattedOrderType = "";

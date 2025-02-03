@@ -107,6 +107,30 @@ public class Customer extends User{
         return earnablePoints;
     }
     
+    public String[] customerInfo(String email) {
+        String[] userInfo = null;
+        try {
+            FileReader fr = new FileReader(customerFile);
+            BufferedReader br = new BufferedReader(fr);
+            String read;
+
+            while ((read = br.readLine()) != null) {
+                String[] userParts = read.split(",");
+                String userEmail = userParts[0];
+
+                if (email.equals(userEmail)) {
+                    userInfo = userParts;
+                    break;
+                }
+            }
+            br.close();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Failed to read from the user file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        return userInfo;
+    }
+    
     public List<String[]> creditRecord(String email){ //get customer topup record
         List<String[]> records = new ArrayList<>();
         

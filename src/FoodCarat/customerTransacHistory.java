@@ -176,7 +176,7 @@ public class customerTransacHistory extends javax.swing.JFrame {
             String rTopupTime = fullData[4]; 
             
             User user = new User(User.getSessionEmail());
-            String[] userInfo = user.performSearch(User.getSessionEmail(), "resources/user.txt");
+            String[] userInfo = user.getUserInfo(User.getSessionEmail());
             String userName = userInfo[1];
 
             //display receipt

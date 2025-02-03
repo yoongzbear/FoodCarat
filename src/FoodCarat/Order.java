@@ -945,8 +945,8 @@ public class Order {
         customer.deductPoints(earnedPoints); //deduct the points earned
         
         //refund full credit
-        User user = new User();
-        String[] userInfo = user.performSearch(userEmail, customerFile);
+        //User user = new User();
+        String[] userInfo = customer.customerInfo(userEmail);
         double currentCredit = Double.parseDouble(userInfo[2]);
         double updatedCredit = currentCredit + totalPaid;
         customer.updateCredit(userEmail, updatedCredit, customerFile, 2);
