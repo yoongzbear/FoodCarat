@@ -1010,6 +1010,11 @@ public class customerOrderHistory extends javax.swing.JFrame {
                     String selectedVendorRating = (String) cbVendorRating.getSelectedItem();
                     String vendorRating = selectedVendorRating.split(" ")[0];
                     String vendorFeedback = taVendorFeedback.getText();
+                    
+                    if (cbRunnerRating.isVisible()){
+                        String selectedRunnerRating = (String) cbRunnerRating.getSelectedItem();
+                        runnerRating = selectedVendorRating.split(" ")[0];
+                    }
 
                     Review review = new Review(orderID, orderFeedback, vendorRating, vendorFeedback, runnerRating);
                     review.saveOrderFeedback(); 
