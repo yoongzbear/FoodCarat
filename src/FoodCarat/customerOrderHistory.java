@@ -1058,9 +1058,15 @@ public class customerOrderHistory extends javax.swing.JFrame {
 
                     String[] availableOrderTypes = vendorMethod.split(";");
 
+                    // Convert order types to have first letter uppercase
+                    String[] formattedOrderTypes = new String[availableOrderTypes.length];
+                    for (int i = 0; i < availableOrderTypes.length; i++) {
+                        formattedOrderTypes[i] = availableOrderTypes[i].substring(0, 1).toUpperCase() + availableOrderTypes[i].substring(1).toLowerCase();
+                    }
+
                     // Show selection dialog for order type
                     int choiceIndex = JOptionPane.showOptionDialog(null, "Please select an order type:", "Start Order!", 
-                            JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, availableOrderTypes, availableOrderTypes[0]);
+                            JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, formattedOrderTypes, formattedOrderTypes[0]);
 
                     if (choiceIndex != JOptionPane.CLOSED_OPTION) {
                         String chosenOrderType = availableOrderTypes[choiceIndex];
