@@ -70,7 +70,7 @@ public class adminNotification extends javax.swing.JFrame {
 
             // Retrieve details from the customer credit.txt file
             User user = new User();
-            String[] customerDetails = user.performSearch(transactionMessageId, cuscreditFile);
+            String[] customerDetails = user.getUserCreditInfo(Integer.parseInt(transactionMessageId));
                     
             if (customerDetails != null) {
                 // Parse details from the file
