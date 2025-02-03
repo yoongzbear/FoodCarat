@@ -76,7 +76,7 @@ public class managerRmvItem extends javax.swing.JFrame {
         for (String[] itemData : allItems) {
             if (itemData.length > 5) {
                 String vendorEmail = itemData[5]; // Get vendor email
-                String[] vendorData = user.performSearch(vendorEmail, userFile); // Search for vendor data
+                String[] vendorData = user.getUserInfo(vendorEmail); // Search for vendor data
                 if (vendorData != null && vendorData.length > 1) {
                     String vendorName = vendorData[1]; // Get the vendor name
                     if (!vendorNameToEmailMap.containsKey(vendorName)) {
@@ -115,7 +115,7 @@ public class managerRmvItem extends javax.swing.JFrame {
             String itemImgPath = itemData[4];
             String vendorEmail = itemData[5];
             //Get the name of the vendor using the email
-            String [] vendorData = user.performSearch(vendorEmail, userFile);
+            String [] vendorData = user.getUserInfo(vendorEmail);
             String vendorName = vendorData[1];
             //image icon
             ImageIcon itemImage = new ImageIcon(itemImgPath);
@@ -151,7 +151,7 @@ public class managerRmvItem extends javax.swing.JFrame {
         itemPriceTxt.setText(details[3].trim());
         
         String vendorEmail = details[5];
-        String[] vendorDetails = user.performSearch(vendorEmail, userFile);
+        String[] vendorDetails = user.getUserInfo(vendorEmail);
         String vendorName = vendorDetails[1].trim();
         venNameLabel.setText(vendorName);
         
@@ -179,7 +179,7 @@ public class managerRmvItem extends javax.swing.JFrame {
             String itemImgPath = itemData[4];
             String vendorEmail = itemData[5];
             
-            String [] vendorData = user.performSearch(vendorEmail, userFile);
+            String [] vendorData = user.getUserInfo(vendorEmail);
             String vendorName = vendorData[1];
             
             //check if item type matches the filter
@@ -232,7 +232,7 @@ public class managerRmvItem extends javax.swing.JFrame {
             String itemPrice = itemData[3];
             String itemImgPath = itemData[4];
 
-            String [] vendorData = user.performSearch(searchItem, userFile);
+            String [] vendorData = user.getUserInfo(searchItem);
             String vendorName = vendorData[1];
             
             //image icon
