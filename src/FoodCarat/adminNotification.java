@@ -69,8 +69,8 @@ public class adminNotification extends javax.swing.JFrame {
             String transactionMessageId = messageParts[messageParts.length - 1].replace(")", "").replace(":", "");
 
             // Retrieve details from the customer credit.txt file
-            Admin admin = new Admin();
-            String[] customerDetails = admin.performSearch(transactionMessageId, cuscreditFile);
+            User user = new User();
+            String[] customerDetails = user.performSearch(transactionMessageId, cuscreditFile);
                     
             if (customerDetails != null) {
                 // Parse details from the file
@@ -82,7 +82,7 @@ public class adminNotification extends javax.swing.JFrame {
                 String timePayment = customerDetails[5];
                 
                 // Retrieve name of customer user.txt base on text file
-                String [] customerName = admin.performSearch(email, userFile);
+                String [] customerName = user.getUserInfo(email);
                 String name = customerName[1];
                 
                 // Create and display the receipt window
@@ -201,23 +201,20 @@ public class adminNotification extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(Lnotification)
+                .addGap(384, 384, 384)
                 .addComponent(backbtn)
                 .addGap(27, 27, 27))
             .addGroup(layout.createSequentialGroup()
+                .addGap(25, 25, 25)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1250, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(25, 25, 25)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(26, 26, 26)
-                                .addComponent(monthChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(searchbtn))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(495, 495, 495)
-                        .addComponent(Lnotification)))
+                        .addComponent(jLabel1)
+                        .addGap(26, 26, 26)
+                        .addComponent(monthChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(searchbtn)))
                 .addContainerGap(19, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -227,12 +224,13 @@ public class adminNotification extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(backbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(1, 1, 1)
-                        .addComponent(Lnotification)
-                        .addGap(28, 28, 28)
+                        .addGap(71, 71, 71)
                         .addComponent(jLabel1))
                     .addComponent(monthChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(searchbtn))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(Lnotification)
+                        .addGap(24, 24, 24)
+                        .addComponent(searchbtn)))
                 .addGap(12, 12, 12)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30))
