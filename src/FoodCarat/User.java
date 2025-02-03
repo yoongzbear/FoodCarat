@@ -424,7 +424,18 @@ public class User {
     // Get the specific role data if the user has perfor the first login (Admin Side)
     //used for admin search to update user, credit top up, withdraw and customer payment
     public String getRoleSpecificData(String email, String role, int dataIndex) {
-        String fileName = getRoleFileName(role);
+        String fileName = "";
+        switch (role.toLowerCase()) {
+            case "customer":
+                fileName = cusFile;
+                break;
+            case "vendor":
+                fileName = vendorFile;
+                break;
+            case "runner":
+                fileName = runnerFile;           
+                break;
+        }
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -449,20 +460,6 @@ public class User {
     }
 
     //(Admin Side)
-    //used for admin search to update user, credit top up, withdraw and  customer payment
-    private String getRoleFileName(String role) {
-        switch (role.toLowerCase()) {
-            case "customer":
-                return cusFile;
-            case "vendor":
-                return vendorFile;
-            case "runner":
-                return runnerFile;
-            default:
-                return "";
-        }
-    }
-    
     // Get the role based on email from user.txt - used for top up, withdraw and payment side
     public String getRoleByEmail(String email, String userFile) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(userFile))) {
