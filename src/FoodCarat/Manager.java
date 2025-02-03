@@ -173,7 +173,7 @@ public class Manager extends User{
                     String reviewID = fields[0];
                     
                     User user = new User();
-                    String []userDetails = user.performSearch(email, userFile);
+                    String []userDetails = user.getUserInfo(email);
                     String cusName = userDetails[1];
                     // Check if the month matches and review type is "foodcourt"
                     // If selectedMonth is 0, no filtering will be applied (show all reviews)
