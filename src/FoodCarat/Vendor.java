@@ -11,6 +11,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import javax.swing.JOptionPane;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -179,6 +183,29 @@ public class Vendor extends User{
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+    
+    // Save Picture to Images - vendors
+    public String savePic(String name, String picturePath){
+        try{
+            File imageFolder = new File("images/vendors");
+
+            String fileExtension = picturePath.substring(picturePath.lastIndexOf("."));
+            String newFileName = name + "Logo" + fileExtension.toLowerCase();
+
+            // Define the destination path for the new file
+            File destFile = new File(imageFolder, newFileName);
+
+            // Copy the file from source to destination
+            Path sourcePath = Paths.get(picturePath);
+            Path destPath = destFile.toPath();
+            Files.copy(sourcePath, destPath, StandardCopyOption.REPLACE_EXISTING);
+
+            return "images/vendors/" + newFileName;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
     

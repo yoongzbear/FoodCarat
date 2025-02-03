@@ -284,7 +284,7 @@ public class vendor1AccInfo extends javax.swing.JFrame {
         Vendor vendor = new Vendor(email);
         
         // Save Picture
-        String savedPicturePath = user.savePic(name, picturePath);
+        String savedPicturePath = vendor.savePic(name, picturePath);
         if(savedPicturePath == null){
             JOptionPane.showMessageDialog(this, "Please Upload a Picture as Your Shop Logo.", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
