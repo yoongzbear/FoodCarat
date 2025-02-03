@@ -36,6 +36,7 @@ public class User {
     private String cusFile = "resources/customer.txt";
     private String vendorFile = "resources/vendor.txt";
     private String runnerFile = "resources/runner.txt";
+    private String transCreditFile = "resources/transactionCredit.txt";
     
     // Static variables to act as session
     private static String sessionEmail;
@@ -500,10 +501,8 @@ public class User {
         }
     }
     
-    //search from the file for the user info (user.txt - name)- admin
-    //notification also use this (transaction id and transaction details) - admin
-    public String[] performSearch(String searchItem, String fileName) {
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+    public String[] getUserCredit(String searchItem) {
+        try (BufferedReader br = new BufferedReader(new FileReader(transCreditFile))) {
             String line;
 
             while ((line = br.readLine()) != null) {
