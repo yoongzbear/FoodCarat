@@ -20,8 +20,9 @@ import javax.swing.table.DefaultTableModel;
  */
 public class vendorCurrentOrder extends javax.swing.JFrame {
 
-    //private String email = User.getSessionEmail();    
-    private String email = "vendor@mail.com";    
+    private String email = User.getSessionEmail();  
+    private String vendorFile = "resources/vendor.txt";
+    Vendor vendor = new Vendor(email);
 
     /**
      * Creates new form vendorCurrentOrder
@@ -745,18 +746,30 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         String orderMethod = incomingMethodTxt.getText();
         Order order = new Order();
 
-        switch (orderMethod.toLowerCase()) {
-            case "delivery":
-                order.updateStatus(Integer.parseInt(orderID), "assigning runner", "vendor");
-                break;
-            default:
-                order.updateStatus(Integer.parseInt(orderID), "ordered", "vendor");
-                break;
+        try {
+            switch (orderMethod.toLowerCase()) {
+                case "delivery":
+                    order.updateStatus(Integer.parseInt(orderID), "assigning runner", "vendor");
+                    break;
+                default:
+                    order.updateStatus(Integer.parseInt(orderID), "ordered", "vendor");
+                    //add credit - need to get total 
+                    String amountText = incomingTotalPriceTxt.getText().replace("RM", "").trim();
+                    double amount = Double.parseDouble(amountText);
+                    //get current credit
+                    double currentCredit = vendor.getCreditBalance();
+                    double newAmount = currentCredit + amount;                    
+                    vendor.updateCredit(email, newAmount, vendorFile, 4);
+                    break;
+            }
+
+            displayNewOrder(); //display next new order 
+            displayCurrentOrder(); //refresh current orders table
+            JOptionPane.showMessageDialog(null, "Order " + orderID + " is accepted.");
+        } catch (IOException e) {
+            System.out.println("IOException occurred: " + e.getMessage());
         }
 
-        displayNewOrder(); //display next new order 
-        displayCurrentOrder(); //refresh current orders table
-        JOptionPane.showMessageDialog(null, "Order " + orderID + " is accepted.");
     }//GEN-LAST:event_acceptBtnActionPerformed
 
     private void rejectBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rejectBtnActionPerformed
