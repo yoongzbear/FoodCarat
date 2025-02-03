@@ -501,20 +501,25 @@ public class User {
         }
     }
     
-    public String[] getUserCredit(String searchItem) {
+    public String[] getUserCreditInfo(int transID) {
         try (BufferedReader br = new BufferedReader(new FileReader(transCreditFile))) {
             String line;
-
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(",");
-                if (data[0].equalsIgnoreCase(searchItem)) {
-                    return data; // Return the matching record
+                try {
+                    int transCreditId = Integer.parseInt(data[0].trim());
+                    if (transCreditId == transID) {
+                        return data;
+                    }
+                } catch (NumberFormatException e) {
+                    // Handle error if file does not contain valid integer
+                    continue;
                 }
             }
         } catch (IOException ex) {
-            javax.swing.JOptionPane.showMessageDialog(null, "Error reading file: " + ex.getMessage());
+            JOptionPane.showMessageDialog(null, "Error reading file: " + ex.getMessage());
         }
-        return null; // Return null if no record is found
+        return null;
     }
     
     public String[] getUserInfo(String email) {
