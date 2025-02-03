@@ -57,7 +57,7 @@ public class managerMonRunPer extends javax.swing.JFrame {
             double averageRating = review.getAverageRating(runnerID, "runner");
 
             User user = new User();
-            String[] runnerName = user.performSearch(runnerID, userFile);
+            String[] runnerName = user.getUserInfo(runnerID);
             String name = runnerName[1];
 
             // Add row data to the table
@@ -152,7 +152,7 @@ public class managerMonRunPer extends javax.swing.JFrame {
 
             // Fetch runner name using the user utility
             User user = new User();
-            String[] runnerDetails = user.performSearch(runnerID, userFile);
+            String[] runnerDetails = user.getUserInfo(runnerID);
             String runnerName = runnerDetails.length > 1 ? runnerDetails[1] : runnerID;
 
             // Calculate and add percentages
