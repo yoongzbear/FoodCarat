@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -186,6 +187,8 @@ public class Manager extends User{
                     }
                 }
             }
+        // Reverse the list so the latest reviews appear first
+        Collections.reverse(filteredData);
         return filteredData;
     }
     
