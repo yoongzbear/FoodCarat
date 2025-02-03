@@ -58,7 +58,7 @@ public class managerMonVenPer extends javax.swing.JFrame {
             double avgOrderValue = Double.parseDouble(performanceValues[2]);
 
             User user = new User();
-            String[] venName = user.performSearch(vendorEmail, userFile);
+            String[] venName = user.getUserInfo(vendorEmail);
             String vendorName = venName[1];
 
             // Add row data to the table
@@ -162,7 +162,7 @@ public class managerMonVenPer extends javax.swing.JFrame {
             try {
                 // Fetch runner name using the user utility
                 User user = new User();
-                String[] vendorDetails = user.performSearch(vendorID, userFile);
+                String[] vendorDetails = user.getUserInfo(vendorID);
                 String vendorName = vendorDetails.length > 1 ? vendorDetails[1] : vendorID;
 
                 // Calculate and add percentages
@@ -270,7 +270,7 @@ public class managerMonVenPer extends javax.swing.JFrame {
         jScrollPane1.setViewportView(VenPertable);
 
         monthcbx.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
-        monthcbx.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Please select", "January", "February", "May", "June", "July", "August", "September", "October", "November", "December" }));
+        monthcbx.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Please select", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" }));
 
         jLabel2.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
         jLabel2.setText("Total Revenue Chart");
@@ -414,9 +414,11 @@ public class managerMonVenPer extends javax.swing.JFrame {
         // Call the Manager method to get vendor performance data
         Manager manager = new Manager();
         Map<String, String> performanceDataMap = manager.getVendorPerformanceByMonth(monthNumber);
-
+        DefaultTableModel model = (DefaultTableModel) VenPertable.getModel();
+        model.setRowCount(0);
         if (performanceDataMap == null || performanceDataMap.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No data available for the selected month.");
+            createVendorPerformancePieChart(performanceDataMap);
             return;
         }
         // Create and display the pie chart with the data
