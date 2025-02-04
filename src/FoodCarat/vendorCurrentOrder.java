@@ -36,6 +36,8 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         displayNewOrder();
         displayCurrentOrder();
         currentOrderTableListener();
+        updateOrderBtn.setEnabled(false);
+        cancelUpdateBtn.setEnabled(false);
         
         GuiUtility.setPlaceholder(searchOrderIDTxt, "Search Order ID"); //set placeholder for search
     }
@@ -53,6 +55,8 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
             incomingTotalPriceTxt.setText("RM0.00");
             DefaultTableModel model = (DefaultTableModel) incomingItemTable.getModel();
             model.setRowCount(0);
+            acceptBtn.setEnabled(false);
+            rejectBtn.setEnabled(false);
         } else {
             //display information in the new order section
             orderMessageLabel.setText("You have a new order, please review it.");
@@ -83,6 +87,8 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
                     model.addRow(new Object[]{"Unknown item (ID: " + itemID + ")", quantity});
                 }
             }
+            acceptBtn.setEnabled(true);
+            rejectBtn.setEnabled(true);
         }
     }
         
@@ -190,6 +196,8 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
         statusIdTxt.setText(orderDetails[0].trim());
         String orderMethod = orderDetails[1].trim().substring(0, 1).toUpperCase() + orderDetails[1].trim().substring(1).toLowerCase();
         statusMethodTxt.setText(orderMethod);
+        updateOrderBtn.setEnabled(true);
+        cancelUpdateBtn.setEnabled(true);
 
         //display table item
         String orderItems = orderDetails[2].trim();
@@ -226,6 +234,11 @@ public class vendorCurrentOrder extends javax.swing.JFrame {
                         break;
                     case "in kitchen":
                         nextStatusTxt.setText("Ready");
+                        break;
+                    case "ready":
+                        nextStatusTxt.setText("Awaiting pickup");
+                        updateOrderBtn.setEnabled(false);
+                        cancelUpdateBtn.setEnabled(false);
                         break;
                 }
                 break;
