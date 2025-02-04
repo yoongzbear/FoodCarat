@@ -6,7 +6,6 @@ package FoodCarat;
 
 import java.awt.Color;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JOptionPane;
@@ -36,8 +35,10 @@ public class managerMonVenPer extends javax.swing.JFrame {
         totalorderchart.setLayout(new java.awt.BorderLayout());
         totalorderchart.add(ChartUtility.createPieChart(blankDataset, "No Data Available"), java.awt.BorderLayout.CENTER);
 
-        averagechart.setLayout(new java.awt.BorderLayout());
-        averagechart.add(ChartUtility.createPieChart(blankDataset, "No Data Available"), java.awt.BorderLayout.CENTER);
+        avgvaluechart.setLayout(new java.awt.BorderLayout());
+        avgvaluechart.add(ChartUtility.createPieChart(blankDataset, "No Data Available"), java.awt.BorderLayout.CENTER);
+        avgratingchart.setLayout(new java.awt.BorderLayout());
+        avgratingchart.add(ChartUtility.createPieChart(blankDataset, "No Data Available"), java.awt.BorderLayout.CENTER);
     }
     
     private void displayVendorPerformance(int selectedMonth, int selectedYear) throws IOException {
@@ -61,13 +62,17 @@ public class managerMonVenPer extends javax.swing.JFrame {
             String[] venName = user.getUserInfo(vendorEmail);
             String vendorName = venName[1];
 
+            Review review = new Review();
+            double averageRating = review.getAverageRating(vendorEmail, "vendor");
+            
             // Add row data to the table
             model.addRow(new Object[] {
                 rowNumber,
                 vendorName,
                 String.format("%.2f", totalRevenue),
                 totalOrders,
-                String.format("%.2f", avgOrderValue)
+                String.format("%.2f", avgOrderValue),
+                String.format("%.2f", averageRating)
             });
 
             rowNumber++;
@@ -76,16 +81,18 @@ public class managerMonVenPer extends javax.swing.JFrame {
         double totalRevenue = 0;
         int totalOrders = 0;
         double totalAvgOrderValue = 0;
+        double totalAvgRating = 0.0;
         int rowCount = model.getRowCount();
         
         for (int i = 0; i < rowCount; i++) {
             totalRevenue += Double.parseDouble(model.getValueAt(i, 2).toString());
             totalOrders += Integer.parseInt(model.getValueAt(i, 3).toString());
             totalAvgOrderValue += Double.parseDouble(model.getValueAt(i, 4).toString());
+            totalAvgRating += Double.parseDouble(model.getValueAt(i, 5).toString());
         }
 
         double summaryAvgOrderValue = rowCount > 0 ? totalAvgOrderValue / rowCount : 0.0;
-
+        double averageRatingSummary = rowCount > 0 ? totalAvgRating / rowCount : 0.0;
          // Highlight the total row
         int tableHeight = VenPertable.getParent().getHeight();
         int rowHeight = VenPertable.getRowHeight();
@@ -102,7 +109,8 @@ public class managerMonVenPer extends javax.swing.JFrame {
             "", 
             String.format("%.2f", totalRevenue), 
             totalOrders, 
-            String.format("%.2f", summaryAvgOrderValue)
+            String.format("%.2f", summaryAvgOrderValue),
+            String.format("%.2f", averageRatingSummary)
         });
         
         // Highlight the total row
@@ -125,12 +133,13 @@ public class managerMonVenPer extends javax.swing.JFrame {
         double totalRevenue = 0;
         int totalOrders = 0;
         double totalAverageValue = 0;
+        double totalAverageRating = 0;
 
         // Create maps to store individual vendor data
         Map<String, Double> revenueMap = new HashMap<>();
         Map<String, Integer> ordersMap = new HashMap<>();
         Map<String, Double> avgValueMap = new HashMap<>();
-
+        
         // Parse the performance data map and calculate totals
         for (Map.Entry<String, String> entry : performanceDataMap.entrySet()) {
             String vendorID = entry.getKey();
@@ -139,28 +148,35 @@ public class managerMonVenPer extends javax.swing.JFrame {
             double vendorRevenue = Double.parseDouble(performanceData[1]);
             int vendorOrders = Integer.parseInt(performanceData[0]);
             double vendorAvgValue = Double.parseDouble(performanceData[2]);
-
+            
             revenueMap.put(vendorID, vendorRevenue);
             ordersMap.put(vendorID, vendorOrders);
             avgValueMap.put(vendorID, vendorAvgValue);
-
+            
+            Review review = new Review();
+            double averageRating = review.getAverageRating(vendorID, "vendor");
+            
             totalRevenue += vendorRevenue;
             totalOrders += vendorOrders;
             totalAverageValue += vendorAvgValue;
+            totalAverageRating += averageRating;
         }
 
         // Create datasets for pie charts
         DefaultPieDataset revenueDataset = new DefaultPieDataset();
         DefaultPieDataset ordersDataset = new DefaultPieDataset();
         DefaultPieDataset avgValueDataset = new DefaultPieDataset();
-
+        DefaultPieDataset avgRatingDataset = new DefaultPieDataset();
+        
         // Add data to the datasets
         for (String vendorID : performanceDataMap.keySet()) {
             double vendorRevenue = revenueMap.get(vendorID);
             int vendorOrders = ordersMap.get(vendorID);
             double vendorAvgValue = avgValueMap.get(vendorID);
+            Review review = new Review();
+            double averageRating = review.getAverageRating(vendorID, "vendor");
             try {
-                // Fetch runner name using the user utility
+                // Fetch vendor name using the user utility
                 User user = new User();
                 String[] vendorDetails = user.getUserInfo(vendorID);
                 String vendorName = vendorDetails.length > 1 ? vendorDetails[1] : vendorID;
@@ -177,6 +193,10 @@ public class managerMonVenPer extends javax.swing.JFrame {
                 if (totalAverageValue > 0) {
                     avgValueDataset.setValue(vendorName, vendorAvgValue / totalAverageValue * 100);
                 }
+                
+                if(totalAverageRating > 0){
+                    avgRatingDataset.setValue(vendorName, averageRating / totalAverageRating * 100);
+                }
             }catch (NullPointerException e) {
             // Show a user-friendly error message
                 JOptionPane.showMessageDialog(null, 
@@ -190,11 +210,12 @@ public class managerMonVenPer extends javax.swing.JFrame {
         ChartPanel revenueChartPanel = ChartUtility.createPieChart(revenueDataset, "Vendor Performance - Total Revenue");
         ChartPanel ordersChartPanel = ChartUtility.createPieChart(ordersDataset, "Vendor Performance - Total Orders");
         ChartPanel avgValueChartPanel = ChartUtility.createPieChart(avgValueDataset, "Vendor Performance - Average Order Value");
-
+        ChartPanel avgRatingChartPanel = ChartUtility.createPieChart(avgValueDataset, "Vendor Performance - Average Rating");
         // Clear and update chart panels
         totalrevenuechart.removeAll();
         totalorderchart.removeAll();
-        averagechart.removeAll();
+        avgvaluechart.removeAll();
+        avgratingchart.removeAll();
 
         totalrevenuechart.setLayout(new java.awt.BorderLayout());
         totalrevenuechart.add(revenueChartPanel, java.awt.BorderLayout.CENTER);
@@ -202,17 +223,23 @@ public class managerMonVenPer extends javax.swing.JFrame {
         totalorderchart.setLayout(new java.awt.BorderLayout());
         totalorderchart.add(ordersChartPanel, java.awt.BorderLayout.CENTER);
 
-        averagechart.setLayout(new java.awt.BorderLayout());
-        averagechart.add(avgValueChartPanel, java.awt.BorderLayout.CENTER);
+        avgvaluechart.setLayout(new java.awt.BorderLayout());
+        avgvaluechart.add(avgValueChartPanel, java.awt.BorderLayout.CENTER);
 
+        avgratingchart.setLayout(new java.awt.BorderLayout());
+        avgratingchart.add(avgRatingChartPanel, java.awt.BorderLayout.CENTER);
+        
         totalrevenuechart.revalidate();
         totalrevenuechart.repaint();
 
         totalorderchart.revalidate();
         totalorderchart.repaint();
 
-        averagechart.revalidate();
-        averagechart.repaint();
+        avgvaluechart.revalidate();
+        avgvaluechart.repaint();
+        
+        avgratingchart.revalidate();
+        avgratingchart.repaint();
     }
 
 
@@ -235,11 +262,13 @@ public class managerMonVenPer extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         totalrevenuechart = new javax.swing.JPanel();
         totalorderchart = new javax.swing.JPanel();
-        averagechart = new javax.swing.JPanel();
+        avgvaluechart = new javax.swing.JPanel();
         backbtn = new javax.swing.JButton();
         monthChooser = new com.toedter.calendar.JMonthChooser();
         yearChooser = new com.toedter.calendar.JYearChooser();
         jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        avgratingchart = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -295,21 +324,21 @@ public class managerMonVenPer extends javax.swing.JFrame {
         totalorderchart.setLayout(totalorderchartLayout);
         totalorderchartLayout.setHorizontalGroup(
             totalorderchartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 384, Short.MAX_VALUE)
+            .addGap(0, 396, Short.MAX_VALUE)
         );
         totalorderchartLayout.setVerticalGroup(
             totalorderchartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 180, Short.MAX_VALUE)
+            .addGap(0, 192, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout averagechartLayout = new javax.swing.GroupLayout(averagechart);
-        averagechart.setLayout(averagechartLayout);
-        averagechartLayout.setHorizontalGroup(
-            averagechartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout avgvaluechartLayout = new javax.swing.GroupLayout(avgvaluechart);
+        avgvaluechart.setLayout(avgvaluechartLayout);
+        avgvaluechartLayout.setHorizontalGroup(
+            avgvaluechartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 354, Short.MAX_VALUE)
         );
-        averagechartLayout.setVerticalGroup(
-            averagechartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        avgvaluechartLayout.setVerticalGroup(
+            avgvaluechartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 168, Short.MAX_VALUE)
         );
 
@@ -323,6 +352,20 @@ public class managerMonVenPer extends javax.swing.JFrame {
 
         jLabel5.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
         jLabel5.setText("Year:");
+
+        jLabel6.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
+        jLabel6.setText("Average Rating");
+
+        javax.swing.GroupLayout avgratingchartLayout = new javax.swing.GroupLayout(avgratingchart);
+        avgratingchart.setLayout(avgratingchartLayout);
+        avgratingchartLayout.setHorizontalGroup(
+            avgratingchartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 384, Short.MAX_VALUE)
+        );
+        avgratingchartLayout.setVerticalGroup(
+            avgratingchartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 180, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -344,17 +387,18 @@ public class managerMonVenPer extends javax.swing.JFrame {
                         .addComponent(searchbtn)))
                 .addGap(54, 54, 54)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(averagechart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(totalrevenuechart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(32, 32, 32)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(totalorderchart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))))
-                .addContainerGap(50, Short.MAX_VALUE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(avgvaluechart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(totalrevenuechart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel4))
+                .addGap(32, 32, 32)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel6)
+                    .addComponent(totalorderchart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3)
+                    .addComponent(avgratingchart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(38, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -391,10 +435,14 @@ public class managerMonVenPer extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(totalrevenuechart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(totalorderchart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(24, 24, 24)
-                                .addComponent(jLabel4)
+                                .addGap(22, 22, 22)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel6))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(averagechart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(avgvaluechart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(avgratingchart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                     .addComponent(monthChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(54, Short.MAX_VALUE))
         );
@@ -467,13 +515,15 @@ public class managerMonVenPer extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable VenPertable;
-    private javax.swing.JPanel averagechart;
+    private javax.swing.JPanel avgratingchart;
+    private javax.swing.JPanel avgvaluechart;
     private javax.swing.JButton backbtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
     private com.toedter.calendar.JMonthChooser monthChooser;
     private javax.swing.JLabel monthlabel;
