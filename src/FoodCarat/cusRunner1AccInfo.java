@@ -278,6 +278,8 @@ public class cusRunner1AccInfo extends javax.swing.JFrame {
             }
 
         user.addUserInfo(email, name, password, contactNumber, dob);
+        // Update session with the new name
+        User.setSession(email, password, role, name);
         
         String nextPage = user.determinePageAfterLogin(email);
         user.navigateToPage(nextPage, this);
