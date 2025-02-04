@@ -24,8 +24,9 @@ import org.jfree.data.general.DefaultPieDataset;
  * @author mastu
  */
 public class vendorReview extends javax.swing.JFrame {
-    
-    private String email = User.getSessionEmail();
+
+    //private String email = User.getSessionEmail();
+    private String email = "chagee@mail.com";
     Vendor vendor = new Vendor(email);
 
     /**
@@ -35,7 +36,7 @@ public class vendorReview extends javax.swing.JFrame {
         initComponents();
         getContentPane().setBackground(new java.awt.Color(186, 85, 211)); //setting background color of frame
         setLocationRelativeTo(null);
-        
+
         displayReviews();
         reviewTableListener();
         ratingOneChkBox.setSelected(true);
@@ -43,7 +44,12 @@ public class vendorReview extends javax.swing.JFrame {
         ratingThreeChkBox.setSelected(true);
         ratingFourChkBox.setSelected(true);
         ratingFiveChkBox.setSelected(true);
-        vendorFeedbackTxtArea.setEditable(false);        
+        vendorFeedbackTxtArea.setEditable(false);
+
+        //text wrap for feedback
+        vendorFeedbackTxtArea.setLineWrap(true);
+        vendorFeedbackTxtArea.setWrapStyleWord(true);
+
     }
 
     //display all vendor reviews
@@ -53,7 +59,7 @@ public class vendorReview extends javax.swing.JFrame {
         model.setRowCount(0);
         List<String[]> allReviews = new Review().getAllReviews(email, "vendor");
         for (String[] reviewData : allReviews) {
-                    
+
             String reviewID = reviewData[0];
             String rating = reviewData[3];
             String feedback = reviewData[4];
@@ -63,7 +69,7 @@ public class vendorReview extends javax.swing.JFrame {
             model.addRow(new Object[]{index++, reviewID, customerEmail, reviewDate, rating + "🌟", feedback});
         }
     }
-    
+
     //display based on filters (rating)
     public void displayReviews(String[] filter) {
         DefaultTableModel model = (DefaultTableModel) reviewTable.getModel();
@@ -72,7 +78,7 @@ public class vendorReview extends javax.swing.JFrame {
         //get the filters
         List<String[]> allReviews = new Review().getAllReviews(email, "vendor");
         for (String[] reviewData : allReviews) {
-                    
+
             String reviewID = reviewData[0];
             String rating = reviewData[3];
             String feedback = reviewData[4];
@@ -87,7 +93,7 @@ public class vendorReview extends javax.swing.JFrame {
             }
         }
     }
-    
+
     //sort based on sorting
     public void displayReviews(String sorting) {
         DefaultTableModel model = (DefaultTableModel) reviewTable.getModel();
@@ -113,48 +119,66 @@ public class vendorReview extends javax.swing.JFrame {
             model.addRow(new Object[]{index++, reviewID, customerEmail, reviewDate, rating + "🌟", feedback});
         }
     }
-    
+
     //display selected vendor review 
     public void displaySelectedReview(int reviewID) {
         DecimalFormat df = new DecimalFormat("0.00");
         String[] details = new Review().getReview(reviewID);
-        
+
+        if (details == null) {
+            JOptionPane.showMessageDialog(null, "No review found for ID: " + reviewID, "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (details.length < 10) {
+            JOptionPane.showMessageDialog(null, "Review data is incomplete for ID: " + reviewID, "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         //get items, price, and quantity to display in table
         Item item = new Item();
-        //get item data from Item class to get price
         String orderItems = details[9].trim();
+
         //remove square brackets and split the items by "|"
         String[] itemDetails = orderItems.replace("[", "").replace("]", "").split("\\|");
-        
+
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
         model.setRowCount(0);
-        
+
         for (String detail : itemDetails) {
             String[] parts = detail.split(";");
-            int itemID = Integer.parseInt(parts[0]); 
-            int quantity = Integer.parseInt(parts[1]); 
+            if (parts.length < 2) {
+                continue;
+            }
+
+            int itemID = Integer.parseInt(parts[0]);
+            int quantity = Integer.parseInt(parts[1]);
 
             //retrieve item data through Item class
             String[] itemData = item.itemData(itemID);
             if (itemData != null && itemData.length > 3) {
-                String itemName = itemData[1]; 
-                double price = Double.parseDouble(itemData[3]); 
+                String itemName = itemData[1];
+                double price = Double.parseDouble(itemData[3]);
 
                 model.addRow(new Object[]{itemName, df.format(price), quantity});
             } else {
                 model.addRow(new Object[]{"Unknown item (ID: " + itemID + ")", 0.0, quantity});
             }
         }
-        
-        idLabel.setText(details[1].trim()); //order ID
-        dateLabel.setText(details[5].trim());
-        methodLabel.setText(details[8].trim().substring(0, 1).toUpperCase() + details[8].trim().substring(1).toLowerCase());
-        emailLabel.setText(details[6].trim());
-        priceLabel.setText("RM"+details[17].trim());
-        ratingLabel.setText(details[3].trim() + " 🌟");
-        vendorFeedbackTxtArea.setText(details[4].trim());
+
+        try {
+            idLabel.setText(details[1].trim()); // Order ID
+            dateLabel.setText(details[5].trim());
+            methodLabel.setText(details[8].trim().substring(0, 1).toUpperCase() + details[8].trim().substring(1).toLowerCase());
+            emailLabel.setText(details[6].trim());
+            priceLabel.setText("RM" + details[17].trim());
+            ratingLabel.setText(details[3].trim() + " 🌟");
+            vendorFeedbackTxtArea.setText(details[4].trim());
+        } catch (ArrayIndexOutOfBoundsException e) {
+            JOptionPane.showMessageDialog(null, "Review data structure is incorrect!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
-    
+
     //generate weekly, monthly, quarterly, yearly chart
     public void generateChart(String type, String timeRange) {
         int[] ratingsCount = new int[5];
@@ -168,7 +192,7 @@ public class vendorReview extends javax.swing.JFrame {
         } else if (type.equalsIgnoreCase("yearly")) {
             ratingsCount = new Review().ratingCount(email, "vendor", "yearly", timeRange);
         }
-        
+
         //check if all ratings are 0
         boolean allZero = true;
         for (int i = 0; i < ratingsCount.length; i++) {
@@ -177,11 +201,11 @@ public class vendorReview extends javax.swing.JFrame {
                 break;
             }
         }
-        
+
         //display message and clear chart if all items is 0 
         if (allZero) {
             JOptionPane.showMessageDialog(null, "No ratings were given for the period.", "No Rating Data", JOptionPane.INFORMATION_MESSAGE);
-            if (type.equalsIgnoreCase("weekly")) {                
+            if (type.equalsIgnoreCase("weekly")) {
                 weeklyChartPanel.removeAll();
                 weeklyChartPanel.setLayout(new BorderLayout());
                 weeklyChartPanel.revalidate();
@@ -204,7 +228,7 @@ public class vendorReview extends javax.swing.JFrame {
             }
             return;
         }
-        
+
         //pass into chart making function - pie chart
         DefaultPieDataset dataset = new DefaultPieDataset();
         String[] ratingLabels = {"1", "2", "3", "4", "5"};
@@ -245,20 +269,30 @@ public class vendorReview extends javax.swing.JFrame {
             yearlyChartPanel.repaint();
         }
     }
-    
+
     private void reviewTableListener() {
         reviewTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) { // Ensure the event is the final one
+                if (!e.getValueIsAdjusting()) { 
                     int selectedRow = reviewTable.getSelectedRow();
-                    if (selectedRow != -1) { // Check if a row is actually selected
+                    if (selectedRow != -1) { //check if a row is actually selected
                         Object idObj = reviewTable.getModel().getValueAt(selectedRow, 1);
                         try {
-                            int id = Integer.parseInt(idObj.toString());
+                            if (idObj == null) {
+                                throw new NumberFormatException("ID is null");
+                            }
+
+                            String cleanID = idObj.toString().trim().replaceAll("[^0-9]", "");
+                            if (cleanID.isEmpty()) {
+                                throw new NumberFormatException("ID is empty after cleaning");
+                            }
+
+                            int id = Integer.parseInt(cleanID);
                             displaySelectedReview(id);
+
                         } catch (NumberFormatException error) {
-                            JOptionPane.showMessageDialog(null, "The selected ID is not a valid number.", "Error", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(null, "The selected ID is not a valid number: " + idObj, "Error", JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 }
@@ -984,19 +1018,19 @@ public class vendorReview extends javax.swing.JFrame {
     private void filterBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterBtnActionPerformed
         String[] selectedFilter = new String[5];
         int index = 0;
-        
+
         if (ratingOneChkBox.isSelected()) {
             selectedFilter[index++] = "1";
         }
         if (ratingTwoChkBox.isSelected()) {
             selectedFilter[index++] = "2";
-        } 
+        }
         if (ratingThreeChkBox.isSelected()) {
             selectedFilter[index++] = "3";
-        } 
+        }
         if (ratingFourChkBox.isSelected()) {
             selectedFilter[index++] = "4";
-        } 
+        }
         if (ratingFiveChkBox.isSelected()) {
             selectedFilter[index++] = "5";
         }
@@ -1071,7 +1105,7 @@ public class vendorReview extends javax.swing.JFrame {
     private void chartQuarterYearChooserdisplayYear(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_chartQuarterYearChooserdisplayYear
         String quarter = quarterChartBox.getSelectedItem().toString();
         String year = String.valueOf(chartQuarterYearChooser.getYear());
-        if (!quarter.equalsIgnoreCase("Quarter") && year.length() == 4) { 
+        if (!quarter.equalsIgnoreCase("Quarter") && year.length() == 4) {
             if (quarter.equalsIgnoreCase("Q1")) {
                 //January 1 – March 31
                 startDateQuarterLabel.setText("1 Jan " + year);
@@ -1153,7 +1187,7 @@ public class vendorReview extends javax.swing.JFrame {
             displayReviews();
         } else {
             displayReviews(sorting);
-        }  
+        }
     }//GEN-LAST:event_sortComboBoxActionPerformed
 
     /**
