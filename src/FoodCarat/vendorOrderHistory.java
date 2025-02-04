@@ -1066,10 +1066,10 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             if (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
                 //move to the nearest next Monday
                 while (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
-                    calendar.add(Calendar.DAY_OF_MONTH, 1);
+                    calendar.add(Calendar.DAY_OF_MONTH, -1); //go backward for previous Monday
                 }
                 weeklyDateChooser.setDate(calendar.getTime());
-                JOptionPane.showMessageDialog(null, "Only Mondays are allowed to be selected. The next Monday is selected.");
+                JOptionPane.showMessageDialog(null, "Only Mondays are allowed to be selected. The previous Monday is selected.");
             }
 
             //calculate and display end date
