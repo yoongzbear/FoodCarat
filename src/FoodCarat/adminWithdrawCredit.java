@@ -190,7 +190,7 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
                                         .addComponent(bsearch, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(4, 4, 4))
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(emailtxt, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(emailtxt, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(Lname)
                                         .addGap(30, 30, 30)
