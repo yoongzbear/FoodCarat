@@ -7,10 +7,8 @@ package FoodCarat;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,7 +25,7 @@ public class Manager extends User{
         
     //Monitor Runner Performance
     //
-    public Map<String, String> getRunnerPerformance(int selectedMonth) throws IOException {
+    public Map<String, String> getRunnerPerformance(int selectedMonth, int selectedYear) throws IOException {
         Map<String, Order> orderMap = new HashMap<>();
         Map<Integer, String> orderToRunnerMap = new HashMap<>();
 
@@ -63,8 +61,11 @@ public class Manager extends User{
                     if ("runner".equalsIgnoreCase(reviewType) && orderToRunnerMap.containsKey(orderID)) {
                         String runnerID = orderToRunnerMap.get(orderID);
                         try {
-                            int reviewMonthNumber = Integer.parseInt(reviewDetails[5].split("-")[1]);
-                            if (reviewMonthNumber == selectedMonth) {
+                            String[] dateParts = reviewDetails[5].split("-");
+                            int reviewYear = Integer.parseInt(dateParts[0]);
+                            int reviewMonth = Integer.parseInt(dateParts[1]);
+                            
+                            if (reviewYear == selectedYear && reviewMonth == selectedMonth) {
                                 Order order = orderMap.getOrDefault(runnerID, new Order());
                                 order.incrementOrders();
                                 orderMap.put(runnerID, order);
