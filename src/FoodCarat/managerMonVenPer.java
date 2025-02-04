@@ -40,9 +40,9 @@ public class managerMonVenPer extends javax.swing.JFrame {
         averagechart.add(ChartUtility.createPieChart(blankDataset, "No Data Available"), java.awt.BorderLayout.CENTER);
     }
     
-    private void displayVendorPerformance(int selectedMonth) throws IOException {
+    private void displayVendorPerformance(int selectedMonth, int selectedYear) throws IOException {
         Manager manager = new Manager();
-        Map<String, String> performanceDataMap = manager.getVendorPerformanceByMonth(selectedMonth);
+        Map<String, String> performanceDataMap = manager.getVendorPerformanceByMonth(selectedMonth, selectedYear);
 
         DefaultTableModel model = (DefaultTableModel) VenPertable.getModel();
         model.setRowCount(0); // Clear previous rows
@@ -375,13 +375,14 @@ public class managerMonVenPer extends javax.swing.JFrame {
                 .addGap(31, 31, 31)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(searchbtn)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3)
-                            .addComponent(monthlabel)
-                            .addComponent(yearChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(searchbtn)
+                                .addComponent(jLabel2)
+                                .addComponent(jLabel3)
+                                .addComponent(monthlabel)
+                                .addComponent(yearChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -403,11 +404,11 @@ public class managerMonVenPer extends javax.swing.JFrame {
 
     private void searchbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchbtnActionPerformed
         int selectedMonth = monthChooser.getMonth() + 1;
-
+        int selectedYear = yearChooser.getYear();
         try {
         // Call the Manager method to get vendor performance data
         Manager manager = new Manager();
-        Map<String, String> performanceDataMap = manager.getVendorPerformanceByMonth(selectedMonth);
+        Map<String, String> performanceDataMap = manager.getVendorPerformanceByMonth(selectedMonth,selectedYear);
         DefaultTableModel model = (DefaultTableModel) VenPertable.getModel();
         model.setRowCount(0);
         if (performanceDataMap == null || performanceDataMap.isEmpty()) {
@@ -417,7 +418,7 @@ public class managerMonVenPer extends javax.swing.JFrame {
         }
         // Create and display the pie chart with the data
         createVendorPerformancePieChart(performanceDataMap);
-        displayVendorPerformance(selectedMonth);
+        displayVendorPerformance(selectedMonth, selectedYear);
 
         } catch (IOException e) {
             e.printStackTrace();
