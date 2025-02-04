@@ -119,7 +119,7 @@ public class Item {
             //write row and add new row
             bw.write(newRow);
             bw.newLine();
-            JOptionPane.showMessageDialog(null, "Item successfully added to the file!", "Success", JOptionPane.INFORMATION_MESSAGE);            
+            JOptionPane.showMessageDialog(null, "Item successfully added!", "Success", JOptionPane.INFORMATION_MESSAGE);            
             bw.close();
             fw.close();
         } catch(IOException e) {
