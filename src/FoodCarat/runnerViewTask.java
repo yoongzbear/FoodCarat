@@ -698,12 +698,9 @@ public class runnerViewTask extends javax.swing.JFrame {
             Order order = new Order();
             //get vendor email for the order
             String[] orderInfo = order.getOrder(Integer.parseInt(orderId));
-            for (String orderData : orderInfo) {
-                System.out.println(orderData);
-            }
-            //1,Take away,[1;1|2;1],completed,customer@mail.com,NULL,NULL,0.00,27.80,2025-01-01,13.90,vendor@mail.com
             String vendorEmail = orderInfo[11].trim();
             Vendor vendor = new Vendor(vendorEmail);
+            //calculate new credit for vendor
             double itemPrice = Double.parseDouble(orderInfo[10].trim());
             double currentCredit = vendor.getCreditBalance();
             double newAmount = currentCredit + itemPrice;
