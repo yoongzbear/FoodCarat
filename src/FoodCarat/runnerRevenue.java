@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -97,6 +98,7 @@ public class runnerRevenue extends javax.swing.JFrame {
 
         DefaultTableModel model = (DefaultTableModel) revenueJT.getModel();
         model.setRowCount(0);
+        boolean dataFound = false;
 
         for (String[] task : completedTasks) {
             String orderDate = task[9];
@@ -110,6 +112,7 @@ public class runnerRevenue extends javax.swing.JFrame {
                 model.addRow(new Object[]{
                     orderId, orderDate, deliveryFee
                 });
+
             }
         }
     }
@@ -652,6 +655,19 @@ public class runnerRevenue extends javax.swing.JFrame {
         LocalDate endLocalDate = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
         fetchFilteredData(startLocalDate, endLocalDate);
+        
+        // ✅ Debug: Check row count in table
+            int rowCount = revenueJT.getRowCount();
+            System.out.println("Row count after fetching data: " + rowCount);
+
+            // ✅ If no data, show dialog
+            if (rowCount == 0) { 
+                JOptionPane.showMessageDialog(this, 
+                    "No data available for the selected time range.", 
+                    "No Data", 
+                    JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
         generateDailyChart(startLocalDate, endLocalDate);
     }//GEN-LAST:event_DgenerateJBActionPerformed
 

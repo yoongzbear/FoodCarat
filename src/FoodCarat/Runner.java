@@ -7,6 +7,7 @@ package FoodCarat;
 import java.awt.Component;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -61,7 +62,7 @@ public class Runner extends User{
             while ((line = reader.readLine()) != null) {
                 String[] runnerData = line.split(",");
                 if (runnerData.length > 0 && runnerData[0].equalsIgnoreCase(email)) {
-                    runnerData = new String[]{runnerData[0], plateNumber.toUpperCase(), "unavailable", "0"};
+                    runnerData = new String[]{runnerData[0], plateNumber.toUpperCase(), "unavailable", "0.0"};
                     
                     emailFound = true;
                 }

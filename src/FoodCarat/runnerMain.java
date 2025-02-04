@@ -22,16 +22,14 @@ import javax.swing.table.DefaultTableModel;
  * @author Yuna
  */
 public class runnerMain extends javax.swing.JFrame {
-//    private String email = User.getSessionEmail();
-  //  private String name = User.getSessionName();
-    private String email = "runner2@mail.com";
-    private String name = "Runner3";
+    private String email = User.getSessionEmail();
+    private String name = User.getSessionName();
+    Runner runner = new Runner();
 
     public runnerMain() {
         initComponents();
         setLocationRelativeTo(null);
         username.setText("");
-        Runner runner = new Runner();
         String[] runnerDetails = runner.getRunnerDetails(email);
         
         if (runnerDetails != null) {
@@ -511,17 +509,19 @@ public class runnerMain extends javax.swing.JFrame {
     }//GEN-LAST:event_revenueJBActionPerformed
 
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
-        User user = new User();
-        user.logOut();
-        JOptionPane.showMessageDialog(this, "You have been logged out!");
-        dispose();
-        new userLogin().setVisible(true);
+        int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to log out? Status will be changed to Unavailable.", "Runner Log Out", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            runner.updateRunnerStatus(email, "unavailable");
+            runner.logOut();
+            JOptionPane.showMessageDialog(null, "You have logged out.", "Log Out", JOptionPane.INFORMATION_MESSAGE);
+            dispose();
+            new userLogin().setVisible(true);
+        }
     }//GEN-LAST:event_logoutButtonActionPerformed
 
     private void avaJRBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_avaJRBActionPerformed
         String status = "available";
         
-        Runner runner = new Runner();
         runner.updateRunnerStatus(email, status);
 
         ImageIcon icon = new ImageIcon("images/runner/available.png");
@@ -532,7 +532,6 @@ public class runnerMain extends javax.swing.JFrame {
     private void unaJRBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_unaJRBActionPerformed
         String status = "unavailable";
         
-        Runner runner = new Runner();
         runner.updateRunnerStatus(email, status);
         
         ImageIcon icon = new ImageIcon("images/runner/unavailable.jpg");

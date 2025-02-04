@@ -6,6 +6,8 @@ package FoodCarat;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -46,7 +48,7 @@ public class runnerViewTask extends javax.swing.JFrame {
                 String items = currentTaskJT.getValueAt(selectedRow, 3).toString();
                 String[] itemEntries = items.split(",");
 
-                DefaultTableModel model = (DefaultTableModel) itemJT.getModel();
+                DefaultTableModel model = (DefaultTableModel) itemJT2.getModel();
                 model.setRowCount(0);
 
                 // Iterate over each item and quantity
@@ -88,15 +90,45 @@ public class runnerViewTask extends javax.swing.JFrame {
 
                 orderIDTF.setText(orderData[0]);
 
-                // Extract the itemIDs
-                String itemIDString = orderData[2];
-                itemIDString = itemIDString.replaceAll("[\\[\\]]", "");
-                String[] itemIDs = itemIDString.split(";");
+                Item item = new Item();
+                String itemIDString = orderData[2].replaceAll("[\\[\\]]", "");
+                String[] itemDetails = itemIDString.split("\\|");
+                StringBuilder formattedItems = new StringBuilder();
+
+                for (int i = 0; i < itemDetails.length; i++) {
+                    String[] parts = itemDetails[i].split(";");
+                    int itemID = Integer.parseInt(parts[0]);
+                    int quantity = Integer.parseInt(parts[1]);
+
+                    // Get item name from Item class
+                    String[] itemData = item.itemData(itemID);
+                    String itemName = itemData != null && itemData.length > 1 ? itemData[1] : "Unknown Item";
+
+                    // Format item and quantity
+                    if (i > 0) {
+                        formattedItems.append(", ");
+                    }
+                    formattedItems.append(itemName).append("[").append(quantity).append("]");
+                }
+
+                String items = formattedItems.toString(); // Combine all items into a single string
+
+                DefaultTableModel model = (DefaultTableModel) itemJT1.getModel();
+                model.setRowCount(0);
+
+                // Iterate over itemDetails
+                for (String entry : itemDetails) {
+                    String[] itemParts = entry.split(";");
+                    if (itemParts.length == 2) {
+                        String itemName = itemParts[0].trim();
+                        String quantity = itemParts[1].trim();
+                        model.addRow(new Object[]{itemName, quantity});
+                    }
+                }
 
                 // Get vendor info for the first item
-                String firstItemID = itemIDs[0];
+                String firstItemID = itemDetails[0].split(";")[0];
 
-                Item item = new Item();
                 String[] vendorInfo = item.getVendorInfoByItemID(Integer.parseInt(firstItemID.trim()));
                 String vendorName = vendorInfo[1];
                 vendorNameTF.setText(vendorName);
@@ -110,7 +142,7 @@ public class runnerViewTask extends javax.swing.JFrame {
 
                 acceptJB.setEnabled(true);
                 declineJB.setEnabled(true);
-
+                
                 break;
             }
         }
@@ -118,7 +150,7 @@ public class runnerViewTask extends javax.swing.JFrame {
 
     // For Task reception area
     private void clearTaskDetails() {
-        GuiUtility.clearFields(orderIDTF, vendorNameTF, itemJT, addressTA, deFeeTF);
+        GuiUtility.clearFields(orderIDTF, vendorNameTF, itemJT1, addressTA, deFeeTF);
 
         acceptJB.setEnabled(false);
         declineJB.setEnabled(false);
@@ -257,6 +289,9 @@ public class runnerViewTask extends javax.swing.JFrame {
         deFeeTF = new javax.swing.JTextField();
         acceptJB = new javax.swing.JButton();
         declineJB = new javax.swing.JButton();
+        jLabel9 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        itemJT1 = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         currentTaskJT = new javax.swing.JTable();
@@ -273,12 +308,12 @@ public class runnerViewTask extends javax.swing.JFrame {
         vendorNameTF2 = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
         deFeeTF2 = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         statusJCB = new javax.swing.JComboBox<>();
         updateJB = new javax.swing.JButton();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        itemJT = new javax.swing.JTable();
+        jLabel14 = new javax.swing.JLabel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        itemJT2 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -366,6 +401,43 @@ public class runnerViewTask extends javax.swing.JFrame {
             }
         });
 
+        jLabel9.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        jLabel9.setText("Item:");
+
+        itemJT1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        itemJT1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Item(s)", "Quantity"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Integer.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        itemJT1.setRequestFocusEnabled(false);
+        itemJT1.setRowHeight(25);
+        itemJT1.setRowSelectionAllowed(false);
+        itemJT1.setShowGrid(true);
+        jScrollPane3.setViewportView(itemJT1);
+        if (itemJT1.getColumnModel().getColumnCount() > 0) {
+            itemJT1.getColumnModel().getColumn(0).setPreferredWidth(200);
+            itemJT1.getColumnModel().getColumn(1).setPreferredWidth(10);
+        }
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -374,55 +446,64 @@ public class runnerViewTask extends javax.swing.JFrame {
                 .addGap(16, 16, 16)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
+                        .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(orderIDTF, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(137, 137, 137)
-                        .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(deFeeTF, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 545, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(acceptJB, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(32, 32, 32)
+                        .addComponent(declineJB, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(vendorNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addGap(18, 18, 18)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 545, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(acceptJB, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(declineJB, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(28, 28, 28))))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(deFeeTF, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(orderIDTF, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(164, 164, 164)
+                                .addComponent(jLabel9)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(13, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(orderIDTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7)
-                    .addComponent(deFeeTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(9, 9, 9)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(orderIDTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel9))
+                        .addGap(22, 22, 22)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
                             .addComponent(vendorNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addGap(35, 35, 35))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(acceptJB)
-                        .addComponent(declineJB)))
-                .addGap(14, 14, 14))
+                        .addGap(22, 22, 22)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel7)
+                            .addComponent(deFeeTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addContainerGap(9, Short.MAX_VALUE)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(21, 21, 21)))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(16, 16, 16)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(declineJB)
+                    .addComponent(acceptJB))
+                .addContainerGap())
         );
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
@@ -516,9 +597,6 @@ public class runnerViewTask extends javax.swing.JFrame {
         deFeeTF2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         deFeeTF2.setFocusable(false);
 
-        jLabel9.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        jLabel9.setText("Item:");
-
         jLabel6.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         jLabel6.setText("Order Status:");
 
@@ -532,8 +610,11 @@ public class runnerViewTask extends javax.swing.JFrame {
             }
         });
 
-        itemJT.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        itemJT.setModel(new javax.swing.table.DefaultTableModel(
+        jLabel14.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
+        jLabel14.setText("Item:");
+
+        itemJT2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        itemJT2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -556,14 +637,14 @@ public class runnerViewTask extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        itemJT.setRequestFocusEnabled(false);
-        itemJT.setRowHeight(25);
-        itemJT.setRowSelectionAllowed(false);
-        itemJT.setShowGrid(true);
-        jScrollPane3.setViewportView(itemJT);
-        if (itemJT.getColumnModel().getColumnCount() > 0) {
-            itemJT.getColumnModel().getColumn(0).setPreferredWidth(200);
-            itemJT.getColumnModel().getColumn(1).setPreferredWidth(10);
+        itemJT2.setRequestFocusEnabled(false);
+        itemJT2.setRowHeight(25);
+        itemJT2.setRowSelectionAllowed(false);
+        itemJT2.setShowGrid(true);
+        jScrollPane5.setViewportView(itemJT2);
+        if (itemJT2.getColumnModel().getColumnCount() > 0) {
+            itemJT2.getColumnModel().getColumn(0).setPreferredWidth(200);
+            itemJT2.getColumnModel().getColumn(1).setPreferredWidth(10);
         }
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -580,12 +661,11 @@ public class runnerViewTask extends javax.swing.JFrame {
                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                         .addComponent(jLabel12)
-                                        .addGroup(jPanel3Layout.createSequentialGroup()
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
                                             .addComponent(jLabel5)
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                             .addComponent(orderIDTF2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(jLabel9)))
+                                            .addGap(0, 0, Short.MAX_VALUE)))
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
                                 .addGroup(jPanel3Layout.createSequentialGroup()
                                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -615,12 +695,19 @@ public class runnerViewTask extends javax.swing.JFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(74, 74, 74)))
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(deFeeTF2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(214, 214, 214))
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))))
+                        .addComponent(deFeeTF2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(214, 214, 214)))
                 .addContainerGap(21, Short.MAX_VALUE))
+            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                    .addContainerGap(511, Short.MAX_VALUE)
+                    .addComponent(jLabel14)
+                    .addGap(331, 331, 331)))
+            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel3Layout.createSequentialGroup()
+                    .addGap(565, 565, 565)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(11, Short.MAX_VALUE)))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -628,25 +715,21 @@ public class runnerViewTask extends javax.swing.JFrame {
                 .addGap(14, 14, 14)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
-                            .addComponent(orderIDTF2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel9))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel8)
-                            .addComponent(cusNameTF2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel10)
-                            .addComponent(contactNoTF, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel11)))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(orderIDTF2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(cusNameTF2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel10)
+                    .addComponent(contactNoTF, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel11))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(deFeeTF2)
@@ -659,6 +742,16 @@ public class runnerViewTask extends javax.swing.JFrame {
                     .addComponent(statusJCB, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6))
                 .addGap(18, 18, 18))
+            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel3Layout.createSequentialGroup()
+                    .addGap(138, 138, 138)
+                    .addComponent(jLabel14)
+                    .addContainerGap(288, Short.MAX_VALUE)))
+            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel3Layout.createSequentialGroup()
+                    .addGap(137, 137, 137)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(120, Short.MAX_VALUE)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -738,6 +831,8 @@ public class runnerViewTask extends javax.swing.JFrame {
             int orderId = Integer.parseInt(currentTaskJT.getValueAt(selectedRow, 0).toString());
             String currentStatus = currentTaskJT.getValueAt(selectedRow, 7).toString();
 
+            String[] orderInfo = new Order().getOrder(orderId);
+
             String newStatus = (String) statusJCB.getSelectedItem();
 
             if (newStatus != null && !newStatus.equalsIgnoreCase(currentStatus)) {
@@ -753,6 +848,20 @@ public class runnerViewTask extends javax.swing.JFrame {
                             fileStatus = newStatus.toLowerCase(); // Use as-is for other statuses
                             break;
                     }
+                    
+                    // Confirm before updating status to "Completed"
+                    if ("completed".equals(fileStatus)) {
+                        int confirm = JOptionPane.showConfirmDialog(
+                            null,
+                            "Are you sure you want to complete this task?",
+                            "Confirm Completion",
+                            JOptionPane.YES_NO_OPTION
+                        );
+
+                        if (confirm != JOptionPane.YES_OPTION) {
+                            return;
+                        }
+                    }
                 // Update status
                 Order order = new Order();
                 order.updateStatus(orderId, fileStatus, "runner");
@@ -760,12 +869,30 @@ public class runnerViewTask extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Status Updated!");
                 
                 if ("completed".equals(fileStatus)){
-                    new Runner().updateRunnerStatus(runnerEmail, "available");
+                    try {
+                        Runner runner = new Runner();
+                        runner.updateRunnerStatus(runnerEmail, "available");
+                        double deliveryFee = Double.parseDouble(orderInfo[7].trim());
+                        String[] runnerInfo = runner.getRunnerDetails(runnerEmail);
+                        double currentCredit = Double.parseDouble(runnerInfo[3].trim());
+                        double newAmount = currentCredit + deliveryFee;
+                        runner.updateCredit(runnerEmail, newAmount, "resources/runner.txt", 3);
+                        
+                        JOptionPane.showMessageDialog(
+                            null,
+                            "Task completed successfully!\n" +
+                            "Runner's new salary: RM " + String.format("%.2f", newAmount),
+                            "Salary Updated",
+                            JOptionPane.INFORMATION_MESSAGE
+                        );
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 // Refresh and Reset
                 displayCurrentTask(runnerEmail);
-                GuiUtility.clearFields(orderIDTF2, cusNameTF2, vendorNameTF2, itemJT, addressTA2, contactNoTF, deFeeTF2);
+                GuiUtility.clearFields(orderIDTF2, cusNameTF2, vendorNameTF2, itemJT2, addressTA2, contactNoTF, deFeeTF2);
                 statusJCB.removeAllItems();
                 statusJCB.addItem("Select Row");
                 updateJB.setEnabled(false);
@@ -819,12 +946,14 @@ public class runnerViewTask extends javax.swing.JFrame {
     private javax.swing.JTextField deFeeTF;
     private javax.swing.JTextField deFeeTF2;
     private javax.swing.JButton declineJB;
-    private javax.swing.JTable itemJT;
+    private javax.swing.JTable itemJT1;
+    private javax.swing.JTable itemJT2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -840,6 +969,7 @@ public class runnerViewTask extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTextField orderIDTF;
     private javax.swing.JTextField orderIDTF2;
     private javax.swing.JComboBox<String> statusJCB;

@@ -33,8 +33,8 @@ public class Customer extends User{
             String line;
             while ((line = br.readLine()) != null) {
                 String[] record = line.split(",");
-                if (email.equals(record[0])) {
-                    this.points = Integer.parseInt(record[3]);
+                if (record.length > 1 && email.equals(record[0])) {
+                    this.points = Integer.parseInt(record[3]); 
                 }
             }
         }
