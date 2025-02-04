@@ -152,7 +152,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             String orderID = orderData[0];
             String orderMethod = orderData[1].substring(0, 1).toUpperCase() + orderData[1].substring(1).toLowerCase();
             String orderItems = orderData[2];
-            String orderStatus = orderData[3].substring(0, 1).toUpperCase() + orderData[1].substring(1).toLowerCase();
+            String orderStatus = orderData[3].substring(0, 1).toUpperCase() + orderData[3].substring(1).toLowerCase();
             String customerEmail = orderData[4];
 
             String updatedOrderItems = item.replaceItemIDsWithNames(orderItems);
