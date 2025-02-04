@@ -440,7 +440,7 @@ public class Order {
  
     //get order based on ID
     public String[] getOrder(int id) {
-        String[] orderInfo = null;
+        String[] orderInfo = new String[12];
         DecimalFormat df = new DecimalFormat("0.00");
         try {
             FileReader fr = new FileReader(orderFile);
@@ -453,8 +453,17 @@ public class Order {
                 if (orderID == id) {
                     String orderItems = parts[2]; //[itemID;quantity|itemID;quantity]
                     double totalPrice = calculateTotalPrice(orderItems);
-                    orderInfo = Arrays.copyOf(parts, parts.length + 1);
+
+                    //vendor email using first item info
+                    String firstItem = orderItems.replace("[", "").replace("]", "").split("\\|")[0];
+                    int firstItemID = Integer.parseInt(firstItem.split(";")[0]);
+                    Item item = new Item();
+                    String[] itemInfo = item.itemData(firstItemID);
+                    String vendorEmail = (itemInfo != null) ? itemInfo[5] : "N/A"; 
+
+                    orderInfo = Arrays.copyOf(parts, parts.length + 2); //extend array with extra 2
                     orderInfo[parts.length] = df.format(totalPrice); //add total price to the end of the row
+                    orderInfo[parts.length + 1] = vendorEmail; //add vendor email to the end of the array
                     break;
                 }
             }
@@ -495,48 +504,6 @@ public class Order {
             JOptionPane.showMessageDialog(null, "Error while deleting order: " + e.getMessage());
         }
     }
-    
-    /**
-    //update order status 
-    //user can manipulate status: vendor, runner (for delivery)
-    //parameter: itemID, orderStatus, userType(not sure if needed, leaving it here first)
-    public void updateStatus(int id, String newOrderStatus, String userType) {        
-        //get order info from order.txt using id, see order method
-        String[] order = getOrder(id);
-        String method = order[1].trim();
-        String currentStatus = order[3].trim();
-        List<String[]> allOrders = getAllOrders();
-        
-        try {
-            FileWriter fw = new FileWriter(orderFile);
-            BufferedWriter bw = new BufferedWriter(fw);
-            
-            for (String[] orderData : allOrders) {
-                int orderDataID = Integer.parseInt(orderData[0]);
-                if (orderDataID != id) {
-                    //keep the row if the ID does not match
-                    bw.write(String.join(",", orderData));
-                    bw.newLine();
-                } else {
-                    //found row and rewrite the row without total price
-                    //if status = cancelled and usertype = vendor, add reason id 1 (rejected by vendor)
-                    if (newOrderStatus.equalsIgnoreCase("cancelled") && userType.equalsIgnoreCase("vendor")) {                        
-                        order[6] = "1"; //reason ID for "rejected by vendor" is 1
-                    }
-                    order[3] = newOrderStatus;
-                    String[] updatedOrder = Arrays.copyOf(order, order.length - 1);
-                    bw.write(String.join(",", updatedOrder));
-                    bw.newLine();
-
-                }
-            }
-            bw.close();
-            fw.close();
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Update order status failed: " + e.getMessage());
-        }   
-    }
-    **/ 
     
     // Method to add item to cart
     public void addItemToCart(int itemID, String itemName, int quantity, double unitPrice) {
@@ -808,9 +775,13 @@ public class Order {
                         order[6] = "cancelled by customer";
                     }
                     order[3] = newOrderStatus;
-                    String[] updatedOrder = Arrays.copyOf(order, order.length - 1);
-                    bw.write(String.join(",", updatedOrder));
+                    if (order.length > 10) { //resize array to standard 
+                        order = Arrays.copyOf(order, 10);
+                    }
+
+                    bw.write(String.join(",", order));
                     bw.newLine();
+
                 }
             }
             bw.close();

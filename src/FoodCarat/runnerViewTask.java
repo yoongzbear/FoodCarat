@@ -4,6 +4,7 @@
  */
 package FoodCarat;
 
+import java.io.IOException;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -105,7 +106,7 @@ public class runnerViewTask extends javax.swing.JFrame {
                 Customer customer = new Customer(customerEmail);
                 String customerAddress = customer.getCustomerAddress(customerEmail);
                 addressTA.setText(customerAddress);
-                deFeeTF.setText(orderData[6]);
+                deFeeTF.setText(orderData[7]);
 
                 acceptJB.setEnabled(true);
                 declineJB.setEnabled(true);
@@ -692,14 +693,34 @@ public class runnerViewTask extends javax.swing.JFrame {
     }//GEN-LAST:event_backJBActionPerformed
 
     private void acceptJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptJBActionPerformed
-        String orderId = orderIDTF.getText();
-        
-        new Order().updateStatus(Integer.parseInt(orderId), "Ordered", "runner");
-        new Runner().updateRunnerStatus(runnerEmail, "unavailable");
-        JOptionPane.showMessageDialog(null, "Task accepted!");
-        
-        clearTaskDetails();
-        displayCurrentTask(runnerEmail);
+        try {
+            String orderId = orderIDTF.getText().trim();
+            Order order = new Order();
+            //get vendor email for the order
+            String[] orderInfo = order.getOrder(Integer.parseInt(orderId));
+            for (String orderData : orderInfo) {
+                System.out.println(orderData);
+            }
+            //1,Take away,[1;1|2;1],completed,customer@mail.com,NULL,NULL,0.00,27.80,2025-01-01,13.90,vendor@mail.com
+            String vendorEmail = orderInfo[11].trim();
+            Vendor vendor = new Vendor(vendorEmail);
+            double itemPrice = Double.parseDouble(orderInfo[10].trim());
+            double currentCredit = vendor.getCreditBalance();
+            double newAmount = currentCredit + itemPrice;
+            vendor.updateCredit(vendorEmail, newAmount, "resources/vendor.txt", 4);
+            new Order().updateStatus(Integer.parseInt(orderId), "Ordered", "runner");
+            new Runner().updateRunnerStatus(runnerEmail, "unavailable");
+            JOptionPane.showMessageDialog(null, "Task accepted!");
+
+            clearTaskDetails();
+            displayCurrentTask(runnerEmail);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Failed to update vendor credit: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Invalid number format in order data.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
     }//GEN-LAST:event_acceptJBActionPerformed
 
     private void declineJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_declineJBActionPerformed
