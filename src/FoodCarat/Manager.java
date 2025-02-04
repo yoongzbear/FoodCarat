@@ -90,7 +90,7 @@ public class Manager extends User{
     }
 
     // Method to calculate vendor performance by month
-    public Map<String, String> getVendorPerformanceByMonth(int selectedMonth) throws IOException {
+    public Map<String, String> getVendorPerformanceByMonth(int selectedMonth, int selectedYear) throws IOException {
         Map<String, Order> vendorOrders = new HashMap<>();
         Set<Integer> processedOrderIDs = new HashSet<>(); // Track processed order IDs
 
@@ -101,9 +101,10 @@ public class Manager extends User{
                 String[] orderData = orderLine.split(",");
                 if (orderData.length > 8) {
                     int orderID = Integer.parseInt(orderData[0].trim());
-                    int orderMonth = Integer.parseInt(orderData[9].split("-")[1]); // Extract month from date
-
-                    if (orderMonth == selectedMonth && "completed".equals(orderData[3])) {
+                    int orderMonth = Integer.parseInt(orderData[9].split("-")[1]);
+                    int orderYear = Integer.parseInt(orderData[9].split("-")[0]);
+                    
+                    if (orderMonth == selectedMonth && orderYear == selectedYear && "completed".equals(orderData[3])) {
                         // Skip already processed orders
                         if (processedOrderIDs.contains(orderID)) continue;
                         processedOrderIDs.add(orderID);
