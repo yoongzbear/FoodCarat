@@ -127,11 +127,13 @@ public class Manager extends User{
 
                                     // Aggregate vendor data using Order class
                                     Order order = vendorOrders.getOrDefault(vendorEmail, new Order());
-                                    order.incrementOrders();
+                                    // Ensure vendor is counted only once per order
+                                    if (!uniqueVendorsInOrder.contains(vendorEmail)) { 
+                                        order.incrementOrders(); // Count order only once per vendor
+                                        uniqueVendorsInOrder.add(vendorEmail);
+                                    }
                                     order.incrementRevenue(revenue);
                                     vendorOrders.put(vendorEmail, order);
-
-                                    uniqueVendorsInOrder.add(vendorEmail); // Track unique vendors for this order
                                 }
                             }
                         }
