@@ -242,7 +242,7 @@ public class adminMain extends javax.swing.JFrame {
          int choice = JOptionPane.showOptionDialog(
              null,
              "Please select: ",
-             "Registration Role",
+             "Manage User Role",
              JOptionPane.DEFAULT_OPTION,
              JOptionPane.QUESTION_MESSAGE,
              null,
