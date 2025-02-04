@@ -38,9 +38,9 @@ public class managerMonRunPer extends javax.swing.JFrame {
         averagechart.add(ChartUtility.createPieChart(blankDataset, "No Data Available"), java.awt.BorderLayout.CENTER);
     }
 
-    private void displayRunnerPerformance(int selectedMonth) throws IOException {
+    private void displayRunnerPerformance(int selectedMonth, int selectedYear) throws IOException {
         Manager manager = new Manager();
-        Map<String, String> performanceDataMap = manager.getRunnerPerformance(selectedMonth);
+        Map<String, String> performanceDataMap = manager.getRunnerPerformance(selectedMonth, selectedYear);
 
         DefaultTableModel model = (DefaultTableModel) runpertable.getModel();
         model.setRowCount(0);  // Clear previous rows
@@ -350,11 +350,12 @@ public class managerMonRunPer extends javax.swing.JFrame {
     private void bsearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bsearchActionPerformed
         DefaultTableModel model = (DefaultTableModel) runpertable.getModel();
         int selectedMonth = monthChooser.getMonth() + 1; 
-        
+        int selectedYear = yearChooser.getYear(); 
+                
         try {
         // Fetch the performance data
         Manager manager = new Manager();
-        Map<String, String> performanceDataMap = manager.getRunnerPerformance(selectedMonth);
+        Map<String, String> performanceDataMap = manager.getRunnerPerformance(selectedMonth, selectedYear);
 
         model.setRowCount(0);
         
@@ -364,7 +365,7 @@ public class managerMonRunPer extends javax.swing.JFrame {
         }
         
         createRunnerPerformancePieChart(performanceDataMap);
-        displayRunnerPerformance(selectedMonth);
+        displayRunnerPerformance(selectedMonth, selectedYear);
         } catch (IOException e) {
             e.printStackTrace();
         }
