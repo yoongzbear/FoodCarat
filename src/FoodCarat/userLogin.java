@@ -214,13 +214,28 @@ public class userLogin extends javax.swing.JFrame {
         
         User user = new User();
         
-        // Check if email exists and password matches
+        // Check if email exists
         if (!user.emailExists(email)) {
             JOptionPane.showMessageDialog(this, 
                 "Email does not exist.", 
                 "ERROR", 
                 JOptionPane.ERROR_MESSAGE);
-        } else if (!user.passwordMatches(email, password)) {
+            return;
+        }
+
+        String[] userInfo = user.getUserInfo(email);
+
+        // Check if the account is deleted
+        if (userInfo.length < 3 || (userInfo[2].isEmpty() && userInfo[3].isEmpty() && userInfo[4].isEmpty())) {
+            JOptionPane.showMessageDialog(this, 
+                "This account has been deleted.", 
+                "Account Deleted", 
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        // Check if password matches
+        if (!user.passwordMatches(email, password)) {
             JOptionPane.showMessageDialog(this, 
                 "Wrong password. Please re-enter.", 
                 "ERROR", 

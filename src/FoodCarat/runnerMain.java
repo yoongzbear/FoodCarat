@@ -22,8 +22,10 @@ import javax.swing.table.DefaultTableModel;
  * @author Yuna
  */
 public class runnerMain extends javax.swing.JFrame {
-    private String email = User.getSessionEmail();
-    private String name = User.getSessionName();
+//    private String email = User.getSessionEmail();
+  //  private String name = User.getSessionName();
+    private String email = "runner2@mail.com";
+    private String name = "Runner3";
 
     public runnerMain() {
         initComponents();
@@ -111,10 +113,10 @@ public class runnerMain extends javax.swing.JFrame {
                 String customerName = customerInfo[1];
 
                 String address = new Customer().getCustomerAddress(orderData[4]);
-                String contactNumber = customerInfo[5];
-                
+                String contactNumber = (customerInfo != null && customerInfo.length > 5) ? customerInfo[5] : "Not available";
+
                 String deliveryFee = orderData[7];
-                String status = orderData[3];
+                String status = orderData[3].substring(0, 1).toUpperCase() + orderData[3].substring(1).toLowerCase();
                 
                 taskInfo.removeAll();
                 taskInfo.setText("<html>Vendor Name: " + vendorName + "<br>" + 

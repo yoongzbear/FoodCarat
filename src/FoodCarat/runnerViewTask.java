@@ -188,7 +188,7 @@ public class runnerViewTask extends javax.swing.JFrame {
                         break;
                     default:
                         // Fallback to default capitalization logic
-                        status = rawStatus.substring(0, 1).toUpperCase() + orderData[3].substring(1).toLowerCase();
+                        status = rawStatus;
                         break;
                 }
 
@@ -520,7 +520,7 @@ public class runnerViewTask extends javax.swing.JFrame {
         jLabel9.setText("Item:");
 
         jLabel6.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        jLabel6.setText("Oder Status:");
+        jLabel6.setText("Order Status:");
 
         statusJCB.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
         statusJCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Row" }));
@@ -620,7 +620,7 @@ public class runnerViewTask extends javax.swing.JFrame {
                                 .addComponent(deFeeTF2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(214, 214, 214))
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))))
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

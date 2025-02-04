@@ -196,8 +196,9 @@ public class Customer extends User{
         return topupInfo;
     }
     
+    // for contrustor
     public Customer(){
-        // for contrustor
+        super();
     }
     
     public String deliveryAddress(Component parentComponent, String email) {
@@ -281,7 +282,7 @@ public class Customer extends User{
             String line;
             while ((line = br.readLine()) != null) {
                 String[] customerData = line.split(",");
-                if (customerData[0].equals(customerEmail)) {
+                if (customerData.length > 1 && customerData[0].equals(customerEmail)) {
                     return customerData[1].replace("[", "").replace("]", "").replace(";", ",");
                 }
             }

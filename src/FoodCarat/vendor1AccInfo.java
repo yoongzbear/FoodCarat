@@ -20,6 +20,7 @@ import javax.swing.text.PlainDocument;
  */
 public class vendor1AccInfo extends javax.swing.JFrame {
     private String email = User.getSessionEmail();
+    private String role = User.getSessionRole();
     
     /**
      * Creates new form vendor1ProfilePic
@@ -292,6 +293,7 @@ public class vendor1AccInfo extends javax.swing.JFrame {
         
         user.addUserInfo(email, name, password, contactNumber, date);
         vendor.addVendorInfo(email, savedPicturePath, cuisine);
+        User.setSession(email, password, role, name);
         
         new vendorMain().setVisible(true);
         dispose(); 
