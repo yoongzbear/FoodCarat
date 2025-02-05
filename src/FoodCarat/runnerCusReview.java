@@ -32,7 +32,8 @@ import org.jfree.data.category.DefaultCategoryDataset;
  * @author Yuna
  */
 public class runnerCusReview extends javax.swing.JFrame {
-    private String runnerEmail = User.getSessionEmail();
+//    private String runnerEmail = User.getSessionEmail();
+    private String runnerEmail = "runner3@mail.com";
     private String Role = "runner";
     private List<String[]> currentData;
 
@@ -131,9 +132,15 @@ public class runnerCusReview extends javax.swing.JFrame {
             LocalDate reviewDate = LocalDate.parse(dateString);
 
             if (!reviewDate.isBefore(startDate)) {
-                int rank = Integer.parseInt(rankStr);            
+                int rank = Integer.parseInt(rankStr);
                 ratingCounts.put(rank, ratingCounts.getOrDefault(rank, 0) + 1);
             }
+        }
+
+        if (ratingCounts.values().stream().allMatch(count -> count == 0)) {
+            JOptionPane.showMessageDialog(null, "No data available for the selected date range.", "No Data", JOptionPane.INFORMATION_MESSAGE);
+            displayBarChart(dataset, "No Available Data", "Ranks", "Total Count");
+            return;
         }
 
         for (Map.Entry<Integer, Integer> entry : ratingCounts.entrySet()) {
@@ -160,10 +167,14 @@ public class runnerCusReview extends javax.swing.JFrame {
 
             if (!reviewDate.isBefore(startDate) && !reviewDate.isAfter(endDate)) {
                 int rank = Integer.parseInt(rankStr);
-                if (ratingCounts.containsKey(rank)) {
-                    ratingCounts.put(rank, ratingCounts.get(rank) + 1);
-                }
+                ratingCounts.put(rank, ratingCounts.getOrDefault(rank, 0) + 1);
             }
+        }
+
+        if (ratingCounts.values().stream().allMatch(count -> count == 0)) {
+            JOptionPane.showMessageDialog(null, "No data available for the selected date range.", "No Data", JOptionPane.INFORMATION_MESSAGE);
+            displayBarChart(dataset, "No Available Data", "Ranks", "Total Count");
+            return;
         }
 
         for (Map.Entry<Integer, Integer> entry : ratingCounts.entrySet()) {
@@ -184,7 +195,7 @@ public class runnerCusReview extends javax.swing.JFrame {
         for (int i = 1; i <= 5; i++) {
             rankCounts.put(i, 0);
         }
-
+        
         for (int i = 0; i < model.getRowCount(); i++) {
             String dateString = (String) model.getValueAt(i, 3);
             String rankStr = (String) model.getValueAt(i, 1);
@@ -194,6 +205,12 @@ public class runnerCusReview extends javax.swing.JFrame {
                 int rank = Integer.parseInt(rankStr);
                 rankCounts.put(rank, rankCounts.getOrDefault(rank, 0) + 1);
             }
+        }
+
+        if (rankCounts.values().stream().allMatch(count -> count == 0)) {
+            JOptionPane.showMessageDialog(null, "No data available for the selected date range.", "No Data", JOptionPane.INFORMATION_MESSAGE);
+            displayBarChart(dataset, "No Available Data", "Ranks", "Total Count");
+            return;
         }
 
         for (Map.Entry<Integer, Integer> entry : rankCounts.entrySet()) {
@@ -212,7 +229,7 @@ public class runnerCusReview extends javax.swing.JFrame {
         for (int i = 1; i <= 5; i++) {
             rankCounts.put(i, 0);
         }
-
+        
         for (int i = 0; i < model.getRowCount(); i++) {
             String dateString = (String) model.getValueAt(i, 3);
             String rankStr = (String) model.getValueAt(i, 1);
@@ -223,6 +240,12 @@ public class runnerCusReview extends javax.swing.JFrame {
                 int rank = Integer.parseInt(rankStr);
                 rankCounts.put(rank, rankCounts.getOrDefault(rank, 0) + 1);
             }
+        }
+
+        if (rankCounts.values().stream().allMatch(count -> count == 0)) {
+            JOptionPane.showMessageDialog(null, "No data available for the selected years.", "No Data", JOptionPane.INFORMATION_MESSAGE);
+            displayBarChart(dataset, "No Available Data", "Ranks", "Total Count");
+            return;
         }
 
         for (Map.Entry<Integer, Integer> entry : rankCounts.entrySet()) {

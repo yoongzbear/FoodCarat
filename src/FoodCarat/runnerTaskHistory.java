@@ -30,10 +30,8 @@ import org.jfree.data.category.DefaultCategoryDataset;
  * @author Yuna
  */
 public class runnerTaskHistory extends javax.swing.JFrame {
-//    private String runnerEmail = User.getSessionEmail();
-    private String runnerEmail = "runner3@mail.com";
-
-
+    private String runnerEmail = User.getSessionEmail();
+    
     /**
      * Creates new form runnerTaskHistory
      */
