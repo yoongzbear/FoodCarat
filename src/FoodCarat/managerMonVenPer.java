@@ -242,6 +242,39 @@ public class managerMonVenPer extends javax.swing.JFrame {
         avgratingchart.repaint();
     }
 
+    private void clearCharts() {
+        DefaultPieDataset blankDataset = new DefaultPieDataset();
+
+        // Remove all current charts and set blank charts
+        totalrevenuechart.removeAll();
+        totalorderchart.removeAll();
+        avgvaluechart.removeAll();
+        avgratingchart.removeAll();
+
+        totalrevenuechart.setLayout(new java.awt.BorderLayout());
+        totalrevenuechart.add(ChartUtility.createPieChart(blankDataset, "No Data Available"), java.awt.BorderLayout.CENTER);
+
+        totalorderchart.setLayout(new java.awt.BorderLayout());
+        totalorderchart.add(ChartUtility.createPieChart(blankDataset, "No Data Available"), java.awt.BorderLayout.CENTER);
+
+        avgvaluechart.setLayout(new java.awt.BorderLayout());
+        avgvaluechart.add(ChartUtility.createPieChart(blankDataset, "No Data Available"), java.awt.BorderLayout.CENTER);
+
+        avgratingchart.setLayout(new java.awt.BorderLayout());
+        avgratingchart.add(ChartUtility.createPieChart(blankDataset, "No Data Available"), java.awt.BorderLayout.CENTER);
+
+        totalrevenuechart.revalidate();
+        totalrevenuechart.repaint();
+
+        totalorderchart.revalidate();
+        totalorderchart.repaint();
+
+        avgvaluechart.revalidate();
+        avgvaluechart.repaint();
+
+        avgratingchart.revalidate();
+        avgratingchart.repaint();
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -461,8 +494,9 @@ public class managerMonVenPer extends javax.swing.JFrame {
         model.setRowCount(0);
         if (performanceDataMap == null || performanceDataMap.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No data available for the selected month.");
-            createVendorPerformancePieChart(performanceDataMap);
-            return;
+            // Clear the charts if no data is found
+            clearCharts(); 
+            return; // Exit the method as there is no data
         }
         // Create and display the pie chart with the data
         createVendorPerformancePieChart(performanceDataMap);
