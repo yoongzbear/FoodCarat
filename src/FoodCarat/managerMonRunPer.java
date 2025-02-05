@@ -185,6 +185,23 @@ public class managerMonRunPer extends javax.swing.JFrame {
         averagechart.revalidate();
         averagechart.repaint();
     }
+    
+    private void clearCharts() {
+        DefaultPieDataset blankDataset = new DefaultPieDataset();
+
+        // Remove all current charts and set blank charts
+        totalorderchart.removeAll();
+        averagechart.removeAll();
+
+        totalorderchart.setLayout(new java.awt.BorderLayout());
+        totalorderchart.add(ChartUtility.createPieChart(blankDataset, "No Data Available"), java.awt.BorderLayout.CENTER);
+        
+        averagechart.setLayout(new java.awt.BorderLayout());
+        averagechart.add(ChartUtility.createPieChart(blankDataset, "No Data Available"), java.awt.BorderLayout.CENTER);
+        
+        totalorderchart.revalidate();
+        averagechart.repaint();
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -361,6 +378,7 @@ public class managerMonRunPer extends javax.swing.JFrame {
         
         if (performanceDataMap == null || performanceDataMap.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No data available for the selected month.");
+            clearCharts();
             return;
         }
         
