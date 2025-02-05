@@ -32,8 +32,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
  * @author Yuna
  */
 public class runnerCusReview extends javax.swing.JFrame {
-//    private String runnerEmail = User.getSessionEmail();
-    private String runnerEmail = "runner3@mail.com";
+    private String runnerEmail = User.getSessionEmail();
     private String Role = "runner";
     private List<String[]> currentData;
 
@@ -90,7 +89,6 @@ public class runnerCusReview extends javax.swing.JFrame {
                 model.addRow(new Object[]{
                     reviewInfo[0],
                     rank,
-                    reviewInfo[4],
                     reviewInfo[5]
                 });
             }
@@ -127,7 +125,7 @@ public class runnerCusReview extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) cusReviewJT.getModel();
 
         for (int i = 0; i < model.getRowCount(); i++) {
-            String dateString = (String) model.getValueAt(i, 3);
+            String dateString = (String) model.getValueAt(i, 2);
             String rankStr = (String) model.getValueAt(i, 1);
             LocalDate reviewDate = LocalDate.parse(dateString);
 
@@ -161,7 +159,7 @@ public class runnerCusReview extends javax.swing.JFrame {
         }
 
         for (int i = 0; i < model.getRowCount(); i++) {
-            String dateString = (String) model.getValueAt(i, 3);
+            String dateString = (String) model.getValueAt(i, 2);
             String rankStr = (String) model.getValueAt(i, 1);
             LocalDate reviewDate = LocalDate.parse(dateString);
 
@@ -197,7 +195,7 @@ public class runnerCusReview extends javax.swing.JFrame {
         }
         
         for (int i = 0; i < model.getRowCount(); i++) {
-            String dateString = (String) model.getValueAt(i, 3);
+            String dateString = (String) model.getValueAt(i, 2);
             String rankStr = (String) model.getValueAt(i, 1);
             LocalDate reviewDate = LocalDate.parse(dateString);
 
@@ -231,7 +229,7 @@ public class runnerCusReview extends javax.swing.JFrame {
         }
         
         for (int i = 0; i < model.getRowCount(); i++) {
-            String dateString = (String) model.getValueAt(i, 3);
+            String dateString = (String) model.getValueAt(i, 2);
             String rankStr = (String) model.getValueAt(i, 1);
             LocalDate reviewDate = LocalDate.parse(dateString);
 
@@ -510,17 +508,17 @@ public class runnerCusReview extends javax.swing.JFrame {
         cusReviewJT.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
         cusReviewJT.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Review ID", "Rank (1 - 5)", "Review", "Date"
+                "Review ID", "Rank (1 - 5)", "Date"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -531,8 +529,7 @@ public class runnerCusReview extends javax.swing.JFrame {
         if (cusReviewJT.getColumnModel().getColumnCount() > 0) {
             cusReviewJT.getColumnModel().getColumn(0).setPreferredWidth(10);
             cusReviewJT.getColumnModel().getColumn(1).setPreferredWidth(20);
-            cusReviewJT.getColumnModel().getColumn(2).setPreferredWidth(500);
-            cusReviewJT.getColumnModel().getColumn(3).setPreferredWidth(100);
+            cusReviewJT.getColumnModel().getColumn(2).setPreferredWidth(100);
         }
 
         oneJCB.setText("1 🌟");
