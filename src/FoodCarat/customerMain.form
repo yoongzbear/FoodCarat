@@ -139,7 +139,7 @@
       <SubComponents>
         <Component class="javax.swing.JButton" name="bComplaintFC">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Food Court Feedback"/>
+            <Property name="text" type="java.lang.String" value="Food Court Complaint"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bComplaintFCActionPerformed"/>

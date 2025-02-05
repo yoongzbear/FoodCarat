@@ -80,7 +80,7 @@ public class customerMain extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(180, 200, 234));
         jPanel1.setForeground(new java.awt.Color(180, 200, 234));
 
-        bComplaintFC.setText("Food Court Feedback");
+        bComplaintFC.setText("Food Court Complaint");
         bComplaintFC.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bComplaintFCActionPerformed(evt);
