@@ -26,8 +26,7 @@ import org.jfree.data.general.DefaultPieDataset;
  */
 public class vendorReview extends javax.swing.JFrame {
 
-    //private String email = User.getSessionEmail();
-    private String email = "chagee@mail.com";
+    private String email = User.getSessionEmail();
     Vendor vendor = new Vendor(email);
 
     /**
