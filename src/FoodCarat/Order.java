@@ -645,17 +645,6 @@ public class Order {
         }
     }
 
-    // Method to view all items in the cart
-    public void viewCart() {
-        StringBuilder cartDetails = new StringBuilder("Items in your cart:\n");
-        for (String[] item : cart) {
-            cartDetails.append(item[1]).append(" - Quantity: ").append(item[2])
-                    .append(" - Total: RM").append(Double.parseDouble(item[3]) * Integer.parseInt(item[2])).append("\n");
-        }
-        cartDetails.append("Total Price: RM").append(getTotalPrice(cart));
-        JOptionPane.showMessageDialog(null, cartDetails.toString());
-    }
-
     // Getter for cart
     public List<String[]> getCart() {
         return cart;
