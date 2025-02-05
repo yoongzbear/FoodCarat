@@ -164,21 +164,22 @@ public class adminRegister extends javax.swing.JFrame {
     String email = emailtxt.getText().trim();
     String username = usernametxt.getText().trim();
 
+    if (username.isEmpty() || email.isEmpty()) {
+        JOptionPane.showMessageDialog(null, "Please fill up all the required fields.");
+        usernametxt.requestFocus();
+        return;
+    }
     if (Admin.isEmailRegistered(email, userFile)) {
         JOptionPane.showMessageDialog(null, "This email is already registered.");
         emailtxt.requestFocus();
         return;
     }
-    if (email.isEmpty() || !email.contains("@")) {
+    if (!email.contains("@")) {
         JOptionPane.showMessageDialog(null, "Please enter a valid email.");
         emailtxt.requestFocus();
         return;
     }
-    if (username.isEmpty()) {
-        JOptionPane.showMessageDialog(null, "Name cannot be empty.");
-        usernametxt.requestFocus();
-        return;
-    }
+
 
     try {
         String samplePassword = Admin.registerUser(email, username, role);
