@@ -178,7 +178,7 @@ public class Manager extends User{
                     
                     User user = new User();
                     String []userDetails = user.getUserInfo(email);
-                    String cusName = userDetails[1];
+                    String cusName = userDetails != null && userDetails.length > 1 ? userDetails[1] : "Unknown";
                     // Check if the month matches and review type is "foodcourt"
                     // If selectedMonth is 0, no filtering will be applied (show all reviews)
                     if ((selectedMonth == 0 || date == selectedMonth) &&
