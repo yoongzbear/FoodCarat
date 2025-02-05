@@ -4,12 +4,9 @@
  */
 package FoodCarat;
 
-import java.awt.BorderLayout;
 import java.io.IOException;
 import java.util.List;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -18,8 +15,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class runnerViewTask extends javax.swing.JFrame {
     private String[] orderData;
-    //private String runnerEmail = User.getSessionEmail();
-    private String runnerEmail = "runner3@mail.com";
+    private String runnerEmail = User.getSessionEmail();
 
     public runnerViewTask() {
         initComponents();
