@@ -434,10 +434,6 @@ public class adminUpdateUser extends javax.swing.JFrame {
         // Get the additional field value based on the role
         if ("customer".equals(role)) {
             additionalField = addresstxta.getText().trim();
-            // Replace all commas with semicolons
-            additionalField = additionalField.replace(",", ";");    
-            // Wrap the modified text in square brackets
-            additionalField = "[" + additionalField + "]";
         } else if ("vendor".equals(role)) {
             additionalField = (String) cuisinecbx.getSelectedItem();
         } else if ("runner".equals(role)) {
@@ -445,6 +441,11 @@ public class adminUpdateUser extends javax.swing.JFrame {
         }
         Admin admin = new Admin();
         if (validateFields(email, name, birthDate, phone, role, additionalField)) {
+            if ("customer".equals(role)) {
+                additionalField = additionalField.replace(",", ";"); // Replace commas with semicolons
+                additionalField = "[" + additionalField + "]"; // Wrap text in square brackets
+            }
+ 
            // Update user.txt
            boolean userUpdated = admin.updateFile(userFile,
                    email,
