@@ -63,6 +63,12 @@ public class adminNotification extends javax.swing.JFrame {
         if (selectedRow != -1) {
             String message = tableModel.getValueAt(selectedRow, 1).toString(); // The message contains the details
 
+            // **Check if the selected row is empty**
+            if (message.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please select a valid transaction.", "Invalid Selection", JOptionPane.WARNING_MESSAGE);
+                return; // Stop execution if empty
+            }
+        
             String[] messageParts = message.split(" ");
 
             // Extract the transaction ID from the message
