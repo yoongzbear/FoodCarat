@@ -156,30 +156,6 @@ public class Order {
         return getTotalOrders() == 0 ? 0.0 : totalRevenue / getTotalOrders();
     }
     
-    //get reason based on reason ID
-    public String getReason(int reasonID) {
-        String reason = "";
-        try {
-            FileReader fr = new FileReader(reasonFile);
-            BufferedReader br = new BufferedReader(fr);
-            String read;
-
-            while ((read = br.readLine()) != null) {
-                String[] parts = read.split(",");
-                int orderReasonID = Integer.parseInt(parts[0].trim());
-                if (orderReasonID == reasonID) {
-                    reason = parts[1];
-                    break;
-                }
-            }
-            br.close();
-            fr.close();
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Failed to read from reason file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        return reason;
-    }
-    
     public void initialOrder(){ //initial order after customer choose orderType
         //generate orderID
         int lastOrder = 0;
