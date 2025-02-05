@@ -193,6 +193,10 @@ public class Manager extends User{
             }
         // Reverse the list so the latest reviews appear first
         Collections.reverse(filteredData);
+        for (int i = 0; i < filteredData.size(); i++) {
+        filteredData.get(i)[0] = String.valueOf(i + 1);  // Set record number starting from 1 again
+        }
+
         return filteredData;
     }
     
