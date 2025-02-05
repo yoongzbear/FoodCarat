@@ -19,7 +19,6 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -98,6 +97,7 @@ public class managerRmvItem extends javax.swing.JFrame {
         typeTxt.setText("");
         itemPriceTxt.setText("");
         deleteBtn.setEnabled(false);
+        venNameLabel.setText("Name");
     }
     
     //display all items
