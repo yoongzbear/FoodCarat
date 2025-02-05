@@ -7,7 +7,6 @@ package FoodCarat;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.YearMonth;
 import java.time.ZoneId;
 import java.util.Date;
@@ -31,7 +30,9 @@ import org.jfree.data.category.DefaultCategoryDataset;
  * @author Yuna
  */
 public class runnerTaskHistory extends javax.swing.JFrame {
-    private String runnerEmail = User.getSessionEmail();
+//    private String runnerEmail = User.getSessionEmail();
+    private String runnerEmail = "runner3@mail.com";
+
 
     /**
      * Creates new form runnerTaskHistory
@@ -87,31 +88,33 @@ public class runnerTaskHistory extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) taskHistoryJT.getModel();
 
         LocalDate currentDate = LocalDate.now();
-        LocalDate startDate = currentDate.minusMonths(4); // Start from the 5th month before the current month
+        LocalDate startDate = currentDate.minusMonths(4); // Start from 4 months ago (including current)
 
-        // Create a map to store counts for each of the last 5 months
-        Map<Month, Integer> taskCounts = new LinkedHashMap<>();
+        Map<YearMonth, Integer> taskCounts = new LinkedHashMap<>();
 
-        // Initialize the map with the last 5 months
         for (int i = 0; i < 5; i++) {
-            Month month = startDate.plusMonths(i).getMonth();
+            YearMonth month = YearMonth.from(startDate.plusMonths(i));
             taskCounts.put(month, 0);
         }
 
-        // Iterate through the table rows and populate the task counts
         for (int i = 0; i < model.getRowCount(); i++) {
             String dateString = (String) model.getValueAt(i, 3);
             LocalDate taskDate = LocalDate.parse(dateString);
-            Month taskMonth = taskDate.getMonth();
+            YearMonth taskYearMonth = YearMonth.from(taskDate);
 
-            if (taskCounts.containsKey(taskMonth)) {
-                taskCounts.put(taskMonth, taskCounts.get(taskMonth) + 1);
+            if (taskCounts.containsKey(taskYearMonth)) {
+                taskCounts.put(taskYearMonth, taskCounts.get(taskYearMonth) + 1);
             }
         }
 
-        // Add data to dataset
-        for (Map.Entry<Month, Integer> entry : taskCounts.entrySet()) {
-            String monthLabel = entry.getKey().name(); // Get month name
+        if (taskCounts.values().stream().allMatch(count -> count == 0)) {
+            JOptionPane.showMessageDialog(null, "No data available for the last 5 months.", "No Data", JOptionPane.INFORMATION_MESSAGE);
+            displayBarChart(dataset, "No Available Data", "Months", "Number of Tasks");
+            return;
+        }
+
+        for (Map.Entry<YearMonth, Integer> entry : taskCounts.entrySet()) {
+            String monthLabel = entry.getKey().getMonth().name() + " " + entry.getKey().getYear(); // Show "JANUARY 2024"
             dataset.addValue(entry.getValue(), "Tasks", monthLabel);
         }
 
@@ -121,8 +124,6 @@ public class runnerTaskHistory extends javax.swing.JFrame {
     private void generateDailyBarChart(LocalDate startDate, LocalDate endDate) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         DefaultTableModel model = (DefaultTableModel) taskHistoryJT.getModel();
-
-        // Store task counts for each day
         Map<LocalDate, Integer> taskCountMap = new TreeMap<>();
 
         // Count tasks for each date
@@ -133,6 +134,12 @@ public class runnerTaskHistory extends javax.swing.JFrame {
             if (!taskDate.isBefore(startDate) && !taskDate.isAfter(endDate)) {
                 taskCountMap.put(taskDate, taskCountMap.getOrDefault(taskDate, 0) + 1);
             }
+        }
+
+        if (taskCountMap.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No data available for the selected date range.", "No Data", JOptionPane.INFORMATION_MESSAGE);
+            displayBarChart(dataset, "No Available Data", "Date", "Number of Tasks");
+            return;
         }
 
         for (Map.Entry<LocalDate, Integer> entry : taskCountMap.entrySet()) {
@@ -162,6 +169,13 @@ public class runnerTaskHistory extends javax.swing.JFrame {
                 taskCounts.put(taskYearMonth, taskCounts.getOrDefault(taskYearMonth, 0) + 1);
             }
         }
+        
+        // Handle case where no data exists
+        if (taskCounts.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No data available for the selected date range.", "No Data", JOptionPane.INFORMATION_MESSAGE);
+            displayBarChart(dataset, "No Available Data", "Months", "Number of Tasks");
+            return;
+        }
 
         for (Map.Entry<YearMonth, Integer> entry : taskCounts.entrySet()) {
             String monthLabel = entry.getKey().getMonth() + " " + entry.getKey().getYear();
@@ -185,6 +199,13 @@ public class runnerTaskHistory extends javax.swing.JFrame {
             if (taskYear >= startYear && taskYear <= endYear) {
                 taskCounts.put(taskYear, taskCounts.getOrDefault(taskYear, 0) + 1); // Increment task count for each year
             }
+        }
+        
+        // Handle case where no data exists
+        if (taskCounts.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No data available for the selected years.", "No Data", JOptionPane.INFORMATION_MESSAGE);
+            displayBarChart(dataset, "No Available Data", "Years", "Number of Tasks");
+            return;
         }
 
         for (Map.Entry<Integer, Integer> entry : taskCounts.entrySet()) {
@@ -273,7 +294,7 @@ public class runnerTaskHistory extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Cooper Black", 0, 36)); // NOI18N
         jLabel1.setText("Task History");
 
-        backJB.setText("<  Main Menu");
+        backJB.setText("Main Menu");
         backJB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 backJBActionPerformed(evt);
@@ -289,7 +310,7 @@ public class runnerTaskHistory extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(backJB)
-                .addContainerGap())
+                .addGap(17, 17, 17))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -299,7 +320,7 @@ public class runnerTaskHistory extends javax.swing.JFrame {
                         .addGap(25, 25, 25)
                         .addComponent(jLabel1))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
+                        .addGap(15, 15, 15)
                         .addComponent(backJB)))
                 .addContainerGap(25, Short.MAX_VALUE))
         );

@@ -117,7 +117,7 @@ public class runnerRevenue extends javax.swing.JFrame {
         }
     }
 
-    // Chart for all income
+    // Chart all income (Last 5 Months)
     private void chartAllData() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         DefaultTableModel model = (DefaultTableModel) revenueJT.getModel();
@@ -125,10 +125,10 @@ public class runnerRevenue extends javax.swing.JFrame {
         LocalDate currentDate = LocalDate.now();
         LocalDate startDate = currentDate.minusMonths(4);
 
-        Map<Month, Double> incomeSums = new LinkedHashMap<>();
+        Map<YearMonth, Double> incomeSums = new LinkedHashMap<>();
 
         for (int i = 0; i < 5; i++) {
-            Month month = startDate.plusMonths(i).getMonth();
+            YearMonth month = YearMonth.from(startDate.plusMonths(i));
             incomeSums.put(month, 0.00);
         }
 
@@ -137,24 +137,29 @@ public class runnerRevenue extends javax.swing.JFrame {
             String incomeString = (String) model.getValueAt(i, 2);
 
             LocalDate taskDate = LocalDate.parse(dateString);
-            Month taskMonth = taskDate.getMonth();
+            YearMonth taskYearMonth = YearMonth.from(taskDate);
             double income = Double.parseDouble(incomeString);
 
-            if (incomeSums.containsKey(taskMonth)) {
-                incomeSums.put(taskMonth, incomeSums.get(taskMonth) + income);
+            if (incomeSums.containsKey(taskYearMonth)) {
+                incomeSums.put(taskYearMonth, incomeSums.get(taskYearMonth) + income);
             }
         }
-        
+
+        if (incomeSums.values().stream().allMatch(value -> value == 0.0)) {
+            JOptionPane.showMessageDialog(null, "No data available for the last 5 months.", "No Data", JOptionPane.INFORMATION_MESSAGE);
+            displayLineChart(dataset, "No Available Data", "Months", "Total Income");
+            return;
+        }
+
         DecimalFormat df = new DecimalFormat("0.00");
-        for (Map.Entry<Month, Double> entry : incomeSums.entrySet()) {
-            String monthLabel = entry.getKey().name();
-            String formattedIncome = df.format(entry.getValue());
-            dataset.addValue(Double.parseDouble(formattedIncome), "Income", monthLabel);
+        for (Map.Entry<YearMonth, Double> entry : incomeSums.entrySet()) {
+            String monthLabel = entry.getKey().getMonth().name() + " " + entry.getKey().getYear();
+            dataset.addValue(Double.parseDouble(df.format(entry.getValue())), "Income", monthLabel);
         }
 
         displayLineChart(dataset, "Income Over Last 5 Months", "Months", "Total Income");
     }
-
+    
     // Generate Daily Chart
     private void generateDailyChart(LocalDate startDate, LocalDate endDate) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
@@ -173,14 +178,24 @@ public class runnerRevenue extends javax.swing.JFrame {
                 incomeSums.put(taskDate, incomeSums.getOrDefault(taskDate, 0.0) + income);
             }
         }
-        
-        DecimalFormat df = new DecimalFormat("0.00");
-         for (Map.Entry<LocalDate, Double> entry : incomeSums.entrySet()) {
-            String day = entry.getKey().toString();
-            dataset.addValue(Double.parseDouble(df.format(entry.getValue())), "Income", day);
+
+        String chartTitle;
+
+        if (incomeSums.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No data available for the selected date range.", "No Data", JOptionPane.INFORMATION_MESSAGE);
+
+            chartTitle = "No Available Data";
+        } else {
+            DecimalFormat df = new DecimalFormat("0.00");
+            for (Map.Entry<LocalDate, Double> entry : incomeSums.entrySet()) {
+                String day = entry.getKey().toString();
+                dataset.addValue(Double.parseDouble(df.format(entry.getValue())), "Income", day);
+            }
+
+            chartTitle = "Income of Tasks from " + startDate + " to " + endDate;
         }
 
-        displayLineChart(dataset, "Income of Tasks from " + startDate + " to " + endDate, "Date", "Total Income");
+        displayLineChart(dataset, chartTitle, "Date", "Total Income");    
         updateTotalIncomeSelected(startDate, endDate);
     }
 
@@ -205,15 +220,23 @@ public class runnerRevenue extends javax.swing.JFrame {
             }
         }
         
-        DecimalFormat df = new DecimalFormat("0.00");
-        for (Map.Entry<YearMonth, Double> entry : incomeSums.entrySet()) {
-            String monthLabel = entry.getKey().getMonth() + " " + entry.getKey().getYear();
-            dataset.addValue(Double.parseDouble(df.format(entry.getValue())), "Income", monthLabel);
+        String chartTitle;
+        if (incomeSums.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No data available for the selected date range.", "No Data", JOptionPane.INFORMATION_MESSAGE);
+            chartTitle = "No Available Data";
+        } else {
+            // Format and populate dataset
+            DecimalFormat df = new DecimalFormat("0.00");
+            for (Map.Entry<YearMonth, Double> entry : incomeSums.entrySet()) {
+                String monthLabel = entry.getKey().getMonth() + " " + entry.getKey().getYear();
+                dataset.addValue(Double.parseDouble(df.format(entry.getValue())), "Income", monthLabel);
+            }
+
+            chartTitle = "Income of Tasks from " + startDate + " to " + endDate;
         }
 
-        displayLineChart(dataset, "Income of Tasks from " + startDate + " to " + endDate, "Months", "Total Income");
+        displayLineChart(dataset, chartTitle, "Months", "Total Income");
         updateTotalIncomeSelected(startDate, endDate);
-
     }
 
     // Generate yearly chart
@@ -235,21 +258,23 @@ public class runnerRevenue extends javax.swing.JFrame {
                 incomeSums.put(taskYear, incomeSums.getOrDefault(taskYear, 0.0) + income);
                 totalIncome += income; // Add to the total income
             }
+        }
+        if (incomeSums.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No data available for the selected year range.", "No Data", JOptionPane.INFORMATION_MESSAGE);
 
-            if (taskYear >= startYear && taskYear <= endYear) {
-                incomeSums.put(taskYear, incomeSums.getOrDefault(taskYear, 0.0) + income);
+            displayLineChart(dataset, "No Available Data", "Years", "Total Income");
+            incomeSelectJL.setText("RM 0.00");
+        } else {
+            DecimalFormat df = new DecimalFormat("0.00");
+            for (Map.Entry<Integer, Double> entry : incomeSums.entrySet()) {
+                String yearLabel = String.valueOf(entry.getKey());
+                dataset.addValue(Double.parseDouble(df.format(entry.getValue())), "Income", yearLabel);
             }
-        }
-    
-        DecimalFormat df = new DecimalFormat("0.00");
-        for (Map.Entry<Integer, Double> entry : incomeSums.entrySet()) {
-            String yearLabel = String.valueOf(entry.getKey());
-            dataset.addValue(Double.parseDouble(df.format(entry.getValue())), "Income", yearLabel);
-        }
 
-        displayLineChart(dataset, "Income of Tasks from " + startYear + " to " + endYear, "Years", "Total Income");
-        incomeSelectJL.setText(String.format("RM %.2f", totalIncome));
-    }
+            displayLineChart(dataset, "Income of Tasks from " + startYear + " to " + endYear, "Years", "Total Income");
+            incomeSelectJL.setText(String.format("RM %.2f", totalIncome));
+        }
+}
 
     // Display chart
     private void displayLineChart(DefaultCategoryDataset dataset, String title, String xAxisLabel, String yAxisLabel) {
@@ -329,7 +354,7 @@ public class runnerRevenue extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(153, 255, 153));
 
-        backJB.setText("<  Main Menu");
+        backJB.setText("Main Menu");
         backJB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 backJBActionPerformed(evt);
@@ -348,7 +373,7 @@ public class runnerRevenue extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(backJB)
-                .addContainerGap())
+                .addGap(16, 16, 16))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -655,19 +680,6 @@ public class runnerRevenue extends javax.swing.JFrame {
         LocalDate endLocalDate = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
         fetchFilteredData(startLocalDate, endLocalDate);
-        
-        // ✅ Debug: Check row count in table
-            int rowCount = revenueJT.getRowCount();
-            System.out.println("Row count after fetching data: " + rowCount);
-
-            // ✅ If no data, show dialog
-            if (rowCount == 0) { 
-                JOptionPane.showMessageDialog(this, 
-                    "No data available for the selected time range.", 
-                    "No Data", 
-                    JOptionPane.INFORMATION_MESSAGE);
-                return;
-            }
         generateDailyChart(startLocalDate, endLocalDate);
     }//GEN-LAST:event_DgenerateJBActionPerformed
 

@@ -148,7 +148,9 @@ public class runnerViewTask extends javax.swing.JFrame {
 
     // For Task reception area
     private void clearTaskDetails() {
-        GuiUtility.clearFields(orderIDTF, vendorNameTF, itemJT1, addressTA, deFeeTF);
+        GuiUtility.clearFields(orderIDTF, vendorNameTF, addressTA, deFeeTF);
+        DefaultTableModel model = (DefaultTableModel) itemJT1.getModel();
+        model.setRowCount(0);
 
         acceptJB.setEnabled(false);
         declineJB.setEnabled(false);
@@ -323,7 +325,7 @@ public class runnerViewTask extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Cooper Black", 0, 36)); // NOI18N
         jLabel1.setText("Task");
 
-        backJB.setText("<  Main Menu");
+        backJB.setText("Main Menu");
         backJB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 backJBActionPerformed(evt);
@@ -339,7 +341,7 @@ public class runnerViewTask extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(backJB)
-                .addContainerGap())
+                .addGap(17, 17, 17))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -700,9 +702,8 @@ public class runnerViewTask extends javax.swing.JFrame {
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(orderIDTF, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addGap(96, 96, 96)
+                                .addComponent(orderIDTF, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(96, 239, Short.MAX_VALUE)
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -833,6 +834,7 @@ public class runnerViewTask extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Task declined!");
                 
                 clearTaskDetails();
+                getRunnerTask(runnerEmail);
             }
         }
     }//GEN-LAST:event_declineJBActionPerformed
@@ -904,7 +906,9 @@ public class runnerViewTask extends javax.swing.JFrame {
 
                 // Refresh and Reset
                 displayCurrentTask(runnerEmail);
-                GuiUtility.clearFields(orderIDTF2, cusNameTF2, vendorNameTF2, itemJT2, addressTA2, contactNoTF, deFeeTF2);
+                GuiUtility.clearFields(orderIDTF2, cusNameTF2, vendorNameTF2, addressTA2, contactNoTF, deFeeTF2);
+                DefaultTableModel model = (DefaultTableModel) itemJT2.getModel();
+                model.setRowCount(0);
                 statusJCB.removeAllItems();
                 statusJCB.addItem("Select Row");
                 updateJB.setEnabled(false);
