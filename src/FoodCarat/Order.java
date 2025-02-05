@@ -645,11 +645,6 @@ public class Order {
         }
     }
 
-    // Method to clear the cart after the order is placed
-    public void clearCart() {
-        cart.clear();
-    }
-
     // Method to view all items in the cart
     public void viewCart() {
         StringBuilder cartDetails = new StringBuilder("Items in your cart:\n");
