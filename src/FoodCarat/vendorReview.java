@@ -17,7 +17,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import org.jfree.chart.ChartPanel;
-import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
 /**
@@ -59,7 +58,7 @@ public class vendorReview extends javax.swing.JFrame {
         model.setRowCount(0);
         List<String[]> allReviews = new Review().getAllReviews(email, "vendor");
         for (String[] reviewData : allReviews) {
-
+            System.out.println("Review " + reviewData[0] + ": " + Arrays.toString(reviewData));
             String reviewID = reviewData[0];
             String rating = reviewData[3];
             String feedback = reviewData[4];
@@ -137,7 +136,7 @@ public class vendorReview extends javax.swing.JFrame {
 
         //get items, price, and quantity to display in table
         Item item = new Item();
-        String orderItems = details[9].trim();
+        String orderItems = details[10].trim();
 
         //remove square brackets and split the items by "|"
         String[] itemDetails = orderItems.replace("[", "").replace("]", "").split("\\|");
@@ -147,10 +146,6 @@ public class vendorReview extends javax.swing.JFrame {
 
         for (String detail : itemDetails) {
             String[] parts = detail.split(";");
-            if (parts.length < 2) {
-                continue;
-            }
-
             int itemID = Integer.parseInt(parts[0]);
             int quantity = Integer.parseInt(parts[1]);
 
@@ -167,11 +162,11 @@ public class vendorReview extends javax.swing.JFrame {
         }
 
         try {
-            idLabel.setText(details[1].trim()); // Order ID
+            idLabel.setText(details[1].trim()); 
             dateLabel.setText(details[5].trim());
-            methodLabel.setText(details[8].trim().substring(0, 1).toUpperCase() + details[8].trim().substring(1).toLowerCase());
+            methodLabel.setText(details[9].trim().substring(0, 1).toUpperCase() + details[9].trim().substring(1).toLowerCase());
             emailLabel.setText(details[6].trim());
-            priceLabel.setText("RM" + details[17].trim());
+            priceLabel.setText("RM" + details[18].trim());
             ratingLabel.setText(details[3].trim() + " 🌟");
             vendorFeedbackTxtArea.setText(details[4].trim());
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -280,25 +275,16 @@ public class vendorReview extends javax.swing.JFrame {
         reviewTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) { 
+                if (!e.getValueIsAdjusting()) {
                     int selectedRow = reviewTable.getSelectedRow();
                     if (selectedRow != -1) { //check if a row is actually selected
-                        Object idObj = reviewTable.getModel().getValueAt(selectedRow, 1);
+                        Object id = reviewTable.getModel().getValueAt(selectedRow, 1);
                         try {
-                            if (idObj == null) {
-                                throw new NumberFormatException("ID is null");
-                            }
-
-                            String cleanID = idObj.toString().trim().replaceAll("[^0-9]", "");
-                            if (cleanID.isEmpty()) {
-                                throw new NumberFormatException("ID is empty after cleaning");
-                            }
-
-                            int id = Integer.parseInt(cleanID);
-                            displaySelectedReview(id);
+                            int selectID = Integer.parseInt(id.toString());
+                            displaySelectedReview(selectID);
 
                         } catch (NumberFormatException error) {
-                            JOptionPane.showMessageDialog(null, "The selected ID is not a valid number: " + idObj, "Error", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(null, "The selected ID is not a valid number: " + id, "Error", JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 }
@@ -450,28 +436,29 @@ public class vendorReview extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(revertBtn)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(ratingOneChkBox, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ratingTwoChkBox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ratingThreeChkBox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ratingFourChkBox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ratingFiveChkBox)
-                        .addGap(18, 18, 18)
-                        .addComponent(filterBtn)
-                        .addGap(405, 405, 405)
-                        .addComponent(sortComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 874, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(29, Short.MAX_VALUE))
+                        .addContainerGap()
+                        .addComponent(revertBtn))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(ratingOneChkBox, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(ratingTwoChkBox)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(ratingThreeChkBox)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(ratingFourChkBox)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(ratingFiveChkBox)
+                                .addGap(18, 18, 18)
+                                .addComponent(filterBtn)
+                                .addGap(405, 405, 405)
+                                .addComponent(sortComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 874, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
