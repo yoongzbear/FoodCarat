@@ -257,19 +257,24 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         //display message and clear chart if all items is 0 
         if (allZero) {
             JOptionPane.showMessageDialog(null, "No items were sold for the period.", "No Sales Data", JOptionPane.INFORMATION_MESSAGE);
-            if (type.equalsIgnoreCase("weekly")) {                
-                weeklyChartPanel.removeAll();
+            DefaultCategoryDataset blankDataset = new DefaultCategoryDataset();
+            blankDataset.addValue(0, "No Data", "");
+            if (type.equalsIgnoreCase("weekly")) {          
+                weeklyChartPanel.removeAll(); 
                 weeklyChartPanel.setLayout(new BorderLayout());
+                weeklyChartPanel.add(ChartUtility.createBarChart(blankDataset, "No Data Available", "", ""), java.awt.BorderLayout.CENTER);
                 weeklyChartPanel.revalidate();
                 weeklyChartPanel.repaint();
             } else if (type.equalsIgnoreCase("monthly")) {
                 monthlyChartPanel1.removeAll();
                 monthlyChartPanel1.setLayout(new BorderLayout());
+                monthlyChartPanel1.add(ChartUtility.createBarChart(blankDataset, "No Data Available", "", ""), java.awt.BorderLayout.CENTER);
                 monthlyChartPanel1.revalidate();
                 monthlyChartPanel1.repaint();
             } else if (type.equalsIgnoreCase("quarterly")) {
                 quarterlyChartPanel.removeAll();
                 quarterlyChartPanel.setLayout(new BorderLayout());
+                quarterlyChartPanel.add(ChartUtility.createBarChart(blankDataset, "No Data Available", "", ""), java.awt.BorderLayout.CENTER);
                 quarterlyChartPanel.revalidate();
                 quarterlyChartPanel.repaint();
             }

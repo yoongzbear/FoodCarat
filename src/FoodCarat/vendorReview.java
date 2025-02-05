@@ -17,6 +17,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import org.jfree.chart.ChartPanel;
+import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
 /**
@@ -25,7 +26,8 @@ import org.jfree.data.general.DefaultPieDataset;
  */
 public class vendorReview extends javax.swing.JFrame {
 
-    private String email = User.getSessionEmail();
+    //private String email = User.getSessionEmail();
+    private String email = "chagee@mail.com";
     Vendor vendor = new Vendor(email);
 
     /**
@@ -204,24 +206,30 @@ public class vendorReview extends javax.swing.JFrame {
         //display message and clear chart if all items is 0 
         if (allZero) {
             JOptionPane.showMessageDialog(null, "No ratings were given for the period.", "No Rating Data", JOptionPane.INFORMATION_MESSAGE);
+            DefaultPieDataset blankDataset = new DefaultPieDataset();
+            blankDataset.setValue("No Data", 0);
             if (type.equalsIgnoreCase("weekly")) {
                 weeklyChartPanel.removeAll();
                 weeklyChartPanel.setLayout(new BorderLayout());
+                weeklyChartPanel.add(ChartUtility.createPieChart(blankDataset, "No Data Available"), java.awt.BorderLayout.CENTER);
                 weeklyChartPanel.revalidate();
                 weeklyChartPanel.repaint();
             } else if (type.equalsIgnoreCase("monthly")) {
                 monthlyChartPanel.removeAll();
                 monthlyChartPanel.setLayout(new BorderLayout());
+                monthlyChartPanel.add(ChartUtility.createPieChart(blankDataset, "No Data Available"), java.awt.BorderLayout.CENTER);
                 monthlyChartPanel.revalidate();
                 monthlyChartPanel.repaint();
             } else if (type.equalsIgnoreCase("quarterly")) {
                 quarterlyChartPanel.removeAll();
                 quarterlyChartPanel.setLayout(new BorderLayout());
+                quarterlyChartPanel.add(ChartUtility.createPieChart(blankDataset, "No Data Available"), java.awt.BorderLayout.CENTER);
                 quarterlyChartPanel.revalidate();
                 quarterlyChartPanel.repaint();
             } else if (type.equalsIgnoreCase("yearly")) {
                 yearlyChartPanel.removeAll();
                 yearlyChartPanel.setLayout(new BorderLayout());
+                yearlyChartPanel.add(ChartUtility.createPieChart(blankDataset, "No Data Available"), java.awt.BorderLayout.CENTER);
                 yearlyChartPanel.revalidate();
                 yearlyChartPanel.repaint();
             }
