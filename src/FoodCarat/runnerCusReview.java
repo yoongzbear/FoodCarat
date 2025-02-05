@@ -135,7 +135,7 @@ public class runnerCusReview extends javax.swing.JFrame {
             }
         }
 
-        if (ratingCounts.values().stream().allMatch(count -> count == 0)) {
+        if (ratingCounts.isEmpty()) {
             JOptionPane.showMessageDialog(null, "No data available for the selected date range.", "No Data", JOptionPane.INFORMATION_MESSAGE);
             displayBarChart(dataset, "No Available Data", "Ranks", "Total Count");
             return;
@@ -169,7 +169,7 @@ public class runnerCusReview extends javax.swing.JFrame {
             }
         }
 
-        if (ratingCounts.values().stream().allMatch(count -> count == 0)) {
+        if (ratingCounts.isEmpty()) {
             JOptionPane.showMessageDialog(null, "No data available for the selected date range.", "No Data", JOptionPane.INFORMATION_MESSAGE);
             displayBarChart(dataset, "No Available Data", "Ranks", "Total Count");
             return;
@@ -205,7 +205,7 @@ public class runnerCusReview extends javax.swing.JFrame {
             }
         }
 
-        if (rankCounts.values().stream().allMatch(count -> count == 0)) {
+        if (rankCounts.isEmpty()) {
             JOptionPane.showMessageDialog(null, "No data available for the selected date range.", "No Data", JOptionPane.INFORMATION_MESSAGE);
             displayBarChart(dataset, "No Available Data", "Ranks", "Total Count");
             return;
@@ -240,7 +240,7 @@ public class runnerCusReview extends javax.swing.JFrame {
             }
         }
 
-        if (rankCounts.values().stream().allMatch(count -> count == 0)) {
+        if (rankCounts.isEmpty()) {
             JOptionPane.showMessageDialog(null, "No data available for the selected years.", "No Data", JOptionPane.INFORMATION_MESSAGE);
             displayBarChart(dataset, "No Available Data", "Ranks", "Total Count");
             return;

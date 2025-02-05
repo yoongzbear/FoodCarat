@@ -96,7 +96,6 @@ public class runnerRevenue extends javax.swing.JFrame {
 
         DefaultTableModel model = (DefaultTableModel) revenueJT.getModel();
         model.setRowCount(0);
-        boolean dataFound = false;
 
         for (String[] task : completedTasks) {
             String orderDate = task[9];
@@ -143,7 +142,7 @@ public class runnerRevenue extends javax.swing.JFrame {
             }
         }
 
-        if (incomeSums.values().stream().allMatch(value -> value == 0.0)) {
+        if (incomeSums.isEmpty()) {
             JOptionPane.showMessageDialog(null, "No data available for the last 5 months.", "No Data", JOptionPane.INFORMATION_MESSAGE);
             displayLineChart(dataset, "No Available Data", "Months", "Total Income");
             return;
