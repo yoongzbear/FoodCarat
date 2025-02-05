@@ -35,7 +35,7 @@ public class vendorItemDeleted extends javax.swing.JFrame {
         //set deleted by who
         if (itemInfo[6].trim().equalsIgnoreCase("deleted by vendor")) {
             String[] vendorInfo = new User().getUserInfo(itemInfo[5].trim());
-            itemDeletedTxt.setText(vendorInfo[2]); //display vendor name
+            itemDeletedTxt.setText(vendorInfo[1]); //display vendor name
         } else if (itemInfo[6].trim().equalsIgnoreCase("deleted by manager")) {
             itemDeletedTxt.setText("Manager");
         }
