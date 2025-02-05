@@ -53,6 +53,12 @@ public class adminTopupCredit extends javax.swing.JFrame {
             double currentAmount = currentAmountStr.isEmpty() ? 0.0 : Double.parseDouble(currentAmountStr);
             double topUpAmount = topUpAmountStr.isEmpty() ? 0.0 : Double.parseDouble(topUpAmountStr);
 
+            // Check if top-up amount is negative
+            if (topUpAmount < 0) {
+                sumtxt.setText("Amount to top up cannot be negative");
+                return; // Stop further execution
+            }
+            
             // Calculate the new amount
             double newAmount = currentAmount + topUpAmount;
 
@@ -273,6 +279,12 @@ public class adminTopupCredit extends javax.swing.JFrame {
 
             if (topUpAmountStr.isEmpty()) {
                 javax.swing.JOptionPane.showMessageDialog(this, "Please enter the top-up amount.", "Input Error", javax.swing.JOptionPane.WARNING_MESSAGE);
+                toupnumtxt.requestFocus();
+                return;
+            }
+            
+            if (Double.parseDouble(topUpAmountStr)<0) {
+                javax.swing.JOptionPane.showMessageDialog(this, "The top up amount can not be negative!", "Input Error", javax.swing.JOptionPane.WARNING_MESSAGE);
                 toupnumtxt.requestFocus();
                 return;
             }
