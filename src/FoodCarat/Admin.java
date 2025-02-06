@@ -29,14 +29,13 @@ public class Admin extends User {
     private String venFile = "resources/vendor.txt";
     private String runFile = "resources/runner.txt";
     private String cuscreditFile = "resources/transactionCredit.txt";
-    
-    public Admin(){
-        
+
+    public Admin() { 
+        this.email = "";
     }
-    
+
     //Registration
-    //validate email is registered for Registration
-    public static boolean isEmailRegistered(String email, String filename) {
+    public static boolean isEmailRegistered(String email, String filename) { //validate email is registered for Registration
         File file = new File(filename);
         if (file.exists()) {
             try (BufferedReader br = new BufferedReader(new FileReader(file))) {
@@ -53,7 +52,7 @@ public class Admin extends User {
         }
         return false;
     }
-    
+
     public static String registerUser(String email, String username, String role) throws IOException {
         // Generate sample password
         final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%";
@@ -64,7 +63,7 @@ public class Admin extends User {
         }
         String password = samplePassword.toString();
         String roleFileName = "resources/" + role + ".txt";
-        
+
         // Write to user.txt
         try (FileWriter userWriter = new FileWriter(userFile, true)) {
             userWriter.write(email + "," + username + "," + samplePassword + "," + role + ",,\n");
@@ -74,23 +73,22 @@ public class Admin extends User {
         try (FileWriter roleWriter = new FileWriter(roleFileName, true)) {
             if ("customer".equalsIgnoreCase(role)) {
                 roleWriter.write(email + ",,0.0,0\n"); //credit amount will be 0.0 after the registration and the point will be 0
-            } else if("vendor".equalsIgnoreCase(role)){
+            } else if ("vendor".equalsIgnoreCase(role)) {
                 roleWriter.write(email + ",,,[],0.0\n");
-            } else{
+            } else {
                 roleWriter.write(email + ",,\n");
             }
         }
 
         return password; // Return the generated password
     }
-    
+
     //Update user info
-    //search for update user info
-    public void searchUser(String searchEmail, String selectedRole, adminUpdateUser updateUserForm) {
+    public void searchUser(String searchEmail, String selectedRole, adminUpdateUser updateUserForm) { //search for update user info
 
         // Check the login status, role match, and email match
         String result = checkFirstLogin(searchEmail, selectedRole, userFile);
-        
+
         // Handle based on the result of checkFirstLogin
         if (result.equals("notFound")) {
             JOptionPane.showMessageDialog(null, "Email not found. Please check the entered email.");
@@ -100,18 +98,18 @@ public class Admin extends User {
             JOptionPane.showMessageDialog(null, "User has not completed the first login. Admin can't perform the update for the user.");
         } else if (result.equals("notExisting")) {
             JOptionPane.showMessageDialog(null, "User account does not exist. Please try again.");
-        }else {
+        } else {
             //get the customer address by remove the [] and change ; to ,
             if ("customer".equals(selectedRole)) {
-                        Customer customer = new Customer(searchEmail);
-                        String customerAddress = customer.getCustomerAddress(searchEmail);
-                        result = customerAddress;
+                Customer customer = new Customer(searchEmail);
+                String customerAddress = customer.getCustomerAddress(searchEmail);
+                result = customerAddress;
             }
-        // If the user has completed the first login, update the user data
-        updateUserForm.setUserData(getEmail(), getName(), getBirth(), getContactNumber(), result);
+            // If the user has completed the first login, update the user data
+            updateUserForm.setUserData(getEmail(), getName(), getBirth(), getContactNumber(), result);
         }
-    }    
-          
+    }
+
     public boolean updateFile(String fileName, String email, String[] updatedFields, int[] updateIndices) {
         List<String> fileContent = new ArrayList<>();
         boolean recordUpdated = false;
@@ -157,7 +155,7 @@ public class Admin extends User {
 
         return true;
     }
-        
+
     // Remain the email and name at user.txt but remove others info (eg.email,name,,userType,,)- password is empty
     public boolean removeInfoUserFile(String fileName, String email) {
         List<String> fileContent = new ArrayList<>();
@@ -172,7 +170,7 @@ public class Admin extends User {
                 if (data[0].equalsIgnoreCase(email)) {
                     recordUpdated = true;
                     // Update the user record with email, name, and empty fields
-                    fileContent.add(data[0] + "," + data[1] + ",,"+ data[3]+ ",,");
+                    fileContent.add(data[0] + "," + data[1] + ",," + data[3] + ",,");
                 } else {
                     fileContent.add(line); // Keep other records unchanged
                 }
@@ -199,8 +197,8 @@ public class Admin extends User {
 
         return true;
     }
-    //delete the info in role.txt
-    public boolean deleteFromFile(String fileName, String email) {
+    
+    public boolean deleteFromFile(String fileName, String email) { //delete the info in role.txt
         List<String> fileContent = new ArrayList<>();
         boolean recordDeleted = false;
 
@@ -238,14 +236,12 @@ public class Admin extends User {
 
         return true;
     }
-    
+
     //Top up credit    
-    // method for top up credit proccess
     public void processChangesCredit(String email, String name, double currentAmount, double changesAmount) throws IOException {
         String transFilePath = cuscreditFile;
-        String userFilePath = userFile;
         double newAmount = currentAmount + changesAmount;
-        
+
         //get the next transaction id 
         int transactionId = 1; // Default starting value
         File transactionFile = new File(transFilePath);
@@ -275,10 +271,10 @@ public class Admin extends User {
                 transactionId = maxId + 1;
             }
         }
-        
+
         //get current date and time
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String dateTime = formatter.format(new Date());        
+        String dateTime = formatter.format(new Date());
         // Extract date and time separately
         String[] dateTimeParts = dateTime.split(" ");
         String date = dateTimeParts[0];
@@ -286,15 +282,15 @@ public class Admin extends User {
 
         // Prepare transaction details
         String transactionDetails = String.format(
-            "%s,%s,%.2f,%.2f,%s,%s\n",
-            transactionId, email,  currentAmount, changesAmount, date, time
+                "%s,%s,%.2f,%.2f,%s,%s\n",
+                transactionId, email, currentAmount, changesAmount, date, time
         );
 
         // Save transaction details to the file
         try (FileWriter writer = new FileWriter(transFilePath, true)) { // Append mode
             writer.write(transactionDetails);
         }
-        
+
         // Update the credit in the file base on role
         User user = new User();
         String role = user.getRoleByEmail(email, userFile);
@@ -316,24 +312,23 @@ public class Admin extends User {
         } else {
             throw new IOException("User role not found for email: " + email);
         }
-        
+
         // Notify the user of success
         javax.swing.JOptionPane.showMessageDialog(null, "Changes completed successfully!\nThe receipt has been sent to the user.", "Success", javax.swing.JOptionPane.INFORMATION_MESSAGE);
-        
+
         // Show receipt UI
         adminCusReceipt receipt = new adminCusReceipt(transactionId, email, name, currentAmount, changesAmount, date, time);
         receipt.setVisible(true);
     }
-    
-    //Notification
-    // Method to retrieve the list of transaction messages
-    public ArrayList<String> getTransactionMessages() {
+
+    //Notification    
+    public ArrayList<String> getTransactionMessages() { // Method to retrieve the list of transaction messages
         ArrayList<String> transactionMessages = new ArrayList<>();
         String filePath = cuscreditFile;
-        
+
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
-            
+
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
 
@@ -347,13 +342,13 @@ public class Admin extends User {
                     String message;
                     if (amountChanges >= 0) {
                         message = String.format(
-                            "Top-up amount RM%.2f has been successfully credited into %s's account at %s %s (transaction id: %s)",
-                            amountChanges, email, date, time, transactionId
+                                "Top-up amount RM%.2f has been successfully credited into %s's account at %s %s (transaction id: %s)",
+                                amountChanges, email, date, time, transactionId
                         );
                     } else {
                         message = String.format(
-                            "Withdraw amount RM%.2f has been successfully deducted from %s's account at %s %s (transaction id: %s)",
-                            Math.abs(amountChanges), email, date, time, transactionId
+                                "Withdraw amount RM%.2f has been successfully deducted from %s's account at %s %s (transaction id: %s)",
+                                Math.abs(amountChanges), email, date, time, transactionId
                         );
                     }
                     // Add message to the list
@@ -363,10 +358,10 @@ public class Admin extends User {
         } catch (IOException e) {
             javax.swing.JOptionPane.showMessageDialog(null, "Error reading file: " + e.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
         }
-        
+
         // Reverse the list so the latest transactions appear first
         Collections.reverse(transactionMessages);
-        
+
         return transactionMessages;
     }
 }

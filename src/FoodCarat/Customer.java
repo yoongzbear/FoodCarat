@@ -43,6 +43,10 @@ public class Customer extends User{
         }
     }
     
+    public Customer() {
+        super();
+    }
+    
     //point system related
     public void addPoints(int add){
         this.points += add;
@@ -194,11 +198,6 @@ public class Customer extends User{
         }
 
         return topupInfo;
-    }
-    
-    // for contrustor
-    public Customer(){
-        super();
     }
     
     public String deliveryAddress(Component parentComponent, String email) {

@@ -19,12 +19,12 @@ import javax.swing.JOptionPane;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-
 /**
  *
  * @author ASUS
  */
 public class Order {
+
     private int orderID;
     private int orderTypeChoice;
     private String orderType;
@@ -36,26 +36,27 @@ public class Order {
     private int reasonID;
     private int totalOrders = 0;
     private double totalRevenue;
-    
+
     private List<String[]> cart;
     private String orderFile = "resources/customerOrder.txt";
     private String itemFile = "resources/item.txt";
     private String reasonFile = "resources/cancellationReason.txt";
     private String runnerFile = "resources/runner.txt"; //for assign order
     private String customerFile = "resources/customer.txt";
-    
-    public Order(){                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+
+    public Order() {
+        this.orderID = 0;
     }
-    
-    public Order(String choice){ //for initialOrder()
+
+    public Order(String choice) { //for initialOrder()
         this.orderType = choice;
         this.customerEmail = User.getSessionEmail();
     }
-    
-    public Order(int orderID){ //for getting customer order feedback
+
+    public Order(int orderID) { //for getting customer order feedback
         this.orderID = orderID;
     }
-    
+
     public Order(String orderType, String customerEmail) { //for cart
         this.orderType = orderType;
         this.customerEmail = customerEmail;
@@ -133,44 +134,43 @@ public class Order {
     public void setReasonID(int reasonID) {
         this.reasonID = reasonID;
     }
-    
+
     public int getTotalOrders() {
         return totalOrders;
     }
-    
+
     public void incrementOrders() {
         this.totalOrders++;
     }
-    
+
     public double getTotalRevenue() {
         return totalRevenue;
     }
-    
+
     public void incrementRevenue(double revenue) {
         this.totalRevenue += revenue; // Increment revenue only
     }
-    
+
     public double getAverageValuePerOrder() {
         return getTotalOrders() == 0 ? 0.0 : totalRevenue / getTotalOrders();
     }
-    
-    public void initialOrder(){ //initial order after customer choose orderType
+
+    public void initialOrder() { //initial order after customer choose orderType
         //generate orderID
         int lastOrder = 0;
         try {
             BufferedReader br = new BufferedReader(new FileReader("resources/customerOrder.txt"));
             String line;
-            while((line=br.readLine()) != null){
+            while ((line = br.readLine()) != null) {
                 String[] record = line.split(",");
                 lastOrder = Integer.parseInt(record[0]);
             }
             lastOrder = lastOrder + 1;
             br.close();
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        
+
         this.orderID = lastOrder;
         //write order with orderID, orderType and customerEmail
         String newLine = lastOrder + "," + orderType.toLowerCase() + ",,," + customerEmail + ",null,null,0.0,0.0,null";
@@ -178,36 +178,36 @@ public class Order {
             FileWriter fw = new FileWriter(orderFile, true); //true is use for appending data in new line
             fw.write(newLine + "\n");
             fw.close();
-            if ("Delivery".equals(orderType)){
+            if ("Delivery".equals(orderType)) {
                 JOptionPane.showMessageDialog(null, "Please take note that additional charges will be imposed as delivery fee.");
             }
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
-    
+
     //get all orders 
     public List<String[]> getAllOrders() {
         List<String[]> allOrders = new ArrayList<>();
-        
+
         try {
             FileReader fr = new FileReader(orderFile);
             BufferedReader br = new BufferedReader(fr);
             String read;
-            
+
             while ((read = br.readLine()) != null) {
                 String[] orderData = read.split(",");
                 allOrders.add(orderData);
             }
             br.close();
             fr.close();
-        } catch(IOException e) {
+        } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Failed to read from order file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-        
+
         return allOrders;
     }
-    
+
     //get all orders for the vendor
     public List<String[]> getAllOrders(String vendorEmail) {
         List<String[]> vendorOrders = new ArrayList<>();
@@ -227,23 +227,22 @@ public class Order {
             if (containsVendorItems(orderItems, allItemIDs)) {
                 double totalPrice = calculateTotalPrice(orderItems);
                 String[] orderWithTotal = Arrays.copyOf(order, order.length + 1);
-                orderWithTotal[order.length] = df.format(totalPrice); 
+                orderWithTotal[order.length] = df.format(totalPrice);
                 vendorOrders.add(orderWithTotal);
             }
         }
         return vendorOrders;
     }
-    
+
     //get order IDs by vendor/runner email
     public List<Integer> getOrderIDsReview(String email, String type) {
         List<Integer> orderIDs = new ArrayList<>();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(orderFile));
-            BufferedReader itemReader = new BufferedReader(new FileReader(itemFile))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(orderFile)); BufferedReader itemReader = new BufferedReader(new FileReader(itemFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(","); //orderFile
-                if (parts.length < 11 && parts[2] != "") {
+                if (parts.length < 11 && !"".equals(parts[2])) {
                     if (type.equalsIgnoreCase("vendor")) {
                         String orderItems = parts[2];
                         String currentVendorEmail = "";
@@ -257,17 +256,17 @@ public class Order {
                             //currentVendorEmail = itemData[5];
                             if (itemData != null && itemData.length > 5) {
                                 currentVendorEmail = itemData[5];
-                            } 
+                            }
                         }
                         if (currentVendorEmail.equals(email)) {
-                            int orderID1 = Integer.parseInt(parts[0]);  
+                            int orderID1 = Integer.parseInt(parts[0]);
                             orderIDs.add(orderID1);
                         }
                     } else if (type.equalsIgnoreCase("runner")) {
-                        String currentRunnerEmail = parts[5];  
+                        String currentRunnerEmail = parts[5];
 
                         if (currentRunnerEmail.equals(email)) {
-                            int orderID1 = Integer.parseInt(parts[0]);  
+                            int orderID1 = Integer.parseInt(parts[0]);
                             orderIDs.add(orderID1);
                         }
                     }
@@ -281,7 +280,7 @@ public class Order {
 
         return orderIDs;
     }
-    
+
     //get new orders with status "pending accept"
     public String[] getNewOrder(String vendorEmail) {
         List<String[]> vendorOrders = getAllOrders(vendorEmail);
@@ -292,15 +291,15 @@ public class Order {
             try {
                 LocalDate orderDate = LocalDate.parse(orderData[9].trim(), dateFormat);
                 if (orderData[3].equalsIgnoreCase("Pending accept") && orderDate.isEqual(currentDate)) {
-                return orderData;
-            }
+                    return orderData;
+                }
             } catch (DateTimeParseException e) {
                 System.err.println("Invalid date format for order ID " + orderData[0] + ": " + e.getMessage());
             }
-        }        
+        }
         return null; //no new order
     }
-    
+
     //get orders based on status for the vendor
     public List<String[]> getOrderByStatus(String vendorEmail, String orderStatus) {
         List<String[]> orderData = new ArrayList<>();
@@ -312,13 +311,13 @@ public class Order {
         }
         return orderData;
     }
-    
+
     //count number of items ordered
     public List<String[]> getOrderedItemQuantities(String vendorEmail, String type, String timeRange) { //type = weekly/month/quarter
         List<String[]> itemQuantities = new ArrayList<>();
         List<String[]> vendorItems = new Item().getAllItems(vendorEmail, false); //get items from vendor inlcuding deleted ones
         List<String[]> allOrders = getAllOrders(vendorEmail);
-        
+
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         //get start and end date
@@ -326,29 +325,28 @@ public class Order {
         String[] timeRangeParts = timeRange.split(",");
         try {
             if (type.equalsIgnoreCase("weekly")) {
-                startDate = LocalDate.parse(timeRangeParts[0], dateFormat); 
-                endDate = LocalDate.parse(timeRangeParts[1], dateFormat);   
+                startDate = LocalDate.parse(timeRangeParts[0], dateFormat);
+                endDate = LocalDate.parse(timeRangeParts[1], dateFormat);
             } else if (type.equalsIgnoreCase("monthly")) {
-                int month = Integer.parseInt(timeRangeParts[0]); 
-                int year = Integer.parseInt(timeRangeParts[1]);  
-                startDate = LocalDate.of(year, month, 1); 
-                endDate = startDate.withDayOfMonth(startDate.lengthOfMonth()); 
+                int month = Integer.parseInt(timeRangeParts[0]);
+                int year = Integer.parseInt(timeRangeParts[1]);
+                startDate = LocalDate.of(year, month, 1);
+                endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
             } else if (type.equalsIgnoreCase("quarterly")) {
-                startDate = LocalDate.parse(timeRangeParts[0], dateFormat); 
-                endDate = LocalDate.parse(timeRangeParts[1], dateFormat); 
+                startDate = LocalDate.parse(timeRangeParts[0], dateFormat);
+                endDate = LocalDate.parse(timeRangeParts[1], dateFormat);
             }
         } catch (Exception e) {
             System.err.println("Invalid time range format: " + timeRange);
             return itemQuantities;
         }
-        
+
         //add initial list of item's ID with 0 quantity
         for (String[] vendorItem : vendorItems) {
             itemQuantities.add(new String[]{vendorItem[0], "0"}); //[itemID, quantity]
-        }        
-        
+        }
+
         for (String[] order : allOrders) {
-            //1,Take away,[1;1|2;1],in kitchen,customer@mail.com,NULL,NULL,0.00,27.80,2025-01-28
             if (!order[3].trim().equalsIgnoreCase("pending accept") && !order[3].trim().equalsIgnoreCase("cancelled")) {
                 try {
                     LocalDate orderDate = LocalDate.parse(order[9].trim(), dateFormat);
@@ -403,7 +401,6 @@ public class Order {
             String[] parts = detail.split(";");
             int itemID = Integer.parseInt(parts[0]);
             int quantity = Integer.parseInt(parts[1]);
-            //double price = getItemPrice(itemID, vendorItems);
             Item item = new Item();
             String priceStr = item.itemData(itemID)[3];
             double price = Double.parseDouble(priceStr);
@@ -411,10 +408,9 @@ public class Order {
         }
         return totalPrice;
     }
- 
-    //get order based on ID
-    public String[] getOrder(int id) {
-        String[] orderInfo = new String[12];
+
+    public String[] getOrder(int id) { //get order based on ID
+        String[] orderInfo = new String[12]; //order and vendor information
         DecimalFormat df = new DecimalFormat("0.00");
         try {
             FileReader fr = new FileReader(orderFile);
@@ -433,7 +429,7 @@ public class Order {
                     int firstItemID = Integer.parseInt(firstItem.split(";")[0]);
                     Item item = new Item();
                     String[] itemInfo = item.itemData(firstItemID);
-                    String vendorEmail = (itemInfo != null) ? itemInfo[5] : "N/A"; 
+                    String vendorEmail = (itemInfo != null) ? itemInfo[5] : "N/A";
 
                     orderInfo = Arrays.copyOf(parts, parts.length + 2); //extend array with extra 2
                     orderInfo[parts.length] = df.format(totalPrice); //add total price to the end of the row
@@ -449,8 +445,7 @@ public class Order {
         return orderInfo;
     }
 
-    
-    public void deleteIncompleteOrder(int orderID){ //delete order if customer back to main without completing the order
+    public void deleteIncompleteOrder(int orderID) { //delete order if customer back to main without completing the order
         try {
             //Reading the content of the file
             BufferedReader br = new BufferedReader(new FileReader(orderFile));
@@ -478,8 +473,8 @@ public class Order {
             JOptionPane.showMessageDialog(null, "Error while deleting order: " + e.getMessage());
         }
     }
-    
-    // Method to add item to cart
+
+    // add item to cart
     public void addItemToCart(int itemID, String itemName, int quantity, double unitPrice) {
         // Check if the item already exists in the cart
         for (String[] item : cart) {
@@ -495,11 +490,11 @@ public class Order {
         cart.add(newItem);
     }
 
-    // Method to remove item from cart
+    // remove item from cart
     public void removeItemFromCart(int itemID) {
         cart.removeIf(item -> Integer.parseInt(item[0]) == itemID);
     }
-    
+
     public void updateItemQuantity(int itemID, int newQuantity) {
         for (String[] item : cart) {
             if (Integer.parseInt(item[0]) == itemID) {
@@ -509,10 +504,10 @@ public class Order {
         }
     }
 
-    // Method to get the total price of the order for cart
+    // get the total price of the order for cart
     public double getTotalPrice(List<String[]> cart) {
         double total = 0.0;
-        
+
         for (String[] item : cart) {
             double price = Double.parseDouble(item[3]);
             int quantity = Integer.parseInt(item[2]);
@@ -537,11 +532,11 @@ public class Order {
                     // Calculate the total price and delivery fee
                     double originalPrice = getTotalPrice(cart);  // Get the original total price from the cart
                     double deliveryFee = 0.0;
-                    if ("delivery".equals(currentOrderType)){
+                    if ("delivery".equals(currentOrderType)) {
                         deliveryFee = calculateDeliveryFee(originalPrice);
                     }
                     double totalPaid = originalPrice + deliveryFee;
-                    
+
                     // Build the order items list
                     StringBuilder orderItems = new StringBuilder();
                     orderItems.append("[");
@@ -565,8 +560,6 @@ public class Order {
                     String formattedDeliveryFee = String.format("%.2f", deliveryFee);
 
                     // Update the order data with the new values
-                    //3,Take away,[2;1|4;1],Ordered,customerEmail,NULL,NULL,0.0,20.00,2025-01-01
-                    //30,Dine In,[2;4],,customer@mail.com,null,null,0.00,0.00,null
                     orderData[2] = orderItems.toString();  // Set order items
                     orderData[7] = formattedDeliveryFee;  // Set delivery fee
                     orderData[8] = formattedTotalPaid;  // Set total paid (price + delivery)
@@ -588,7 +581,7 @@ public class Order {
             e.printStackTrace();
         }
     }
-    
+
     public void writeReOrderDetails(int newOrderID, String orderItems, double price) {
         try {
             List<String> updatedLines = new ArrayList<>();
@@ -601,33 +594,26 @@ public class Order {
                 int currentOrderID = Integer.parseInt(orderData[0]);
 
                 if (currentOrderID == orderID) {
-                String currentOrderType = orderData[1];
-                double originalPrice = price;
-                double deliveryFee = 0.0;
+                    String currentOrderType = orderData[1];
+                    double originalPrice = price;
+                    double deliveryFee = 0.0;
 
-                if ("delivery".equalsIgnoreCase(currentOrderType)) {
-                    deliveryFee = calculateDeliveryFee(originalPrice);
-                }
-                double totalPaid = originalPrice + deliveryFee;
-
-                String formattedTotalPaid = String.format("%.2f", totalPaid);
-                String formattedDeliveryFee = String.format("%.2f", deliveryFee);
-
-                /**
-                String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-
-                String orderDetails = newOrderID + "," + orderMethod + "," + orderItems + ",pending accept," +
-                                      email + ",null,null," + formattedDeliveryFee + "," + formattedTotalPaid + "," + currentDate;
-    **/
-                orderData[2] = orderItems;
-                orderData[7] = formattedDeliveryFee;
-                orderData[8] = formattedTotalPaid; 
-
-                line = String.join(",", orderData);
+                    if ("delivery".equalsIgnoreCase(currentOrderType)) {
+                        deliveryFee = calculateDeliveryFee(originalPrice);
                     }
-                            updatedLines.add(line);
+                    double totalPaid = originalPrice + deliveryFee;
 
+                    String formattedTotalPaid = String.format("%.2f", totalPaid);
+                    String formattedDeliveryFee = String.format("%.2f", deliveryFee);
+                    orderData[2] = orderItems;
+                    orderData[7] = formattedDeliveryFee;
+                    orderData[8] = formattedTotalPaid;
+
+                    line = String.join(",", orderData);
                 }
+                updatedLines.add(line);
+
+            }
 
             reader.close();
 
@@ -636,7 +622,7 @@ public class Order {
                 writer.write(updatedLine);
                 writer.newLine();
             }
-        
+
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -647,7 +633,7 @@ public class Order {
     public List<String[]> getCart() {
         return cart;
     }
-    
+
     public void writePaymentDetails(int orderID, double newPaymentTotal, String today) {
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -685,7 +671,7 @@ public class Order {
             e.printStackTrace();
         }
     }
-    
+
     private double calculateDeliveryFee(double originalPrice) {
         double deliveryFee = 0.0;
         if ("delivery".equals(orderType)) {
@@ -703,7 +689,7 @@ public class Order {
         }
         return deliveryFee;
     }
-    
+
     public void updateStatus(int id, String newOrderStatus, String userType) {
         // Get order info from order.txt using id
         String[] order = getOrder(id);
@@ -746,7 +732,7 @@ public class Order {
             fw.close();
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Update order status failed: " + e.getMessage());
-            return;         
+            return;
         }
 
         if ("assigning runner".equalsIgnoreCase(newOrderStatus)) {
@@ -756,7 +742,7 @@ public class Order {
             }
         }
     }
-    
+
     public boolean assignOrderToRunner(String[] orderData, String currentRunnerEmail) {
         boolean runnerAssigned = false;
         boolean startAssigning = currentRunnerEmail == null || currentRunnerEmail.isEmpty();
@@ -832,7 +818,7 @@ public class Order {
             e.printStackTrace();
         }
     }
-    
+
     public List<String[]> getCompletedTask(String runnerEmail) {
         List<String[]> completedTasks = new ArrayList<>();
 
@@ -850,19 +836,19 @@ public class Order {
 
         return completedTasks;
     }
-    
+
     public void refund(int orderID, String userEmail) throws IOException {
         String[] order = getOrder(orderID);
-        String orderEmail = order[0]; 
-        String orderType = order[1]; 
-        String orderItems = order[2]; 
-        String orderStatus = order[3]; 
-        String customerEmail = order[4]; 
-        String runnerEmail = order[5]; 
-        String cancelReason = order[6]; 
+        String orderEmail = order[0];
+        String orderType = order[1];
+        String orderItems = order[2];
+        String orderStatus = order[3];
+        String customerEmail = order[4];
+        String runnerEmail = order[5];
+        String cancelReason = order[6];
         double deliveryFee = Double.parseDouble(order[7]);
         double totalPaid = Double.parseDouble(order[8]);
-        String orderDate = order[9]; 
+        String orderDate = order[9];
 
         // Calculate the refund amount (for example, 100% refund of total price)
         double priceExcludeDelivery = totalPaid - deliveryFee;
@@ -872,7 +858,7 @@ public class Order {
         int earnedPoints = customer.calculateEarnablePoints(priceExcludeDelivery); //calculate earned points from the order
         customer.addPoints(redeemedPoints); //refund the points redeemed
         customer.deductPoints(earnedPoints); //deduct the points earned
-        
+
         //refund full credit
         //User user = new User();
         String[] userInfo = customer.customerInfo(userEmail);

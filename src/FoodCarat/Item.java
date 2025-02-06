@@ -35,7 +35,8 @@ public class Item {
 
     //constructor
     public Item() {
-        
+        this.itemID = 0;
+        this.itemName = "";
     }
 
     //for add new item
@@ -113,7 +114,7 @@ public class Item {
             BufferedWriter bw = new BufferedWriter(fw);
             //convert price to string
             DecimalFormat df = new DecimalFormat("0.00");
-            String itemPriceStr = df.format(itemPrice).toString();
+            String itemPriceStr = df.format(itemPrice);
             String newRow = itemID + "," + itemName + "," + itemType + "," + itemPriceStr + "," + itemImgPath + "," + venEmail + "," + itemStatus;
             
             //write row and add new row
@@ -127,8 +128,7 @@ public class Item {
         }
     }
     
-    //upload item image into images/menu
-    public String uploadImage(String sourcePath) {
+    public String uploadImage(String sourcePath) { //upload item image into images/menu
         try {
             //ensure folder exists
             Path destinationFolder = Paths.get("images/menu");
@@ -150,9 +150,8 @@ public class Item {
             return null;
         }
     }
-    
-    //get item data
-    public String[] itemData(int itemID) {
+        
+    public String[] itemData(int itemID) { //get item data
         String[] itemInfo = null;
         try {
             FileReader fr = new FileReader(itemFile);
@@ -177,9 +176,8 @@ public class Item {
         }
         return itemInfo;
     }
-    
-    //get item data for latest row (last row)
-    public String[] latestItem() {
+        
+    public String[] latestItem() { //get item data for latest row (last row)
         //get last row in text file
         String[] latestRow = null;
         try {
@@ -187,9 +185,8 @@ public class Item {
             BufferedReader br = new BufferedReader(fr);
             String read;
             
-            while ((read = br.readLine()) != null) {
-                //get last row
-                latestRow = read.split(",");
+            while ((read = br.readLine()) != null) {                
+                latestRow = read.split(","); //get last row
             }
             
             br.close();
@@ -230,7 +227,6 @@ public class Item {
         return allItems;
     }
     
-    //method overloading
     //get data for all items matching vendor email
     public List<String[]> getAllItems(String venEmail, boolean isAvailableOnly) { 
         List<String[]> allItems = new ArrayList<>();
@@ -272,7 +268,6 @@ public class Item {
             String detail = itemDetails[i];
             String[] parts = detail.split(";");
             int itemID = Integer.parseInt(parts[0]); // itemID
-            int quantity = Integer.parseInt(parts[1]); // quantity
 
             String[] itemData = itemData(itemID);
             String itemName = itemData != null && itemData.length > 1 ? itemData[1] : "Unknown Item";
@@ -286,9 +281,8 @@ public class Item {
 
         return updatedItems.toString();
     }
-    
-    //return items searched
-    public List<String[]> searchItems(String venEmail, String searchItem) {
+        
+    public List<String[]> searchItems(String venEmail, String searchItem) { //return items searched
         List<String[]> searchedItems = new ArrayList<>();
         List<String[]> allItems = getAllItems(venEmail, true); //for items with available status only 
         
@@ -302,9 +296,8 @@ public class Item {
         
         return searchedItems;
     }
-    
-    //update item
-    public void editItem() {
+        
+    public void editItem() { //update item
         //get all data
         List<String[]> allItems = getAllItems(true); //for items with available status only
         boolean isEdited = false;
@@ -322,7 +315,7 @@ public class Item {
                 } else {
                     //found row and rewrite the row with the new info
                     DecimalFormat df = new DecimalFormat("0.00");
-                    String itemPriceStr = df.format(itemPrice).toString();
+                    String itemPriceStr = df.format(itemPrice);
                     String updatedRow = itemID + "," + itemName + "," + itemType + "," + itemPriceStr + "," + itemImgPath + "," + venEmail + "," + itemStatus;
                     bw.write(String.join(",", updatedRow));                    
                     bw.newLine();
@@ -342,11 +335,9 @@ public class Item {
             JOptionPane.showMessageDialog(null, "Failed to find the item", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
-    //delete item
-    public boolean deleteItem(int id, String userType) {
-        //get all data
-        List<String[]> allItems = new ArrayList<>();
+        
+    public boolean deleteItem(int id, String userType) { //delete item        
+        List<String[]> allItems = new ArrayList<>(); //get all data
         boolean isDeleted = false;
         
         try {
@@ -418,8 +409,7 @@ public class Item {
         }
     }
     
-    public String[] getVendorInfoByItemID(int itemID) {
-        //find the vendor email based on the itemID from item.txt
+    public String[] getVendorInfoByItemID(int itemID) { //find the vendor email based on the itemID from item.txt        
         String[] itemData = itemData(itemID);
         String[] vendorInfo = null;
         
