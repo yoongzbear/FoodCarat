@@ -125,17 +125,17 @@ public class runnerCusReview extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) cusReviewJT.getModel();
 
         for (int i = 0; i < model.getRowCount(); i++) {
-            String dateString = (String) model.getValueAt(i, 2);
-            String rankStr = (String) model.getValueAt(i, 1);
-            LocalDate reviewDate = LocalDate.parse(dateString);
+            String dateString1 = (String) model.getValueAt(i, 2);
+            String rankString1 = (String) model.getValueAt(i, 1);
+            LocalDate reviewDate = LocalDate.parse(dateString1);
 
             if (!reviewDate.isBefore(startDate)) {
-                int rank = Integer.parseInt(rankStr);
-                ratingCounts.put(rank, ratingCounts.getOrDefault(rank, 0) + 1);
+                int rank1 = Integer.parseInt(rankString1);
+                ratingCounts.put(rank1, ratingCounts.getOrDefault(rank1, 0) + 1);
             }
         }
 
-        if (ratingCounts.isEmpty()) {
+        if (ratingCounts.values().stream().allMatch(count -> count == 0)) {
             JOptionPane.showMessageDialog(null, "No data available for the selected date range.", "No Data", JOptionPane.INFORMATION_MESSAGE);
             displayBarChart(dataset, "No Available Data", "Ranks", "Total Count");
             return;
@@ -159,26 +159,24 @@ public class runnerCusReview extends javax.swing.JFrame {
         }
 
         for (int i = 0; i < model.getRowCount(); i++) {
-            String dateString = (String) model.getValueAt(i, 2);
-            String rankStr = (String) model.getValueAt(i, 1);
-            LocalDate reviewDate = LocalDate.parse(dateString);
+            String dateString2 = (String) model.getValueAt(i, 2);
+            String rankStr2 = (String) model.getValueAt(i, 1);
+            LocalDate reviewDate = LocalDate.parse(dateString2);
 
             if (!reviewDate.isBefore(startDate) && !reviewDate.isAfter(endDate)) {
-                int rank = Integer.parseInt(rankStr);
-                ratingCounts.put(rank, ratingCounts.getOrDefault(rank, 0) + 1);
+                int rank2 = Integer.parseInt(rankStr2);
+                ratingCounts.put(rank2, ratingCounts.getOrDefault(rank2, 0) + 1);
             }
         }
 
-        if (ratingCounts.isEmpty()) {
+        if (ratingCounts.values().stream().allMatch(count -> count == 0)) {
             JOptionPane.showMessageDialog(null, "No data available for the selected date range.", "No Data", JOptionPane.INFORMATION_MESSAGE);
             displayBarChart(dataset, "No Available Data", "Ranks", "Total Count");
             return;
         }
 
         for (Map.Entry<Integer, Integer> entry : ratingCounts.entrySet()) {
-            int rank = entry.getKey();
-            int count = entry.getValue();
-            dataset.addValue(count, "Total Count of Ratings", String.valueOf(rank));
+            dataset.addValue(entry.getValue(), "Total Count of Ratings", String.valueOf(entry.getKey()));
         }
 
         displayBarChart(dataset, "Rantings from " + startDate + " to " + endDate, "Ranks", "Total Count");
@@ -189,29 +187,29 @@ public class runnerCusReview extends javax.swing.JFrame {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         DefaultTableModel model = (DefaultTableModel) cusReviewJT.getModel();
 
-        Map<Integer, Integer> rankCounts = new LinkedHashMap<>();
+        Map<Integer, Integer> ratingCounts = new LinkedHashMap<>();
         for (int i = 1; i <= 5; i++) {
-            rankCounts.put(i, 0);
+            ratingCounts.put(i, 0);
         }
         
         for (int i = 0; i < model.getRowCount(); i++) {
-            String dateString = (String) model.getValueAt(i, 2);
-            String rankStr = (String) model.getValueAt(i, 1);
-            LocalDate reviewDate = LocalDate.parse(dateString);
+            String dateString3 = (String) model.getValueAt(i, 2);
+            String rankStr3 = (String) model.getValueAt(i, 1);
+            LocalDate reviewDate = LocalDate.parse(dateString3);
 
             if (!reviewDate.isBefore(startDate) && !reviewDate.isAfter(endDate)) {
-                int rank = Integer.parseInt(rankStr);
-                rankCounts.put(rank, rankCounts.getOrDefault(rank, 0) + 1);
+                int rank3 = Integer.parseInt(rankStr3);
+                ratingCounts.put(rank3, ratingCounts.getOrDefault(rank3, 0) + 1);
             }
         }
 
-        if (rankCounts.isEmpty()) {
+        if (ratingCounts.values().stream().allMatch(count -> count == 0)) {
             JOptionPane.showMessageDialog(null, "No data available for the selected date range.", "No Data", JOptionPane.INFORMATION_MESSAGE);
             displayBarChart(dataset, "No Available Data", "Ranks", "Total Count");
             return;
         }
 
-        for (Map.Entry<Integer, Integer> entry : rankCounts.entrySet()) {
+        for (Map.Entry<Integer, Integer> entry : ratingCounts.entrySet()) {
             dataset.addValue(entry.getValue(), "Total Count of Ratings", String.valueOf(entry.getKey()));
         }
 
@@ -223,30 +221,30 @@ public class runnerCusReview extends javax.swing.JFrame {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         DefaultTableModel model = (DefaultTableModel) cusReviewJT.getModel();
         
-        Map<Integer, Integer> rankCounts = new LinkedHashMap<>();
+        Map<Integer, Integer> ratingCounts = new LinkedHashMap<>();
         for (int i = 1; i <= 5; i++) {
-            rankCounts.put(i, 0);
+            ratingCounts.put(i, 0);
         }
         
         for (int i = 0; i < model.getRowCount(); i++) {
-            String dateString = (String) model.getValueAt(i, 2);
-            String rankStr = (String) model.getValueAt(i, 1);
-            LocalDate reviewDate = LocalDate.parse(dateString);
+            String dateString4 = (String) model.getValueAt(i, 2);
+            String rankStr4 = (String) model.getValueAt(i, 1);
+            LocalDate reviewDate = LocalDate.parse(dateString4);
 
             int reviewYear = reviewDate.getYear();
             if (reviewYear >= startYear && reviewYear <= endYear) {
-                int rank = Integer.parseInt(rankStr);
-                rankCounts.put(rank, rankCounts.getOrDefault(rank, 0) + 1);
+                int rank4 = Integer.parseInt(rankStr4);
+                ratingCounts.put(rank4, ratingCounts.getOrDefault(rank4, 0) + 1);
             }
         }
 
-        if (rankCounts.isEmpty()) {
+        if (ratingCounts.values().stream().allMatch(count -> count == 0)) {
             JOptionPane.showMessageDialog(null, "No data available for the selected years.", "No Data", JOptionPane.INFORMATION_MESSAGE);
             displayBarChart(dataset, "No Available Data", "Ranks", "Total Count");
             return;
         }
 
-        for (Map.Entry<Integer, Integer> entry : rankCounts.entrySet()) {
+        for (Map.Entry<Integer, Integer> entry : ratingCounts.entrySet()) {
             dataset.addValue(entry.getValue(), "Total Count of Ratings", String.valueOf(entry.getKey()));
         }
 
