@@ -212,13 +212,18 @@ public class managerNotification extends javax.swing.JFrame {
         int monthNumber = monthChooser.getMonth() + 1; 
         
         Manager manager = new Manager(); 
-
+        
+        String[] monthNames = {
+            "","January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        };
+        String monthName = monthNames[monthNumber];
         // Get the filtered reviews based on the selected month
         List<String[]> complaintData = manager.getFilteredReviews(monthNumber);
         DefaultTableModel model = (DefaultTableModel) complaintNotificationtable.getModel();
         if (complaintData.isEmpty()) {
             if (monthNumber != 0) {
-            JOptionPane.showMessageDialog(this, "No complaints found for this month.", "Info", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "No complaints found for " + monthName + " month.", "Info", JOptionPane.INFORMATION_MESSAGE);
         }
             complaintData = manager.getFilteredReviews(0);  // Fetch all data
         }
