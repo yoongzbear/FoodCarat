@@ -56,7 +56,10 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
                 sumtxt.setText("Insufficient balance for withdrawal");
                 return;  // Exit early to prevent further calculations
             }
-
+            if (withdrawAmount < 0) {
+                sumtxt.setText("Invalid withdraw amount");
+                return; // Stop further execution
+            }
             // Calculate the new amount
             double newAmount = currentAmount - withdrawAmount;
 
@@ -250,6 +253,12 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
             String withdrawAmountStr = withdrawnumtxt.getText().trim();
             String afterWithdrawAmountStr = sumtxt.getText().trim();
 
+            if (email.isEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Please search for a customer before topping up.", "Input Error", javax.swing.JOptionPane.WARNING_MESSAGE);
+                searchtxt.requestFocus();
+                return;
+            }
+                        
             if (withdrawAmountStr.isEmpty()) {
                 javax.swing.JOptionPane.showMessageDialog(this, "Please enter the withdraw amount.", "Input Error", javax.swing.JOptionPane.WARNING_MESSAGE);
                 withdrawnumtxt.requestFocus();
@@ -258,6 +267,9 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
 
             if (afterWithdrawAmountStr.equals("Insufficient balance for withdrawal")) {
                 javax.swing.JOptionPane.showMessageDialog(this, "Insufficient balance for withdraw!", "Input Error", javax.swing.JOptionPane.WARNING_MESSAGE);
+                return;
+            } else if(afterWithdrawAmountStr.equals("Invalid withdraw amount")){
+                javax.swing.JOptionPane.showMessageDialog(this, "The withdrawal amount is invalid. Please avoid any symbols in it.", "Input Error", javax.swing.JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
@@ -297,7 +309,8 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
         String searchEmail = searchtxt.getText().trim();
 
         User user = new User();
-
+        // Clear the table and fields before populating
+        clearFields();
        try {
             String role = user.getRoleByEmail(searchEmail, userFile);
 
