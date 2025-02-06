@@ -125,8 +125,13 @@ public class customerOrderHistory extends javax.swing.JFrame {
                                 bAction.setEnabled(true);
                                 bAction.setText("Cancel Order");
                             } else if ("cancelled".equalsIgnoreCase(orderStatus)) {
+                                bAction.setEnabled(false);
+                                bAction.setText("Reorder");
                                 labelCancel.setVisible(true);
                                 lcancelReason.setText(cancelReason);
+                            } else {
+                                bAction.setEnabled(false);
+                                bAction.setText("Reorder");
                             }
                             if ("delivery".equalsIgnoreCase(orderType.trim())) {
                                 // Set visibility of components related to the runner
