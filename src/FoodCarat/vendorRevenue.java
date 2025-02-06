@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import javax.swing.JOptionPane;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -31,8 +32,7 @@ import org.jfree.data.general.DefaultPieDataset;
  * @author mastu
  */
 public class vendorRevenue extends javax.swing.JFrame {
-    //private String vendorEmail = User.getSessionEmail();
-    private String vendorEmail = "vendor@mail.com";
+    private String vendorEmail = User.getSessionEmail();
 
     /**
      * Creates new form vendorRevenue
@@ -162,6 +162,16 @@ public class vendorRevenue extends javax.swing.JFrame {
                         break;
                 }
             }
+        }
+        
+        if (deliveryCount == 0 && takeAwayCount == 0 && dineInCount == 0) {
+            JOptionPane.showMessageDialog(null, "No data available for the selected month of the year.", "No Data", JOptionPane.INFORMATION_MESSAGE);
+
+            DefaultPieDataset emptyDataset = new DefaultPieDataset();
+            emptyDataset.setValue("No Data", 1);
+
+            displayPieChart(emptyDataset, "No Data Available For the Selected Month of the Year.");
+            return;
         }
 
         DefaultPieDataset dataset = new DefaultPieDataset();
