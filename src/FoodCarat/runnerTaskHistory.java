@@ -112,7 +112,7 @@ public class runnerTaskHistory extends javax.swing.JFrame {
         }
 
         for (Map.Entry<YearMonth, Integer> entry : taskCounts.entrySet()) {
-            String monthLabel = entry.getKey().getMonth().name() + " " + entry.getKey().getYear(); // Show "JANUARY 2024"
+            String monthLabel = entry.getKey().getMonth().name() + " " + entry.getKey().getYear();
             dataset.addValue(entry.getValue(), "Tasks", monthLabel);
         }
 

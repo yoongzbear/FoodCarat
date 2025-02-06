@@ -222,7 +222,6 @@ public class runnerRevenue extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "No data available for the selected date range.", "No Data", JOptionPane.INFORMATION_MESSAGE);
             chartTitle = "No Available Data";
         } else {
-            // Format and populate dataset
             DecimalFormat df = new DecimalFormat("0.00");
             for (Map.Entry<YearMonth, Double> entry : incomeSums.entrySet()) {
                 String monthLabel = entry.getKey().getMonth() + " " + entry.getKey().getYear();
@@ -256,6 +255,7 @@ public class runnerRevenue extends javax.swing.JFrame {
                 totalIncome += income; // Add to the total income
             }
         }
+        
         if (incomeSums.isEmpty()) {
             JOptionPane.showMessageDialog(null, "No data available for the selected year range.", "No Data", JOptionPane.INFORMATION_MESSAGE);
 

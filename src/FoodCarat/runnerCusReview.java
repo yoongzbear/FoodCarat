@@ -514,7 +514,7 @@ public class runnerCusReview extends javax.swing.JFrame {
                 {null, null, null}
             },
             new String [] {
-                "Review ID", "Rank (1 - 5)", "Date"
+                "Review ID", "Rating (1 - 5)", "Date"
             }
         ) {
             boolean[] canEdit = new boolean [] {
