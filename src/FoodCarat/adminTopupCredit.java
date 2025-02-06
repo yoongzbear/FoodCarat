@@ -277,6 +277,12 @@ public class adminTopupCredit extends javax.swing.JFrame {
             String currentAmountStr = currentamounttxt.getText().trim();
             String topUpAmountStr = toupnumtxt.getText().trim();
 
+            if (email.isEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Please search for a customer before topping up.", "Input Error", javax.swing.JOptionPane.WARNING_MESSAGE);
+                searchtxt.requestFocus();
+                return;
+            }
+            
             if (topUpAmountStr.isEmpty()) {
                 javax.swing.JOptionPane.showMessageDialog(this, "Please enter the top-up amount.", "Input Error", javax.swing.JOptionPane.WARNING_MESSAGE);
                 toupnumtxt.requestFocus();
@@ -284,7 +290,7 @@ public class adminTopupCredit extends javax.swing.JFrame {
             }
             
             if (Double.parseDouble(topUpAmountStr)<0) {
-                javax.swing.JOptionPane.showMessageDialog(this, "The top up amount can not be negative!", "Input Error", javax.swing.JOptionPane.WARNING_MESSAGE);
+                javax.swing.JOptionPane.showMessageDialog(this, "The top up amount cannot be negative!", "Input Error", javax.swing.JOptionPane.WARNING_MESSAGE);
                 toupnumtxt.requestFocus();
                 return;
             }
