@@ -12,6 +12,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -137,7 +139,7 @@ public class runnerMain extends javax.swing.JFrame {
         for (String[] task : completedTasks) {
             model.addRow(task);
         }
-
+        
         model.fireTableDataChanged();
     }
 
@@ -154,19 +156,43 @@ public class runnerMain extends javax.swing.JFrame {
                 String[] orderData = line.split(",");
                 String status = orderData[3];
                 String runnerEmail = orderData[5];
-
-                if ("completed".equalsIgnoreCase(status) && runnerEmail.equalsIgnoreCase(email)) {
-                    String deliveryFee = orderData[7];
+ 
+                if (runnerEmail.equalsIgnoreCase(email)) {
                     String date = orderData[9];
+                    String orderID = orderData[0];
 
-                    tempTasks.add(new String[]{date, "Congratulations! You have a new income!", deliveryFee});
+                    if ("completed".equalsIgnoreCase(status)) {
+                        String deliveryFee = orderData[7];
+                        tempTasks.add(new String[]{date, "Congratulations! You have a new income! (order: " + orderID + ")", deliveryFee});
+                    } 
+                    else if ("assigning runner".equalsIgnoreCase(status)) {
+                        String deliveryFee = "-";
+                        tempTasks.add(new String[]{date, "You have been assigned a new task. Please check the task reception area. (order: " + orderID + ")", deliveryFee});
+                    }
                 }
             }
 
             tempTasks.sort((a, b) -> {
             LocalDate dateA = LocalDate.parse(a[0], formatter);
             LocalDate dateB = LocalDate.parse(b[0], formatter);
-            return dateB.compareTo(dateA);
+
+            // Sort by date (Descending)
+            int dateComparison = dateB.compareTo(dateA);
+
+            if (dateComparison == 0) { 
+                Pattern pattern = Pattern.compile("order: (\\d+)");
+                Matcher matcherA = pattern.matcher(a[1]);
+                Matcher matcherB = pattern.matcher(b[1]);
+
+                int orderIdA = 0, orderIdB = 0;
+                if (matcherA.find()) orderIdA = Integer.parseInt(matcherA.group(1));
+                if (matcherB.find()) orderIdB = Integer.parseInt(matcherB.group(1));
+
+                // Sort by Order ID (Descending)
+                return Integer.compare(orderIdB, orderIdA);
+            }
+
+            return dateComparison;
         });
 
         tasks = tempTasks.subList(0, Math.min(limit, tempTasks.size()));
@@ -408,7 +434,7 @@ public class runnerMain extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Date", "Description", "Earnings (RM)"
+                "Date", "Message", "Earnings (RM)"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -421,9 +447,9 @@ public class runnerMain extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(notificJT);
         if (notificJT.getColumnModel().getColumnCount() > 0) {
-            notificJT.getColumnModel().getColumn(0).setPreferredWidth(50);
-            notificJT.getColumnModel().getColumn(1).setPreferredWidth(350);
-            notificJT.getColumnModel().getColumn(2).setPreferredWidth(5);
+            notificJT.getColumnModel().getColumn(0).setPreferredWidth(25);
+            notificJT.getColumnModel().getColumn(1).setPreferredWidth(405);
+            notificJT.getColumnModel().getColumn(2).setPreferredWidth(30);
         }
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
