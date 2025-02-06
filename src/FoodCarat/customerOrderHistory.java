@@ -5,17 +5,12 @@
 
 package FoodCarat;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -1088,6 +1083,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
             // Loop through the orders (or access the first one based on your needs)
             for (String[] orderData : allOrders) {
                 String orderID = orderData[0];
+                // Reorder
                 if ("completed".equalsIgnoreCase(selectedOrderStatus) && selectedOrderID.equals(orderID)) {
                     String itemIDString = orderData[2].replaceAll("[\\[\\]]", "");
                     String[] itemIDs = itemIDString.split(";");
@@ -1120,17 +1116,29 @@ public class customerOrderHistory extends javax.swing.JFrame {
                         String chosenOrderType = availableOrderTypes[choiceIndex];
 
                         // Initialize a new order
-                        //Order Order = new Order(chosenOrderType, User.getSessionEmail());
                         Order Order = new Order(chosenOrderType, User.getSessionEmail());
                         Order.initialOrder();
-                        int OrderID = Order.getOrderID();
+                        int newOrderID = Order.getOrderID();
                         
+                        String getOrderStr = orderData[2];
                         
-                        String orderItems = orderData[2];
-                        double orderPrice = Double.parseDouble(orderData[8]);
-                        Order.writeReOrderDetails(OrderID, orderItems, orderPrice);
+                        double reorderTotalPrice = 0.0;
 
-                        customerPayment paymentFrame = new customerPayment(OrderID, chosenOrderType);
+                        DefaultTableModel itemsmodel = (DefaultTableModel) tbOrderItem.getModel();
+                        int rowCount = itemsmodel.getRowCount();
+
+                        for (int i = 0; i < rowCount; i++) {
+                            String priceString = itemsmodel.getValueAt(i, 2).toString();
+                            String quantityString = itemsmodel.getValueAt(i, 1).toString();
+                            
+                            double itemsPrice = Double.parseDouble(priceString.replace("RM", "").trim());
+                            int itemQuantity = Integer.parseInt(quantityString.trim());
+                            double itemsTotalPrice = itemsPrice * itemQuantity;
+                            reorderTotalPrice += itemsTotalPrice;
+                            Order.writeReOrderDetails(newOrderID, getOrderStr, reorderTotalPrice);
+                        }
+                        
+                        customerPayment paymentFrame = new customerPayment(newOrderID, chosenOrderType);
                         paymentFrame.setVisible(true);
                         this.dispose();
                     }

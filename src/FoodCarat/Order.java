@@ -582,7 +582,7 @@ public class Order {
         }
     }
 
-    public void writeReOrderDetails(int newOrderID, String orderItems, double price) {
+    public void writeReOrderDetails(int newOrderID, String reOrderItems, double itemsPrice) {
         try {
             List<String> updatedLines = new ArrayList<>();
 
@@ -593,21 +593,22 @@ public class Order {
                 String[] orderData = line.split(",");
                 int currentOrderID = Integer.parseInt(orderData[0]);
 
-                if (currentOrderID == orderID) {
-                    String currentOrderType = orderData[1];
-                    double originalPrice = price;
-                    double deliveryFee = 0.0;
+                if (currentOrderID == newOrderID) {
+                    String reOrderType = orderData[1];
+                    double reorderItemsTotalPrice = itemsPrice;
+                    
+                    double deliveryFee2 = 0.0;
 
-                    if ("delivery".equalsIgnoreCase(currentOrderType)) {
-                        deliveryFee = calculateDeliveryFee(originalPrice);
+                    if ("delivery".equalsIgnoreCase(reOrderType)) {
+                        deliveryFee2 = calReOrderDeliveryFee(reorderItemsTotalPrice, reOrderType);
                     }
-                    double totalPaid = originalPrice + deliveryFee;
+                    double reorderTotalPaid = reorderItemsTotalPrice + deliveryFee2;
 
-                    String formattedTotalPaid = String.format("%.2f", totalPaid);
-                    String formattedDeliveryFee = String.format("%.2f", deliveryFee);
-                    orderData[2] = orderItems;
-                    orderData[7] = formattedDeliveryFee;
-                    orderData[8] = formattedTotalPaid;
+                    String reTotalPaid = String.format("%.2f", reorderTotalPaid);
+                    String reDeliveryFee = String.format("%.2f", deliveryFee2);
+                    orderData[2] = reOrderItems;
+                    orderData[7] = reDeliveryFee;
+                    orderData[8] = reTotalPaid;
 
                     line = String.join(",", orderData);
                 }
@@ -627,6 +628,22 @@ public class Order {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    private double calReOrderDeliveryFee(double originalPrice, String orderType) {
+        double deliveryFee2 = 0.0;
+        if ("delivery".equalsIgnoreCase(orderType)) {
+            double calculatedFee = originalPrice * 0.15;
+
+            if (calculatedFee < 5) {
+                deliveryFee2 = 5;
+            } else if (calculatedFee > 20) {
+                deliveryFee2 = 20;
+            } else {
+                deliveryFee2 = calculatedFee;
+            }
+        }
+        return deliveryFee2;
     }
 
     // Getter for cart
