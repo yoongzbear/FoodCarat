@@ -447,7 +447,7 @@ public class vendorRevenue extends javax.swing.JFrame {
         jLabel5.setText("Total completed orders");
 
         jLabel4.setFont(new java.awt.Font("Cooper Black", 0, 24)); // NOI18N
-        jLabel4.setText("Annual Revenue");
+        jLabel4.setText("Current Annual Revenue");
 
         annualRevenueJL.setFont(new java.awt.Font("Cooper Black", 0, 20)); // NOI18N
         annualRevenueJL.setForeground(java.awt.Color.blue);
@@ -495,9 +495,9 @@ public class vendorRevenue extends javax.swing.JFrame {
                 .addComponent(jTabbedPane1)
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
-                .addGap(106, 106, 106)
-                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(112, 112, 112)
+                .addGap(62, 62, 62)
+                .addComponent(jLabel4)
+                .addGap(52, 52, 52)
                 .addComponent(jLabel5)
                 .addGap(79, 79, 79)
                 .addComponent(jLabel9)
@@ -507,9 +507,9 @@ public class vendorRevenue extends javax.swing.JFrame {
                 .addComponent(incomeJYC, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
-                .addGap(127, 127, 127)
+                .addGap(130, 130, 130)
                 .addComponent(annualRevenueJL, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(205, 205, 205)
+                .addGap(202, 202, 202)
                 .addComponent(completedOrderedJL, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(totalIncomeMJL, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
