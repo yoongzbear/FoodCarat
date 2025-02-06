@@ -106,8 +106,7 @@ public class runnerTaskHistory extends javax.swing.JFrame {
         }
 
         if (taskCounts.values().stream().allMatch(count -> count == 0)) {
-            JOptionPane.showMessageDialog(null, "No data available for the last 5 months.", "No Data", JOptionPane.INFORMATION_MESSAGE);
-            displayBarChart(dataset, "No Available Data", "Months", "Number of Tasks");
+            displayBarChart(dataset, "No Available Data for The Last 5 Months.", "Months", "Number of Tasks");
             return;
         }
 

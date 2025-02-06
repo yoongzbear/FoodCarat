@@ -143,8 +143,7 @@ public class runnerRevenue extends javax.swing.JFrame {
         }
 
         if (incomeSums.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "No data available for the last 5 months.", "No Data", JOptionPane.INFORMATION_MESSAGE);
-            displayLineChart(dataset, "No Available Data", "Months", "Total Income");
+            displayLineChart(dataset, "No Available Data for The Last 5 Months.", "Months", "Total Income");
             return;
         }
 

@@ -73,7 +73,7 @@ public class runnerMain extends javax.swing.JFrame {
         loadLatestCompletedTasks(notificJT);
     }
     
-        // Display Current Task in table
+    // Display Current Task in table
     private void displayCurrentTask() {
         Order order = new Order();
         List<String[]> allOrders = order.getAllOrders();

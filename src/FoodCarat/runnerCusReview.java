@@ -45,7 +45,6 @@ public class runnerCusReview extends javax.swing.JFrame {
         chartAllData();
     }
 
-
     // Update the table
     private void fetchData(LocalDate startDate, LocalDate endDate) {
         List<String[]> cusReview = new Review().getAllReviews(runnerEmail, Role);
@@ -136,8 +135,7 @@ public class runnerCusReview extends javax.swing.JFrame {
         }
 
         if (ratingCounts.values().stream().allMatch(count -> count == 0)) {
-            JOptionPane.showMessageDialog(null, "No data available for the selected date range.", "No Data", JOptionPane.INFORMATION_MESSAGE);
-            displayBarChart(dataset, "No Available Data", "Ranks", "Total Count");
+            displayBarChart(dataset, "No Available Data for Over Last 5 Months", "Ranks", "Total Count");
             return;
         }
 
