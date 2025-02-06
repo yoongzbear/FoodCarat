@@ -169,7 +169,7 @@ public class customerFCFeedback extends javax.swing.JFrame {
             populateTable();
             taComplaint.setText("");
         } else {
-            JOptionPane.showMessageDialog(null, "No order selected.");
+            JOptionPane.showMessageDialog(null, "No complaint submitted.");
         }
     }//GEN-LAST:event_bSubmitActionPerformed
 
