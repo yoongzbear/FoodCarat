@@ -125,6 +125,8 @@ public class customerOrderHistory extends javax.swing.JFrame {
                                 labelCancel.setVisible(true);
                                 lcancelReason.setText(cancelReason);
                             } else {
+                                labelCancel.setVisible(false);
+                                lcancelReason.setText("");
                                 bAction.setEnabled(false);
                                 bAction.setText("Reorder");
                             }
@@ -316,7 +318,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
 
                     // Add the record to the list
                     orderRecords.add(new String[]{
-                        rOrderDate, orderID, formattedOrderType, allOrderItems, "RM" + df.format(totalPrice), rVendorName, rOrderStatus, rCancelReason, rRunnerName
+                        rOrderDate, orderID, formattedOrderType, allOrderItems, "RM" + df.format(Integer.parseInt(rTotalPaid)), rVendorName, rOrderStatus, rCancelReason, rRunnerName
                     });
                 }
             }
@@ -510,7 +512,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
 
                     // Add the record to the list
                     orderRecords.add(new String[]{
-                        rOrderDate, orderID, formattedOrderType, allOrderItems, "RM" + df.format(totalPrice), rVendorName, rOrderStatus, rCancelReason, rRunnerName
+                        rOrderDate, orderID, formattedOrderType, allOrderItems, "RM" + df.format(Integer.parseInt(rTotalPaid)), rVendorName, rOrderStatus, rCancelReason, rRunnerName
                     });
                 }
             }
