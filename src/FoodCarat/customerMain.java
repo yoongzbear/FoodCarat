@@ -4,17 +4,9 @@
  */
 package FoodCarat;
 
-import java.awt.Color;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author ASUS
- */
 public class customerMain extends javax.swing.JFrame {
 
     /**
@@ -37,7 +29,7 @@ public class customerMain extends javax.swing.JFrame {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        
+
         String customerAddress = customer.getCustomerAddress(User.getSessionEmail());
         taAddress.setText(customerAddress);
         taAddress.setEditable(false);
@@ -274,7 +266,7 @@ public class customerMain extends javax.swing.JFrame {
 
     private void bLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bLogoutActionPerformed
         int choice = JOptionPane.showConfirmDialog(null, "Are you sure to logout?");
-        if (choice == JOptionPane.YES_OPTION){
+        if (choice == JOptionPane.YES_OPTION) {
             User user = new User();
             user.logOut();
             JOptionPane.showMessageDialog(null, "You have logged out, see you next time!", "Log Out", JOptionPane.INFORMATION_MESSAGE);

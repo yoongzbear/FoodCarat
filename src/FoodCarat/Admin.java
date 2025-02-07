@@ -18,19 +18,9 @@ import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author User
- */
 public class Admin extends User {
 
-    //private static String userFile = "resources/user.txt";
-    //private String cusFile = "resources/customer.txt";
-    //private String venFile = "resources/vendor.txt";
-    //private String runFile = "resources/runner.txt";
-    //private String cuscreditFile = "resources/transactionCredit.txt";
-
-    public Admin() { 
+    public Admin() {
         this.email = "";
     }
 
@@ -85,7 +75,6 @@ public class Admin extends User {
 
     //Update user info
     public void searchUser(String searchEmail, String selectedRole, adminUpdateUser updateUserForm) { //search for update user info
-
         // Check the login status, role match, and email match
         String result = checkFirstLogin(searchEmail, selectedRole, userFile);
 
@@ -197,7 +186,7 @@ public class Admin extends User {
 
         return true;
     }
-    
+
     public boolean deleteFromFile(String fileName, String email) { //delete the info in role.txt
         List<String> fileContent = new ArrayList<>();
         boolean recordDeleted = false;
@@ -324,9 +313,8 @@ public class Admin extends User {
     //Notification    
     public ArrayList<String> getTransactionMessages() { // Method to retrieve the list of transaction messages
         ArrayList<String> transactionMessages = new ArrayList<>();
-        String filePath = transCreditFile;
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(transCreditFile))) {
             String line;
 
             while ((line = reader.readLine()) != null) {

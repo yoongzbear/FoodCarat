@@ -3,7 +3,6 @@ package FoodCarat;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JOptionPane;
@@ -14,10 +13,6 @@ import javax.swing.table.DefaultTableModel;
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 
-/**
- *
- * @author ASUS
- */
 public class customerTransacHistory extends javax.swing.JFrame {
 
     /**

@@ -14,40 +14,36 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.PlainDocument;
 
-/**
- *
- * @author Yuna
- */
 public class vendor1AccInfo extends javax.swing.JFrame {
+
     private String email = User.getSessionEmail();
     private String role = User.getSessionRole();
-    
+
     /**
      * Creates new form vendor1ProfilePic
      */
-    
     private String path = null;
     private String picturePath = "";
 
     public vendor1AccInfo() {
         initComponents();
         setLocationRelativeTo(null);
-                
+
         nameTF.setText(User.getSessionName());
         passwordTF.setText(User.getSessionPassword());
-        
+
         ((PlainDocument) nameTF.getDocument()).setDocumentFilter(GuiUtility.createLengthFilter(20));
         ((PlainDocument) passwordTF.getDocument()).setDocumentFilter(GuiUtility.createLengthFilter(20));
         ((PlainDocument) contactNoTF.getDocument()).setDocumentFilter(GuiUtility.createLengthFilter(15));
-        
+
         LocalDate currentDate = LocalDate.now();
-    
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         String formattedDate = currentDate.format(formatter);
 
         dateTF.setText(formattedDate);
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -262,41 +258,41 @@ public class vendor1AccInfo extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
         if (contactNumber.length() < 8) {
             JOptionPane.showMessageDialog(this, "Please enter a valid contact number.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
         // Confirmation Dialog
         int confirm = JOptionPane.showConfirmDialog(
-            this,
-            "Are you sure you want to save the information?",
-            "Confirmation",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.QUESTION_MESSAGE
+                this,
+                "Are you sure you want to save the information?",
+                "Confirmation",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
         );
 
         if (confirm != JOptionPane.YES_OPTION) {
             return;
         }
-        
+
         User user = new User();
         Vendor vendor = new Vendor(email);
-        
+
         // Save Picture
         String savedPicturePath = vendor.savePic(name, picturePath);
-        if(savedPicturePath == null){
+        if (savedPicturePath == null) {
             JOptionPane.showMessageDialog(this, "Please Upload a Picture as Your Shop Logo.", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
         user.addUserInfo(email, name, password, contactNumber, date);
         vendor.addVendorInfo(email, savedPicturePath, cuisine);
         User.setSession(email, password, role, name);
-        
+
         new vendorMain().setVisible(true);
-        dispose(); 
+        dispose();
     }//GEN-LAST:event_completeJBActionPerformed
 
     private void uploadJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadJBActionPerformed
@@ -304,13 +300,13 @@ public class vendor1AccInfo extends javax.swing.JFrame {
         FileNameExtensionFilter fnef = new FileNameExtensionFilter("PNG JPG and JPEG", "png", "jpeg", "jpg");
         fileChooser.addChoosableFileFilter(fnef);
         fileChooser.setAcceptAllFileFilterUsed(false);
-        
+
         int load = fileChooser.showOpenDialog(null);
 
         if (load == fileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             path = selectedFile.getAbsolutePath();
-            
+
             picturePath = path;
 
             picJL.setText("");
@@ -353,7 +349,6 @@ public class vendor1AccInfo extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(vendor1AccInfo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */

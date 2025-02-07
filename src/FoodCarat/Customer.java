@@ -17,19 +17,13 @@ import java.util.Collections;
 import java.util.List;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author ASUS
- */
 public class Customer extends User{
     private int points;
-    private String customerFile = "resources/customer.txt";
-    private String creditFile = "resources/transactionCredit.txt";
     
     public Customer(String email){ //for set points
         super(email);
         try{
-            BufferedReader br = new BufferedReader(new FileReader(customerFile));
+            BufferedReader br = new BufferedReader(new FileReader(cusFile));
             String line;
             while ((line = br.readLine()) != null) {
                 String[] record = line.split(",");
@@ -52,7 +46,7 @@ public class Customer extends User{
         this.points += add;
         try{
             //Writing to file
-            BufferedReader br = new BufferedReader(new FileReader(customerFile));
+            BufferedReader br = new BufferedReader(new FileReader(cusFile));
             StringBuffer buffer = new StringBuffer();
             String line;
             while ((line = br.readLine()) != null){
@@ -65,7 +59,7 @@ public class Customer extends User{
                 buffer.append(bufferLine);
             }
             br.close();
-            BufferedWriter bw = new BufferedWriter(new FileWriter(customerFile));
+            BufferedWriter bw = new BufferedWriter(new FileWriter(cusFile));
             bw.write(buffer.toString());
             bw.close();   
     }
@@ -79,7 +73,7 @@ public class Customer extends User{
         this.points -= sub;
         try{
             //Writing to file
-            BufferedReader br = new BufferedReader(new FileReader(customerFile));
+            BufferedReader br = new BufferedReader(new FileReader(cusFile));
             StringBuffer buffer = new StringBuffer();
             String line;
             while ((line = br.readLine()) != null){
@@ -92,7 +86,7 @@ public class Customer extends User{
                 buffer.append(bufferLine);
             }
             br.close();
-            BufferedWriter bw = new BufferedWriter(new FileWriter(customerFile));
+            BufferedWriter bw = new BufferedWriter(new FileWriter(cusFile));
             bw.write(buffer.toString());
             bw.close();   
         }
@@ -114,7 +108,7 @@ public class Customer extends User{
     public String[] customerInfo(String email) {
         String[] userInfo = null;
         try {
-            FileReader fr = new FileReader(customerFile);
+            FileReader fr = new FileReader(cusFile);
             BufferedReader br = new BufferedReader(fr);
             String read;
 
@@ -142,7 +136,7 @@ public class Customer extends User{
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         
         try {
-            BufferedReader br = new BufferedReader(new FileReader(creditFile));
+            BufferedReader br = new BufferedReader(new FileReader(transCreditFile));
             String line;
             
             while ((line = br.readLine()) != null) {
@@ -179,7 +173,7 @@ public class Customer extends User{
     public String[] getTopupInfo(int transactionID) {
         String[] topupInfo = null;
         try {
-            FileReader fr = new FileReader(creditFile);
+            FileReader fr = new FileReader(transCreditFile);
             BufferedReader br = new BufferedReader(fr);
             String read;
 
@@ -249,7 +243,7 @@ public class Customer extends User{
         boolean emailFound = false;
         List<String> fileContent = new ArrayList<>();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(customerFile))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(cusFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
@@ -264,7 +258,7 @@ public class Customer extends User{
         }
 
         if (emailFound) {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(customerFile))) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(cusFile))) {
                 for (String updatedLine : fileContent) {
                     writer.write(updatedLine);
                     writer.newLine();
@@ -277,7 +271,7 @@ public class Customer extends User{
     
     // Get customer address
     public String getCustomerAddress(String customerEmail) {
-        try (BufferedReader br = new BufferedReader(new FileReader(customerFile))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(cusFile))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] customerData = line.split(",");

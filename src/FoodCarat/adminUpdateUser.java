@@ -11,40 +11,39 @@ import java.util.Date;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author User
- */
 public class adminUpdateUser extends javax.swing.JFrame {
+
     private String role;
     private static String userFile = "resources/user.txt";
+
     /**
      * Creates new form adminUpdateUser
      */
     public adminUpdateUser() {
-        
+
     }
-    public adminUpdateUser(String role){
+
+    public adminUpdateUser(String role) {
         initComponents();
         setLocationRelativeTo(null);
         this.role = role;
         //convert to title case
         String roleTitle = role.substring(0, 1).toUpperCase() + role.substring(1).toLowerCase();
         Lrole.setText(roleTitle);
-        
-        if(role.equals("vendor")){
+
+        if (role.equals("vendor")) {
             Ldate.setText("Establishment Date:");
         }
-        
-        emailtxt.setEditable(false); 
+
+        emailtxt.setEditable(false);
         customizeForm();
         getContentPane().setBackground(new Color(255, 255, 204));
     }
-    
+
     private void clearFields() {
         GuiUtility.clearFields(emailtxt, nametxt, dateChooser, phonetxt, platnumtxt, addresstxta, cuisinecbx);
     }
-    
+
     private void customizeForm() {
         javax.swing.JComponent[] customerComponents = {
             Laddress, addresstxta, jScrollPane1, LotherInfo
@@ -57,16 +56,16 @@ public class adminUpdateUser extends javax.swing.JFrame {
         };
         this.customizeForm(role, customerComponents, vendorComponents, runnerComponents);
     }
-    
-    public static void customizeForm(String role, 
-                                     javax.swing.JComponent[] customerComponents, 
-                                     javax.swing.JComponent[] vendorComponents, 
-                                     javax.swing.JComponent[] runnerComponents) {
+
+    public static void customizeForm(String role,
+            javax.swing.JComponent[] customerComponents,
+            javax.swing.JComponent[] vendorComponents,
+            javax.swing.JComponent[] runnerComponents) {
         // Concatenate all component arrays into a single array
-        javax.swing.JComponent[] allComponents = 
-            java.util.Arrays.stream(new javax.swing.JComponent[][]{customerComponents, vendorComponents, runnerComponents})
-                            .flatMap(java.util.Arrays::stream)
-                            .toArray(javax.swing.JComponent[]::new);
+        javax.swing.JComponent[] allComponents
+                = java.util.Arrays.stream(new javax.swing.JComponent[][]{customerComponents, vendorComponents, runnerComponents})
+                        .flatMap(java.util.Arrays::stream)
+                        .toArray(javax.swing.JComponent[]::new);
 
         // Hide all components initially
         for (javax.swing.JComponent component : allComponents) {
@@ -97,7 +96,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
     public void setUserData(String email, String name, String userBirth, String contactNumber, String roleSpecificData) {
         emailtxt.setText(email);
         nametxt.setText(name);
-        
+
         // Parse userBirth string and set it in JDateChooser
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
@@ -107,16 +106,16 @@ public class adminUpdateUser extends javax.swing.JFrame {
             e.printStackTrace(); // Handle invalid date format
             dateChooser.setDate(null); // Set to null if the date is invalid
         }
-        
+
         phonetxt.setText(contactNumber);
         platnumtxt.setText(roleSpecificData);
         addresstxta.setText(roleSpecificData);
         cuisinecbx.setSelectedItem(roleSpecificData);
     }
-    
+
     //validate fields before performing update and delete
-    public static boolean validateFields(String email, String name, String birthDate, String phone, 
-                                         String role, String additionalField) {
+    public static boolean validateFields(String email, String name, String birthDate, String phone,
+            String role, String additionalField) {
         if (email.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Email field cannot be empty!");
             return false;
@@ -128,8 +127,8 @@ public class adminUpdateUser extends javax.swing.JFrame {
         if (birthDate.isEmpty()) {
             JOptionPane.showMessageDialog(null, "The date field cannot be empty!");
             return false;
-        } 
-        
+        }
+
         // Check if the birth date is a future date
         try {
             String[] dateParts = birthDate.split("-");
@@ -145,7 +144,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Invalid birth date format!");
             return false;
         }
-        
+
         if (phone.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Phone number cannot be empty!");
             return false;
@@ -419,7 +418,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
         // Retrieve the form field values
         String email = emailtxt.getText().trim();
         String name = nametxt.getText().trim();
-        
+
         Date selectedDate = dateChooser.getDate();
         String birthDate = "";
 
@@ -427,7 +426,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             birthDate = dateFormat.format(selectedDate); // Convert the Date to a formatted String
         }
-        
+
         String phone = phonetxt.getText().trim();
         String additionalField = "";
 
@@ -445,28 +444,28 @@ public class adminUpdateUser extends javax.swing.JFrame {
                 additionalField = additionalField.replace(",", ";"); // Replace commas with semicolons
                 additionalField = "[" + additionalField + "]"; // Wrap text in square brackets
             }
- 
-           // Update user.txt
-           boolean userUpdated = admin.updateFile(userFile,
-                   email,
-                   new String[]{name, birthDate, phone},
-                   new int[]{1, 4, 5});
 
-           // Update role-specific file
-           boolean roleUpdated = admin.updateFile("resources/" + role + ".txt",
-                   email,
-                   new String[]{additionalField},
-                   new int[]{1});
+            // Update user.txt
+            boolean userUpdated = admin.updateFile(userFile,
+                    email,
+                    new String[]{name, birthDate, phone},
+                    new int[]{1, 4, 5});
 
-           if (userUpdated && roleUpdated) {
-               JOptionPane.showMessageDialog(null, "Record updated successfully!");
-               clearFields();
-           } else if (!userUpdated) {
-               JOptionPane.showMessageDialog(null, "Error updating user.txt!");
-           } else {
-               JOptionPane.showMessageDialog(null, "Error updating " + role + ".txt!");
-           }
-       }
+            // Update role-specific file
+            boolean roleUpdated = admin.updateFile("resources/" + role + ".txt",
+                    email,
+                    new String[]{additionalField},
+                    new int[]{1});
+
+            if (userUpdated && roleUpdated) {
+                JOptionPane.showMessageDialog(null, "Record updated successfully!");
+                clearFields();
+            } else if (!userUpdated) {
+                JOptionPane.showMessageDialog(null, "Error updating user.txt!");
+            } else {
+                JOptionPane.showMessageDialog(null, "Error updating " + role + ".txt!");
+            }
+        }
     }//GEN-LAST:event_bUpdateActionPerformed
 
     private void bDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDeleteActionPerformed
@@ -476,7 +475,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Please search an email before perform delete");
             return;
         }
-        
+
         Admin admin = new Admin();
         int confirmation = JOptionPane.showConfirmDialog(
                 null,
@@ -497,7 +496,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
             if ("vendor".equals(role)) {
                 item.deleteVendorItems(email, "vendor");
             }
-            
+
             // Handle deletion results
             if (userDeleted && roleDeleted) {
                 JOptionPane.showMessageDialog(null, "Record deleted successfully!");
@@ -517,7 +516,7 @@ public class adminUpdateUser extends javax.swing.JFrame {
         clearFields();
         if (searchEmail != null && !searchEmail.isEmpty()) {
             Admin admin = new Admin();
-            admin.searchUser(searchEmail,role, this); // Pass the current instance of admin update
+            admin.searchUser(searchEmail, role, this); // Pass the current instance of admin update
         } else {
             JOptionPane.showMessageDialog(this, "Please enter a valid email address.");
         }

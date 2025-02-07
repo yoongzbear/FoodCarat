@@ -16,10 +16,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author mastu
- */
 public class vendorNotification extends javax.swing.JFrame {
 
     private String email = User.getSessionEmail();
@@ -30,40 +26,39 @@ public class vendorNotification extends javax.swing.JFrame {
      */
     public vendorNotification() {
         initComponents();
-        getContentPane().setBackground(new java.awt.Color(186,85,211)); //setting background color of frame
+        getContentPane().setBackground(new java.awt.Color(186, 85, 211)); //setting background color of frame
         setLocationRelativeTo(null);
-        
+
         newOrderChkBox.setSelected(true);
         orderStatusChkBox.setSelected(true);
         reviewChkBox.setSelected(true);
         itemChkBox.setSelected(true);
         withdrawChkBox.setSelected(true);
-        
+
         String[] filters = {"new", "status", "review", "item", "withdraw"};
         displayActivities(filters);
-        
+
         notificationTableListener();
     }
-    
+
     //display all activities    
     public void displayActivities(String[] filters) {
         DefaultTableModel model = (DefaultTableModel) notificationTable.getModel();
         model.setRowCount(0);
-        
+
         //get current date in yyyy-MM-dd
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate currentDate = LocalDate.now();
-        
+
         Order orders = new Order();
-        
+
         for (String filter : filters) {
             if (filter.equalsIgnoreCase("new")) {
-                //New order - Display for the same day only, display the oldest order with status pending accept and date = current date
                 List<String[]> newOrder = orders.getOrderByStatus(email, "pending accept");
                 for (String[] order : newOrder) {
                     try {
-                        LocalDate orderDate = LocalDate.parse(order[9].trim(), dateFormat); 
-                        if (orderDate.isEqual(currentDate)) {
+                        LocalDate orderDate = LocalDate.parse(order[9].trim(), dateFormat);
+                        if (orderDate.isEqual(currentDate)) { //display order notification on same day
                             int orderID = Integer.parseInt(order[0].trim());
                             String message = "A new order is waiting for your approval. Please check as soon as possible. (Order ID: " + orderID + ")";
                             model.addRow(new Object[]{"New Order", message});
@@ -73,7 +68,6 @@ public class vendorNotification extends javax.swing.JFrame {
                     }
                 }
             } else if (filter.equalsIgnoreCase("status")) {
-                //Order status - Display for same day only 
                 List<String[]> allOrders = orders.getAllOrders();
                 //same day, status != cancelled, pending accept, assigning runner, completed
                 for (String[] order : allOrders) {
@@ -84,23 +78,23 @@ public class vendorNotification extends javax.swing.JFrame {
                         if (orderDate.isEqual(currentDate) && !orderStatus.equalsIgnoreCase("cancelled") && !orderStatus.equalsIgnoreCase("assigning runner") && !orderStatus.equalsIgnoreCase("pending accept")) {
                             String message = "An order has changed its status to \"" + orderStatus.substring(0, 1).toUpperCase() + orderStatus.substring(1).toLowerCase() + "\" (Order ID: " + orderID + ")";
                             model.addRow(new Object[]{"Order Status", message});
-                        } 
+                        }
                     } catch (DateTimeParseException e) {
                         System.err.println("Invalid date format for order ID " + order[0] + ": " + e.getMessage());
                     }
                 }
-                
+
             } else if (filter.equalsIgnoreCase("review")) {
                 //order review
                 Review reviews = new Review();
                 List<String[]> vendorReview = reviews.getAllReviews(email, "vendor");
                 List<String[]> orderReview = reviews.getAllReviews(email, "order");
-                
+
                 for (String[] review : vendorReview) {
                     try {
                         LocalDate reviewDate = LocalDate.parse(review[5].trim(), dateFormat);
                         int reviewID = Integer.parseInt(review[0].trim());
-                        
+
                         if (reviewDate.isEqual(currentDate)) {
                             String message = "You received a new review as a vendor! " + " (Review ID: " + reviewID + ")";
                             model.addRow(new Object[]{"Vendor Review", message});
@@ -109,12 +103,12 @@ public class vendorNotification extends javax.swing.JFrame {
                         System.err.println("Invalid date format for review ID " + review[0] + ": " + e.getMessage());
                     }
                 }
-                
+
                 for (String[] review : orderReview) {
                     try {
                         LocalDate reviewDate = LocalDate.parse(review[5].trim(), dateFormat);
                         int reviewID = Integer.parseInt(review[0].trim());
-                        
+
                         if (reviewDate.isEqual(currentDate)) {
                             String message = "You received a new review for an order! " + " (Review ID: " + reviewID + ")";
                             model.addRow(new Object[]{"Order Review", message});
@@ -123,9 +117,8 @@ public class vendorNotification extends javax.swing.JFrame {
                         System.err.println("Invalid date format for review ID " + review[0] + ": " + e.getMessage());
                     }
                 }
-                
+
             } else if (filter.equalsIgnoreCase("item")) {
-                //Item - deleted by vendor, item added (latest item by vendor)
                 Item items = new Item();
                 List<String[]> itemNotify = items.getAllItems(email, false);
                 List<String[]> newItems = new ArrayList<>();
@@ -148,10 +141,10 @@ public class vendorNotification extends javax.swing.JFrame {
                     model.addRow(new Object[]{"Item Added", message});
                 }
 
-                // Add deleted items to the table
+                //add deleted items to the table
                 for (String[] deletedItem : deletedItems) {
                     String message = "";
-                    if (deletedItem[6].equalsIgnoreCase("deleted by vendor")) { 
+                    if (deletedItem[6].equalsIgnoreCase("deleted by vendor")) {
                         message = "Item \"" + deletedItem[1] + "\" was deleted by you (Item ID: " + deletedItem[0] + ")";
                     } else if (deletedItem[6].equalsIgnoreCase("deleted by manager")) {
                         message = "Item \"" + deletedItem[1] + "\" was deleted by FoodCarat Manager (Item ID: " + deletedItem[0] + ")";
@@ -169,7 +162,7 @@ public class vendorNotification extends javax.swing.JFrame {
                         double amount = Math.abs(Double.parseDouble(data[3]));
                         message = "RM" + df.format(amount) + " has been withdrawn from your account (Transaction ID: " + data[0] + ")";
                         model.addRow(new Object[]{"Withdrawal", message});
-                    } catch (NumberFormatException e) {                        
+                    } catch (NumberFormatException e) {
                         JOptionPane.showMessageDialog(null, "Failed in converting the amount.", "Alert", JOptionPane.WARNING_MESSAGE);
                     }
                 }
@@ -217,18 +210,18 @@ public class vendorNotification extends javax.swing.JFrame {
             receiptGUI.setVisible(true);
         }
     }
-    
+
     private void notificationTableListener() { //display respecitve GUI classes
         notificationTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) { // Ensure the event is the final one
+                if (!e.getValueIsAdjusting()) {
                     int selectedRow = notificationTable.getSelectedRow();
-                    if (selectedRow != -1) { // Check if a row is actually selected
+                    if (selectedRow != -1) { //check if a row is actually selected
                         //get ID, type and message
                         String type = notificationTable.getModel().getValueAt(selectedRow, 0).toString(); //type column   
                         int id = 0;
-                        String message = notificationTable.getModel().getValueAt(selectedRow, 1).toString(); //message column, will change to 1
+                        String message = notificationTable.getModel().getValueAt(selectedRow, 1).toString(); //message column
 
                         if (type.equalsIgnoreCase("New Order")) {
                             int startIndex = message.indexOf("(Order ID:") + "(Order ID:".length();
@@ -273,7 +266,7 @@ public class vendorNotification extends javax.swing.JFrame {
             }
         });
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -398,22 +391,22 @@ public class vendorNotification extends javax.swing.JFrame {
     private void filterBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterBtnActionPerformed
         String[] selectedFilter = new String[5];
         int index = 0;
-        
+
         if (newOrderChkBox.isSelected()) {
             selectedFilter[index++] = "new";
         }
         if (orderStatusChkBox.isSelected()) {
             selectedFilter[index++] = "status";
-        } 
+        }
         if (reviewChkBox.isSelected()) {
             selectedFilter[index++] = "review";
-        } 
+        }
         if (itemChkBox.isSelected()) {
             selectedFilter[index++] = "item";
-        }         
+        }
         if (withdrawChkBox.isSelected()) {
             selectedFilter[index++] = "withdraw";
-        } 
+        }
         selectedFilter = Arrays.copyOf(selectedFilter, index); //adjust the size of array        
         displayActivities(selectedFilter); //call filter
     }//GEN-LAST:event_filterBtnActionPerformed

@@ -22,35 +22,30 @@ import javax.swing.table.DefaultTableModel;
 import org.jfree.chart.ChartPanel;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-/**
- *
- * @author mastu
- */
 public class vendorOrderHistory extends javax.swing.JFrame {
 
     /**
      * Creates new form vendorOrderHistory
      */
     private String email = User.getSessionEmail();
-    Vendor vendor = new Vendor(email);
 
     public vendorOrderHistory() {
         initComponents();
         getContentPane().setBackground(new java.awt.Color(186, 85, 211)); //setting background color of frame
         setLocationRelativeTo(null);
-        
+
         displayVendorOrder();
         orderTableListener();
-        
+
         //set the placeholder for search box
         GuiUtility.setPlaceholder(searchTxt, "Enter your search");
         rangeBtn.setEnabled(false); //disable view range button
-        
+
         //hide month and year chooser for table
         monthChooser.setVisible(false);
-        yearChooser.setVisible(false);        
-    }    
-    
+        yearChooser.setVisible(false);
+    }
+
     //display all orders to vendor
     public void displayVendorOrder() {
         //display on table
@@ -61,13 +56,12 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         Order orders = new Order();
         List<String[]> allOrders = orders.getAllOrders(email);
         for (String[] orderData : allOrders) {
-            Item item = new Item();            
+            Item item = new Item();
             String orderID = orderData[0];
             String orderMethod = orderData[1].substring(0, 1).toUpperCase() + orderData[1].substring(1).toLowerCase();
             String orderItems = orderData[2];
             String orderStatus = orderData[3].substring(0, 1).toUpperCase() + orderData[3].substring(1).toLowerCase();
             String customerEmail = orderData[4];
-            String orderTotal = orderData[8];
 
             String updatedOrderItems = item.replaceItemIDsWithNames(orderItems);
 
@@ -76,19 +70,18 @@ public class vendorOrderHistory extends javax.swing.JFrame {
                 continue;
             } else {
                 model.addRow(new Object[]{index++, orderID, customerEmail, orderMethod, updatedOrderItems, orderStatus});
-            }            
+            }
         }
     }
-    
+
     //display order details
     public void displayVendorOrder(int orderID) {
         DecimalFormat df = new DecimalFormat("0.00");
-                
-        String[] details = new Order().getOrder(orderID);  
-        
+
+        String[] details = new Order().getOrder(orderID);
+
         //get items, price, and quantity to display in table
         Item item = new Item();
-        //get item data from Item class to get price
         String orderItems = details[2].trim();
         //remove square brackets and split the items by "|"
         String[] itemDetails = orderItems.replace("[", "").replace("]", "").split("\\|");
@@ -97,15 +90,15 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         model.setRowCount(0);
 
         for (String detail : itemDetails) {
-            String[] parts = detail.split(";");            
-            int itemID = Integer.parseInt(parts[0]); 
-            int quantity = Integer.parseInt(parts[1]); 
+            String[] parts = detail.split(";");
+            int itemID = Integer.parseInt(parts[0]);
+            int quantity = Integer.parseInt(parts[1]);
 
             //retrieve item data through Item class
             String[] itemData = item.itemData(itemID);
             if (itemData != null && itemData.length > 3) {
-                String itemName = itemData[1]; 
-                double price = Double.parseDouble(itemData[3]); 
+                String itemName = itemData[1];
+                double price = Double.parseDouble(itemData[3]);
 
                 model.addRow(new Object[]{itemName, df.format(price), quantity});
             } else {
@@ -120,7 +113,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         dateLabel.setText(details[9].trim());
         totalPriceLabel.setText("RM" + details[10].trim());
 
-        //view if got feedback for the order
+        //view if given feedback for the order
         Review review = new Review(orderID);
         try {
             String feedback = review.getFeedback();
@@ -137,7 +130,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         }
     }
 
-    //display vendor order based on search - item name, customer email, method, order id, status
+    //display vendor order based on search using item name, customer email, method, order id, status
     public void displayOrderSearch(String search) {
         DefaultTableModel model = (DefaultTableModel) orderTable.getModel();
         Order orders = new Order();
@@ -146,9 +139,9 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         model.setRowCount(0);
         itemTable.setRowHeight(100);
         boolean found = false;
-        
+
         for (String[] orderData : allVendorOrders) {
-            Item item = new Item();            
+            Item item = new Item();
             String orderID = orderData[0];
             String orderMethod = orderData[1].substring(0, 1).toUpperCase() + orderData[1].substring(1).toLowerCase();
             String orderItems = orderData[2];
@@ -157,7 +150,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
 
             String updatedOrderItems = item.replaceItemIDsWithNames(orderItems);
 
-            //check if search matches any of item name, customer email, method, order id
+            //check if search matches any of item name, customer email, method, order id, status
             String lowerSearch = search.toLowerCase(); //standardize case of search to lowercase
             boolean matchesOrderID = orderID.toLowerCase().contains(lowerSearch);
             boolean matchesMethod = orderMethod.toLowerCase().contains(lowerSearch);
@@ -168,9 +161,9 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             if (matchesOrderID || matchesMethod || matchesEmail || matchesItems || matchesStatus) {
                 found = true;
                 model.addRow(new Object[]{index++, orderID, customerEmail, orderMethod, updatedOrderItems, orderStatus});
-            } 
+            }
         }
-        
+
         if (!found) {
             JOptionPane.showMessageDialog(null, "Search is not found.", "Not Found", JOptionPane.INFORMATION_MESSAGE);
             displayVendorOrder();
@@ -182,12 +175,12 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) orderTable.getModel();
         int index = 1;
         model.setRowCount(0);
-        
+
         //get all orders from vendor, filter based on date  
         Order orders = new Order();
         List<String[]> allOrders = orders.getAllOrders(email);
         for (String[] orderData : allOrders) {
-            Item item = new Item();            
+            Item item = new Item();
             String orderID = orderData[0];
             String orderMethod = orderData[1].substring(0, 1).toUpperCase() + orderData[1].substring(1).toLowerCase();
             String orderItems = orderData[2];
@@ -234,7 +227,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
     //generate chart
     public void displayChart(String type, String timeRange) {
         Order order = new Order();
-        List<String[]> orderCount = new  ArrayList<>();
+        List<String[]> orderCount = new ArrayList<>();
         //get order count for each item based on time range
         if (type.equalsIgnoreCase("weekly")) {
             orderCount = order.getOrderedItemQuantities(email, "weekly", timeRange);
@@ -244,7 +237,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             orderCount = order.getOrderedItemQuantities(email, "quarterly", timeRange);
         }
 
-        // Check if all items have 0 quantity
+        //check if all items have 0 quantity
         boolean allZero = true;
         for (String[] item : orderCount) {
             int quantity = Integer.parseInt(item[1]);
@@ -254,13 +247,13 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             }
         }
 
-        //display message and clear chart if all items is 0 
+        //display message and no dataset chart if all items is 0 
         if (allZero) {
             JOptionPane.showMessageDialog(null, "No items were sold for the period.", "No Sales Data", JOptionPane.INFORMATION_MESSAGE);
             DefaultCategoryDataset blankDataset = new DefaultCategoryDataset();
             blankDataset.addValue(0, "No Data", "");
-            if (type.equalsIgnoreCase("weekly")) {          
-                weeklyChartPanel.removeAll(); 
+            if (type.equalsIgnoreCase("weekly")) {
+                weeklyChartPanel.removeAll();
                 weeklyChartPanel.setLayout(new BorderLayout());
                 weeklyChartPanel.add(ChartUtility.createBarChart(blankDataset, "No Data Available", "", ""), java.awt.BorderLayout.CENTER);
                 weeklyChartPanel.revalidate();
@@ -303,7 +296,6 @@ public class vendorOrderHistory extends javax.swing.JFrame {
 
         if (type.equalsIgnoreCase("weekly")) {
             ChartPanel chartPanel = ChartUtility.createBarChart(dataset, "Weekly Ordered Items", "Item", "Count");
-
             weeklyChartPanel.removeAll();
             weeklyChartPanel.setLayout(new BorderLayout());
             weeklyChartPanel.add(chartPanel, BorderLayout.CENTER);
@@ -311,7 +303,6 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             weeklyChartPanel.repaint();
         } else if (type.equalsIgnoreCase("monthly")) {
             ChartPanel chartPanel = ChartUtility.createBarChart(dataset, "Monthly Ordered Items", "Item", "Count");
-
             monthlyChartPanel1.removeAll();
             monthlyChartPanel1.setLayout(new BorderLayout());
             monthlyChartPanel1.add(chartPanel, BorderLayout.CENTER);
@@ -319,7 +310,6 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             monthlyChartPanel1.repaint();
         } else if (type.equalsIgnoreCase("quarterly")) {
             ChartPanel chartPanel = ChartUtility.createBarChart(dataset, "Quarterly Ordered Items", "Item", "Count");
-
             quarterlyChartPanel.removeAll();
             quarterlyChartPanel.setLayout(new BorderLayout());
             quarterlyChartPanel.add(chartPanel, BorderLayout.CENTER);
@@ -340,14 +330,14 @@ public class vendorOrderHistory extends javax.swing.JFrame {
         }
         return initials.toString().toUpperCase();
     }
-    
+
     private void orderTableListener() {
         orderTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) { // Ensure the event is the final one
+                if (!e.getValueIsAdjusting()) {
                     int selectedRow = orderTable.getSelectedRow();
-                    if (selectedRow != -1) { // Check if a row is actually selected
+                    if (selectedRow != -1) { //check if a row is actually selected
                         Object id = orderTable.getModel().getValueAt(selectedRow, 1);
                         try {
                             int selectID = Integer.parseInt(id.toString()); //convert the object to string and parse as int
@@ -1026,8 +1016,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             monthChooser.setVisible(false);
             yearChooser.setVisible(false);
             rangeBtn.setEnabled(true);
-        }    
-        else if (timeRangeBox.getSelectedItem().equals("Monthly")) {
+        } else if (timeRangeBox.getSelectedItem().equals("Monthly")) {
             selectDateLabel.setText("Select:");
             dateChooser.setVisible(false);
             monthChooser.setVisible(true);
@@ -1056,7 +1045,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             displayVendorOrder();
         } else {
             displayOrderSearch(searchOrder);
-        }        
+        }
     }//GEN-LAST:event_searchBtnActionPerformed
 
     private void weeklyDateChooserjDateChooserInput(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_weeklyDateChooserjDateChooserInput

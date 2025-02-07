@@ -6,19 +6,14 @@ package FoodCarat;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Arrays;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
-/**
- *
- * @author User
- */
 public class adminNotification extends javax.swing.JFrame {
+
     private DefaultTableModel tableModel;
-    private String userFile = "resources/user.txt";
-    private String cuscreditFile = "resources/transactionCredit.txt";
+
     /**
      * Creates new form adminNotification
      */
@@ -28,14 +23,14 @@ public class adminNotification extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         // Initialize the table model and set it to the table
         tableModel = (DefaultTableModel) notificationtable.getModel();
-        
+
         setColumnWidths();
         setRowHeight();
-        
+
         Admin admin = new Admin();
         ArrayList<String> allTransactions = admin.getTransactionMessages();
         displayAllTransactions(allTransactions); // Populate the table with all transactions
-        
+
         // Add row selection listener to show receipt on row click
         notificationtable.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
@@ -43,7 +38,7 @@ public class adminNotification extends javax.swing.JFrame {
             }
         });
     }
-    
+
     private void setColumnWidths() {
         TableColumn column = null;
         column = notificationtable.getColumnModel().getColumn(0);
@@ -68,7 +63,7 @@ public class adminNotification extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Please select a valid transaction.", "Invalid Selection", JOptionPane.WARNING_MESSAGE);
                 return; // Stop execution if empty
             }
-        
+
             String[] messageParts = message.split(" ");
 
             // Extract the transaction ID from the message
@@ -77,7 +72,7 @@ public class adminNotification extends javax.swing.JFrame {
             // Retrieve details from the customer credit.txt file
             User user = new User();
             String[] customerDetails = user.getUserCreditInfo(Integer.parseInt(transactionMessageId));
-                    
+
             if (customerDetails != null) {
                 // Parse details from the file
                 String transID = customerDetails[0];
@@ -86,11 +81,11 @@ public class adminNotification extends javax.swing.JFrame {
                 double topUpAmount = Double.parseDouble(customerDetails[3]);
                 String datePayment = customerDetails[4];
                 String timePayment = customerDetails[5];
-                
+
                 // Retrieve name of customer user.txt base on text file
-                String [] customerName = user.getUserInfo(email);
+                String[] customerName = user.getUserInfo(email);
                 String name = customerName[1];
-                
+
                 // Create and display the receipt window
                 adminCusReceipt receiptWindow = new adminCusReceipt(Integer.parseInt(transID), email, name, currentAmount, topUpAmount, datePayment, timePayment);
                 receiptWindow.setVisible(true);
@@ -99,20 +94,20 @@ public class adminNotification extends javax.swing.JFrame {
             }
         }
     }
-    
+
     private void displayAllTransactions(ArrayList<String> transactions) {
         // Clear existing rows in the table
         tableModel.setRowCount(0);
 
         // Populate the table with the transactions
-        int transactionNumber = 1; 
+        int transactionNumber = 1;
         for (String transaction : transactions) {
             tableModel.addRow(new Object[]{transactionNumber++, transaction});
         }
 
         fillEmptyRowSpace();
     }
-    
+
     private ArrayList<String> getFilteredTransactionsByMonth(ArrayList<String> allTransactions, int month) {
         ArrayList<String> filteredTransactions = new ArrayList<>();
 
@@ -132,11 +127,11 @@ public class adminNotification extends javax.swing.JFrame {
 
         return filteredTransactions;
     }
-    
-    private void fillEmptyRowSpace() {           
+
+    private void fillEmptyRowSpace() {
         int rowCount = tableModel.getRowCount(); // Current row count in the table
         int tableHeight = notificationtable.getParent().getHeight(); // Get the height of the table's parent container
-        int rowHeight= notificationtable.getRowHeight();
+        int rowHeight = notificationtable.getRowHeight();
 
         int targetRowCount = tableHeight / rowHeight; // Calculate how many rows fit in the visible area
 
@@ -146,6 +141,7 @@ public class adminNotification extends javax.swing.JFrame {
             tableModel.addRow(new Object[]{"", ""});  // Adding empty rows based on the column structure
         }
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -251,14 +247,14 @@ public class adminNotification extends javax.swing.JFrame {
     }//GEN-LAST:event_backbtnActionPerformed
 
     private void searchbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchbtnActionPerformed
-        int monthNumber = monthChooser.getMonth() + 1; 
-        
+        int monthNumber = monthChooser.getMonth() + 1;
+
         Admin admin = new Admin();
         ArrayList<String> transactionMessages = admin.getTransactionMessages();
 
         // Filter transactions by the selected month
         ArrayList<String> filteredTransactions = getFilteredTransactionsByMonth(transactionMessages, monthNumber);
-        
+
         tableModel.setRowCount(0);
 
         // If there are no transactions, show a message and return
@@ -266,7 +262,7 @@ public class adminNotification extends javax.swing.JFrame {
             displayAllTransactions(transactionMessages);
             JOptionPane.showMessageDialog(this, "No data available for the selected month.");
             return;
-        }else{
+        } else {
             displayAllTransactions(filteredTransactions);
             fillEmptyRowSpace();
         }

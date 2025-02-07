@@ -19,11 +19,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author Yuna
- */
 public class runnerMain extends javax.swing.JFrame {
+
     private String email = User.getSessionEmail();
     private String name = User.getSessionName();
     Runner runner = new Runner();
@@ -33,7 +30,7 @@ public class runnerMain extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         username.setText("");
         String[] runnerDetails = runner.getRunnerDetails(email);
-        
+
         if (runnerDetails != null) {
             String plateNumber = runnerDetails[1];
             String salary = runnerDetails.length > 2 ? runnerDetails[3] : null;
@@ -46,11 +43,11 @@ public class runnerMain extends javax.swing.JFrame {
             if (salary != null && !salary.isEmpty()) {
                 textBuilder.append("RM ").append(salary);
             }
-            
+
             textBuilder.append("</html>");
             username.setText(textBuilder.toString());
         }
-        
+
         // Status
         String status = runnerDetails[2];
         ImageIcon icon;
@@ -69,12 +66,12 @@ public class runnerMain extends javax.swing.JFrame {
 
         // Set the resized icon
         statusImage.setIcon(resizedIcon);
-        
+
         displayCurrentTask();
-        
+
         loadLatestCompletedTasks(notificJT);
     }
-    
+
     // Display Current Task in table
     private void displayCurrentTask() {
         Order order = new Order();
@@ -82,7 +79,7 @@ public class runnerMain extends javax.swing.JFrame {
 
         for (String[] orderData : allOrders) {
             if (email.equals(orderData[5]) && !orderData[3].equalsIgnoreCase("assigning runner") && !orderData[3].equalsIgnoreCase("completed")) {
-                
+
                 Item item = new Item();
                 String itemIDString = orderData[2].replaceAll("[\\[\\]]", "");
                 String[] itemDetails = itemIDString.split("\\|");
@@ -108,7 +105,7 @@ public class runnerMain extends javax.swing.JFrame {
 
                 String[] vendorInfo = item.getVendorInfoByItemID(Integer.parseInt(itemDetails[0].split(";")[0].trim()));
                 String vendorName = vendorInfo[1];
-            
+
                 String[] customerInfo = new User().getUserInfo(orderData[4]);
                 String customerName = customerInfo[1];
 
@@ -117,19 +114,19 @@ public class runnerMain extends javax.swing.JFrame {
 
                 String deliveryFee = orderData[7];
                 String status = orderData[3].substring(0, 1).toUpperCase() + orderData[3].substring(1).toLowerCase();
-                
+
                 taskInfo.removeAll();
-                taskInfo.setText("<html>Vendor Name: " + vendorName + "<br>" + 
-                                 "Item(s): " + items + "<br>" + 
-                                 "Customer Name: " + customerName + "<br>" +
-                                 "Customer Contact No.: " + contactNumber + "<br>" + 
-                                 "Address: " + address + "<br>" +
-                                 "Status: " + status + "<br>" + 
-                                 "Delivery Fee: " + deliveryFee + "</html>");
+                taskInfo.setText("<html>Vendor Name: " + vendorName + "<br>"
+                        + "Item(s): " + items + "<br>"
+                        + "Customer Name: " + customerName + "<br>"
+                        + "Customer Contact No.: " + contactNumber + "<br>"
+                        + "Address: " + address + "<br>"
+                        + "Status: " + status + "<br>"
+                        + "Delivery Fee: " + deliveryFee + "</html>");
             }
         }
     }
-    
+
     public void loadLatestCompletedTasks(JTable table) {
         DefaultTableModel model = (DefaultTableModel) notificJT.getModel();
         model.setRowCount(0);
@@ -139,7 +136,7 @@ public class runnerMain extends javax.swing.JFrame {
         for (String[] task : completedTasks) {
             model.addRow(task);
         }
-        
+
         model.fireTableDataChanged();
     }
 
@@ -156,7 +153,7 @@ public class runnerMain extends javax.swing.JFrame {
                 String[] orderData = line.split(",");
                 String status = orderData[3];
                 String runnerEmail = orderData[5];
- 
+
                 if (runnerEmail.equalsIgnoreCase(email)) {
                     String date = orderData[9];
                     String orderID = orderData[0];
@@ -164,8 +161,7 @@ public class runnerMain extends javax.swing.JFrame {
                     if ("completed".equalsIgnoreCase(status)) {
                         String deliveryFee = orderData[7];
                         tempTasks.add(new String[]{date, "Congratulations! You have a new income! (order: " + orderID + ")", deliveryFee});
-                    } 
-                    else if ("assigning runner".equalsIgnoreCase(status)) {
+                    } else if ("assigning runner".equalsIgnoreCase(status)) {
                         String deliveryFee = "-";
                         tempTasks.add(new String[]{date, "You have been assigned a new task. Please check the task reception area. (order: " + orderID + ")", deliveryFee});
                     }
@@ -173,29 +169,33 @@ public class runnerMain extends javax.swing.JFrame {
             }
 
             tempTasks.sort((a, b) -> {
-            LocalDate dateA = LocalDate.parse(a[0], formatter);
-            LocalDate dateB = LocalDate.parse(b[0], formatter);
+                LocalDate dateA = LocalDate.parse(a[0], formatter);
+                LocalDate dateB = LocalDate.parse(b[0], formatter);
 
-            // Sort by date (Descending)
-            int dateComparison = dateB.compareTo(dateA);
+                // Sort by date (Descending)
+                int dateComparison = dateB.compareTo(dateA);
 
-            if (dateComparison == 0) { 
-                Pattern pattern = Pattern.compile("order: (\\d+)");
-                Matcher matcherA = pattern.matcher(a[1]);
-                Matcher matcherB = pattern.matcher(b[1]);
+                if (dateComparison == 0) {
+                    Pattern pattern = Pattern.compile("order: (\\d+)");
+                    Matcher matcherA = pattern.matcher(a[1]);
+                    Matcher matcherB = pattern.matcher(b[1]);
 
-                int orderIdA = 0, orderIdB = 0;
-                if (matcherA.find()) orderIdA = Integer.parseInt(matcherA.group(1));
-                if (matcherB.find()) orderIdB = Integer.parseInt(matcherB.group(1));
+                    int orderIdA = 0, orderIdB = 0;
+                    if (matcherA.find()) {
+                        orderIdA = Integer.parseInt(matcherA.group(1));
+                    }
+                    if (matcherB.find()) {
+                        orderIdB = Integer.parseInt(matcherB.group(1));
+                    }
 
-                // Sort by Order ID (Descending)
-                return Integer.compare(orderIdB, orderIdA);
-            }
+                    // Sort by Order ID (Descending)
+                    return Integer.compare(orderIdB, orderIdA);
+                }
 
-            return dateComparison;
-        });
+                return dateComparison;
+            });
 
-        tasks = tempTasks.subList(0, Math.min(limit, tempTasks.size()));
+            tasks = tempTasks.subList(0, Math.min(limit, tempTasks.size()));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -557,7 +557,7 @@ public class runnerMain extends javax.swing.JFrame {
 
     private void avaJRBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_avaJRBActionPerformed
         String status = "available";
-        
+
         runner.updateRunnerStatus(email, status);
 
         ImageIcon icon = new ImageIcon("images/runner/available.png");
@@ -567,9 +567,9 @@ public class runnerMain extends javax.swing.JFrame {
 
     private void unaJRBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_unaJRBActionPerformed
         String status = "unavailable";
-        
+
         runner.updateRunnerStatus(email, status);
-        
+
         ImageIcon icon = new ImageIcon("images/runner/unavailable.jpg");
         Image scaledImage = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
         statusImage.setIcon(new ImageIcon(scaledImage));

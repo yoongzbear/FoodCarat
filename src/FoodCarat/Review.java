@@ -21,10 +21,6 @@ import java.util.List;
 import java.util.Random;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author ASUS
- */
 public class Review {
     private int reviewID;
     private int orderID;

@@ -15,13 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- *
- * @author User
- */
 public class Manager extends User {
 
-    private String userFile = "resources/user.txt";
     private String orderFile = "resources/customerOrder.txt";
 
     //Monitor Runner Performance

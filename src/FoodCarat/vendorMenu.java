@@ -22,49 +22,46 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author mastu
- */
 public class vendorMenu extends javax.swing.JFrame {
 
+    //for display image at details
     String imagePath = "";
     File imageFile = null;
+
     private String email = User.getSessionEmail();
-    Vendor vendor = new Vendor(email);
     boolean edit = true;
-    
+
     /**
      * Creates new form vendorMenu
      */
     public vendorMenu() {
         initComponents();
-        getContentPane().setBackground(new java.awt.Color(186,85,211)); //setting background color of frame
+        getContentPane().setBackground(new java.awt.Color(186, 85, 211)); //setting background color of frame
         setLocationRelativeTo(null);
-        
+
         //display items in table
         displayItems();
         foodBox.setSelected(true);
         beverageBox.setSelected(true);
         dessertBox.setSelected(true);
         setBox.setSelected(true);
-        
+
         enableTextField();
         typeBox.setVisible(false); //hide the combo box for type 
-        
+
         //set the placeholder for search box
         GuiUtility.setPlaceholder(searchTxt, "Search item name");
         editBtn.setEnabled(false);
         deleteBtn.setEnabled(false);
-        
+
         //set size of photoLabel
-        photoLabel.setPreferredSize(new Dimension(175, 164)); 
+        photoLabel.setPreferredSize(new Dimension(175, 164));
         photoLabel.setMinimumSize(new Dimension(175, 164));
         photoLabel.setMaximumSize(new Dimension(175, 164));
-        
+
         itemTableListener();
     }
-    
+
     //reset details section
     public void resetDetails() {
         //reset details section
@@ -104,7 +101,7 @@ public class vendorMenu extends javax.swing.JFrame {
         itemTable.getColumnModel().getColumn(2).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-                                                           boolean hasFocus, int row, int column) {
+                    boolean hasFocus, int row, int column) {
                 if (value instanceof ImageIcon) {
                     JLabel label = new JLabel((ImageIcon) value);
                     label.setHorizontalAlignment(SwingConstants.CENTER);
@@ -137,13 +134,13 @@ public class vendorMenu extends javax.swing.JFrame {
     }
 
     //display items based on check boxes
-    public void displayItemsFilter(String[] filter) {      
+    public void displayItemsFilter(String[] filter) {
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
         List<String[]> allItems = new Item().getAllItems(email, true); //item is available 
         int index = 1;
         model.setRowCount(0);
         itemTable.setRowHeight(100);
-        
+
         for (String[] itemData : allItems) {
             String itemID = itemData[0];
             String itemName = itemData[1];
@@ -156,7 +153,7 @@ public class vendorMenu extends javax.swing.JFrame {
             for (String filterType : filter) {
                 if (itemType.equals(filterType)) {
                     isFiltered = true;
-                    break;  
+                    break;
                 }
             }
 
@@ -174,7 +171,7 @@ public class vendorMenu extends javax.swing.JFrame {
         itemTable.getColumnModel().getColumn(2).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-                                                           boolean hasFocus, int row, int column) {
+                    boolean hasFocus, int row, int column) {
                 if (value instanceof ImageIcon) {
                     JLabel label = new JLabel((ImageIcon) value);
                     label.setHorizontalAlignment(SwingConstants.CENTER);
@@ -184,7 +181,7 @@ public class vendorMenu extends javax.swing.JFrame {
             }
         });
     }
-    
+
     //display items based on search bar
     public void displayItemsSearch(String searchItem) {
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
@@ -196,7 +193,7 @@ public class vendorMenu extends javax.swing.JFrame {
         if (searchedItems.isEmpty()) { //if no item matches search
             JOptionPane.showMessageDialog(null, "No items found for '" + searchItem + "'.", "Not Found", JOptionPane.INFORMATION_MESSAGE);
             displayItems();
-            return; 
+            return;
         }
 
         for (String[] itemData : searchedItems) {
@@ -257,10 +254,10 @@ public class vendorMenu extends javax.swing.JFrame {
             double price = Double.parseDouble(priceText);
             return price >= 0;
         } catch (NumberFormatException e) {
-            return false; 
-        } 
+            return false;
+        }
     }
-    
+
     private void itemTableListener() {
         itemTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -649,7 +646,7 @@ public class vendorMenu extends javax.swing.JFrame {
         String type = typeBox.getSelectedItem().toString().trim();
         String priceText = itemPriceTxt.getText().trim();
         double price;
-        
+
         if (editBtn.getText().equals("Edit Details")) {
             editBtn.setText("Save Details");
         } else {
@@ -669,7 +666,7 @@ public class vendorMenu extends javax.swing.JFrame {
                 } else {
                     price = Double.parseDouble(priceText);
                 }
-   
+
                 //upload image into menu folder
                 String newImagePath = new Item().uploadImage(imagePath);
                 if (newImagePath == null) {
@@ -680,19 +677,19 @@ public class vendorMenu extends javax.swing.JFrame {
                     Item updateItem = new Item(Integer.parseInt(id), name, type, price, newImagePath, email, "available");
                     updateItem.editItem();
 
-                    // Ensure fields and buttons are disabled after saving
-                    enableTextField(); // Disable input fields and editImageBtn
+                    enableTextField(); //disable input fields and editImageBtn
 
                     editBtn.setText("Edit Details");
                     displayItems();
                     resetDetails();
                 }
-            } if (confirm == JOptionPane.NO_OPTION) {
+            }
+            if (confirm == JOptionPane.NO_OPTION) {
                 enableTextField();
                 editBtn.setText("Save Details");
             }
         }
-        
+
     }//GEN-LAST:event_editBtnActionPerformed
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
@@ -738,7 +735,7 @@ public class vendorMenu extends javax.swing.JFrame {
             displayItems();
         } else {
             displayItemsSearch(searchItem);
-        }           
+        }
     }//GEN-LAST:event_searchBtnActionPerformed
 
     private void revertBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_revertBtnActionPerformed

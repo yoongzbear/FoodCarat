@@ -7,10 +7,6 @@ package FoodCarat;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 
-/**
- *
- * @author mastu
- */
 public class vendorItemDeleted extends javax.swing.JFrame {
     private int itemID;
 

@@ -4,11 +4,8 @@
  */
 package FoodCarat;
 
-/**
- *
- * @author User
- */
 public class adminCusReceipt extends javax.swing.JFrame {
+
     private int transactionId;
     private String email;
     private String name;
@@ -17,17 +14,18 @@ public class adminCusReceipt extends javax.swing.JFrame {
     private double newCurrentAmount;
     private String datePayment;
     private String timePayment;
+
     /**
      * Creates new form adminCusReceipt
      */
-    
+
     public adminCusReceipt(int transactionId, String email, String name, double currentAmount, double amountChanges, String date, String time) {
         initComponents();
         this.transactionId = transactionId;
         this.email = email;
         this.name = name;
         this.currentAmount = currentAmount;
-        this.amountChanges = amountChanges;  
+        this.amountChanges = amountChanges;
         this.newCurrentAmount = currentAmount + amountChanges;
         this.datePayment = date;
         this.timePayment = time;
@@ -35,12 +33,13 @@ public class adminCusReceipt extends javax.swing.JFrame {
         setReceiptDetails();
         setLocationRelativeTo(null);
     }
+
     private void setReceiptDetails() {
         LtransID.setText(Integer.toString(transactionId));
         Lemail.setText(email);
         Lname.setText(name);
         LbeforeChange.setText(String.format("RM %.2f", currentAmount));
-        
+
         String formattedAmountChanges;
         if (amountChanges > 0) {
             formattedAmountChanges = "+ RM " + String.format("%.2f", amountChanges);
@@ -48,7 +47,7 @@ public class adminCusReceipt extends javax.swing.JFrame {
             formattedAmountChanges = "- RM " + String.format("%.2f", Math.abs(amountChanges));
         }
         LchangesNum.setText(formattedAmountChanges);
-    
+
         LafterChange.setText(String.format("RM %.2f", newCurrentAmount));
         Ldate.setText(datePayment);
         Ltime.setText(timePayment);

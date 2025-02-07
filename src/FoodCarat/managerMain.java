@@ -6,10 +6,6 @@ package FoodCarat;
 
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author User
- */
 public class managerMain extends javax.swing.JFrame {
 
     /**
@@ -204,8 +200,8 @@ public class managerMain extends javax.swing.JFrame {
     }//GEN-LAST:event_bvenperformanceActionPerformed
 
     private void blogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_blogoutActionPerformed
-       int choice = JOptionPane.showConfirmDialog(null, "Are you sure to logout?", "Confirm Logout", JOptionPane.YES_NO_OPTION);
-        if (choice == JOptionPane.YES_OPTION){
+        int choice = JOptionPane.showConfirmDialog(null, "Are you sure to logout?", "Confirm Logout", JOptionPane.YES_NO_OPTION);
+        if (choice == JOptionPane.YES_OPTION) {
             User user = new User();
             user.logOut();
             JOptionPane.showMessageDialog(null, "You have been logged out!", "Log Out", JOptionPane.INFORMATION_MESSAGE);

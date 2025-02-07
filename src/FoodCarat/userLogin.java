@@ -20,14 +20,13 @@ public class userLogin extends javax.swing.JFrame {
     public userLogin() {
         initComponents();
         setLocationRelativeTo(null);
-        
-        User user = new User();
+
         // Set the document filter for emailField and passwordField
         ((PlainDocument) emailTf.getDocument()).setDocumentFilter(GuiUtility.createLengthFilter(30));
         ((PlainDocument) lPasswordField.getDocument()).setDocumentFilter(GuiUtility.createLengthFilter(20));
     }
-    
-     @Override
+
+    @Override
     public void paint(Graphics g) {
         super.paint(g); // Ensure default painting (like borders, etc.)
         Graphics2D g2d = (Graphics2D) g;
@@ -202,24 +201,24 @@ public class userLogin extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
         // Validate email format
         if (!email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
-            JOptionPane.showMessageDialog(this, 
-                "Invalid email format. Please enter a valid email.", 
-                "ERROR", 
-                JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Invalid email format. Please enter a valid email.",
+                    "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
         User user = new User();
-        
+
         // Check if email exists
         if (!user.emailExists(email)) {
-            JOptionPane.showMessageDialog(this, 
-                "Email does not exist.", 
-                "ERROR", 
-                JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Email does not exist.",
+                    "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -227,33 +226,33 @@ public class userLogin extends javax.swing.JFrame {
 
         // Check if the account is deleted
         if (userInfo.length < 5 || (userInfo[2].isEmpty() && userInfo[4].isEmpty() && userInfo[5].isEmpty())) {
-            JOptionPane.showMessageDialog(this, 
-                "This account has been deleted.", 
-                "Account Deleted", 
-                JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "This account has been deleted.",
+                    "Account Deleted",
+                    JOptionPane.WARNING_MESSAGE);
             return;
         }
-        
+
         // Check if password matches
         if (!user.passwordMatches(email, password)) {
-            JOptionPane.showMessageDialog(this, 
-                "Wrong password. Please re-enter.", 
-                "ERROR", 
-                JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Wrong password. Please re-enter.",
+                    "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
             lPasswordField.setText(""); // Clear password field
         } else {
-            JOptionPane.showMessageDialog(this, 
-                "Login successful! Welcome " + user.getName() + "!", 
-                "INFORMATION",
-                JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Login successful! Welcome " + user.getName() + "!",
+                    "INFORMATION",
+                    JOptionPane.INFORMATION_MESSAGE);
 
             String nextPage = user.login(email, password);
 
             if (nextPage.equals("loginFailedPage")) {
-                JOptionPane.showMessageDialog(this, 
-                    "Login failed. Please check your credentials and try again.", 
-                    "ERROR", 
-                    JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this,
+                        "Login failed. Please check your credentials and try again.",
+                        "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
             } else {
                 user.navigateToPage(nextPage, this);
             }
@@ -302,7 +301,7 @@ public class userLogin extends javax.swing.JFrame {
             }
         });
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField emailTf;
     private javax.swing.JLabel jLabel1;

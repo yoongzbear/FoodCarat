@@ -10,41 +10,35 @@ import java.util.Arrays;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author mastu
- */
 public class vendorMain extends javax.swing.JFrame {
 
     /**
      * Creates new form vendorMain
      */
-    
-    //change to userSession 
     private String email = User.getSessionEmail();
     private String name = User.getSessionName();
     Vendor vendor = new Vendor(email);
-    
+
     public vendorMain() {
         initComponents();
-        getContentPane().setBackground(new java.awt.Color(186,85,211)); //setting background color of frame
+        getContentPane().setBackground(new java.awt.Color(186, 85, 211)); //setting background color of frame
         setLocationRelativeTo(null);
-        
+
         //display vendor info
         displayInfo();
         displayMethod();
     }
-        
+
     public void displayInfo() { //display vendor info
         if (vendor != null) {
             salutationTxt.setText(name);
             emailTxt.setText(email);
             cuisineTxt.setText(vendor.getCuisine());
-            
+
             DecimalFormat df = new DecimalFormat("0.00");
             String credit = df.format(vendor.getCreditBalance());
-            creditTxt.setText("RM"+credit); 
-            
+            creditTxt.setText("RM" + credit);
+
             ImageIcon icon = new ImageIcon(vendor.getPhotoLink());
             Image img = icon.getImage();
             Image resizedImage = img.getScaledInstance(vendorLogo.getWidth(), vendorLogo.getHeight(), Image.SCALE_SMOOTH);
@@ -56,7 +50,7 @@ public class vendorMain extends javax.swing.JFrame {
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     //display available method
     public void displayMethod() {
         String methods = vendor.getAvailableMethod();
@@ -103,12 +97,13 @@ public class vendorMain extends javax.swing.JFrame {
         updateMethodBtn = new javax.swing.JButton();
         openAllBtn = new javax.swing.JButton();
         closeAllBtn = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(204, 102, 255));
 
         jLabel1.setFont(new java.awt.Font("Cooper Black", 0, 36)); // NOI18N
-        jLabel1.setText("Vendor Main Menu");
+        jLabel1.setText("FoodCarat Food Court");
 
         itemBtn.setText("Menu Item");
         itemBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -238,7 +233,7 @@ public class vendorMain extends javax.swing.JFrame {
                     .addComponent(creditTxt))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel6)
-                .addContainerGap(8, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel2.setForeground(new java.awt.Color(228, 204, 255));
@@ -320,6 +315,9 @@ public class vendorMain extends javax.swing.JFrame {
                 .addContainerGap(25, Short.MAX_VALUE))
         );
 
+        jLabel2.setFont(new java.awt.Font("Cooper Black", 0, 14)); // NOI18N
+        jLabel2.setText("Vendor Main Page");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -336,40 +334,51 @@ public class vendorMain extends javax.swing.JFrame {
                     .addComponent(notificationBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
+                .addGap(27, 27, 27)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addContainerGap(33, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(343, 343, 343))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(343, 343, 343))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(487, 487, 487))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(itemBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(notificationBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(20, 20, 20)
-                        .addComponent(currentOrderBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(orderHistoryBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-                        .addComponent(reviewBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(revenueBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(logoutBtn))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(4, 4, 4))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(itemBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(notificationBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(20, 20, 20)
+                                .addComponent(currentOrderBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(orderHistoryBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(reviewBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(revenueBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(logoutBtn)))
+                        .addGap(20, 20, 20))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(20, 20, 20))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {logoutBtn, revenueBtn});
@@ -379,27 +388,27 @@ public class vendorMain extends javax.swing.JFrame {
 
     private void itemBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemBtnActionPerformed
         new vendorMenu().setVisible(true);
-        dispose();        
+        dispose();
     }//GEN-LAST:event_itemBtnActionPerformed
 
     private void notificationBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_notificationBtnActionPerformed
         new vendorNotification().setVisible(true);
-        dispose();  
+        dispose();
     }//GEN-LAST:event_notificationBtnActionPerformed
 
     private void currentOrderBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_currentOrderBtnActionPerformed
         new vendorCurrentOrder().setVisible(true);
-        dispose();  
+        dispose();
     }//GEN-LAST:event_currentOrderBtnActionPerformed
 
     private void reviewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reviewBtnActionPerformed
         new vendorReview().setVisible(true);
-        dispose();  
+        dispose();
     }//GEN-LAST:event_reviewBtnActionPerformed
 
     private void revenueBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_revenueBtnActionPerformed
         new vendorRevenue().setVisible(true);
-        dispose();  
+        dispose();
     }//GEN-LAST:event_revenueBtnActionPerformed
 
     private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
@@ -416,15 +425,14 @@ public class vendorMain extends javax.swing.JFrame {
 
     private void orderHistoryBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_orderHistoryBtnActionPerformed
         new vendorOrderHistory().setVisible(true);
-        dispose(); 
+        dispose();
     }//GEN-LAST:event_orderHistoryBtnActionPerformed
 
     private void updateMethodBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateMethodBtnActionPerformed
-        //see which is ticked, rewrite in the text file for the available methods, save as array
         String[] selectedMethod = new String[3];
         int index = 0;
         String methodString = "";
-        
+
         //check if checkbox is ticked
         if (!dineInBox.isSelected() && !deliveryBox.isSelected() && !deliveryBox.isSelected()) {
             int confirm = JOptionPane.showConfirmDialog(null, "Close all methods?", "Close All Methods", JOptionPane.YES_NO_OPTION);
@@ -445,7 +453,7 @@ public class vendorMain extends javax.swing.JFrame {
             selectedMethod = Arrays.copyOf(selectedMethod, index); //adjust the size of array
             methodString = "[" + String.join(";", selectedMethod) + "]";
         }
-        //call method to update method from vendor class
+        //call method to update available method from vendor class
         vendor.updateMethodAvailable(methodString);
         JOptionPane.showMessageDialog(null, "Available methods updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
         vendor.setAvailableMethod(methodString); //set current session's available methods
@@ -522,6 +530,7 @@ public class vendorMain extends javax.swing.JFrame {
     private javax.swing.JButton itemBtn;
     private javax.swing.JLabel jLabel;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;

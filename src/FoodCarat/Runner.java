@@ -14,14 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author Yuna
- */
 public class Runner extends User{
-    private String runnerFile = "resources/runner.txt";
-    private String cusOrderFile = "resources/customerOrder.txt";
-    
+        
     // Prompt and validate plate number
     public String promptAndValidatePlateNumber(Component parentComponent, String email) {
         String plateNumber = null;

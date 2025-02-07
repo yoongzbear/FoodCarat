@@ -9,27 +9,24 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author Yuna
- */
 public class runnerViewTask extends javax.swing.JFrame {
+
     private String[] orderData;
     private String runnerEmail = User.getSessionEmail();
 
     public runnerViewTask() {
         initComponents();
         setLocationRelativeTo(null);
-        
+
         getRunnerTask(runnerEmail);
-        
-        if(orderData == null){
+
+        if (orderData == null) {
             acceptJB.setEnabled(false);
             declineJB.setEnabled(false);
         }
-        
+
         displayCurrentTask(runnerEmail);
-        
+
         updateJB.setEnabled(false);
 
         // Add a listener to the table to handle row selection
@@ -42,7 +39,7 @@ public class runnerViewTask extends javax.swing.JFrame {
                 String orderID = currentTaskJT.getValueAt(selectedRow, 0).toString();
                 String vendorName = currentTaskJT.getValueAt(selectedRow, 1).toString();
                 String customerName = currentTaskJT.getValueAt(selectedRow, 2).toString();
-                
+
                 String items = currentTaskJT.getValueAt(selectedRow, 3).toString();
                 String[] itemEntries = items.split(",");
 
@@ -59,7 +56,7 @@ public class runnerViewTask extends javax.swing.JFrame {
                         model.addRow(new Object[]{itemName, quantity});
                     }
                 }
-                
+
                 String address = currentTaskJT.getValueAt(selectedRow, 4).toString();
                 String contactNo = currentTaskJT.getValueAt(selectedRow, 5).toString();
                 String deliveryFee = currentTaskJT.getValueAt(selectedRow, 6).toString();
@@ -75,7 +72,7 @@ public class runnerViewTask extends javax.swing.JFrame {
             }
         });
     }
-    
+
     // Get new task
     private void getRunnerTask(String runnerEmail) {
         Order order = new Order();
@@ -83,7 +80,7 @@ public class runnerViewTask extends javax.swing.JFrame {
 
         for (String[] orderData : allOrders) {
             if ("assigning runner".equalsIgnoreCase(orderData[3]) && runnerEmail.equals(orderData[5])) {
-                
+
                 this.orderData = orderData;
 
                 orderIDTF.setText(orderData[0]);
@@ -114,12 +111,12 @@ public class runnerViewTask extends javax.swing.JFrame {
                 String[] vendorInfo = item.getVendorInfoByItemID(Integer.parseInt(itemInfo[0].split(";")[0].trim()));
                 String vendorName = vendorInfo[1];
                 vendorNameTF.setText(vendorName);
-                
+
                 String[] itemFormat = items.split(",");
-                
+
                 DefaultTableModel model = (DefaultTableModel) itemJT1.getModel();
                 model.setRowCount(0);
-                
+
                 // Iterate over each item and quantity
                 for (String itemquantity : itemFormat) {
                     String[] itemParts = itemquantity.split("\\[");
@@ -130,7 +127,7 @@ public class runnerViewTask extends javax.swing.JFrame {
                         model.addRow(new Object[]{itemsName1, quantity1});
                     }
                 }
-                
+
                 // Get customer email and retrieve their address
                 String customerEmail = orderData[4];
                 Customer customer = new Customer(customerEmail);
@@ -140,13 +137,13 @@ public class runnerViewTask extends javax.swing.JFrame {
 
                 acceptJB.setEnabled(true);
                 declineJB.setEnabled(true);
-                
+
                 break;
             }
         }
     }
 
-    // For Task reception area
+    // Task reception area
     private void clearTaskDetails() {
         GuiUtility.clearFields(orderIDTF, vendorNameTF, addressTA, deFeeTF);
         DefaultTableModel model = (DefaultTableModel) itemJT1.getModel();
@@ -155,7 +152,7 @@ public class runnerViewTask extends javax.swing.JFrame {
         acceptJB.setEnabled(false);
         declineJB.setEnabled(false);
     }
-    
+
     // Display Current Task in table
     private void displayCurrentTask(String email) {
         Order order = new Order();
@@ -171,7 +168,7 @@ public class runnerViewTask extends javax.swing.JFrame {
             if (email.equals(orderData[5]) && !orderData[3].equalsIgnoreCase("assigning runner") && !orderData[3].equalsIgnoreCase("completed")) {
 
                 String orderId = orderData[0];
-                
+
                 Item item = new Item();
                 String itemIDString = orderData[2].replaceAll("[\\[\\]]", "");
                 String[] itemDetails = itemIDString.split("\\|");
@@ -197,44 +194,28 @@ public class runnerViewTask extends javax.swing.JFrame {
 
                 String[] vendorInfo = item.getVendorInfoByItemID(Integer.parseInt(itemDetails[0].split(";")[0].trim()));
                 String vendorName = vendorInfo[1];
-            
+
                 String[] customerInfo = new User().getUserInfo(orderData[4]);
                 String customerName = customerInfo[1];
 
                 String address = new Customer().getCustomerAddress(orderData[4]);
                 String contactNumber = customerInfo[5];
-                
+
                 String deliveryFee = orderData[7];
                 String rawStatus = orderData[3]; // Get the raw status from data
-                String status;
-                // Map raw status to user-friendly display status
-                switch (rawStatus) {
-                    case "picked up by runner":
-                        status = "Picked Up";
-                        break;
-                    case "completed":
-                        status = "Completed";
-                        break;
-                    case "ready":
-                        status = "Ready";
-                        break;
-                    default:
-                        // Fallback to default capitalization logic
-                        status = rawStatus;
-                        break;
-                }
+                String status = rawStatus.substring(0, 1).toUpperCase() + rawStatus.substring(1).toLowerCase();
 
                 // Add row to the table
                 model.addRow(new Object[]{
-                        orderId, vendorName, customerName, items, address, contactNumber, deliveryFee, status
+                    orderId, vendorName, customerName, items, address, contactNumber, deliveryFee, status
                 });
             }
         }
-        
+
         currentTaskJT.getSelectionModel().addListSelectionListener(event -> {
-            if(!event.getValueIsAdjusting()){
+            if (!event.getValueIsAdjusting()) {
                 int selectedRow = currentTaskJT.getSelectedRow();
-                if(selectedRow != -1){
+                if (selectedRow != -1) {
                     String currentStatus = model.getValueAt(selectedRow, 7).toString();
 
                     statusAndUpdate(currentStatus);
@@ -242,7 +223,7 @@ public class runnerViewTask extends javax.swing.JFrame {
             }
         });
     }
-    
+
     // Set the model for the statusJCB based on the current status
     private void statusAndUpdate(String currentStatus) {
         statusJCB.removeAllItems();
@@ -832,7 +813,7 @@ public class runnerViewTask extends javax.swing.JFrame {
             if (confirm == JOptionPane.YES_OPTION) {
                 new Order().assignOrderToRunner(orderData, runnerEmail); // Assign order to the next available runner
                 JOptionPane.showMessageDialog(null, "Task declined!");
-                
+
                 clearTaskDetails();
                 getRunnerTask(runnerEmail);
             }
@@ -851,38 +832,38 @@ public class runnerViewTask extends javax.swing.JFrame {
 
             if (newStatus != null && !newStatus.equalsIgnoreCase(currentStatus)) {
                 String fileStatus;
-                    switch (newStatus) {
-                        case "Picked Up":
-                            fileStatus = "picked up by runner";
-                            break;
-                        case "Completed":
-                            fileStatus = "completed";
-                            break;
-                        default:
-                            fileStatus = newStatus.toLowerCase(); // Use as-is for other statuses
-                            break;
-                    }
-                    
-                    // Confirm before updating status to "Completed"
-                    if ("completed".equals(fileStatus)) {
-                        int confirm = JOptionPane.showConfirmDialog(
+                switch (newStatus) {
+                    case "Picked Up":
+                        fileStatus = "picked up by runner";
+                        break;
+                    case "Completed":
+                        fileStatus = "completed";
+                        break;
+                    default:
+                        fileStatus = newStatus.toLowerCase();
+                        break;
+                }
+
+                // Confirm before updating status to "Completed"
+                if ("completed".equals(fileStatus)) {
+                    int confirm = JOptionPane.showConfirmDialog(
                             null,
                             "Are you sure you want to complete this task?",
                             "Confirm Completion",
                             JOptionPane.YES_NO_OPTION
-                        );
+                    );
 
-                        if (confirm != JOptionPane.YES_OPTION) {
-                            return;
-                        }
+                    if (confirm != JOptionPane.YES_OPTION) {
+                        return;
                     }
+                }
                 // Update status
                 Order order = new Order();
                 order.updateStatus(orderId, fileStatus, "runner");
 
                 JOptionPane.showMessageDialog(null, "Status Updated!");
-                
-                if ("completed".equals(fileStatus)){
+
+                if ("completed".equals(fileStatus)) {
                     try {
                         Runner runner = new Runner();
                         runner.updateRunnerStatus(runnerEmail, "available");
@@ -891,13 +872,13 @@ public class runnerViewTask extends javax.swing.JFrame {
                         double currentCredit = Double.parseDouble(runnerInfo[3].trim());
                         double newAmount = currentCredit + deliveryFee;
                         runner.updateCredit(runnerEmail, newAmount, "resources/runner.txt", 3);
-                        
+
                         JOptionPane.showMessageDialog(
-                            null,
-                            "Task completed successfully!\n" +
-                            "Runner's new salary: RM " + String.format("%.2f", newAmount),
-                            "Salary Updated",
-                            JOptionPane.INFORMATION_MESSAGE
+                                null,
+                                "Task completed successfully!\n"
+                                + "Runner's new salary: RM " + String.format("%.2f", newAmount),
+                                "Salary Updated",
+                                JOptionPane.INFORMATION_MESSAGE
                         );
                     } catch (IOException e) {
                         e.printStackTrace();

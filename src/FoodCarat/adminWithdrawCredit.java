@@ -7,18 +7,17 @@ package FoodCarat;
 import java.awt.Color;
 import java.io.IOException;
 
-/**
- *
- * @author User
- */
 public class adminWithdrawCredit extends javax.swing.JFrame {
+
     private String userFile = "resources/user.txt";
+
     /**
      * Creates new form adminWithdrawCredit
      */
     public adminWithdrawCredit() {
         initComponents();
         setLocationRelativeTo(null);
+        
         withdrawnumtxt.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
             public void insertUpdate(javax.swing.event.DocumentEvent e) {
                 updateNewAmount();
@@ -32,6 +31,7 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
                 updateNewAmount();
             }
         });
+        
         emailtxt.setEditable(false);
         nametxt.setEditable(false);
         currentamounttxt.setEditable(false);
@@ -258,7 +258,7 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
                 searchtxt.requestFocus();
                 return;
             }
-                        
+
             if (withdrawAmountStr.isEmpty()) {
                 javax.swing.JOptionPane.showMessageDialog(this, "Please enter the withdraw amount.", "Input Error", javax.swing.JOptionPane.WARNING_MESSAGE);
                 withdrawnumtxt.requestFocus();
@@ -268,7 +268,7 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
             if (afterWithdrawAmountStr.equals("Insufficient balance for withdrawal")) {
                 javax.swing.JOptionPane.showMessageDialog(this, "Insufficient balance for withdraw!", "Input Error", javax.swing.JOptionPane.WARNING_MESSAGE);
                 return;
-            } else if(afterWithdrawAmountStr.equals("Invalid withdraw amount")){
+            } else if (afterWithdrawAmountStr.equals("Invalid withdraw amount")) {
                 javax.swing.JOptionPane.showMessageDialog(this, "The withdrawal amount is invalid. Please avoid any symbols in it.", "Input Error", javax.swing.JOptionPane.WARNING_MESSAGE);
                 return;
             }
@@ -311,25 +311,25 @@ public class adminWithdrawCredit extends javax.swing.JFrame {
         User user = new User();
         // Clear the table and fields before populating
         clearFields();
-       try {
+        try {
             String role = user.getRoleByEmail(searchEmail, userFile);
 
             if (role != null) {
-                if(role.equals("vendor")){
+                if (role.equals("vendor")) {
                     String data = user.getRoleSpecificData(searchEmail, role, 4);  //vendor credit is at index 4
                     String[] venData = user.getUserInfo(searchEmail); //get vendor name
 
                     emailtxt.setText(venData[0]);
                     currentamounttxt.setText(data);
                     nametxt.setText(venData[1]);
-                }else if(role.equals("runner")){
+                } else if (role.equals("runner")) {
                     String data = user.getRoleSpecificData(searchEmail, role, 3);  //runner credit is at index 3
                     String[] runData = user.getUserInfo(searchEmail); //get runner name
 
                     emailtxt.setText(runData[0]);
                     currentamounttxt.setText(data);
                     nametxt.setText(runData[1]);
-                }else if(role.equals("customer")){
+                } else if (role.equals("customer")) {
                     javax.swing.JOptionPane.showMessageDialog(this, "Admin unable to withdraw customer credit!", "Input Error", javax.swing.JOptionPane.WARNING_MESSAGE);
                 }
             } else {

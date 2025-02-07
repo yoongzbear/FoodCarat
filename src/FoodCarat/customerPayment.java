@@ -9,15 +9,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author ASUS
- */
 public class customerPayment extends javax.swing.JFrame {
 
     /**
@@ -26,25 +21,24 @@ public class customerPayment extends javax.swing.JFrame {
     private int orderID;
     private String orderType;
     DecimalFormat df = new DecimalFormat("0.00");
-    
+
     public customerPayment(int orderID, String orderType) {
         this.orderType = orderType.toLowerCase();
         this.orderID = orderID;
         initComponents();
         displayOrderDetails();
         setLocationRelativeTo(null);
-        getContentPane().setBackground(new java.awt.Color(180,200,234));
+        getContentPane().setBackground(new java.awt.Color(180, 200, 234));
     }
-    
+
     private void displayOrderDetails() {
         try {
             Order order = new Order(orderType, User.getSessionEmail());
-            String[] tokens = order.getOrder(orderID); 
+            String[] tokens = order.getOrder(orderID);
 
             //extract the relevant parameters
             String orderType = tokens[1];
             String orderItems = tokens[2];
-            String orderStatus = tokens[3];
             String customerEmail = tokens[4];
             String deliveryFee = tokens[7];
             String paymentTotal = tokens[8];
@@ -53,7 +47,7 @@ public class customerPayment extends javax.swing.JFrame {
             Customer customer = new Customer(User.getSessionEmail());
             int pointBalance = customer.getPoints();
             String creditBalance = "0";
-            
+
             String formattedOrderType = "";
             switch (this.orderType) {
                 case "dine in":
@@ -91,7 +85,7 @@ public class customerPayment extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Error loading order details: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     private void populateOrderItemsTable(String orderItemsString) { //to display the order items in table
         DefaultTableModel model = (DefaultTableModel) tOrderItem.getModel();
         model.setRowCount(0);  //clear table
@@ -106,14 +100,14 @@ public class customerPayment extends javax.swing.JFrame {
             if (itemDetails.length == 2) {
                 int itemID = Integer.parseInt(itemDetails[0]);
                 String quantity = itemDetails[1];
-                
+
                 //get item data and calculate total price
                 Item item1 = new Item();
                 String[] itemData = item1.itemData(itemID);
-                String itemName = itemData[1];  
+                String itemName = itemData[1];
                 double itemPrice = Double.parseDouble(itemData[3]);
                 double orderItemTotal = Integer.parseInt(quantity) * itemPrice;
-                
+
                 //set the vendor name using item ID
                 String[] vendorInfo = item1.getVendorInfoByItemID(itemID);
                 String vendorName = vendorInfo[1];
@@ -364,13 +358,13 @@ public class customerPayment extends javax.swing.JFrame {
         String formattedDate = sdf.format(today.getTime());
 
         //retrieve data
-        int redeemPoints = (int) tfRedeemPoints.getValue(); 
-        double currentBalance = Double.parseDouble(sCreditBalance.getText().replaceAll("RM ", "")); 
-        int currentPoints = Integer.parseInt(sPointBalance.getText()); 
+        int redeemPoints = (int) tfRedeemPoints.getValue();
+        double currentBalance = Double.parseDouble(sCreditBalance.getText().replaceAll("RM ", ""));
+        int currentPoints = Integer.parseInt(sPointBalance.getText());
         String payTotalStr = sPayTotal.getText().replaceAll("RM ", "");
-        double payTotal = Double.parseDouble(payTotalStr); 
+        double payTotal = Double.parseDouble(payTotalStr);
         double deliveryFee = Double.parseDouble(sDeliveryFee.getText().replace("RM ", ""));
-        
+
         double orderTotal = payTotal - deliveryFee; //calculate order total excluding delivery fee
         int maxRedeemPoints = (int) (orderTotal * 0.25 / 0.01); //calculate the maximum points to redeem (25% of the order total exclude delivery)
 
@@ -390,7 +384,7 @@ public class customerPayment extends javax.swing.JFrame {
         double redeemAmount = redeemPoints * 0.01;
 
         //ensure the total payable amount (after redemption) is less than or equal to the payment total
-        double cusPayableAmount = redeemAmount + currentBalance; 
+        double cusPayableAmount = redeemAmount + currentBalance;
         if (cusPayableAmount < payTotal) {
             JOptionPane.showMessageDialog(rootPane, "Insufficient balance to complete the payment. Please contact admin to top up your credit or use more points.");
             return;
@@ -417,7 +411,7 @@ public class customerPayment extends javax.swing.JFrame {
                     //write the payment details to the order
                     Order order = new Order(orderID);
                     order.writePaymentDetails(orderID, newPaymentTotal, formattedDate);
-                    
+
                     //update user credit
                     customer.updateCredit(User.getSessionEmail(), updatedCredit, "resources/customer.txt", 2);
 
@@ -437,7 +431,7 @@ public class customerPayment extends javax.swing.JFrame {
 
     private void bBackMainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bBackMainActionPerformed
         int confirm = JOptionPane.showConfirmDialog(null, "Your order will be discarded. Are you sure to proceed?");
-        if (confirm == JOptionPane.YES_OPTION){
+        if (confirm == JOptionPane.YES_OPTION) {
             Order order = new Order();
             order.deleteIncompleteOrder(orderID);
 
@@ -451,11 +445,10 @@ public class customerPayment extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    
     public static void main(String args[]) {
-       
+
     }
-   
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bBackMain;

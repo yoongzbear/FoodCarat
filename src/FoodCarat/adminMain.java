@@ -6,10 +6,6 @@ package FoodCarat;
 
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author User
- */
 public class adminMain extends javax.swing.JFrame {
 
     /**
@@ -211,51 +207,51 @@ public class adminMain extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bRegistratonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRegistratonActionPerformed
-    String[] roleDisplay = {"Customer", "Vendor", "Runner"}; // Titles for display
-    String[] role = {"customer", "vendor", "runner"}; // Lowercase for passing to NewRegistration
+        String[] roleDisplay = {"Customer", "Vendor", "Runner"}; // Titles for display
+        String[] role = {"customer", "vendor", "runner"}; // Lowercase for passing to NewRegistration
 
-    // Show the selection dialog with titles
-    int choice = JOptionPane.showOptionDialog(
-        null,
-        "Please select: ",
-        "Registration Role",
-        JOptionPane.DEFAULT_OPTION,
-        JOptionPane.QUESTION_MESSAGE,
-        null,
-        roleDisplay,
-        roleDisplay[0]
-    );
+        // Show the selection dialog with titles
+        int choice = JOptionPane.showOptionDialog(
+                null,
+                "Please select: ",
+                "Registration Role",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                roleDisplay,
+                roleDisplay[0]
+        );
 
-    // Pass the lowercase role to the registration form
-    if (choice >= 0 && choice < role.length) { // Ensure valid selection
-        this.dispose();
-        adminRegister registerPage = new adminRegister(role[choice]); // Pass lowercase value
-        registerPage.setVisible(true);
-    }
+        // Pass the lowercase role to the registration form
+        if (choice >= 0 && choice < role.length) { // Ensure valid selection
+            this.dispose();
+            adminRegister registerPage = new adminRegister(role[choice]); // Pass lowercase value
+            registerPage.setVisible(true);
+        }
     }//GEN-LAST:event_bRegistratonActionPerformed
 
     private void bUpdateuserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bUpdateuserActionPerformed
         String[] roleDisplay = {"Customer", "Vendor", "Runner"}; // Titles for display
-         String[] role = {"customer", "vendor", "runner"}; // Lowercase for passing to UpdateUser1
+        String[] role = {"customer", "vendor", "runner"}; // Lowercase for passing to UpdateUser1
 
-         // Show the selection dialog with titles
-         int choice = JOptionPane.showOptionDialog(
-             null,
-             "Please select: ",
-             "Manage User Role",
-             JOptionPane.DEFAULT_OPTION,
-             JOptionPane.QUESTION_MESSAGE,
-             null,
-             roleDisplay,
-             roleDisplay[0]
-         );
+        // Show the selection dialog with titles
+        int choice = JOptionPane.showOptionDialog(
+                null,
+                "Please select: ",
+                "Manage User Role",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                roleDisplay,
+                roleDisplay[0]
+        );
 
-         // If a valid choice is made, proceed
-         if (choice >= 0 && choice < role.length) {
-             this.dispose();
-             adminUpdateUser updatePage = new adminUpdateUser(role[choice]); // Pass the lowercase value
-             updatePage.setVisible(true);
-         }
+        // If a valid choice is made, proceed
+        if (choice >= 0 && choice < role.length) {
+            this.dispose();
+            adminUpdateUser updatePage = new adminUpdateUser(role[choice]); // Pass the lowercase value
+            updatePage.setVisible(true);
+        }
     }//GEN-LAST:event_bUpdateuserActionPerformed
 
     private void bTopupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bTopupActionPerformed
@@ -275,7 +271,7 @@ public class adminMain extends javax.swing.JFrame {
 
     private void logoutbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutbtnActionPerformed
         int choice = JOptionPane.showConfirmDialog(null, "Are you sure to logout?", "Confirm Logout", JOptionPane.YES_NO_OPTION);
-        if (choice == JOptionPane.YES_OPTION){
+        if (choice == JOptionPane.YES_OPTION) {
             User user = new User();
             user.logOut();
             JOptionPane.showMessageDialog(null, "You have been logged out!", "Log Out", JOptionPane.INFORMATION_MESSAGE);

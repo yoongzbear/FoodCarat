@@ -27,11 +27,8 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
-/**
- *
- * @author mastu
- */
 public class vendorRevenue extends javax.swing.JFrame {
+
     private String vendorEmail = User.getSessionEmail();
 
     /**
@@ -39,11 +36,11 @@ public class vendorRevenue extends javax.swing.JFrame {
      */
     public vendorRevenue() {
         initComponents();
-        getContentPane().setBackground(new java.awt.Color(186,85,211)); //setting background color of frame
+        getContentPane().setBackground(new java.awt.Color(186, 85, 211)); //setting background color of frame
         setLocationRelativeTo(null);
-    
+
         updateAnnualRevenue();
-        updateCompletedOrders();        
+        updateCompletedOrders();
         updateMonthIncome();
         generatePieChart();
         generateMonthIncome();
@@ -66,7 +63,7 @@ public class vendorRevenue extends javax.swing.JFrame {
         double income = fetchMonthIncome(month, year);
         totalIncomeMJL.setText("RM" + String.format("%.2f", income));
     }
-    
+
     // Calculate Annual revenue
     private double fetchAnnualRevenue() {
         double annualRevenue = 0.0;
@@ -91,7 +88,7 @@ public class vendorRevenue extends javax.swing.JFrame {
             } catch (ParseException | NumberFormatException e) {
             }
         }
-    
+
         return annualRevenue;
     }
 
@@ -101,7 +98,7 @@ public class vendorRevenue extends javax.swing.JFrame {
 
         return completedOrders.size();
     }
-    
+
     // Income of the Month
     private double fetchMonthIncome(int month, int year) {
         List<String[]> completedTasks = new Order().getOrderByStatus(vendorEmail, "completed");
@@ -118,7 +115,7 @@ public class vendorRevenue extends javax.swing.JFrame {
 
         return totalIncome;
     }
-    
+
     private double fetchYearIncome(int year) {
         List<String[]> completedTasks = new Order().getOrderByStatus(vendorEmail, "completed");
         double totalIncome = 0;
@@ -134,7 +131,7 @@ public class vendorRevenue extends javax.swing.JFrame {
 
         return totalIncome;
     }
-    
+
     private void generatePieChart() {
         int month = pieMonthJMC.getMonth() + 1;
         int year = pieYearJYC.getYear();
@@ -163,7 +160,7 @@ public class vendorRevenue extends javax.swing.JFrame {
                 }
             }
         }
-        
+
         if (deliveryCount == 0 && takeAwayCount == 0 && dineInCount == 0) {
             JOptionPane.showMessageDialog(null, "No data available for the selected month of the year.", "No Data", JOptionPane.INFORMATION_MESSAGE);
 
@@ -213,7 +210,7 @@ public class vendorRevenue extends javax.swing.JFrame {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         LocalDate currentDate = LocalDate.now();
         int currentYear = currentDate.getYear();
-        
+
         for (int i = 5; i >= 0; i--) {
             int year = currentYear - i;
 
@@ -231,7 +228,7 @@ public class vendorRevenue extends javax.swing.JFrame {
 
         CategoryPlot plot = lineChart.getCategoryPlot();
         NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-        
+
         int totalIncome = 0;
         for (int i = 0; i < dataset.getColumnCount(); i++) {
             Number value = dataset.getValue(0, i);
@@ -249,9 +246,9 @@ public class vendorRevenue extends javax.swing.JFrame {
         } else {
             rangeAxis.setTickUnit(new NumberTickUnit(200));
         }
-        
+
         CategoryAxis categoryAxis = plot.getDomainAxis();
-        categoryAxis.setCategoryLabelPositions(CategoryLabelPositions.STANDARD); 
+        categoryAxis.setCategoryLabelPositions(CategoryLabelPositions.STANDARD);
 
         ChartPanel chartPanel = new ChartPanel(lineChart);
         chartPanel.setPreferredSize(new Dimension(800, 600));
@@ -260,12 +257,12 @@ public class vendorRevenue extends javax.swing.JFrame {
         chartPanel.setDomainZoomable(false);
         chartPanel.setRangeZoomable(false);
         chartPanel.setPopupMenu(null);
-        
+
         if (isMonthChart) {
-                lineChartMonthJL.removeAll();
-                lineChartMonthJL.setLayout(new BorderLayout());
-                lineChartMonthJL.add(chartPanel, BorderLayout.CENTER);
-                lineChartMonthJL.validate();
+            lineChartMonthJL.removeAll();
+            lineChartMonthJL.setLayout(new BorderLayout());
+            lineChartMonthJL.add(chartPanel, BorderLayout.CENTER);
+            lineChartMonthJL.validate();
         } else {
             lineChartYearJL.removeAll();
             lineChartYearJL.setLayout(new BorderLayout());
@@ -273,7 +270,7 @@ public class vendorRevenue extends javax.swing.JFrame {
             lineChartYearJL.validate();
         }
     }
-    
+
     // Display Pie chart
     private void displayPieChart(DefaultPieDataset dataset, String title) {
         JFreeChart pieChart = ChartFactory.createPieChart(title, dataset, true, true, false);
@@ -297,7 +294,7 @@ public class vendorRevenue extends javax.swing.JFrame {
         pieChartJL.validate();
         pieChartJL.repaint();
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

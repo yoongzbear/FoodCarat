@@ -18,10 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author mastu
- */
 public class Item {
     private int itemID;
     private String itemName;

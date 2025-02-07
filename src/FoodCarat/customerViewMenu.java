@@ -5,18 +5,14 @@
 package FoodCarat;
 
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -26,10 +22,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author ASUS
- */
 public class customerViewMenu extends javax.swing.JFrame {
 
     /**
@@ -44,7 +36,7 @@ public class customerViewMenu extends javax.swing.JFrame {
     public customerViewMenu(int orderID, String orderType) {
         this.orderID = orderID;
         this.orderType = orderType.toLowerCase();
-        this.currentOrder = new Order(orderType, User.getSessionEmail()); 
+        this.currentOrder = new Order(orderType, User.getSessionEmail());
         initComponents();
         lItemName.setText("");
         lUnitPrice.setText("");
@@ -57,17 +49,17 @@ public class customerViewMenu extends javax.swing.JFrame {
         tCart.getColumnModel().getColumn(4).setMaxWidth(0);
         tCart.getColumnModel().getColumn(4).setMinWidth(0);
         tCart.getColumnModel().getColumn(4).setPreferredWidth(0);
-        
+
         lItemName.setText("");
         lUnitPrice.setText("");
         sQuantity.setValue(0);
         lTotalPrice.setText("");
-        
+
         setLocationRelativeTo(null);
-        jPanel1.setBackground(new java.awt.Color(180,200,234));
-        jPanel2.setBackground(new java.awt.Color(180,200,234));
+        jPanel1.setBackground(new java.awt.Color(180, 200, 234));
+        jPanel2.setBackground(new java.awt.Color(180, 200, 234));
     }
-    
+
     private void onSearch() {
         String query = searchField.getText().toLowerCase().trim();  // Get and trim the search query
 
@@ -88,15 +80,15 @@ public class customerViewMenu extends javax.swing.JFrame {
             }
         }
     }
-    
+
     private void loadVendors(String userFilePath, String searchQuery) {
         isViewingVendorMenu = false;
         mainMenuPanel.removeAll();
         mainMenuPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 15, 15));
-        
+
         java.util.List<JPanel> availableVendorPanels = new java.util.ArrayList<>();
         java.util.List<JPanel> unavailableVendorPanels = new java.util.ArrayList<>();
-    
+
         try (BufferedReader reader = new BufferedReader(new FileReader(userFilePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -106,7 +98,7 @@ public class customerViewMenu extends javax.swing.JFrame {
                 if ("vendor".equals(userType) && !"".equals(userPassword)) {
                     String vendorEmail = details[0];
                     String vendorName = details[1];
-                    
+
                     if (searchQuery == null || vendorName.toLowerCase().contains(searchQuery)) {
                         // Existing code to create and add vendor panel
                         Vendor vendor = new Vendor(vendorEmail);
@@ -142,7 +134,7 @@ public class customerViewMenu extends javax.swing.JFrame {
             for (JPanel vendorPanel : unavailableVendorPanels) {
                 mainMenuPanel.add(vendorPanel);
             }
-            
+
             mainMenuPanel.revalidate();
             mainMenuPanel.repaint();
         } catch (IOException e) {
@@ -157,8 +149,8 @@ public class customerViewMenu extends javax.swing.JFrame {
         panel.setPreferredSize(new java.awt.Dimension(228, 270)); // Standardize size
         panel.setMaximumSize(new java.awt.Dimension(228, 270));
         panel.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-            javax.swing.BorderFactory.createLineBorder(java.awt.Color.GRAY, 1), // Outer border
-            javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10) // Inner padding (top, left, bottom, right)
+                javax.swing.BorderFactory.createLineBorder(java.awt.Color.GRAY, 1), // Outer border
+                javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10) // Inner padding (top, left, bottom, right)
         ));
 
         // Add the resized logo
@@ -177,28 +169,27 @@ public class customerViewMenu extends javax.swing.JFrame {
         // Add vendor details
         JLabel lblVendor = new JLabel(vendorName);
         lblVendor.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
-        
+
         JLabel lblRating = new JLabel("🌟 " + vendorRating);
         lblRating.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
-        
+
         JLabel lblReview = new JLabel("Review: " + randomReview);
         lblReview.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
-        
+
         JLabel lblUnavailable = new JLabel("");
         lblUnavailable.setVisible(false);
-        
+
         if (!isAvailableForOrderType) {
             lblUnavailable.setVisible(true);
             lblUnavailable = new JLabel("Unavailable for selected method.");
             lblUnavailable.setForeground(Color.RED);
             lblUnavailable.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
-            
+
             lblUnavailable.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);  // Ensure it's centered
 
             // Set the label size to a larger width if needed, ensuring it doesn't wrap
-            lblUnavailable.setPreferredSize(new java.awt.Dimension(200, 30)); 
+            lblUnavailable.setPreferredSize(new java.awt.Dimension(200, 30));
 
-            // Alternatively, you can set a maximum width
             lblUnavailable.setMaximumSize(new java.awt.Dimension(200, 30));
         }
 
@@ -217,16 +208,16 @@ public class customerViewMenu extends javax.swing.JFrame {
 
         return panel;
     }
-    
+
     private void loadVendorMenu(String vendorEmail, String searchQuery) {
         isViewingVendorMenu = true;
         selectedVendorEmail = vendorEmail;
         bBackVendor.setVisible(true);
         mainMenuPanel.removeAll(); //Clear existing menu items
         mainMenuPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 15, 15));
-        
+
         Vendor vendor = new Vendor(vendorEmail);
-        
+
         String availableMethods = vendor.getAvailableMethod();
         boolean isAvailableForOrderType;
 
@@ -236,8 +227,8 @@ public class customerViewMenu extends javax.swing.JFrame {
             String[] availableMethodsArray = methodsWithoutBrackets.split(";");
             //convert array to lowercase
             availableMethodsArray = Arrays.stream(availableMethodsArray)
-                                    .map(String::toLowerCase)
-                                    .toArray(String[]::new);
+                    .map(String::toLowerCase)
+                    .toArray(String[]::new);
 
             isAvailableForOrderType = Arrays.asList(availableMethodsArray).contains(orderType.toLowerCase());
         } else {
@@ -334,15 +325,15 @@ public class customerViewMenu extends javax.swing.JFrame {
 
         // Set border and spacing
         panel.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-            javax.swing.BorderFactory.createLineBorder(java.awt.Color.GRAY, 1),
-            javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10)
+                javax.swing.BorderFactory.createLineBorder(java.awt.Color.GRAY, 1),
+                javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10)
         ));
         panel.setPreferredSize(new java.awt.Dimension(228, 270)); // Standardize size
         panel.setMaximumSize(new java.awt.Dimension(228, 270));
 
         return panel;
     }
-    
+
     public void populateCartTable() {
         if (currentOrder == null) {
             return; //ensure currentOrder is initialized
@@ -364,9 +355,9 @@ public class customerViewMenu extends javax.swing.JFrame {
 
             model.addRow(new Object[]{itemName, "RM" + df.format(unitPrice), quantity, "RM" + df.format(totalPrice), itemID});
         }
-        
+
     }
-    
+
     private void addCartTableListener() {
         tCart.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -378,11 +369,10 @@ public class customerViewMenu extends javax.swing.JFrame {
                     if (selectedRow != -1) { // Check if a row is actually selected
                         try {
                             // Retrieve data from the selected row
-                            String itemName = (String) tCart.getValueAt(selectedRow, 0); 
-                            String unitPrice = (String) tCart.getValueAt(selectedRow, 1); 
-                            String quantityString = (String) tCart.getValueAt(selectedRow, 2); 
-                            String totalPrice = (String) tCart.getValueAt(selectedRow, 3); 
-                            String itemID = (String) tCart.getValueAt(selectedRow, 4);
+                            String itemName = (String) tCart.getValueAt(selectedRow, 0);
+                            String unitPrice = (String) tCart.getValueAt(selectedRow, 1);
+                            String quantityString = (String) tCart.getValueAt(selectedRow, 2);
+                            String totalPrice = (String) tCart.getValueAt(selectedRow, 3);
 
                             // Parse the quantity string to an integer
                             int quantityValue = Integer.parseInt(quantityString);
@@ -394,7 +384,7 @@ public class customerViewMenu extends javax.swing.JFrame {
                             lTotalPrice.setText(totalPrice);
 
                         } catch (Exception ex) {
-                            ex.printStackTrace(); 
+                            ex.printStackTrace();
                         }
                     } else {
                         //no row selected
@@ -402,7 +392,7 @@ public class customerViewMenu extends javax.swing.JFrame {
                         bRemove.setEnabled(false);
                         lItemName.setText("");
                         lUnitPrice.setText("");
-                        sQuantity.setValue(0); 
+                        sQuantity.setValue(0);
                         lTotalPrice.setText("");
                     }
                 }
@@ -410,7 +400,6 @@ public class customerViewMenu extends javax.swing.JFrame {
         });
     }
 
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -697,14 +686,14 @@ public class customerViewMenu extends javax.swing.JFrame {
 
     private void bAddCartActionPerformed(java.awt.event.ActionEvent evt, int itemID, String itemName, String itemPrice) {
         // Customer input quantity
-        String quantityStr = JOptionPane.showInputDialog(this, 
-                "Enter quantity for " + itemName, 
-                "Enter Quantity", 
+        String quantityStr = JOptionPane.showInputDialog(this,
+                "Enter quantity for " + itemName,
+                "Enter Quantity",
                 JOptionPane.QUESTION_MESSAGE);
 
         if (quantityStr == null || quantityStr.trim().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Quantity cannot be empty.");
-            
+
             //allow user to back to vendor menu only if the cart have no item
             if (currentOrder.getCart().isEmpty()) {
                 bBackVendor.setEnabled(true);
@@ -733,10 +722,10 @@ public class customerViewMenu extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Please enter a valid number for quantity.");
         }
     }
-    
+
     private void bBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bBackActionPerformed
         int confirm = JOptionPane.showConfirmDialog(null, "Your order will be discarded. Are you sure to proceed?");
-        if (confirm == JOptionPane.YES_OPTION){
+        if (confirm == JOptionPane.YES_OPTION) {
             Order order = new Order();
             order.deleteIncompleteOrder(orderID);
 
@@ -778,16 +767,16 @@ public class customerViewMenu extends javax.swing.JFrame {
 
     private void bRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRemoveActionPerformed
         int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to remove selected item?");
-        if (confirm == JOptionPane.YES_OPTION){    
+        if (confirm == JOptionPane.YES_OPTION) {
             int selectedRow = tCart.getSelectedRow();
             if (selectedRow != -1) {
-                String itemID = (String) tCart.getValueAt(selectedRow, 4); 
-                currentOrder.removeItemFromCart(Integer.parseInt(itemID)); 
+                String itemID = (String) tCart.getValueAt(selectedRow, 4);
+                currentOrder.removeItemFromCart(Integer.parseInt(itemID));
                 JOptionPane.showMessageDialog(null, "Item removed.");
-                
+
                 //disable the checkout button and enable back to vendor button if the cart is empty
                 if (currentOrder.getCart().isEmpty()) {
-                    bCheckOut.setEnabled(false); 
+                    bCheckOut.setEnabled(false);
                     bBackVendor.setEnabled(true);
                 } else {
                     bCheckOut.setEnabled(true);
@@ -799,7 +788,7 @@ public class customerViewMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_bRemoveActionPerformed
 
     private void bCheckOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCheckOutActionPerformed
-        List<String[]> cart = currentOrder.getCart(); 
+        List<String[]> cart = currentOrder.getCart();
 
         Order order = new Order(orderType, User.getSessionEmail());
         order.writeOrderDetails(orderID, cart);

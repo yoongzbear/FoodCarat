@@ -9,10 +9,6 @@ import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.text.PlainDocument;
 
-/**
- *
- * @author Yuna
- */
 public class cusRunner1AccInfo extends javax.swing.JFrame {
 
     /**
@@ -21,26 +17,26 @@ public class cusRunner1AccInfo extends javax.swing.JFrame {
     public cusRunner1AccInfo() {
         initComponents();
         setLocationRelativeTo(null);
-        
+
         nameTF.setText(User.getSessionName());
         passwordTF.setText(User.getSessionPassword());
-        
+
         ((PlainDocument) nameTF.getDocument()).setDocumentFilter(GuiUtility.createLengthFilter(20));
         ((PlainDocument) passwordTF.getDocument()).setDocumentFilter(GuiUtility.createLengthFilter(20));
-        ((PlainDocument) contactNoTF.getDocument()).setDocumentFilter(GuiUtility.createLengthFilter(15));        
+        ((PlainDocument) contactNoTF.getDocument()).setDocumentFilter(GuiUtility.createLengthFilter(15));
     }
-    
+
     private boolean isValidDate(String dateString) {
-    try {        
-        // Validate the entered date is not in the future
-        Date currentDate = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-        sdf.setLenient(false);
-        Date date = sdf.parse(dateString);
-        if (date.after(currentDate)) {
-            JOptionPane.showMessageDialog(this, "Date cannot be in the future. Please enter a valid date.", "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
+        try {
+            // Validate the entered date is not in the future
+            Date currentDate = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+            sdf.setLenient(false);
+            Date date = sdf.parse(dateString);
+            if (date.after(currentDate)) {
+                JOptionPane.showMessageDialog(this, "Date cannot be in the future. Please enter a valid date.", "Error", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
         } catch (Exception ex) {
             // Handle all parsing or validation exceptions in one place
             JOptionPane.showMessageDialog(this, "Invalid date format. Please enter a valid date in yyyy/MM/dd format.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -219,7 +215,7 @@ public class cusRunner1AccInfo extends javax.swing.JFrame {
     private void confirmJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmJBActionPerformed
         String email = User.getSessionEmail();
         String role = User.getSessionRole();
-        
+
         String name = nameTF.getText().trim();
         String password = passwordTF.getText().trim();
         String contactNumber = contactNoTF.getText().trim();
@@ -235,7 +231,7 @@ public class cusRunner1AccInfo extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
         if (!isValidDate(dob)) {
             return;
         }
@@ -244,46 +240,45 @@ public class cusRunner1AccInfo extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Please enter a valid contact number.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
         // Confirmation Dialog
         int confirm = JOptionPane.showConfirmDialog(
-            this,
-            "Are you sure you want to save the information?",
-            "Confirmation",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.QUESTION_MESSAGE
+                this,
+                "Are you sure you want to save the information?",
+                "Confirmation",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
         );
 
         if (confirm != JOptionPane.YES_OPTION) {
             return;
         }
-        
+
         User user = new User();
         Runner runner = new Runner();
-        
+
         // If user is a runner, prompt for plate number and validate
         if ("runner".equalsIgnoreCase(role)) {
             String plateNumber = runner.promptAndValidatePlateNumber(this, email);
             if (plateNumber == null) {
-                return; 
+                return;
             }
         }
-        
-            if("customer".equalsIgnoreCase(role)){
-                Customer customer = new Customer();
-                String address = customer.deliveryAddress(this, email);
-                if(address == null){
-                    return;
-                }
-            }
 
-        user.addUserInfo(email, name, password, contactNumber, dob);
-        // Update session with the new name
-        User.setSession(email, password, role, name);
-        
+        if ("customer".equalsIgnoreCase(role)) {
+            Customer customer = new Customer();
+            String address = customer.deliveryAddress(this, email);
+            if (address == null) {
+                return;
+            }
+        }
+
+        user.addUserInfo(email, name, password, contactNumber, dob);       
+        User.setSession(email, password, role, name); // Update session with the new name
+
         String nextPage = user.determinePageAfterLogin(email);
         user.navigateToPage(nextPage, this);
-        dispose();                                          
+        dispose();
     }//GEN-LAST:event_confirmJBActionPerformed
 
     private void contactNoTFKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_contactNoTFKeyTyped
@@ -319,13 +314,6 @@ public class cusRunner1AccInfo extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(cusRunner1AccInfo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */

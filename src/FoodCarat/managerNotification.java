@@ -5,15 +5,10 @@
 package FoodCarat;
 
 import java.awt.Color;
-import java.util.Arrays;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author User
- */
 public class managerNotification extends javax.swing.JFrame {
 
     /**
@@ -33,7 +28,7 @@ public class managerNotification extends javax.swing.JFrame {
         complaintNotificationtable.getColumnModel().getColumn(4).setWidth(0);
         complaintNotificationtable.getColumnModel().getColumn(4).setPreferredWidth(0);
         getContentPane().setBackground(new Color(252, 204, 196));
-        
+
         //show all the data
         Manager manager = new Manager();
         List<String[]> allData = manager.getFilteredReviews(0);  // 0 means no filtering by month
@@ -45,7 +40,7 @@ public class managerNotification extends javax.swing.JFrame {
         }
         fillEmptyRowSpace();
     }
-    
+
     private void handleTableClick(java.awt.event.MouseEvent evt) {
         // Check if the user clicked a row
         int selectedRow = complaintNotificationtable.getSelectedRow();
@@ -56,9 +51,9 @@ public class managerNotification extends javax.swing.JFrame {
             // Validate if data exists in the row
             if (emailObj == null || emailObj.toString().trim().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "No data found in the selected row!", "Error", JOptionPane.ERROR_MESSAGE);
-                return; // Stop further execution
+                return;
             }
-            
+
             // Show confirmation dialog
             int result = JOptionPane.showConfirmDialog(
                     this,
@@ -68,7 +63,6 @@ public class managerNotification extends javax.swing.JFrame {
             );
 
             if (result == JOptionPane.YES_OPTION) {
-                User user = new User();
                 // Retrieve email and reviewID from the selected row
                 String customerEmail = (String) complaintNotificationtable.getValueAt(selectedRow, 2);
                 int reviewID = Integer.parseInt(complaintNotificationtable.getValueAt(selectedRow, 4).toString());
@@ -83,12 +77,12 @@ public class managerNotification extends javax.swing.JFrame {
             }
         }
     }
-    
-    private void fillEmptyRowSpace() {   
-        DefaultTableModel tableModel = (DefaultTableModel) complaintNotificationtable.getModel();        
+
+    private void fillEmptyRowSpace() {
+        DefaultTableModel tableModel = (DefaultTableModel) complaintNotificationtable.getModel();
         int rowCount = tableModel.getRowCount(); // Current row count in the table
         int tableHeight = complaintNotificationtable.getParent().getHeight(); // Get the height of the table's parent container
-        int rowHeight= complaintNotificationtable.getRowHeight();
+        int rowHeight = complaintNotificationtable.getRowHeight();
 
         int targetRowCount = tableHeight / rowHeight; // Calculate how many rows fit in the visible area
 
@@ -209,12 +203,12 @@ public class managerNotification extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void searchbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchbtnActionPerformed
-        int monthNumber = monthChooser.getMonth() + 1; 
-        
-        Manager manager = new Manager(); 
-        
+        int monthNumber = monthChooser.getMonth() + 1;
+
+        Manager manager = new Manager();
+
         String[] monthNames = {
-            "","January", "February", "March", "April", "May", "June",
+            "", "January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December"
         };
         String monthName = monthNames[monthNumber];
@@ -223,8 +217,8 @@ public class managerNotification extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) complaintNotificationtable.getModel();
         if (complaintData.isEmpty()) {
             if (monthNumber != 0) {
-            JOptionPane.showMessageDialog(this, "No complaints found for " + monthName + " month.", "Info", JOptionPane.INFORMATION_MESSAGE);
-        }
+                JOptionPane.showMessageDialog(this, "No complaints found for " + monthName + " month.", "Info", JOptionPane.INFORMATION_MESSAGE);
+            }
             complaintData = manager.getFilteredReviews(0);  // Fetch all data
         }
         // Clear the table before adding new data

@@ -12,31 +12,24 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-/**
- *
- * @author mastu
- */
 public class vendorAddItem extends javax.swing.JFrame {
 
     /**
      * Creates new form vendorAddItem
      */
-    
-    //variables
     String imagePath = "";
     File imageFile = null;
     private String email = User.getSessionEmail(); //get session's email
     Item item = new Item();
-    
+
     public vendorAddItem() {
         initComponents();
-        getContentPane().setBackground(new java.awt.Color(186,85,211)); //setting background color of frame
+        getContentPane().setBackground(new java.awt.Color(186, 85, 211)); //setting background color of frame
         setLocationRelativeTo(null);
         
-        //prefill new item ID 
-        displayID();
+        displayID(); //prefill new item ID 
     }
-    
+
     //function to return latest item ID 
     private void displayID() {
         //call function to return latest row of data and display the latest id + 1 
@@ -44,23 +37,23 @@ public class vendorAddItem extends javax.swing.JFrame {
         int newItemID = Integer.parseInt(latestItem[0]) + 1;
         itemIDTxt.setText(String.valueOf(newItemID));
     }
-    
+
     //validate price in text field
     private boolean validatePrice(String priceText) {
         try {
             double price = Double.parseDouble(priceText);
             return price >= 0;
         } catch (NumberFormatException e) {
-            return false; 
-        } 
+            return false;
+        }
     }
-    
+
     //validate item name duplication
     private boolean duplicateName(String name) {
         List<String[]> allItems = item.getAllItems(true); //only items with available status
-        for (String[] item : allItems) { 
-            if (item[1].equalsIgnoreCase(name) && item[5].equals(email)) { 
-                return true; 
+        for (String[] item : allItems) {
+            if (item[1].equalsIgnoreCase(name) && item[5].equals(email)) {
+                return true;
             }
         }
         return false;
@@ -240,7 +233,7 @@ public class vendorAddItem extends javax.swing.JFrame {
         String name = nameTxt.getText().trim();
         String type = typeBox.getSelectedItem().toString().trim();
         String priceText = priceTxt.getText().trim();
-        
+
         double price;
 
         //validate if fields are empty
@@ -248,20 +241,19 @@ public class vendorAddItem extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Please fill in all fields.", "Incomplete Submission", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        
+
         //validate price field
         if (!validatePrice(priceText)) {
             JOptionPane.showMessageDialog(null, "Price must be a numerical value.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
-            return; 
+            return;
         } else {
             price = Double.parseDouble(priceText);
         }
-        
+
         //validate item name if is duplicated
         if (duplicateName(name)) {
             JOptionPane.showMessageDialog(null, "Item name is taken, please change the item name.", "Duplicate Name", JOptionPane.ERROR_MESSAGE);
-        }
-        else {            
+        } else {
             //upload image into menu folder
             String newImagePath = new Item().uploadImage(imagePath);
             if (newImagePath == null) {
@@ -279,7 +271,6 @@ public class vendorAddItem extends javax.swing.JFrame {
     }//GEN-LAST:event_addBtnActionPerformed
 
     private void cancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtnActionPerformed
-        //ask if want to cancel or not
         int confirm = JOptionPane.showConfirmDialog(null, "Cancel add new item?", "Cancel Add", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             new vendorMenu().setVisible(true);
@@ -295,20 +286,20 @@ public class vendorAddItem extends javax.swing.JFrame {
     private void selectImgBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectImgBtnActionPerformed
         //display file chooser
         JFileChooser fileChooser = new JFileChooser();
-        FileNameExtensionFilter fileFilter = new FileNameExtensionFilter("PNG JPG AND JPEG", "png", "jpg","jpeg");
+        FileNameExtensionFilter fileFilter = new FileNameExtensionFilter("PNG JPG AND JPEG", "png", "jpg", "jpeg");
         fileChooser.addChoosableFileFilter(fileFilter);
-        
+
         int load = fileChooser.showOpenDialog(null);
         if (load == fileChooser.APPROVE_OPTION) {
             imageFile = fileChooser.getSelectedFile();
-            
+
             //display preview of image using path of local storage
             imagePath = imageFile.getAbsolutePath();
             ImageIcon preview = new ImageIcon(imagePath);
             Image resizedImage = preview.getImage().getScaledInstance(uploadedImgLabel.getWidth(), uploadedImgLabel.getHeight(), Image.SCALE_SMOOTH);
             uploadedImgLabel.setIcon(new ImageIcon(resizedImage));
         }
-        
+
     }//GEN-LAST:event_selectImgBtnActionPerformed
 
     /**

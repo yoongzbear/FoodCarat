@@ -4,15 +4,9 @@
  */
 package FoodCarat;
 
-import java.io.IOException;
 import java.text.DecimalFormat;
-import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author ASUS
- */
 public class customerReceipt extends javax.swing.JFrame {
 
     /**
@@ -21,31 +15,29 @@ public class customerReceipt extends javax.swing.JFrame {
     private int orderID;
     private String orderType;
     DecimalFormat df = new DecimalFormat("0.00");
-    
+
     public customerReceipt(int orderID, String orderType) {
         this.orderType = orderType.toLowerCase();
         this.orderID = orderID;
         initComponents();
         displayOrderDetails();
         setLocationRelativeTo(null);
-        getContentPane().setBackground(new java.awt.Color(180,200,234));
+        getContentPane().setBackground(new java.awt.Color(180, 200, 234));
     }
-    
+
     private void displayOrderDetails() {
         Order order = new Order(orderType, User.getSessionEmail());
         String[] tokens = order.getOrder(orderID); // This might throw IOException
         //Extract the relevant parameters
         String orderType = tokens[1];
         String orderItems = tokens[2];
-        String orderStatus = tokens[3];
-        String customerEmail = tokens[4];
         String deliveryFee = tokens[7];
         String paidTotal = tokens[8];
         String orderDate = tokens[9];
         User user = new User(User.getSessionEmail());
         String[] userInfo = user.getUserInfo(User.getSessionEmail());
         String userContact = userInfo[5];
-        
+
         String formattedOrderType = "";
         switch (this.orderType) {
             case "dine in":
@@ -60,7 +52,7 @@ public class customerReceipt extends javax.swing.JFrame {
             default:
                 formattedOrderType = "Unknown"; //invalid value
         }
-        
+
         //Display
         sOrderID.setText(String.valueOf(orderID));
         sOrderDate.setText(orderDate);
@@ -79,7 +71,7 @@ public class customerReceipt extends javax.swing.JFrame {
         sPayTotal.setText("RM " + String.format("%.2f", paidTotalDouble));
         sRedeemedPoint.setText(String.format("%.0f", redeemedPoints));
     }
-    
+
     private double populateOrderItemsTable(String orderItemsString) { //to set the order table, vendor name and calculate subtotal
         DefaultTableModel model = (DefaultTableModel) tOrderItem.getModel();
         model.setRowCount(0);  //clear table
@@ -96,14 +88,14 @@ public class customerReceipt extends javax.swing.JFrame {
             if (itemDetails.length == 2) {
                 int itemID = Integer.parseInt(itemDetails[0]);
                 String quantity = itemDetails[1];
-                
+
                 Item item1 = new Item();
                 String[] itemData = item1.itemData(itemID);
-                String itemName = itemData[1];  
+                String itemName = itemData[1];
                 double itemPrice = Double.parseDouble(itemData[3]);
                 double orderItemTotal = Integer.parseInt(quantity) * itemPrice;
                 subtotal += orderItemTotal;
-                
+
                 String[] vendorInfo = item1.getVendorInfoByItemID(itemID);
                 String vendorName = vendorInfo[1];
                 sVendorName.setText(String.valueOf(vendorName));

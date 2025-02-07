@@ -8,13 +8,11 @@ import java.awt.Color;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author mastu
- */
 public class adminRegister extends javax.swing.JFrame {
+
     private String role;
     private String userFile = "resources/user.txt";
+
     /**
      * Creates new form adminRegister
      */
@@ -24,13 +22,14 @@ public class adminRegister extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         getContentPane().setBackground(new Color(255, 255, 204));
     }
+
     public adminRegister(String role) {
-        this.role=role;
+        this.role = role;
         initComponents();
         //convert to title case
         String roleTitle = role.substring(0, 1).toUpperCase() + role.substring(1).toLowerCase();
         Lrole.setText(roleTitle);
-        
+
         setLocationRelativeTo(null);
         getContentPane().setBackground(new Color(255, 255, 204));
     }
@@ -62,21 +61,11 @@ public class adminRegister extends javax.swing.JFrame {
         Lemail.setText("Email:");
 
         emailtxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        emailtxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                emailtxtActionPerformed(evt);
-            }
-        });
 
         Lusername.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
         Lusername.setText("Name:");
 
         usernametxt.setFont(new java.awt.Font("Cooper Black", 0, 18)); // NOI18N
-        usernametxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                usernametxtActionPerformed(evt);
-            }
-        });
 
         bRegister.setFont(new java.awt.Font("Constantia", 1, 18)); // NOI18N
         bRegister.setText("Register");
@@ -152,41 +141,32 @@ public class adminRegister extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void emailtxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailtxtActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_emailtxtActionPerformed
-
-    private void usernametxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usernametxtActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_usernametxtActionPerformed
-
     private void bRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRegisterActionPerformed
-    String email = emailtxt.getText().trim();
-    String username = usernametxt.getText().trim();
+        String email = emailtxt.getText().trim();
+        String username = usernametxt.getText().trim();
 
-    if (username.isEmpty() || email.isEmpty()) {
-        JOptionPane.showMessageDialog(null, "Please fill up all the required fields.");
-        usernametxt.requestFocus();
-        return;
-    }
-    if (Admin.isEmailRegistered(email, userFile)) {
-        JOptionPane.showMessageDialog(null, "This email is already registered.");
-        emailtxt.requestFocus();
-        return;
-    }
-    if (!email.contains("@")) {
-        JOptionPane.showMessageDialog(null, "Please enter a valid email.");
-        emailtxt.requestFocus();
-        return;
-    }
+        if (username.isEmpty() || email.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please fill up all the required fields.");
+            usernametxt.requestFocus();
+            return;
+        }
+        if (Admin.isEmailRegistered(email, userFile)) {
+            JOptionPane.showMessageDialog(null, "This email is already registered.");
+            emailtxt.requestFocus();
+            return;
+        }
+        if (!email.contains("@")) {
+            JOptionPane.showMessageDialog(null, "Please enter a valid email.");
+            emailtxt.requestFocus();
+            return;
+        }
 
-
-    try {
-        String samplePassword = Admin.registerUser(email, username, role);
-        JOptionPane.showMessageDialog(null, 
-            "Successfully registered as " + role + "!\nYour sample password is: " + samplePassword,
-            "Registration Successful", JOptionPane.INFORMATION_MESSAGE);
-            GuiUtility.clearFields(emailtxt,usernametxt);
+        try {
+            String samplePassword = Admin.registerUser(email, username, role);
+            JOptionPane.showMessageDialog(null,
+                    "Successfully registered as " + role + "!\nYour sample password is: " + samplePassword,
+                    "Registration Successful", JOptionPane.INFORMATION_MESSAGE);
+            GuiUtility.clearFields(emailtxt, usernametxt);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
         }

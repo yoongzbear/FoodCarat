@@ -26,11 +26,8 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-/**
- *
- * @author Yuna
- */
 public class runnerRevenue extends javax.swing.JFrame {
+
     private String runnerEmail = User.getSessionEmail();
 
     /**
@@ -39,12 +36,12 @@ public class runnerRevenue extends javax.swing.JFrame {
     public runnerRevenue() {
         initComponents();
         setLocationRelativeTo(null);
-        
-        fetchFilteredData(null,null);
+
+        fetchFilteredData(null, null);
         chartAllData();
         updateTotalIncomeCurrentMonth();
     }
-    
+
     // Method to calculate and display total income for the current month
     private void updateTotalIncomeCurrentMonth() {
         DefaultTableModel model = (DefaultTableModel) revenueJT.getModel();
@@ -80,15 +77,15 @@ public class runnerRevenue extends javax.swing.JFrame {
             LocalDate taskDate = LocalDate.parse(dateString);
             double income = Double.parseDouble(incomeString);
 
-            if ((startDate == null || !taskDate.isBefore(startDate)) &&
-                (endDate == null || !taskDate.isAfter(endDate))) {
+            if ((startDate == null || !taskDate.isBefore(startDate))
+                    && (endDate == null || !taskDate.isAfter(endDate))) {
                 totalIncome += income;
             }
         }
 
         incomeSelectJL.setText(String.format("RM %.2f", totalIncome));
     }
-    
+
     // Update the table
     private void fetchFilteredData(LocalDate startDate, LocalDate endDate) {
         List<String[]> completedTasks = new Order().getCompletedTask(runnerEmail);
@@ -101,8 +98,8 @@ public class runnerRevenue extends javax.swing.JFrame {
             String orderDate = task[9];
             LocalDate taskDate = LocalDate.parse(orderDate);
 
-            if ((startDate == null || !taskDate.isBefore(startDate)) &&
-                (endDate == null || !taskDate.isAfter(endDate))) {
+            if ((startDate == null || !taskDate.isBefore(startDate))
+                    && (endDate == null || !taskDate.isAfter(endDate))) {
                 String orderId = task[0];
                 String deliveryFee = task[7];
 
@@ -155,7 +152,7 @@ public class runnerRevenue extends javax.swing.JFrame {
 
         displayLineChart(dataset, "Income Over Last 5 Months", "Months", "Total Income");
     }
-    
+
     // Generate Daily Chart
     private void generateDailyChart(LocalDate startDate, LocalDate endDate) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
@@ -191,7 +188,7 @@ public class runnerRevenue extends javax.swing.JFrame {
             chartTitle = "Income of Tasks from " + startDate + " to " + endDate;
         }
 
-        displayLineChart(dataset, chartTitle, "Date", "Total Income");    
+        displayLineChart(dataset, chartTitle, "Date", "Total Income");
         updateTotalIncomeSelected(startDate, endDate);
     }
 
@@ -215,7 +212,7 @@ public class runnerRevenue extends javax.swing.JFrame {
                 incomeSums.put(taskYearMonth, incomeSums.getOrDefault(taskYearMonth, 0.0) + income);
             }
         }
-        
+
         String chartTitle;
         if (incomeSums.isEmpty()) {
             JOptionPane.showMessageDialog(null, "No data available for the selected date range.", "No Data", JOptionPane.INFORMATION_MESSAGE);
@@ -254,7 +251,7 @@ public class runnerRevenue extends javax.swing.JFrame {
                 totalIncome += income; // Add to the total income
             }
         }
-        
+
         if (incomeSums.isEmpty()) {
             JOptionPane.showMessageDialog(null, "No data available for the selected year range.", "No Data", JOptionPane.INFORMATION_MESSAGE);
 
@@ -270,7 +267,7 @@ public class runnerRevenue extends javax.swing.JFrame {
             displayLineChart(dataset, "Income of Tasks from " + startYear + " to " + endYear, "Years", "Total Income");
             incomeSelectJL.setText(String.format("RM %.2f", totalIncome));
         }
-}
+    }
 
     // Display chart
     private void displayLineChart(DefaultCategoryDataset dataset, String title, String xAxisLabel, String yAxisLabel) {
@@ -278,7 +275,7 @@ public class runnerRevenue extends javax.swing.JFrame {
 
         CategoryPlot plot = lineChart.getCategoryPlot();
         NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-        
+
         int totalIncome = 0;
         for (int i = 0; i < dataset.getColumnCount(); i++) {
             Number value = dataset.getValue(0, i);

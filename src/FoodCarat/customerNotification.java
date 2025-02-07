@@ -13,42 +13,37 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import javax.management.Notification;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
-/**
- *
- * @author ASUS
- */
 public class customerNotification extends javax.swing.JFrame {
 
     /**
      * Creates new form customerNotification
      */
     private String email = User.getSessionEmail();
-    
+
     public customerNotification() {
         initComponents();
         String[] filters = {
-                            "incomplete",
-                            "completed", 
-                            "cancelled", 
-                            "reload"
-                            };
+            "incomplete",
+            "completed",
+            "cancelled",
+            "reload"
+        };
         displayNotif(filters);
         setLocationRelativeTo(null);
-        getContentPane().setBackground(new java.awt.Color(180,200,234));
+        getContentPane().setBackground(new java.awt.Color(180, 200, 234));
     }
-    
+
     public void displayNotif(String[] filters) {
         DefaultTableModel model = (DefaultTableModel) tbNotif.getModel();
         model.setRowCount(0);
-        TableColumn column1 = tbNotif.getColumnModel().getColumn(0); 
-        column1.setPreferredWidth(100); 
-        TableColumn column2 = tbNotif.getColumnModel().getColumn(1); 
-        column2.setPreferredWidth(450); 
+        TableColumn column1 = tbNotif.getColumnModel().getColumn(0);
+        column1.setPreferredWidth(100);
+        TableColumn column2 = tbNotif.getColumnModel().getColumn(1);
+        column2.setPreferredWidth(450);
 
         Order orders = new Order();
         List<String[]> notifications = new ArrayList<>();
@@ -73,11 +68,11 @@ public class customerNotification extends javax.swing.JFrame {
                     int orderID = Integer.parseInt(orderData[0].trim());
                     String orderStatus = orderData[3];
                     String cusEmail = orderData[4];
-                    
-                    String title = "";
-                    String message = "";  
 
-                    if (email.equalsIgnoreCase(cusEmail)){
+                    String title = "";
+                    String message = "";
+
+                    if (email.equalsIgnoreCase(cusEmail)) {
                         //check order status and set the appropriate message
                         if ("pending accept".equalsIgnoreCase(orderStatus)) {
                             title = "Order Placed";
@@ -144,8 +139,8 @@ public class customerNotification extends javax.swing.JFrame {
 
         // Sort notifications
         notifications.sort((notif1, notif2) -> {
-            String timestamp1 = notif1[2].trim(); 
-            String timestamp2 = notif2[2].trim();  
+            String timestamp1 = notif1[2].trim();
+            String timestamp2 = notif2[2].trim();
 
             try {
                 //reload notif if the timestamp contains time
@@ -158,10 +153,10 @@ public class customerNotification extends javax.swing.JFrame {
                     //order notif that does not have time, add based on the recent record (did above)
                     LocalDate date1 = LocalDate.parse(timestamp1);
                     LocalDate date2 = LocalDate.parse(timestamp2);
-                    return date2.compareTo(date1); 
+                    return date2.compareTo(date1);
                 }
             } catch (DateTimeParseException e) {
-                return 0; 
+                return 0;
             }
         });
 
@@ -173,16 +168,16 @@ public class customerNotification extends javax.swing.JFrame {
 
     public void displayDetails(int id, String title) {
         //call panel based on type then populate with info
-        if (title.equalsIgnoreCase("Runner Assigned") ||
-            title.equalsIgnoreCase("Order in Queue") ||
-            title.equalsIgnoreCase("Order in Prepare") ||
-            title.equalsIgnoreCase("Order is Ready") ||
-            title.equalsIgnoreCase("Order in Delivery") ||
-            title.equalsIgnoreCase("Order Complete") ||
-            title.equalsIgnoreCase("Order Cancelled")) {
-            
+        if (title.equalsIgnoreCase("Runner Assigned")
+                || title.equalsIgnoreCase("Order in Queue")
+                || title.equalsIgnoreCase("Order in Prepare")
+                || title.equalsIgnoreCase("Order is Ready")
+                || title.equalsIgnoreCase("Order in Delivery")
+                || title.equalsIgnoreCase("Order Complete")
+                || title.equalsIgnoreCase("Order Cancelled")) {
+
             String orderID = String.valueOf(id);
-            
+
             customerOrderHistory frame = new customerOrderHistory();
             frame.populateTable(orderID);
             frame.setVisible(true);
@@ -192,28 +187,28 @@ public class customerNotification extends javax.swing.JFrame {
             String[] orderInfo = order.getOrder(id);
             int orderID = Integer.parseInt(orderInfo[0]);
             String orderType = orderInfo[1];
-            
+
             customerReceipt frame = new customerReceipt(orderID, orderType);
             frame.setVisible(true);
             dispose();
         } else if (title.equalsIgnoreCase("Top-up Notification")) {
-            //int transactionId, String email, String name, double currentAmount, double amountChanges, String date, String time
             Customer customer = new Customer();
-            
+
             String[] transactInfo = customer.getTopupInfo(id);
             int transactID = Integer.parseInt(transactInfo[0]);
             double prevAmount = Double.parseDouble(transactInfo[2]);
             double topupAmount = Double.parseDouble(transactInfo[3]);
             String transactDate = transactInfo[4];
             String transactTime = transactInfo[5];
-            
+
             String[] userInfo = customer.getUserInfo(email);
             String userName = userInfo[1];
-            
+
             adminCusReceipt frame = new adminCusReceipt(transactID, email, userName, prevAmount, topupAmount, transactDate, transactTime);
             frame.setVisible(true);
         }
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -366,19 +361,19 @@ public class customerNotification extends javax.swing.JFrame {
     private void bFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bFilterActionPerformed
         String[] selectedFilter = new String[5];
         int index = 0;
-        
+
         if (cbComplete.isSelected()) {
             selectedFilter[index++] = "completed";
         }
         if (cbCancelled.isSelected()) {
             selectedFilter[index++] = "cancelled";
-        } 
+        }
         if (cbIncomplete.isSelected()) {
             selectedFilter[index++] = "incomplete";
-        } 
+        }
         if (cbReload.isSelected()) {
             selectedFilter[index++] = "reload";
-        } 
+        }
         selectedFilter = Arrays.copyOf(selectedFilter, index); //adjust the size of array
         //call filter
         displayNotif(selectedFilter);
@@ -391,29 +386,27 @@ public class customerNotification extends javax.swing.JFrame {
         cbIncomplete.setSelected(false);
         cbReload.setSelected(false);
 
-        displayNotif(new String[] {"completed", "cancelled", "incomplete", "reload"});
+        displayNotif(new String[]{"completed", "cancelled", "incomplete", "reload"});
     }//GEN-LAST:event_bClearActionPerformed
 
     private void bDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDetailsActionPerformed
-        //call respective GUI classes hehe
+        //call respective GUI classes
         int selectedRow = tbNotif.getSelectedRow();
         //validation to choose a row 
         if (selectedRow >= 0) {
-            //id is in the message ()
-            
             //get ID, type and message
             String title = tbNotif.getModel().getValueAt(selectedRow, 0).toString(); //type column   
             int id = 0;
-            String message = tbNotif.getModel().getValueAt(selectedRow, 1).toString(); //message column, will change to 1
-            
-            if (title.equalsIgnoreCase("Order Placed") ||
-                title.equalsIgnoreCase("Runner Assigned") ||
-                title.equalsIgnoreCase("Order in Queue") ||
-                title.equalsIgnoreCase("Order in Prepare") ||
-                title.equalsIgnoreCase("Order is Ready") ||
-                title.equalsIgnoreCase("Order in Delivery") ||
-                title.equalsIgnoreCase("Order Complete") ||
-                title.equalsIgnoreCase("Order Cancelled")) {
+            String message = tbNotif.getModel().getValueAt(selectedRow, 1).toString(); //message column
+
+            if (title.equalsIgnoreCase("Order Placed")
+                    || title.equalsIgnoreCase("Runner Assigned")
+                    || title.equalsIgnoreCase("Order in Queue")
+                    || title.equalsIgnoreCase("Order in Prepare")
+                    || title.equalsIgnoreCase("Order is Ready")
+                    || title.equalsIgnoreCase("Order in Delivery")
+                    || title.equalsIgnoreCase("Order Complete")
+                    || title.equalsIgnoreCase("Order Cancelled")) {
                 int startIndex = message.indexOf("(Order ID:") + "(Order ID: ".length();
                 int endIndex = message.indexOf(")", startIndex);
                 String orderID = message.substring(startIndex, endIndex).trim();
@@ -424,8 +417,8 @@ public class customerNotification extends javax.swing.JFrame {
                 String transactionID = message.substring(startIndex, endIndex).trim();
                 id = Integer.parseInt(transactionID);
             }
-            
-            displayDetails(id, title);            
+
+            displayDetails(id, title);
         } else { //no row is selected
             JOptionPane.showMessageDialog(null, "Please select a row to view details.", "Alert", JOptionPane.WARNING_MESSAGE);
         }

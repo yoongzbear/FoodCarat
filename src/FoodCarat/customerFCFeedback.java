@@ -7,17 +7,9 @@ package FoodCarat;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author ASUS
- */
 public class customerFCFeedback extends javax.swing.JFrame {
 
     /**
@@ -41,7 +33,6 @@ public class customerFCFeedback extends javax.swing.JFrame {
                 String rReviewType = record[2];
                 String rUser = record[6];
                 if (rUser.equals(User.getSessionEmail()) && "foodcourt".equals(rReviewType)){
-                    String rReviewID = record[0];
                     String rComplaint = record[4];
                     String rReviewDate = record[5];
                     String rReviewStatus = record[7];

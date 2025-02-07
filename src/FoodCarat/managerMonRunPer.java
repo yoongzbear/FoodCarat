@@ -6,7 +6,6 @@ package FoodCarat;
 
 import java.awt.Color;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JOptionPane;
@@ -14,12 +13,8 @@ import javax.swing.table.DefaultTableModel;
 import org.jfree.chart.ChartPanel;
 import org.jfree.data.general.DefaultPieDataset;
 
-/**
- *
- * @author User
- */
 public class managerMonRunPer extends javax.swing.JFrame {
-    private String userFile = "resources/user.txt";
+
     /**
      * Creates new form managerMonRunPer
      */
@@ -27,7 +22,7 @@ public class managerMonRunPer extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         getContentPane().setBackground(new Color(252, 204, 196));
-        
+
         //Blank chart
         DefaultPieDataset blankDataset = new DefaultPieDataset();
 
@@ -49,7 +44,7 @@ public class managerMonRunPer extends javax.swing.JFrame {
         int rowNumber = 1;
         for (Map.Entry<String, String> entry : performanceDataMap.entrySet()) {
             String runnerID = entry.getKey();
-            String performanceData = entry.getValue(); // performanceData is in the format "totalOrders,averageRating"
+            String performanceData = entry.getValue(); // performanceData format: "totalOrders,averageRating"
             String[] performanceValues = performanceData.split(",");
 
             int totalOrders = Integer.parseInt(performanceValues[0]);
@@ -61,7 +56,7 @@ public class managerMonRunPer extends javax.swing.JFrame {
             String name = runnerName[1];
 
             // Add row data to the table
-            model.addRow(new Object[] {
+            model.addRow(new Object[]{
                 rowNumber,
                 name,
                 totalOrders,
@@ -89,11 +84,11 @@ public class managerMonRunPer extends javax.swing.JFrame {
         int targetRowCount = tableHeight / rowHeight; // Calculate how many rows fit in the visible area
 
         // Add empty rows if needed to reach the target row count
-        int emptyRowsNeeded = targetRowCount - (rowCount+1);
+        int emptyRowsNeeded = targetRowCount - (rowCount + 1);
         for (int i = 0; i < emptyRowsNeeded; i++) {
             model.addRow(new Object[]{"", "", "", ""});
         }
-        
+
         // Add the summary row
         model.addRow(new Object[]{
             "Total:",
@@ -101,23 +96,23 @@ public class managerMonRunPer extends javax.swing.JFrame {
             totalOrders,
             String.format("%.2f", averageRatingSummary)
         });
-        
+
         // Highlight the total row
         rowCount = model.getRowCount(); // Update rowCount after adding empty rows
         runpertable.getSelectionModel().addSelectionInterval(rowCount - 1, rowCount - 1);
 
         runpertable.setSelectionBackground(new Color(64, 64, 64));
 
-        int remainingHeight = tableHeight - ((rowCount-1) * rowHeight); // Remaining height
+        int remainingHeight = tableHeight - ((rowCount - 1) * rowHeight); // Remaining height
         if (remainingHeight > 0) {
             runpertable.setRowHeight(rowCount - 1, remainingHeight); // Set the height of the last row to the remaining height
         } else {
             runpertable.setRowHeight(rowCount - 1, rowHeight);
         }
 
-        runpertable.setRowHeight(rowCount, 1); // This hides the next row
+        runpertable.setRowHeight(rowCount, 1); // Hide the next row
     }
-    
+
     public void createRunnerPerformancePieChart(Map<String, String> performanceDataMap) {
         int totalOrders = 0;
         double totalAverageRating = 0;
@@ -130,7 +125,6 @@ public class managerMonRunPer extends javax.swing.JFrame {
             String[] performanceData = entry.getValue().split(",");
 
             int runnerTotalOrders = Integer.parseInt(performanceData[0]);
-            double avgRating = Double.parseDouble(performanceData[1]);
 
             totalOrdersMap.put(runnerID, runnerTotalOrders);
             Review review = new Review();
@@ -185,7 +179,7 @@ public class managerMonRunPer extends javax.swing.JFrame {
         averagechart.revalidate();
         averagechart.repaint();
     }
-    
+
     private void clearCharts() {
         DefaultPieDataset blankDataset = new DefaultPieDataset();
 
@@ -195,10 +189,10 @@ public class managerMonRunPer extends javax.swing.JFrame {
 
         totalorderchart.setLayout(new java.awt.BorderLayout());
         totalorderchart.add(ChartUtility.createPieChart(blankDataset, "No Data Available"), java.awt.BorderLayout.CENTER);
-        
+
         averagechart.setLayout(new java.awt.BorderLayout());
         averagechart.add(ChartUtility.createPieChart(blankDataset, "No Data Available"), java.awt.BorderLayout.CENTER);
-        
+
         totalorderchart.revalidate();
         averagechart.repaint();
     }
@@ -366,24 +360,24 @@ public class managerMonRunPer extends javax.swing.JFrame {
 
     private void bsearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bsearchActionPerformed
         DefaultTableModel model = (DefaultTableModel) runpertable.getModel();
-        int selectedMonth = monthChooser.getMonth() + 1; 
-        int selectedYear = yearChooser.getYear(); 
-                
-        try {
-        // Fetch the performance data
-        Manager manager = new Manager();
-        Map<String, String> performanceDataMap = manager.getRunnerPerformance(selectedMonth, selectedYear);
+        int selectedMonth = monthChooser.getMonth() + 1;
+        int selectedYear = yearChooser.getYear();
 
-        model.setRowCount(0);
-        
-        if (performanceDataMap == null || performanceDataMap.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "No data available for the selected month.");
-            clearCharts();
-            return;
-        }
-        
-        createRunnerPerformancePieChart(performanceDataMap);
-        displayRunnerPerformance(selectedMonth, selectedYear);
+        try {
+            // Fetch the performance data
+            Manager manager = new Manager();
+            Map<String, String> performanceDataMap = manager.getRunnerPerformance(selectedMonth, selectedYear);
+
+            model.setRowCount(0);
+
+            if (performanceDataMap == null || performanceDataMap.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "No data available for the selected month.");
+                clearCharts();
+                return;
+            }
+
+            createRunnerPerformancePieChart(performanceDataMap);
+            displayRunnerPerformance(selectedMonth, selectedYear);
         } catch (IOException e) {
             e.printStackTrace();
         }

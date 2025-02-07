@@ -18,10 +18,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author mastu
- */
 public class Vendor extends User{
             
     private String cuisine;

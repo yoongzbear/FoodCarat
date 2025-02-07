@@ -25,24 +25,21 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-/**
- *
- * @author Yuna
- */
 public class runnerTaskHistory extends javax.swing.JFrame {
+
     private String runnerEmail = User.getSessionEmail();
-    
+
     /**
      * Creates new form runnerTaskHistory
      */
     public runnerTaskHistory() {
         initComponents();
         setLocationRelativeTo(null);
-        
-        fetchFilteredData(null,null);
+
+        fetchFilteredData(null, null);
         chartAllData();
     }
-    
+
     // Update the table
     private void fetchFilteredData(LocalDate startDate, LocalDate endDate) {
         List<String[]> completedTasks = new Order().getCompletedTask(runnerEmail);
@@ -55,8 +52,8 @@ public class runnerTaskHistory extends javax.swing.JFrame {
             String orderDate = task[9];
             LocalDate taskDate = LocalDate.parse(orderDate);
 
-            if ((startDate == null || !taskDate.isBefore(startDate)) &&
-                (endDate == null || !taskDate.isAfter(endDate))) {
+            if ((startDate == null || !taskDate.isBefore(startDate))
+                    && (endDate == null || !taskDate.isAfter(endDate))) {
 
                 String orderId = task[0];
                 String cusEmail = task[4];
@@ -166,7 +163,7 @@ public class runnerTaskHistory extends javax.swing.JFrame {
                 taskCounts.put(taskYearMonth, taskCounts.getOrDefault(taskYearMonth, 0) + 1);
             }
         }
-        
+
         // Handle case where no data exists
         if (taskCounts.isEmpty()) {
             JOptionPane.showMessageDialog(null, "No data available for the selected date range.", "No Data", JOptionPane.INFORMATION_MESSAGE);
@@ -197,7 +194,7 @@ public class runnerTaskHistory extends javax.swing.JFrame {
                 taskCounts.put(taskYear, taskCounts.getOrDefault(taskYear, 0) + 1); // Increment task count for each year
             }
         }
-        
+
         // Handle case where no data exists
         if (taskCounts.isEmpty()) {
             JOptionPane.showMessageDialog(null, "No data available for the selected years.", "No Data", JOptionPane.INFORMATION_MESSAGE);
@@ -216,7 +213,7 @@ public class runnerTaskHistory extends javax.swing.JFrame {
     // Display the bar chart
     private void displayBarChart(DefaultCategoryDataset dataset, String title, String xAxisLabel, String yAxisLabel) {
         JFreeChart barChart = ChartFactory.createBarChart(
-            title, xAxisLabel, yAxisLabel, dataset, PlotOrientation.VERTICAL, true, true, false);
+                title, xAxisLabel, yAxisLabel, dataset, PlotOrientation.VERTICAL, true, true, false);
 
         CategoryPlot plot = barChart.getCategoryPlot();
         NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
@@ -235,7 +232,7 @@ public class runnerTaskHistory extends javax.swing.JFrame {
         } else {
             rangeAxis.setTickUnit(new NumberTickUnit(10));
         }
-        
+
         ChartPanel chartPanel = new ChartPanel(barChart);
         chartPanel.setPreferredSize(new Dimension(800, 600));
 
@@ -570,8 +567,8 @@ public class runnerTaskHistory extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Please select both start and end dates.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
-         if (endDate.before(startDate)) {
+
+        if (endDate.before(startDate)) {
             JOptionPane.showMessageDialog(this, "End date cannot be earlier than start date.", "Invalid Date Range", JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -587,13 +584,13 @@ public class runnerTaskHistory extends javax.swing.JFrame {
     private void MgenerateJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MgenerateJBActionPerformed
         Date start = startMonthChooser.getDate();
         Date end = endMonthChooser.getDate();
-        
+
         if (start == null || end == null) {
             JOptionPane.showMessageDialog(this, "Please select both start and end dates.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
-         if (end.before(start)) {
+
+        if (end.before(start)) {
             JOptionPane.showMessageDialog(this, "End date cannot be earlier than start date.", "Invalid Date Range", JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -611,21 +608,21 @@ public class runnerTaskHistory extends javax.swing.JFrame {
     private void YgenerateJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_YgenerateJBActionPerformed
         int startYear = jYearChooser1.getYear();
         int endYear = jYearChooser2.getYear();
-        
+
         if (startYear == 0 || endYear == 0) {
             JOptionPane.showMessageDialog(this, "Please select both start and end dates.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
-         if (startYear > endYear) {
+
+        if (startYear > endYear) {
             JOptionPane.showMessageDialog(this, "End date cannot be earlier than start date.", "Invalid Date Range", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        
+
         // Convert the start and end years to LocalDate (start of the year and end of the year)
         LocalDate startLocalDate = LocalDate.of(startYear, 1, 1);
         LocalDate endLocalDate = LocalDate.of(endYear, 12, 31);
- 
+
         fetchFilteredData(startLocalDate, endLocalDate);
         generateYearlyBarChart(startYear, endYear);
     }//GEN-LAST:event_YgenerateJBActionPerformed

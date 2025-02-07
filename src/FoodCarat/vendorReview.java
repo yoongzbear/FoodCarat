@@ -19,14 +19,9 @@ import javax.swing.table.DefaultTableModel;
 import org.jfree.chart.ChartPanel;
 import org.jfree.data.general.DefaultPieDataset;
 
-/**
- *
- * @author mastu
- */
 public class vendorReview extends javax.swing.JFrame {
 
     private String email = User.getSessionEmail();
-    Vendor vendor = new Vendor(email);
 
     /**
      * Creates new form vendorReview
@@ -102,9 +97,9 @@ public class vendorReview extends javax.swing.JFrame {
 
         //sorting
         if (sorting.equals("Highest to Lowest")) {
-            allReviews.sort((a, b) -> Integer.parseInt(b[3]) - Integer.parseInt(a[3])); // Descending order
+            allReviews.sort((a, b) -> Integer.parseInt(b[3]) - Integer.parseInt(a[3])); 
         } else if (sorting.equals("Lowest to Highest")) {
-            allReviews.sort((a, b) -> Integer.parseInt(a[3]) - Integer.parseInt(b[3])); // Ascending order
+            allReviews.sort((a, b) -> Integer.parseInt(a[3]) - Integer.parseInt(b[3])); 
         }
 
         for (String[] reviewData : allReviews) {
@@ -162,7 +157,7 @@ public class vendorReview extends javax.swing.JFrame {
         }
 
         try {
-            idLabel.setText(details[1].trim()); 
+            idLabel.setText(details[1].trim());
             dateLabel.setText(details[5].trim());
             methodLabel.setText(details[9].trim().substring(0, 1).toUpperCase() + details[9].trim().substring(1).toLowerCase());
             emailLabel.setText(details[6].trim());
@@ -1045,7 +1040,6 @@ public class vendorReview extends javax.swing.JFrame {
         SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy");
         Date chosenDate = weeklyDateChooser.getDate();
         if (chosenDate != null) {
-            //set the date to the monday of the week
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(chosenDate);
 
@@ -1067,7 +1061,6 @@ public class vendorReview extends javax.swing.JFrame {
     }//GEN-LAST:event_weeklyDateChooserjDateChooserInput
 
     private void weeklyChartBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_weeklyChartBtnActionPerformed
-        //get start date and end date, combine into a string and call ratingCount in review class
         SimpleDateFormat oldDateFormat = new SimpleDateFormat("dd MMM yyyy");
         SimpleDateFormat newDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date chosenDate = weeklyDateChooser.getDate();
@@ -1174,7 +1167,6 @@ public class vendorReview extends javax.swing.JFrame {
     }//GEN-LAST:event_yearlyChartBtnActionPerformed
 
     private void sortComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortComboBoxActionPerformed
-        //get the combo box
         String sorting = (String) sortComboBox.getSelectedItem();
         if (sorting.equals("Sort Rating")) {
             displayReviews();

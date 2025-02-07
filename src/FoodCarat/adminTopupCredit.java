@@ -7,13 +7,8 @@ package FoodCarat;
 import java.awt.Color;
 import java.io.IOException;
 
-/**
- *
- * @author User
- */
 public class adminTopupCredit extends javax.swing.JFrame {
     private String userFile = "resources/user.txt";
-    private String cusFile = "resources/customer.txt";
  
     /**
      * Creates new form adminTopupCredit

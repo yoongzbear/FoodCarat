@@ -11,10 +11,6 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
-/**
- *
- * @author mastu
- */
 public class ChartUtility {
     //generate pie chart
     public static ChartPanel createPieChart(DefaultPieDataset dataset, String chartTitle) {

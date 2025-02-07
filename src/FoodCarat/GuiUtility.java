@@ -13,10 +13,6 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
-/**
- *
- * @author mastu
- */
 public class GuiUtility {    
     // Set the input not > max length
     public static DocumentFilter createLengthFilter(int maxLength) {

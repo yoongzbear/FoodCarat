@@ -8,8 +8,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -23,43 +21,38 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author User
- */
 public class managerRmvItem extends javax.swing.JFrame {
-    private String userFile = "resources/user.txt";
+
     Item item = new Item();
     User user = new User();
     String imagePath = "";
 
-    //can create manager object
     /**
      * Creates new form managerRmvItem
      */
     public managerRmvItem() {
         initComponents();
         setLocationRelativeTo(null);
-        getContentPane().setBackground(new java.awt.Color(186,85,211)); //setting background color of frame
+        getContentPane().setBackground(new java.awt.Color(186, 85, 211)); //setting background color of frame
         setLocationRelativeTo(null);
-        
+
         //display items in table
         displayItems();
         foodBox.setSelected(true);
         beverageBox.setSelected(true);
         dessertBox.setSelected(true);
         setBox.setSelected(true);
-                
+
         deleteBtn.setEnabled(false);
         populateVendorNames(vendorlistcbx, true);
-        
+
         //set size of photoLabel
-        photoLabel.setPreferredSize(new Dimension(175, 164)); 
+        photoLabel.setPreferredSize(new Dimension(175, 164));
         photoLabel.setMinimumSize(new Dimension(175, 164));
         photoLabel.setMaximumSize(new Dimension(175, 164));
         getContentPane().setBackground(new Color(252, 204, 196));
-    }    
-    
+    }
+
     private Map<String, String> vendorNameToEmailMap = new HashMap<>();
 
     public void populateVendorNames(JComboBox<String> vendorListCbx, boolean isAvailableOnly) {
@@ -69,8 +62,8 @@ public class managerRmvItem extends javax.swing.JFrame {
         // Clear the map and combo box
         vendorNameToEmailMap.clear();
         vendorListCbx.removeAllItems();
-        
-        vendorListCbx.addItem("Please select a vendor");        
+
+        vendorListCbx.addItem("Please select a vendor");
 
         for (String[] itemData : allItems) {
             if (itemData.length > 5) {
@@ -86,7 +79,7 @@ public class managerRmvItem extends javax.swing.JFrame {
             }
         }
     }
-    
+
     //reset details section
     public void resetDetails() {
         //reset details section
@@ -99,7 +92,7 @@ public class managerRmvItem extends javax.swing.JFrame {
         deleteBtn.setEnabled(false);
         venNameLabel.setText("Name");
     }
-    
+
     //display all items
     public void displayItems() {
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
@@ -115,7 +108,7 @@ public class managerRmvItem extends javax.swing.JFrame {
             String itemImgPath = itemData[4];
             String vendorEmail = itemData[5];
             //Get the name of the vendor using the email
-            String [] vendorData = user.getUserInfo(vendorEmail);
+            String[] vendorData = user.getUserInfo(vendorEmail);
             String vendorName = vendorData[1];
             //image icon
             ImageIcon itemImage = new ImageIcon(itemImgPath);
@@ -130,7 +123,7 @@ public class managerRmvItem extends javax.swing.JFrame {
         itemTable.getColumnModel().getColumn(2).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-                                                           boolean hasFocus, int row, int column) {
+                    boolean hasFocus, int row, int column) {
                 if (value instanceof ImageIcon) {
                     JLabel label = new JLabel((ImageIcon) value);
                     label.setHorizontalAlignment(SwingConstants.CENTER);
@@ -140,37 +133,37 @@ public class managerRmvItem extends javax.swing.JFrame {
             }
         });
     }
-    
+
     //display items based on id
     public void displayItems(int id) {
         //display details
-        String[] details = item.itemData(id);        
+        String[] details = item.itemData(id);
         idLabel.setText(details[0].trim());
         itemNameTxt.setText(details[1].trim());
         typeTxt.setText(details[2].trim());
         itemPriceTxt.setText(details[3].trim());
-        
+
         String vendorEmail = details[5];
         String[] vendorDetails = user.getUserInfo(vendorEmail);
         String vendorName = vendorDetails[1].trim();
         venNameLabel.setText(vendorName);
-        
+
         //photo
         imagePath = details[4].trim();
         ImageIcon itemImage = new ImageIcon(imagePath);
         Image resizedImage = itemImage.getImage().getScaledInstance(photoLabel.getWidth(), photoLabel.getHeight(), Image.SCALE_SMOOTH);
         photoLabel.setText(""); //clear the label
-        photoLabel.setIcon(new ImageIcon(resizedImage));        
+        photoLabel.setIcon(new ImageIcon(resizedImage));
     }
-    
+
     //display items based on check boxes
-    public void displayItemsFilter(String[] filter) {      
+    public void displayItemsFilter(String[] filter) {
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
         List<String[]> allItems = item.getAllItems(true); //items with available status only
         int index = 1;
         model.setRowCount(0);
         itemTable.setRowHeight(100);
-        
+
         for (String[] itemData : allItems) {
             String itemID = itemData[0];
             String itemName = itemData[1];
@@ -178,10 +171,10 @@ public class managerRmvItem extends javax.swing.JFrame {
             String itemPrice = itemData[3];
             String itemImgPath = itemData[4];
             String vendorEmail = itemData[5];
-            
-            String [] vendorData = user.getUserInfo(vendorEmail);
+
+            String[] vendorData = user.getUserInfo(vendorEmail);
             String vendorName = vendorData[1];
-            
+
             //check if item type matches the filter
             boolean isFiltered = false;
             for (String filterType : filter) {
@@ -206,7 +199,7 @@ public class managerRmvItem extends javax.swing.JFrame {
         itemTable.getColumnModel().getColumn(2).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-                                                           boolean hasFocus, int row, int column) {
+                    boolean hasFocus, int row, int column) {
                 if (value instanceof ImageIcon) {
                     JLabel label = new JLabel((ImageIcon) value);
                     label.setHorizontalAlignment(SwingConstants.CENTER);
@@ -216,7 +209,7 @@ public class managerRmvItem extends javax.swing.JFrame {
             }
         });
     }
-    
+
     //display items based on search bar
     public void displayItemsSearch(String searchItem) {
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
@@ -224,7 +217,7 @@ public class managerRmvItem extends javax.swing.JFrame {
         int index = 1;
         model.setRowCount(0);
         itemTable.setRowHeight(100);
-  
+
         for (String[] itemData : allItems) {
             String itemID = itemData[0];
             String itemName = itemData[1];
@@ -232,9 +225,9 @@ public class managerRmvItem extends javax.swing.JFrame {
             String itemPrice = itemData[3];
             String itemImgPath = itemData[4];
 
-            String [] vendorData = user.getUserInfo(searchItem);
+            String[] vendorData = user.getUserInfo(searchItem);
             String vendorName = vendorData[1];
-            
+
             //image icon
             ImageIcon itemImage = new ImageIcon(itemImgPath);
             Image img = itemImage.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
@@ -249,7 +242,7 @@ public class managerRmvItem extends javax.swing.JFrame {
         itemTable.getColumnModel().getColumn(2).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-                                                           boolean hasFocus, int row, int column) {
+                    boolean hasFocus, int row, int column) {
                 if (value instanceof ImageIcon) {
                     JLabel label = new JLabel((ImageIcon) value);
                     label.setHorizontalAlignment(SwingConstants.CENTER);
@@ -259,6 +252,7 @@ public class managerRmvItem extends javax.swing.JFrame {
             }
         });
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -578,7 +572,7 @@ public class managerRmvItem extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Please select a valid vendor.", "Alert", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        
+
         // Retrieve the corresponding email
         if (vendorNameToEmailMap.containsKey(selectedVendorName)) {
             String searchEmail = vendorNameToEmailMap.get(selectedVendorName);
@@ -628,7 +622,7 @@ public class managerRmvItem extends javax.swing.JFrame {
             int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to delete this item?", "Delete Item", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 int id = Integer.parseInt(idLabel.getText());
-                item.deleteItem(id, "manager"); 
+                item.deleteItem(id, "manager");
                 displayItems();
                 resetDetails();
             }

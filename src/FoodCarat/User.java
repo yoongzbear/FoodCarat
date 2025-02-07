@@ -15,10 +15,6 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author mastu
- */
 public class User {   
     protected String email;
     private String password;

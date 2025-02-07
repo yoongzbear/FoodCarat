@@ -13,12 +13,8 @@ import javax.swing.table.DefaultTableModel;
 import org.jfree.chart.ChartPanel;
 import org.jfree.data.general.DefaultPieDataset;
 
-/**
- *
- * @author User
- */
 public class managerMonVenPer extends javax.swing.JFrame {
-    private String userFile = "resources/user.txt";
+
     /**
      * Creates new form managerMonVenPer
      */
@@ -26,7 +22,7 @@ public class managerMonVenPer extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         getContentPane().setBackground(new Color(252, 204, 196));
-        
+
         //Blank chart
         DefaultPieDataset blankDataset = new DefaultPieDataset();
         totalrevenuechart.setLayout(new java.awt.BorderLayout());
@@ -40,7 +36,7 @@ public class managerMonVenPer extends javax.swing.JFrame {
         avgratingchart.setLayout(new java.awt.BorderLayout());
         avgratingchart.add(ChartUtility.createPieChart(blankDataset, "No Data Available"), java.awt.BorderLayout.CENTER);
     }
-    
+
     private void displayVendorPerformance(int selectedMonth, int selectedYear) throws IOException {
         Manager manager = new Manager();
         Map<String, String> performanceDataMap = manager.getVendorPerformanceByMonth(selectedMonth, selectedYear);
@@ -51,7 +47,7 @@ public class managerMonVenPer extends javax.swing.JFrame {
         int rowNumber = 1;
         for (Map.Entry<String, String> entry : performanceDataMap.entrySet()) {
             String vendorEmail = entry.getKey();
-            String performanceData = entry.getValue(); // performanceData is in the format "totalOrders,totalRevenue,avgOrderValue"
+            String performanceData = entry.getValue(); // performanceData format: "totalOrders,totalRevenue,avgOrderValue"
             String[] performanceValues = performanceData.split(",");
 
             int totalOrders = Integer.parseInt(performanceValues[0]);
@@ -64,9 +60,9 @@ public class managerMonVenPer extends javax.swing.JFrame {
 
             Review review = new Review();
             double averageRating = review.getAverageRating(vendorEmail, "vendor");
-            
+
             // Add row data to the table
-            model.addRow(new Object[] {
+            model.addRow(new Object[]{
                 rowNumber,
                 vendorName,
                 String.format("%.2f", totalRevenue),
@@ -77,13 +73,13 @@ public class managerMonVenPer extends javax.swing.JFrame {
 
             rowNumber++;
         }
-        
+
         double totalRevenue = 0;
         int totalOrders = 0;
         double totalAvgOrderValue = 0;
         double totalAvgRating = 0.0;
         int rowCount = model.getRowCount();
-        
+
         for (int i = 0; i < rowCount; i++) {
             totalRevenue += Double.parseDouble(model.getValueAt(i, 2).toString());
             totalOrders += Integer.parseInt(model.getValueAt(i, 3).toString());
@@ -93,42 +89,42 @@ public class managerMonVenPer extends javax.swing.JFrame {
 
         double summaryAvgOrderValue = rowCount > 0 ? totalAvgOrderValue / rowCount : 0.0;
         double averageRatingSummary = rowCount > 0 ? totalAvgRating / rowCount : 0.0;
-         // Highlight the total row
+        // Highlight the total row
         int tableHeight = VenPertable.getParent().getHeight();
         int rowHeight = VenPertable.getRowHeight();
         int targetRowCount = tableHeight / rowHeight;
 
         // Add empty rows if needed to reach the target row count
-        int emptyRowsNeeded = targetRowCount - (rowCount+1);
+        int emptyRowsNeeded = targetRowCount - (rowCount + 1);
         for (int i = 0; i < emptyRowsNeeded; i++) {
             model.addRow(new Object[]{"", "", "", ""});
         }
-        
+
         model.addRow(new Object[]{
-            "Total:", 
-            "", 
-            String.format("%.2f", totalRevenue), 
-            totalOrders, 
+            "Total:",
+            "",
+            String.format("%.2f", totalRevenue),
+            totalOrders,
             String.format("%.2f", summaryAvgOrderValue),
             String.format("%.2f", averageRatingSummary)
         });
-        
+
         // Highlight the total row
         rowCount = model.getRowCount(); // Update rowCount after adding empty rows
         VenPertable.getSelectionModel().addSelectionInterval(rowCount - 1, rowCount - 1);
 
-        VenPertable.setSelectionBackground(new Color(64, 64, 64)); 
-        
-        int remainingHeight = tableHeight - ((rowCount-1) * rowHeight);
+        VenPertable.setSelectionBackground(new Color(64, 64, 64));
+
+        int remainingHeight = tableHeight - ((rowCount - 1) * rowHeight);
         if (remainingHeight > 0) {
-            VenPertable.setRowHeight(rowCount - 1, remainingHeight); 
+            VenPertable.setRowHeight(rowCount - 1, remainingHeight);
         } else {
             VenPertable.setRowHeight(rowCount - 1, rowHeight);
         }
 
         VenPertable.setRowHeight(rowCount, 1); // This hides the next row
     }
-    
+
     public void createVendorPerformancePieChart(Map<String, String> performanceDataMap) {
         double totalRevenue = 0;
         int totalOrders = 0;
@@ -139,7 +135,7 @@ public class managerMonVenPer extends javax.swing.JFrame {
         Map<String, Double> revenueMap = new HashMap<>();
         Map<String, Integer> ordersMap = new HashMap<>();
         Map<String, Double> avgValueMap = new HashMap<>();
-        
+
         // Parse the performance data map and calculate totals
         for (Map.Entry<String, String> entry : performanceDataMap.entrySet()) {
             String vendorID = entry.getKey();
@@ -148,14 +144,14 @@ public class managerMonVenPer extends javax.swing.JFrame {
             double vendorRevenue = Double.parseDouble(performanceData[1]);
             int vendorOrders = Integer.parseInt(performanceData[0]);
             double vendorAvgValue = Double.parseDouble(performanceData[2]);
-            
+
             revenueMap.put(vendorID, vendorRevenue);
             ordersMap.put(vendorID, vendorOrders);
             avgValueMap.put(vendorID, vendorAvgValue);
-            
+
             Review review = new Review();
             double averageRating = review.getAverageRating(vendorID, "vendor");
-            
+
             totalRevenue += vendorRevenue;
             totalOrders += vendorOrders;
             totalAverageValue += vendorAvgValue;
@@ -167,7 +163,7 @@ public class managerMonVenPer extends javax.swing.JFrame {
         DefaultPieDataset ordersDataset = new DefaultPieDataset();
         DefaultPieDataset avgValueDataset = new DefaultPieDataset();
         DefaultPieDataset avgRatingDataset = new DefaultPieDataset();
-        
+
         // Add data to the datasets
         for (String vendorID : performanceDataMap.keySet()) {
             double vendorRevenue = revenueMap.get(vendorID);
@@ -176,7 +172,7 @@ public class managerMonVenPer extends javax.swing.JFrame {
             Review review = new Review();
             double averageRating = review.getAverageRating(vendorID, "vendor");
             try {
-                // Fetch vendor name using the user utility
+                // Fetch vendor name
                 User user = new User();
                 String[] vendorDetails = user.getUserInfo(vendorID);
                 String vendorName = vendorDetails.length > 1 ? vendorDetails[1] : vendorID;
@@ -193,16 +189,15 @@ public class managerMonVenPer extends javax.swing.JFrame {
                 if (totalAverageValue > 0) {
                     avgValueDataset.setValue(vendorName, vendorAvgValue / totalAverageValue * 100);
                 }
-                
-                if(totalAverageRating > 0){
+
+                if (totalAverageRating > 0) {
                     avgRatingDataset.setValue(vendorName, averageRating / totalAverageRating * 100);
                 }
-            }catch (NullPointerException e) {
-            // Show a user-friendly error message
-                JOptionPane.showMessageDialog(null, 
-                    "An error occurred while fetching vendor details for vendor ID: " + vendorID, 
-                    "Error", 
-                    JOptionPane.ERROR_MESSAGE);
+            } catch (NullPointerException e) {
+                JOptionPane.showMessageDialog(null,
+                        "An error occurred while fetching vendor details for vendor ID: " + vendorID,
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
 
@@ -228,7 +223,7 @@ public class managerMonVenPer extends javax.swing.JFrame {
 
         avgratingchart.setLayout(new java.awt.BorderLayout());
         avgratingchart.add(avgRatingChartPanel, java.awt.BorderLayout.CENTER);
-        
+
         totalrevenuechart.revalidate();
         totalrevenuechart.repaint();
 
@@ -237,7 +232,7 @@ public class managerMonVenPer extends javax.swing.JFrame {
 
         avgvaluechart.revalidate();
         avgvaluechart.repaint();
-        
+
         avgratingchart.revalidate();
         avgratingchart.repaint();
     }
@@ -487,20 +482,20 @@ public class managerMonVenPer extends javax.swing.JFrame {
         int selectedMonth = monthChooser.getMonth() + 1;
         int selectedYear = yearChooser.getYear();
         try {
-        // Call the Manager method to get vendor performance data
-        Manager manager = new Manager();
-        Map<String, String> performanceDataMap = manager.getVendorPerformanceByMonth(selectedMonth,selectedYear);
-        DefaultTableModel model = (DefaultTableModel) VenPertable.getModel();
-        model.setRowCount(0);
-        if (performanceDataMap == null || performanceDataMap.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "No data available for the selected month.");
-            // Clear the charts if no data is found
-            clearCharts(); 
-            return; // Exit the method as there is no data
-        }
-        // Create and display the pie chart with the data
-        createVendorPerformancePieChart(performanceDataMap);
-        displayVendorPerformance(selectedMonth, selectedYear);
+            // Call the Manager method to get vendor performance data
+            Manager manager = new Manager();
+            Map<String, String> performanceDataMap = manager.getVendorPerformanceByMonth(selectedMonth, selectedYear);
+            DefaultTableModel model = (DefaultTableModel) VenPertable.getModel();
+            model.setRowCount(0);
+            if (performanceDataMap == null || performanceDataMap.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "No data available for the selected month.");
+                // Clear the charts if no data is found
+                clearCharts();
+                return; // Exit the method as there is no data
+            }
+            // Create and display the pie chart with the data
+            createVendorPerformancePieChart(performanceDataMap);
+            displayVendorPerformance(selectedMonth, selectedYear);
 
         } catch (IOException e) {
             e.printStackTrace();

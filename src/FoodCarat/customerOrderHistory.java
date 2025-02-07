@@ -2,7 +2,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-
 package FoodCarat;
 
 import java.io.BufferedReader;
@@ -25,11 +24,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
-/**
- *
- * @author ASUS
- */
 public class customerOrderHistory extends javax.swing.JFrame {
+
     private String email = User.getSessionEmail();
 
     /**
@@ -49,26 +45,26 @@ public class customerOrderHistory extends javax.swing.JFrame {
         cbRunnerRating.setVisible(false);
         labelCancel.setVisible(false);
         lcancelReason.setText("");
-        
+
         //dont show the label first
         lOrderID.setText("");
         lOrderType.setText("");
         ltotalPrice.setText("");
         lVendorName.setText("");
         lOrderStatus.setText("");
-        
+
         //invisible time range filter
         selectLabel.setVisible(false);
         dateChooser.setVisible(false);
         monthChooser.setVisible(false);
         yearChooser.setVisible(false);
-        
+
         setLocationRelativeTo(null);
-        jPanel1.setBackground(new java.awt.Color(180,200,234));
+        jPanel1.setBackground(new java.awt.Color(180, 200, 234));
     }
-    
+
     private Map<String, List<String[]>> orderDetailsMap = new HashMap<>();
-    
+
     private void addTableListener() {
         tOrderHistory.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -78,7 +74,6 @@ public class customerOrderHistory extends javax.swing.JFrame {
                     if (selectedRow != -1) {
                         try {
                             //Get the selected row data
-                            String orderDate = (String) tOrderHistory.getValueAt(selectedRow, 0);
                             String orderID = (String) tOrderHistory.getValueAt(selectedRow, 1);
                             String orderType = (String) tOrderHistory.getValueAt(selectedRow, 2);
                             String totalPrice = (String) tOrderHistory.getValueAt(selectedRow, 4);
@@ -86,12 +81,11 @@ public class customerOrderHistory extends javax.swing.JFrame {
                             String orderStatus = (String) tOrderHistory.getValueAt(selectedRow, 6);
                             String cancelReason = (String) tOrderHistory.getValueAt(selectedRow, 7);
                             String rRunnerName = (String) tOrderHistory.getValueAt(selectedRow, 8);
-                            
+
                             //Get feedback
                             Review review = new Review(Integer.parseInt(orderID));
                             String feedback = review.getFeedback();
                             String[] feedbackParts = feedback.split(",");
-                            String orderID2 = feedbackParts[0];
                             String orderFeedback = feedbackParts[1];
                             String vendorRating = feedbackParts[2];
                             String vendorFeedback = feedbackParts[3];
@@ -108,7 +102,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
                             if ("null".equals(feedbackParts[1]) || "null".equals(feedbackParts[2]) || "null".equals(feedbackParts[3])) {
                                 validFeedback = false;
                             }
-                            
+
                             if ("completed".equalsIgnoreCase(orderStatus)) {
                                 labelCancel.setVisible(false);
                                 lcancelReason.setText("");
@@ -151,18 +145,18 @@ public class customerOrderHistory extends javax.swing.JFrame {
                                 taOrderFeedback.setEditable(false);
                                 cbVendorRating.setSelectedItem(vendorRating + " 🌟");
                                 cbVendorRating.setEditable(false);
-                                
+
                                 taVendorFeedback.setText(vendorFeedback);
                                 taVendorFeedback.setEditable(false);
                                 cbRunnerRating.setSelectedItem(runnerRating + " 🌟");
                                 cbRunnerRating.setEditable(false);
                                 bFeedback.setVisible(false);
-                            } else if (!validFeedback && "Completed".equals(orderStatus)){
+                            } else if (!validFeedback && "Completed".equals(orderStatus)) {
                                 //No feedback, allow the user to enter feedback
                                 taOrderFeedback.setText("");
                                 taOrderFeedback.setEditable(true);
                                 cbVendorRating.setEditable(true);
-                                
+
                                 //Clear the selection (or reset it to a default choice, if desired)
                                 cbVendorRating.setSelectedItem("Please Rate");
                                 taVendorFeedback.setText("");
@@ -176,7 +170,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
                                 taOrderFeedback.setText("");
                                 taOrderFeedback.setEditable(false);
                                 cbVendorRating.setEditable(false);
-                                
+
                                 //clear section
                                 cbVendorRating.setSelectedItem("Please Rate");
                                 taVendorFeedback.setText("");
@@ -193,12 +187,10 @@ public class customerOrderHistory extends javax.swing.JFrame {
                             List<String[]> orderItemDetails = orderDetailsMap.get(orderID);
                             //Loop through each item in the order and process it
                             for (String[] item : orderItemDetails) {
-                                //rOrderItemID, itemName, rItemQuantity, itemPrice
-                                String itemID = item[0];
                                 String itemName = item[1];
                                 String itemQuantity = item[2];
                                 String itemPrice = item[3];
-                                
+
                                 model.addRow(new Object[]{itemName, itemQuantity, "RM" + df.format(Double.parseDouble(itemPrice))});
                             }
                         } catch (IOException ex) {
@@ -237,9 +229,9 @@ public class customerOrderHistory extends javax.swing.JFrame {
                 String[] record = line.split(",");
                 String rOrderStatus = record[3];
                 String rUser = record[4];
-                if (rUser.equals(User.getSessionEmail()) && rOrderStatus != "") {
+                if (rUser.equals(email) && rOrderStatus != "") {
                     String rOrderType = record[1];
-                    
+
                     String formattedOrderType = "";
                     switch (rOrderType.toLowerCase()) {
                         case "dine in":
@@ -254,18 +246,17 @@ public class customerOrderHistory extends javax.swing.JFrame {
                         default:
                             formattedOrderType = "Unknown"; //invalid value
                     }
-                    
+
                     String rOrderList = record[2].replace("[", "").replace("]", "");
                     String rVendorName = null;
                     String rRunnerEmail = record[5];
                     String rRunnerName = "";
                     User user = new User();
-                    if (!"null".equalsIgnoreCase(rRunnerEmail)){
+                    if (!"null".equalsIgnoreCase(rRunnerEmail)) {
                         String[] runnerInfo = user.getUserInfo(rRunnerEmail);
                         rRunnerName = runnerInfo[1];
                     }
                     String rCancelReason = record[6];
-                    String rDeliveryFee = record[7];
                     String rTotalPaid = record[8];
                     String rOrderDate = record[9];
                     rOrderStatus = rOrderStatus.substring(0, 1).toUpperCase() + rOrderStatus.substring(1).toLowerCase();
@@ -293,7 +284,6 @@ public class customerOrderHistory extends javax.swing.JFrame {
                         String itemID = itemInfo[0];
                         String itemName = itemInfo[1];
                         String itemPrice = itemInfo[3];
-                        String itemImgPath = itemInfo[4];
 
                         String[] vendorInfo = item1.getVendorInfoByItemID(Integer.parseInt(itemID));
                         rVendorName = vendorInfo[1];
@@ -318,7 +308,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
 
                     // Add the record to the list
                     orderRecords.add(new String[]{
-                        rOrderDate, orderID, formattedOrderType, allOrderItems, "RM" + df.format(Integer.parseInt(rTotalPaid)), rVendorName, rOrderStatus, rCancelReason, rRunnerName
+                        rOrderDate, orderID, formattedOrderType, allOrderItems, "RM" + df.format(Double.parseDouble(rTotalPaid)), rVendorName, rOrderStatus, rCancelReason, rRunnerName
                     });
                 }
             }
@@ -397,7 +387,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
 
         // Set the model to the table
         tOrderHistory.setModel(model);
-        
+
         TableColumn runnerName = tOrderHistory.getColumnModel().getColumn(8);  // 8th column is index 7
         runnerName.setMaxWidth(0);
         runnerName.setMinWidth(0);
@@ -432,7 +422,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
                 String[] record = line.split(",");
                 String rOrderStatus = record[3];
                 String rUser = record[4];
-                if (rUser.equals(User.getSessionEmail()) && rOrderStatus != "") {
+                if (rUser.equals(email) && rOrderStatus != "") {
                     String rOrderType = record[1];
                     String formattedOrderType = "";
                     switch (rOrderType.toLowerCase()) {
@@ -453,12 +443,11 @@ public class customerOrderHistory extends javax.swing.JFrame {
                     String rRunnerEmail = record[5];
                     String rRunnerName = "";
                     User user = new User();
-                    if (!"null".equalsIgnoreCase(rRunnerEmail)){
+                    if (!"null".equalsIgnoreCase(rRunnerEmail)) {
                         String[] runnerInfo = user.getUserInfo(rRunnerEmail);
                         rRunnerName = runnerInfo[1];
                     }
                     String rCancelReason = record[6];
-                    String rDeliveryFee = record[7];
                     String rTotalPaid = record[8];
                     String rOrderDate = record[9];
                     rOrderStatus = rOrderStatus.substring(0, 1).toUpperCase() + rOrderStatus.substring(1).toLowerCase();
@@ -487,7 +476,6 @@ public class customerOrderHistory extends javax.swing.JFrame {
                         String itemID = itemInfo[0];
                         String itemName = itemInfo[1];
                         String itemPrice = itemInfo[3];
-                        String itemImgPath = itemInfo[4];
 
                         String[] vendorInfo = item1.getVendorInfoByItemID(Integer.parseInt(itemID));
                         rVendorName = vendorInfo[1];
@@ -591,7 +579,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
 
         // Set the model to the table
         tOrderHistory.setModel(model);
-        
+
         TableColumn runnerName = tOrderHistory.getColumnModel().getColumn(8);  // 8th column is index 7
         runnerName.setMaxWidth(0);
         runnerName.setMinWidth(0);
@@ -1032,15 +1020,15 @@ public class customerOrderHistory extends javax.swing.JFrame {
     }//GEN-LAST:event_bBackActionPerformed
 
     private void bFeedbackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bFeedbackActionPerformed
-        if (taOrderFeedback != null && !taOrderFeedback.getText().isEmpty() &&
-            taVendorFeedback != null && !taVendorFeedback.getText().isEmpty() && 
-            !cbVendorRating.getSelectedItem().equals("Please Rate")) {
-            
+        if (taOrderFeedback != null && !taOrderFeedback.getText().isEmpty()
+                && taVendorFeedback != null && !taVendorFeedback.getText().isEmpty()
+                && !cbVendorRating.getSelectedItem().equals("Please Rate")) {
+
             String runnerRating = null;
             if (cbRunnerRating.isVisible()) {
                 if (cbRunnerRating.getSelectedItem() != null && cbRunnerRating.getSelectedItem().equals("Please Rate")) {
                     JOptionPane.showMessageDialog(null, "Please provide a rating for the runner.");
-                    return; 
+                    return;
                 }
             }
 
@@ -1050,19 +1038,19 @@ public class customerOrderHistory extends javax.swing.JFrame {
 
                 if (selectedRow != -1) {
                     String orderIDString = (String) tOrderHistory.getValueAt(selectedRow, 1);
-                    int orderID = Integer.parseInt(orderIDString); 
+                    int orderID = Integer.parseInt(orderIDString);
                     String orderFeedback = taOrderFeedback.getText();
                     String selectedVendorRating = (String) cbVendorRating.getSelectedItem();
                     String vendorRating = selectedVendorRating.split(" ")[0];
                     String vendorFeedback = taVendorFeedback.getText();
-                    
-                    if (cbRunnerRating.isVisible()){
+
+                    if (cbRunnerRating.isVisible()) {
                         String selectedRunnerRating = (String) cbRunnerRating.getSelectedItem();
-                        runnerRating = selectedVendorRating.split(" ")[0];
+                        runnerRating = selectedRunnerRating.split(" ")[0];
                     }
 
                     Review review = new Review(orderID, orderFeedback, vendorRating, vendorFeedback, runnerRating);
-                    review.saveOrderFeedback(); 
+                    review.saveOrderFeedback();
 
                     taOrderFeedback.setEditable(false);
                     bFeedback.setVisible(false);
@@ -1111,19 +1099,19 @@ public class customerOrderHistory extends javax.swing.JFrame {
                     }
 
                     // Show selection dialog for order type
-                    int choiceIndex = JOptionPane.showOptionDialog(null, "Please select an order type:", "Start Order!", 
+                    int choiceIndex = JOptionPane.showOptionDialog(null, "Please select an order type:", "Start Order!",
                             JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, formattedOrderTypes, formattedOrderTypes[0]);
 
                     if (choiceIndex != JOptionPane.CLOSED_OPTION) {
                         String chosenOrderType = availableOrderTypes[choiceIndex];
 
                         // Initialize a new order
-                        Order Order = new Order(chosenOrderType, User.getSessionEmail());
+                        Order Order = new Order(chosenOrderType, email);
                         Order.initialOrder();
                         int newOrderID = Order.getOrderID();
-                        
+
                         String getOrderStr = orderData[2];
-                        
+
                         double reorderTotalPrice = 0.0;
 
                         DefaultTableModel itemsmodel = (DefaultTableModel) tbOrderItem.getModel();
@@ -1132,14 +1120,14 @@ public class customerOrderHistory extends javax.swing.JFrame {
                         for (int i = 0; i < rowCount; i++) {
                             String priceString = itemsmodel.getValueAt(i, 2).toString();
                             String quantityString = itemsmodel.getValueAt(i, 1).toString();
-                            
+
                             double itemsPrice = Double.parseDouble(priceString.replace("RM", "").trim());
                             int itemQuantity = Integer.parseInt(quantityString.trim());
                             double itemsTotalPrice = itemsPrice * itemQuantity;
                             reorderTotalPrice += itemsTotalPrice;
                             Order.writeReOrderDetails(newOrderID, getOrderStr, reorderTotalPrice);
                         }
-                        
+
                         customerPayment paymentFrame = new customerPayment(newOrderID, chosenOrderType);
                         paymentFrame.setVisible(true);
                         this.dispose();
@@ -1150,7 +1138,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
                     if (confirm == JOptionPane.YES_OPTION) {
                         try {
                             order.updateStatus(Integer.parseInt(selectedOrderID), "cancelled", "customer");
-                            order.refund(Integer.parseInt(orderID), User.getSessionEmail());
+                            order.refund(Integer.parseInt(orderID), email);
                             JOptionPane.showMessageDialog(null, "Your order has been cancelled and refunded");
                             populateTable();
                         } catch (IOException ex) {
@@ -1241,7 +1229,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
         monthChooser.setMonth(0); //reset month chooser (January)
         yearChooser.setYear(Calendar.getInstance().get(Calendar.YEAR)); //reset to current year
 
-        selectLabel.setVisible(false); 
+        selectLabel.setVisible(false);
         dateChooser.setVisible(false);
         monthChooser.setVisible(false);
         yearChooser.setVisible(false);
