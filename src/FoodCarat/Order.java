@@ -710,8 +710,6 @@ public class Order {
     public void updateStatus(int id, String newOrderStatus, String userType) {
         // Get order info from order.txt using id
         String[] order = getOrder(id);
-        String method = order[1].trim();
-        String currentStatus = order[3].trim();
         List<String[]> allOrders = getAllOrders();
 
         try {

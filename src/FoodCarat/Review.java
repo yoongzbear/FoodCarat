@@ -12,14 +12,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import javax.swing.JOptionPane;
@@ -40,12 +37,9 @@ public class Review {
     private String reviewDate;
     
     private String reviewFileName = "resources/review.txt";
-    private String vendorFileName = "resources/vendor.txt";
-    private String runnerFileName = "resources/runner.txt";
-    private String orderFileName = "resources/customerOrder.txt";
     
     public Review(){ 
-        
+        this.reviewID = 0;
     }
     
     public Review(int orderID){ //for getting customer order feedback

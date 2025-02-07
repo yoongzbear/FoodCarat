@@ -27,11 +27,11 @@ public class User {
     private String birth;
     private String contactNumber;
     
-    private String userFile = "resources/user.txt";
-    private String cusFile = "resources/customer.txt";
-    private String vendorFile = "resources/vendor.txt";
-    private String runnerFile = "resources/runner.txt";
-    private String transCreditFile = "resources/transactionCredit.txt";
+    protected static String userFile = "resources/user.txt";
+    protected static String cusFile = "resources/customer.txt";
+    protected static String vendorFile = "resources/vendor.txt";
+    protected static String runnerFile = "resources/runner.txt";
+    protected static String transCreditFile = "resources/transactionCredit.txt";
     
     // Static variables to act as session
     private static String sessionEmail;

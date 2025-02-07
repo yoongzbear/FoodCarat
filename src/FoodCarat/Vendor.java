@@ -29,8 +29,8 @@ public class Vendor extends User{
     private String availableMethod;
     private double creditBalance;
     
-    private String vendorFile = "resources/vendor.txt";
-    private String vendorCreditFile = "resources/transactionCredit.txt";
+    //private String vendorFile = "resources/vendor.txt";
+    //private String vendorCreditFile = "resources/transactionCredit.txt";
     
     private double totalRevenue;
     
@@ -213,7 +213,7 @@ public class Vendor extends User{
     public List<String[]> getWithdrawalTransaction() {
         List<String[]> transaction = new ArrayList<>();
         try {
-            File fileName = new File(vendorCreditFile);
+            File fileName = new File(transCreditFile);
             FileReader fr = new FileReader(fileName);
             BufferedReader br = new BufferedReader(fr);
             String read;

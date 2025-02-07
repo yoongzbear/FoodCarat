@@ -24,11 +24,11 @@ import javax.swing.JOptionPane;
  */
 public class Admin extends User {
 
-    private static String userFile = "resources/user.txt";
-    private String cusFile = "resources/customer.txt";
-    private String venFile = "resources/vendor.txt";
-    private String runFile = "resources/runner.txt";
-    private String cuscreditFile = "resources/transactionCredit.txt";
+    //private static String userFile = "resources/user.txt";
+    //private String cusFile = "resources/customer.txt";
+    //private String venFile = "resources/vendor.txt";
+    //private String runFile = "resources/runner.txt";
+    //private String cuscreditFile = "resources/transactionCredit.txt";
 
     public Admin() { 
         this.email = "";
@@ -239,7 +239,7 @@ public class Admin extends User {
 
     //Top up credit    
     public void processChangesCredit(String email, String name, double currentAmount, double changesAmount) throws IOException {
-        String transFilePath = cuscreditFile;
+        String transFilePath = transCreditFile;
         double newAmount = currentAmount + changesAmount;
 
         //get the next transaction id 
@@ -298,10 +298,10 @@ public class Admin extends User {
         if (role != null) {
             switch (role.toLowerCase()) {
                 case "vendor":
-                    super.updateCredit(email, newAmount, venFile, 4);
+                    super.updateCredit(email, newAmount, vendorFile, 4);
                     break;
                 case "runner":
-                    super.updateCredit(email, newAmount, runFile, 3);
+                    super.updateCredit(email, newAmount, runnerFile, 3);
                     break;
                 case "customer":
                     super.updateCredit(email, newAmount, cusFile, 2);
@@ -324,7 +324,7 @@ public class Admin extends User {
     //Notification    
     public ArrayList<String> getTransactionMessages() { // Method to retrieve the list of transaction messages
         ArrayList<String> transactionMessages = new ArrayList<>();
-        String filePath = cuscreditFile;
+        String filePath = transCreditFile;
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
