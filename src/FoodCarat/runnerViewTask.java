@@ -202,8 +202,8 @@ public class runnerViewTask extends javax.swing.JFrame {
                 String contactNumber = customerInfo[5];
 
                 String deliveryFee = orderData[7];
-                String rawStatus = orderData[3]; // Get the raw status from data
-                String status = rawStatus.substring(0, 1).toUpperCase() + rawStatus.substring(1).toLowerCase();
+                String rawStatus = orderData[3].substring(0, 1).toUpperCase() + orderData[3].substring(1).toLowerCase(); // Get the raw status from data
+                String status = rawStatus;
 
                 // Add row to the table
                 model.addRow(new Object[]{
