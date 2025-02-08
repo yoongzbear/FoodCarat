@@ -255,7 +255,7 @@ public class cusRunner1AccInfo extends javax.swing.JFrame {
         }
 
         User user = new User();
-        Runner runner = new Runner();
+        Runner runner = new Runner(email);
 
         // If user is a runner, prompt for plate number and validate
         if ("runner".equalsIgnoreCase(role)) {

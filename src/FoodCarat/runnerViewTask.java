@@ -793,7 +793,7 @@ public class runnerViewTask extends javax.swing.JFrame {
             double newAmount = currentCredit + itemPrice;
             vendor.updateCredit(vendorEmail, newAmount, "resources/vendor.txt", 4);
             new Order().updateStatus(Integer.parseInt(orderId), "Ordered", "runner");
-            new Runner().updateRunnerStatus(runnerEmail, "unavailable");
+            new Runner(runnerEmail).updateRunnerStatus(runnerEmail, "unavailable");
             JOptionPane.showMessageDialog(null, "Task accepted!");
 
             clearTaskDetails();
@@ -865,7 +865,7 @@ public class runnerViewTask extends javax.swing.JFrame {
 
                 if ("completed".equals(fileStatus)) {
                     try {
-                        Runner runner = new Runner();
+                        Runner runner = new Runner(runnerEmail);
                         runner.updateRunnerStatus(runnerEmail, "available");
                         double deliveryFee = Double.parseDouble(orderInfo[7].trim());
                         String[] runnerInfo = runner.getRunnerDetails(runnerEmail);

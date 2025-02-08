@@ -23,7 +23,7 @@ public class runnerMain extends javax.swing.JFrame {
 
     private String email = User.getSessionEmail();
     private String name = User.getSessionName();
-    Runner runner = new Runner();
+    Runner runner = new Runner(email);
 
     public runnerMain() {
         initComponents();

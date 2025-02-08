@@ -15,6 +15,10 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 public class Runner extends User{
+    
+    public Runner(String email){
+        super(email);
+    }
         
     // Prompt and validate plate number
     public String promptAndValidatePlateNumber(Component parentComponent, String email) {
