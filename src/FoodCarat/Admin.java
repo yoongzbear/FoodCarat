@@ -21,7 +21,7 @@ import javax.swing.JOptionPane;
 public class Admin extends User {
 
     public Admin() {
-        this.email = "";
+        super();
     }
 
     //Registration

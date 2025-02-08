@@ -18,6 +18,10 @@ import java.util.Set;
 public class Manager extends User {
 
     private String orderFile = "resources/customerOrder.txt";
+    
+    public Manager() {
+        super();
+    }
 
     //Monitor Runner Performance
     public Map<String, String> getRunnerPerformance(int selectedMonth, int selectedYear) throws IOException {
