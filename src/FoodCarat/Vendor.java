@@ -24,10 +24,7 @@ public class Vendor extends User{
     private String photoLink;
     private String availableMethod;
     private double creditBalance;
-    
-    //private String vendorFile = "resources/vendor.txt";
-    //private String vendorCreditFile = "resources/transactionCredit.txt";
-    
+        
     private double totalRevenue;
     
     public Vendor(String email) {
