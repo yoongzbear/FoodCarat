@@ -16,6 +16,10 @@ import javax.swing.JOptionPane;
 
 public class Runner extends User{
     
+    private String plateNum;
+    private String status;
+    private double credit;
+    
     public Runner(String email){
         super(email);
     }

@@ -18,7 +18,9 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 public class Customer extends User{
+    private String address;
     private int points;
+    private double credit;
     
     public Customer(String email){ //for set points
         super(email);
