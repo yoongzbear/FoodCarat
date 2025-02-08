@@ -137,7 +137,7 @@ public class runnerCusReview extends javax.swing.JFrame {
         }
 
         if (ratingCounts.values().stream().allMatch(count -> count == 0)) {
-            displayBarChart(dataset, "No Available Data for Over Last 5 Months", "Ranks", "Total Count");
+            displayBarChart(dataset, "No Available Data for Over Last 5 Months", "Ratings", "Total Count");
             return;
         }
 
@@ -145,7 +145,7 @@ public class runnerCusReview extends javax.swing.JFrame {
             dataset.addValue(entry.getValue(), "Total Count of Ratings", String.valueOf(entry.getKey()));
         }
 
-        displayBarChart(dataset, "Ratings Over Last 5 Months", "Ranks", "Total Count");
+        displayBarChart(dataset, "Ratings Over Last 5 Months", "Ratings", "Total Count");
     }
 
     // Generate daily bar chart
@@ -171,7 +171,7 @@ public class runnerCusReview extends javax.swing.JFrame {
 
         if (ratingCounts.values().stream().allMatch(count -> count == 0)) {
             JOptionPane.showMessageDialog(null, "No data available for the selected date range.", "No Data", JOptionPane.INFORMATION_MESSAGE);
-            displayBarChart(dataset, "No Available Data", "Ranks", "Total Count");
+            displayBarChart(dataset, "No Available Data", "Ratings", "Total Count");
             return;
         }
 
@@ -179,7 +179,7 @@ public class runnerCusReview extends javax.swing.JFrame {
             dataset.addValue(entry.getValue(), "Total Count of Ratings", String.valueOf(entry.getKey()));
         }
 
-        displayBarChart(dataset, "Rantings from " + startDate + " to " + endDate, "Ranks", "Total Count");
+        displayBarChart(dataset, "Rantings from " + startDate + " to " + endDate, "Ratings", "Total Count");
     }
 
     // Generate monthly bar chart
@@ -205,7 +205,7 @@ public class runnerCusReview extends javax.swing.JFrame {
 
         if (ratingCounts.values().stream().allMatch(count -> count == 0)) {
             JOptionPane.showMessageDialog(null, "No data available for the selected date range.", "No Data", JOptionPane.INFORMATION_MESSAGE);
-            displayBarChart(dataset, "No Available Data", "Ranks", "Total Count");
+            displayBarChart(dataset, "No Available Data", "Ratings", "Total Count");
             return;
         }
 
@@ -213,7 +213,7 @@ public class runnerCusReview extends javax.swing.JFrame {
             dataset.addValue(entry.getValue(), "Total Count of Ratings", String.valueOf(entry.getKey()));
         }
 
-        displayBarChart(dataset, "Rantings from " + startDate + " to " + endDate, "Ranks", "Total Count");
+        displayBarChart(dataset, "Rantings from " + startDate + " to " + endDate, "Ratings", "Total Count");
     }
 
     // Generate yearly bar chart
@@ -240,7 +240,7 @@ public class runnerCusReview extends javax.swing.JFrame {
 
         if (ratingCounts.values().stream().allMatch(count -> count == 0)) {
             JOptionPane.showMessageDialog(null, "No data available for the selected years.", "No Data", JOptionPane.INFORMATION_MESSAGE);
-            displayBarChart(dataset, "No Available Data", "Ranks", "Total Count");
+            displayBarChart(dataset, "No Available Data", "Ratings", "Total Count");
             return;
         }
 
@@ -248,7 +248,7 @@ public class runnerCusReview extends javax.swing.JFrame {
             dataset.addValue(entry.getValue(), "Total Count of Ratings", String.valueOf(entry.getKey()));
         }
 
-        displayBarChart(dataset, "Rantings from " + startYear + " to " + endYear, "Ranks", "Total Count");
+        displayBarChart(dataset, "Rantings from " + startYear + " to " + endYear, "Ratings", "Total Count");
     }
 
     // Display bar chart
