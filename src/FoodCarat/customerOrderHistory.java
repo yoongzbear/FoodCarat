@@ -500,7 +500,7 @@ public class customerOrderHistory extends javax.swing.JFrame {
 
                     // Add the record to the list
                     orderRecords.add(new String[]{
-                        rOrderDate, orderID, formattedOrderType, allOrderItems, "RM" + df.format(Integer.parseInt(rTotalPaid)), rVendorName, rOrderStatus, rCancelReason, rRunnerName
+                        rOrderDate, orderID, formattedOrderType, allOrderItems, "RM" + df.format(Double.parseDouble(rTotalPaid)), rVendorName, rOrderStatus, rCancelReason, rRunnerName
                     });
                 }
             }
