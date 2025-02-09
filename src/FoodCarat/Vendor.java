@@ -24,21 +24,11 @@ public class Vendor extends User{
     private String photoLink;
     private String availableMethod;
     private double creditBalance;
-        
-    private double totalRevenue;
     
     public Vendor(String email) {
         super(email);
-        getVendorInfo(email);
-    }
-    
-    //constructor for performance tracking
-    public Vendor(String vendorName, boolean initializeName) {
-        if (initializeName) {
-            this.name = vendorName; // Set vendorName if flag is true
-        }
-        this.totalRevenue = 0.0;
-    }
+        setVendorInfo(email);
+    }   
     
     //setters - for current session (not including updating text field)
     public void setEmail(String email) {
@@ -83,13 +73,8 @@ public class Vendor extends User{
         return creditBalance;
     }
     
-    public double getTotalRevenue() {
-        return totalRevenue;
-    }
-    
-    //methods
     //setting vendor info
-    private void getVendorInfo(String email){
+    private void setVendorInfo(String email){
         try {
             File fileName = new File(vendorFile);
             FileReader fr = new FileReader(fileName);
