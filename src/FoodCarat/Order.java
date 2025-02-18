@@ -21,7 +21,7 @@ import javax.swing.JOptionPane;
  */
 
 public class Order {
-
+    
     private int orderID;
     private int orderTypeChoice;
     private String orderType;

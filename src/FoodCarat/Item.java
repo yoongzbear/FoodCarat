@@ -186,7 +186,6 @@ public class Item {
             }
             
             br.close();
-            fr.close();
         } catch(IOException e) {
             JOptionPane.showMessageDialog(null, "Failed to read from the file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -217,6 +216,7 @@ public class Item {
                     allItems.add(itemData);
                 }
             }
+            br.close();
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Failed to read from the file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -246,6 +246,7 @@ public class Item {
                     allItems.add(itemData);
                 }
             }
+            br.close();
         } catch(IOException e) {
             JOptionPane.showMessageDialog(null, "Failed to read from the file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -345,6 +346,7 @@ public class Item {
                 String[] itemData = read.split(",");
                 allItems.add(itemData);
             }
+            br.close();
         } catch(IOException e) {
             JOptionPane.showMessageDialog(null, "Failed to read from the file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }        
@@ -368,7 +370,6 @@ public class Item {
                 }
             }
             bw.close();
-            fw.close();
 
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Failed to delete the item information: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

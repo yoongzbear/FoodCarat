@@ -76,8 +76,7 @@ public class Vendor extends User{
     //setting vendor info
     private void setVendorInfo(String email){
         try {
-            File fileName = new File(vendorFile);
-            FileReader fr = new FileReader(fileName);
+            FileReader fr = new FileReader(vendorFile);
             BufferedReader br = new BufferedReader(fr);
             String read;
             boolean found = false; //flag for finding vendor record
@@ -95,7 +94,7 @@ public class Vendor extends User{
                     setCreditBalance(Double.parseDouble(data[4]));
                 }
             }
-            fr.close();
+            br.close();
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }        
@@ -191,8 +190,7 @@ public class Vendor extends User{
     public List<String[]> getWithdrawalTransaction() {
         List<String[]> transaction = new ArrayList<>();
         try {
-            File fileName = new File(transCreditFile);
-            FileReader fr = new FileReader(fileName);
+            FileReader fr = new FileReader(transCreditFile);
             BufferedReader br = new BufferedReader(fr);
             String read;
             boolean found = false; //flag for finding vendor record
@@ -205,7 +203,7 @@ public class Vendor extends User{
                     transaction.add(data);
                 }
             }
-            fr.close();
+            br.close();
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }        

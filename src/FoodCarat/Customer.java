@@ -33,6 +33,7 @@ public class Customer extends User{
                     this.points = Integer.parseInt(record[3]); 
                 }
             }
+            br.close();
         }
         catch(IOException e){
             e.printStackTrace();

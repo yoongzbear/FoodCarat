@@ -165,6 +165,7 @@ public class Review {
                 String[] reviewData = read.split(",");
                 allReviews.add(reviewData);
             }
+            br.close();
         } catch(IOException e) {
             JOptionPane.showMessageDialog(null, "Failed to read from review file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -219,6 +220,7 @@ public class Review {
                 }
 
             }
+            br.close();
         } catch(IOException e) {
             JOptionPane.showMessageDialog(null, "Failed to read from review file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }

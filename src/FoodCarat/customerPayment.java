@@ -442,14 +442,6 @@ public class customerPayment extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_bBackMainActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-
-    }
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bBackMain;
     private javax.swing.JButton bPay;
