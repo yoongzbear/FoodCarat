@@ -1,4 +1,4 @@
-//orderID,orderMethod,[itemID;quantity],orderStatus,customerEmail,runnerEmail,cancelReason,deliveryFee,totalPaid,date
-1,Take away,[1;1|2;1],Ordered,customerEmail,NULL,NULL,20.00,2025-01-01
-2,Dine in,[3;1],Ordered,customerEmail,NULL,NULL,20.00,2025-01-01
-3,Take away,[2;1|4;1],Ordered,customerEmail,NULL,NULL,20.00,2025-01-01 
+1,dine in,[1;1|4;1],completed,alya@mail.com,null,null,0.00,34.90,2025-02-19
+2,delivery,[2;1],completed,customer@mail.com,runner@mail.com,null,5.00,18.90,2025-02-19
+3,take away,[4;1],in kitchen,customer@mail.com,null,null,0.00,21.00,2025-02-19
+4,dine in,[2;2],ready,alya@mail.com,null,null,0.00,27.60,2025-02-19

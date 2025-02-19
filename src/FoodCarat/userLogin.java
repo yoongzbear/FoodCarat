@@ -225,7 +225,7 @@ public class userLogin extends javax.swing.JFrame {
         String[] userInfo = user.getUserInfo(email);
 
         // Check if the account is deleted
-        if (userInfo.length < 5 || (userInfo[2].isEmpty() && userInfo[4].isEmpty() && userInfo[5].isEmpty())) {
+        if (userInfo.length < 5 && (userInfo[2].isEmpty())) {
             JOptionPane.showMessageDialog(this,
                     "This account has been deleted.",
                     "Account Deleted",

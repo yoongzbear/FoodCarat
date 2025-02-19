@@ -832,7 +832,7 @@ public class runnerViewTask extends javax.swing.JFrame {
                 String fileStatus;
                 switch (newStatus) {
                     case "Picked Up":
-                        fileStatus = "picked up by runner";
+                        fileStatus = "picked up";
                         break;
                     case "Completed":
                         fileStatus = "completed";

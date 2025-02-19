@@ -1,3 +1,2 @@
-chagee@gmail.com,Beverage,images/vendors/ChageeLogo.png,[Dine In;Take Away;Delivery],17
-vendor@mail.com,Restaurant,images/vendors/ChageeLogo.png,[Dine In;Take Away],17
-alya@mail.com,,,[],0.0
+chagee@mail.com,Beverage,images/vendors/ChageeLogo.png,[dine in;take away;delivery],253.60
+mokkys@mail.com,Italian,images/vendors/Mokky'sLogo.jpg,[],0.0

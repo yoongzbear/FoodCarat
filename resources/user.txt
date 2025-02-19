@@ -1,8 +1,8 @@
-0Email,1Username,2Password,3User Type,4DOB,5Contact Number
-manager@mail.com,Manager,manager123,manager,03122004,0118888888
-vendor@mail.com,Vendor,vendor123,vendor
-customer@mail.com,Customer,customer123,customer
-admin@mail.com,Admin,admin123,admin,12032024,0139924012
-runner@mail.com,Runner,runner123,runner
-chagee@mail.com,Chagee,chagee123,vendor
-mokkys@mail.com,Mokkys,mokky123,vendor
+manager@mail.com,Manager,manager123,manager,2004-03-12,0118888888
+admin@mail.com,Admin,admin123,admin,2024-12-03,0139924012
+runner@mail.com,Runner,runner123,runner,2024-12-03,0139924012
+chagee@mail.com,Chagee,chagee123,vendor,2024-12-23,02152365215
+alya@mail.com,Alya Mastura,alya123,customer,2004-04-02,0171271717
+mokkys@mail.com,Mokky's,mokkys123,vendor,2025-02-04,0121231234
+customer@mail.com,Customer,customer123,customer,2004-02-18,0121231234
+runner2@mail.com,Runner,runner789,runner,2004-12-03,0171224012

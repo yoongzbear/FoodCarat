@@ -1,3 +1,0 @@
-0reasonID,1reason
-1,Rejected by vendor
-2,No runner found

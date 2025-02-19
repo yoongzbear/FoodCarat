@@ -1,4 +1,4 @@
-1,Dahongpao Milk Tea,Beverage,13.90,images/menu/chageeDMT.png,vendor@mail.com,available
-2,Jasmine Green Milk Tea,Beverage,13.90,images/menu/chageeDMT.png,vendor@mail.com,deleted by vendor
+1,Dahongpao Milk Tea,Beverage,13.90,images/menu/chageeDMT.png,chagee@mail.com,available
+2,Jasmine Peach Tea,Beverage,13.90,images/menu/ChageeJPT.png,chagee@mail.com,available
 3,Pepperoni Pizza,Food,24.00,images/menu/chageeDMT.png,mokkys@mail.com,available
-4,Jasmine Peach Tea,Beverage,11.90,images/menu/ChageeJPT.png,vendor@mail.com,available
+4,Osmanthus Oolong Snow Cap Milk Tea,Beverage,21.00,images/menu/chageeOSCMT.jpg,chagee@mail.com,available
