@@ -11,10 +11,6 @@ import java.awt.Graphics2D;
 import javax.swing.JOptionPane;
 import javax.swing.text.PlainDocument;
 
-/**
- *
- * @author mastu
- */
 public class userLogin extends javax.swing.JFrame {
 
     public userLogin() {
