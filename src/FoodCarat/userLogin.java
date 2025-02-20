@@ -82,7 +82,7 @@ public class userLogin extends javax.swing.JFrame {
         jLabel1.setBackground(new java.awt.Color(255, 228, 225));
         jLabel1.setFont(new java.awt.Font("Cooper Black", 1, 36)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Food Carat Food Court");
+        jLabel1.setText("FoodCarat Food Court");
         jLabel1.setToolTipText("");
         jLabel1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jLabel1.setOpaque(true);
