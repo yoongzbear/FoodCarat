@@ -1,2 +1,2 @@
-alya@mail.com,[No. 1; Jalan USJ1/4P; 76000 Subang Jaya Selangor],978.60,95
-customer@mail.com,[No. 127; Jalan NCT17/U; Subang Bintang 12700 Selangor],960.10,39
+alya@mail.com,[No. 1; Jalan USJ1/4P; 76000 Subang Jaya Selangor],959.70,108
+customer@mail.com,[No. 127; Jalan NCT17/U; Subang Bintang 12700 Selangor],970.10,88

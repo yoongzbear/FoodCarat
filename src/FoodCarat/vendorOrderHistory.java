@@ -191,7 +191,7 @@ public class vendorOrderHistory extends javax.swing.JFrame {
             String updatedOrderItems = item.replaceItemIDsWithNames(orderItems);
 
             //excluding orders with status pending accept
-            if (orderStatus.equalsIgnoreCase("Pending accept") || orderStatus.equalsIgnoreCase("Cancelled")) {
+            if (orderStatus.equalsIgnoreCase("Pending accept") || orderStatus.equalsIgnoreCase("Cancelled") || orderStatus.equalsIgnoreCase("Assigning runner")) {
                 continue;
             } else {
                 if (timeRange.equalsIgnoreCase("Daily")) { //daily

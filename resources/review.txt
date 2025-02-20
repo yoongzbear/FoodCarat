@@ -3,4 +3,11 @@
 3,2,order,null,Nice floral taste but too sweet,2025-02-19,customer@mail.com,null
 4,2,vendor,4,Great packaging,2025-02-19,customer@mail.com,null
 5,2,runner,5,null,2025-02-19,customer@mail.com,null
-6,null,foodcourt,null,Too expensive,2025-02-19,customer@mail.com,unresolved
+6,null,foodcourt,null,Too expensive,2025-02-19,customer@mail.com,resolved
+7,5,runner,5,null,2025-02-19,customer@mail.com,null
+8,5,vendor,4,Very fast in preparation,2025-02-19,alya@mail.com,null
+9,6,runner,1,null,2025-02-19,customer@mail.com,null
+10,6,vendor,4,Very fast in preparation,2025-02-19,alya@mail.com,null
+11,7,order,null,Great food,2025-02-20,customer@mail.com,null
+12,7,vendor,4,Nice packaging,2025-02-20,customer@mail.com,null
+13,null,foodcourt,null,Dirty,2025-02-20,customer@mail.com,unresolved

@@ -1,2 +1,2 @@
 runner@mail.com,SVT127,available,10.00
-runner2@mail.com,NCT1717,available,15.00
+yuna@mail.com,ABC243,unavailable,0.0

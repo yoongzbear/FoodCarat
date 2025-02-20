@@ -1,3 +1,3 @@
-chagee@mail.com,Beverage,images/vendors/ChageeLogo.png,[dine in;take away;delivery],253.60
+chagee@mail.com,Beverage,images/vendors/ChageeLogo.png,[],267.50
 mokkys@mail.com,Italian,images/vendors/Mokky'sLogo.jpg,[],0.0
 bing@mail.com,Japanese,images/vendors/Bing FoodLogo.jpg,[dine in;take away],0.0

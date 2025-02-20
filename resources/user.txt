@@ -5,5 +5,6 @@ chagee@mail.com,Chagee,chagee123,vendor,2024-12-23,02152365215
 alya@mail.com,Alya Mastura,alya123,customer,2004-04-02,0171271717
 mokkys@mail.com,Mokky's,mokkys123,vendor,2025-02-04,0121231234
 customer@mail.com,Customer,customer123,customer,2004-02-18,0121231234
-runner2@mail.com,Runner,runner789,runner,2004-12-03,0171224012
+runner2@mail.com,Runner2,,runner
 bing@mail.com,Bing Food,bing123,vendor,2025-02-19,0191271717
+yuna@mail.com,Yuna,yuna123,runner,2004-02-03,012334556655
