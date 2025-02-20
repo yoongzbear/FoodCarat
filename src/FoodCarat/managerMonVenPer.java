@@ -317,10 +317,7 @@ public class managerMonVenPer extends javax.swing.JFrame {
         VenPertable.setFont(new java.awt.Font("Constantia", 0, 14)); // NOI18N
         VenPertable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+
             },
             new String [] {
                 "No", "Vendor", "Total Revenue", "Total order", "Average value per order", "Average rating"
