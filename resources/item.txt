@@ -3,3 +3,4 @@
 3,Hawaiian Pizza,Food,24.00,images/menu/chageeDMT.png,mokkys@mail.com,available
 4,Osmanthus Oolong Snow Cap Milk Tea,Beverage,21.00,images/menu/chageeOSCMT.jpg,chagee@mail.com,available
 5,Gardenia Green Tea,Beverage,14.90,images/menu/ChageeGGT.jpeg,chagee@mail.com,deleted by vendor
+6,Premium Jasmine Peach Tea,Beverage,15.90,images/menu/ChageeJPT.png,chagee@mail.com,available
